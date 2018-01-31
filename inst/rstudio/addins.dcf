@@ -1,0 +1,4 @@
+Name: Find BE
+Description: Find Biological Entity in BED based on their IDs, symbols and names
+Binding: findBe
+Interactive: true

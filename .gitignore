@@ -1,0 +1,7 @@
+.Rproj.user
+.Rhistory
+.RData
+vignettes/*.html
+vignettes/BED.R
+inst/Build/neo4j/install
+inst/Documentation/BED-F1000-Article/*.log

@@ -1,0 +1,1382 @@
+---
+title: "Biological Entity Dictionary (BED): Feeding the DB"
+author: "Patrice Godard"
+date: "`r format(Sys.time(), '%B %d %Y')`"
+abstract: "Dump source identifiers related information and integrate content in BED"
+output:
+    html_document:
+        fig_width: 9
+        fig_height: 5
+        keep_md: yes
+        number_sections: yes
+        theme: cerulean
+        toc: yes
+        toc_float: yes
+---
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Introduction
+
+This document shows how to feed the Biological Entity Dictionary (BED).
+It can be adapted according to specific needs and DB access.
+The BED functions used to feed the DB are not exported to avoid
+unintended modifications of the DB. To call them, they are preceded
+by `BED:::`.
+
+BED is based on [Neo4j](https://neo4j.com/). The following chunk is used
+to config Neo4j. The automation of the installation has been done for Linux
+and according to current needs. It should be adapted for other operating
+systems and according to specific needs.
+
+Also, because the import functions use massively the `LOAD CSV` Neo4j query, 
+the feeding of the BED database can only be down from the
+computer hosting the Neo4j relevant instance.
+
+```{r neoConfig, message=FALSE}
+## neo4j config
+neov <- "neo4j-community-3.3.0"
+neo.config <- list(
+    url="http://localhost:7474",
+    username="neo4j", password="1234"
+)
+bedPath <- sprintf("./bed-dev-%s", neov)
+bash <- file.path("neo4j/bash", neov)
+```
+
+In this example several source databases are dumped and their content
+is integrated in BED.
+Some helper functions are provided to get information from famous databases.
+The following chunk is used to configure source versions.
+The `reDumpThr` object is used to define time intervals during which some
+data sources should not be re-downloaded.
+
+```{r config, message=FALSE}
+##
+library(knitr)
+library(BED)
+##
+opts_chunk$set(eval=TRUE, message=FALSE)
+## Specific config
+bedInstance <- "UCB-Human"
+bedVersion <- format(Sys.Date(), "%Y.%m.%d")
+ensembl_release <- "91"
+ensembl_Hsapiens <- list(
+    release=ensembl_release,
+    organism="Homo sapiens",
+    gv="38",                        # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "HGNC"="HGNC",
+        "EntrezGene"="EntrezGene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Hs_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "MIM_GENE"="MIM_GENE",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Hs_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Hs_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:22, "X", "Y", "MT")
+)
+ensembl_Mmusculus <- list(
+    release=ensembl_release,
+    organism="Mus musculus",
+    gv="38",                        # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "MGI"="MGI",
+        "EntrezGene"="EntrezGene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Mm_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Mm_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Mm_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:19, "X", "Y", "MT")
+)
+ensembl_Rnorvegicus <- list(
+    release=ensembl_release,
+    organism="Rattus norvegicus",
+    gv="6",                         # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "RGD"="RGD",
+        "EntrezGene"="EntrezGene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Rn_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Rn_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Rn_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:20, "X", "Y", "MT")
+)
+## General config
+reDumpThr <- as.difftime(2, units="days")
+curDate <- Sys.Date()
+```
+
+# BED initialization
+
+<a name="reset"></a>
+
+## Neo4j installation
+
+Again, this part has been automated according to current needs and on a Linux
+computer.
+
+### Backup and removing existing former build
+
+```{r backup_and_clean, eval=TRUE}
+if(file.exists(bedPath)){
+    system(paste("sh", file.path(bash, "bedBckClean.sh"), bedPath))
+}
+```
+
+### Neo4j installation
+
+```{r installation, eval=TRUE}
+system(paste("sh", file.path(bash, "installNeo4j.sh"), neov, bedPath))
+```
+
+### Start Neo4j
+
+```{r startNeo4j, eval=TRUE}
+system(paste("sh", file.path(bash, "startNeo4j.sh"), bedPath))
+```
+
+## Starting BED
+
+### Connect to BED
+
+```{r bedConnect, message=FALSE}
+do.call(connectToBed, neo.config)
+```
+
+Do not go further if your BED DB is not empty.
+Check the procedure described [above](#reset).
+
+```{r checkEmptyDB, message=FALSE}
+dbSize <- bedCall(cypher, 'MATCH (n) RETURN count(n)')[,1]
+if(dbSize!=0){
+    stop("BED DB is not empty ==> clean it before loading the content below")
+}
+```
+
+### Set BED Version
+
+```{r bedVersion, message=FALSE}
+print(bedVersion)
+BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
+```
+
+### Load Data model
+
+**Start**: `r Sys.time()`
+
+```{r dataModel, message=FALSE}
+BED:::loadBedModel()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading taxonomy from NCBI
+
+Information is downloaded if older than `r reDumpThr` days
+according to the `reDumpThr` object.
+
+**Start**: `r Sys.time()`
+
+```{r ncbiTax, message=FALSE}
+BED:::loadNcbiTax(
+    reDumpThr=reDumpThr,
+    orgOfInt=c("Homo sapiens", "Rattus norvegicus", "Mus musculus"),
+    curDate=curDate
+)
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading data from Ensembl
+
+## Register Ensembl DBs
+
+### Genes
+
+```{r Ens_gene_DB, message=FALSE}
+BED:::registerBEDB(
+    name="Ens_gene",
+    description="Ensembl gene",
+    currentVersion=ensembl_release,
+    idURL='http://www.ensembl.org/id/%s'
+)
+```
+
+### Transcripts
+
+```{r Ens_transcript_DB, message=FALSE}
+BED:::registerBEDB(
+    name="Ens_transcript",
+    description="Ensembl transcript",
+    currentVersion=ensembl_release,
+    idURL='http://www.ensembl.org/id/%s'
+)
+```
+
+### Peptides
+
+```{r Ens_translation_DB, message=FALSE}
+BED:::registerBEDB(
+    name="Ens_translation",
+    description="Ensembl peptides",
+    currentVersion=ensembl_release,
+    idURL='http://www.ensembl.org/id/%s'
+)
+```
+
+## Homo sapiens
+
+```{r ensHs_conf, message=FALSE}
+ensembl <- ensembl_Hsapiens
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensHs_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensHs_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensHs_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Mus musculus
+
+```{r ensMm_conf, message=FALSE}
+ensembl <- ensembl_Mmusculus
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensMm_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensMm_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensMm_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Rattus norvegicus
+
+```{r ensRn_conf, message=FALSE}
+ensembl <- ensembl_Rnorvegicus
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensRn_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensRn_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensRn_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading data from NCBI
+
+Information is downloaded if older than `r reDumpThr` days
+according to the `reDumpThr` object.
+
+## Register NCBI DBs
+
+```{r dumpNcbi, message=FALSE}
+BED:::dumpNcbiDb(taxOfInt = c(), reDumpThr=reDumpThr, toLoad=c(), curDate=curDate)
+```
+
+### Genes
+
+```{r EntrezGene_DB, message=FALSE}
+BED:::registerBEDB(
+    name="EntrezGene",
+    description="NCBI gene",
+    currentVersion=format(dumpDate, "%Y%m%d"),
+    idURL='https://www.ncbi.nlm.nih.gov/gene/%s'
+)
+```
+
+### Transcripts
+
+```{r RefSeq_DB, message=FALSE}
+BED:::registerBEDB(
+    name="RefSeq",
+    description="NCBI nucleotide",
+    currentVersion=format(dumpDate, "%Y%m%d"),
+    idURL='https://www.ncbi.nlm.nih.gov/nuccore/%s'
+)
+```
+
+### Peptides
+
+```{r RefSeq_peptide_DB, message=FALSE}
+BED:::registerBEDB(
+    name="RefSeq_peptide",
+    description="NCBI protein",
+    currentVersion=format(dumpDate, "%Y%m%d"),
+    idURL='https://www.ncbi.nlm.nih.gov/protein/%s'
+)
+```
+
+## Homo sapiens data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiHsData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Homo sapiens", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Homo sapiens", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Mus musculus data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiMmData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Mus musculus", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Mus musculus", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Rattus norvegicus data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiRnData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Rattus norvegicus", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Rattus norvegicus", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading data from Uniprot
+
+Release is defined according to the *reldate.txt* file on the Uniprot FTP
+and data is downloaded only if not already done for the current release.
+
+```{r Uniprot_DB, message=FALSE}
+ftp <- "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions"
+avRel <- readLines(file.path(ftp, "reldate.txt"), n=1)
+avRel <- sub(
+    "^UniProt Knowledgebase Release ", "",
+    sub(" consists of:$", "", avRel)
+)
+if(is.na(as.Date(paste0(avRel, "_01"), format="%Y_%m_%d"))){
+    print(avRel)
+    stop(sprintf("Check reldate.txt file on %s", ftp))
+}
+BED:::registerBEDB(
+    name="Uniprot",
+    description="Uniprot",
+    currentVersion=avRel,
+    idURL='http://www.uniprot.org/uniprot/%s'
+)
+```
+
+## Homo sapiens data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotHsData, message=FALSE}
+BED:::getUniprot(
+    organism="Homo sapiens", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Mus musculus data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotMmData, message=FALSE}
+BED:::getUniprot(
+    organism="Mus musculus", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Rattus norvegicus data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotRnData, message=FALSE}
+BED:::getUniprot(
+    organism="Rattus norvegicus", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading Clarivate Analytics MetaBase objects
+
+**Start**: `r Sys.time()`
+
+```{r, echo=FALSE}
+options(java.parameters="-Xmx2g")
+source("~/opt/MetaBase/metabaseConnection.R")
+```
+
+The following chunk should be adapted to fit MetaBase installation.
+
+```{r MetaBaseConnection, eval=FALSE}
+library(metabaser)
+metabase.connect(
+    driver = "jdbc",
+    jdbc.url ="jdbc:oracle:thin:@//HOSTURL",
+    uid = "USER", pwd = "PASSWORD"
+)
+```
+
+## Register MetaBase DB
+
+```{r MetaBase, message=FALSE}
+mbInfo <- mbquery("select * from zzz_System")
+BED:::registerBEDB(
+    name="MetaBase_gene",
+    description="Clarivate Analytics MetaBase",
+    currentVersion=mbInfo$VERSION,
+    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=20&id=%s'
+)
+BED:::registerBEDB(
+    name="MetaBase_object",
+    description="Clarivate Analytics MetaBase",
+    currentVersion=mbInfo$VERSION,
+    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=100&id=%s'
+)
+```
+
+## Homo sapiens data
+
+```{r MetaBaseHs}
+BED:::loadMBObjects(
+    orgOfInt=c("Homo sapiens")
+)
+gc()
+```
+
+## Mus musculus data
+
+```{r MetaBaseMm, message=FALSE}
+BED:::loadMBObjects(
+    orgOfInt=c("Mus musculus")
+)
+gc()
+```
+
+## Rattus norvegicus data
+
+```{r MetaBaseRn, message=FALSE}
+BED:::loadMBObjects(
+    orgOfInt=c("Rattus norvegicus")
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading homologs
+
+## Orthologs from biomaRt
+
+**Start**: `r Sys.time()`
+
+```{r homolog_biomart_HsMm, message=FALSE}
+library(biomaRt)
+loadBmHomologs <- function(org1, org2, version){
+
+    #########################################
+    ## The mart
+    bm <- "ENSEMBL_MART_ENSEMBL"
+    marts <-listMarts()
+    if(
+        grep(
+            sprintf(" %s$", version),
+            marts[which(marts$biomart==bm), "version"]
+        )==1
+    ){
+        version <- NULL
+    }
+    mart <- useEnsembl(
+        biomart=bm,
+        dataset=paste0(org1, "_gene_ensembl"),
+        version=version
+    )
+    #mattr <- listAttributes(mart)
+    
+    toImport <- getBM(
+        mart=mart,
+        attributes=c(
+            "ensembl_gene_id",
+            paste0(org2, "_homolog_ensembl_gene")
+        )
+    )
+    colnames(toImport) <- c("id1", "id2")
+    toImport <- unique(toImport[
+        which(toImport$id1 != "" & toImport$id2 != ""),
+    ])
+    
+    BED:::loadIsHomologOf(
+        d=toImport,
+        db1="Ens_gene", db2="Ens_gene",
+        be="Gene"
+    )
+
+}
+
+#########################################
+loadBmHomologs(
+    org1="hsapiens",
+    org2="mmusculus",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_HsRn, message=FALSE}
+loadBmHomologs(
+    org1="hsapiens",
+    org2="rnorvegicus",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_MmRn, message=FALSE}
+loadBmHomologs(
+    org1="mmusculus",
+    org2="rnorvegicus",
+    version=ensembl_release
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Orthologs from NCBI
+
+**Start**: `r Sys.time()`
+
+```{r homolog_ncbi, message=FALSE}
+#####################################
+gdbname <- "EntrezGene"
+taxOfInt <- unlist(lapply(
+    c("Homo sapiens", "Mus musculus", "Rattus norvegicus"),
+    getTaxId
+))
+BED:::dumpNcbiDb(
+    taxOfInt=taxOfInt[1],
+    reDumpThr=100000,
+    toLoad=c("gene_group"),
+    curDate=curDate
+)
+toImport <- gene_group[
+    which(
+        gene_group$tax_id %in% taxOfInt &
+        gene_group$Other_tax_id %in% taxOfInt &
+        gene_group$relationship == "Ortholog"
+    ),
+    c("GeneID", "Other_GeneID")
+]
+colnames(toImport) <- c("id1", "id2")
+BED:::loadIsHomologOf(
+    d=toImport,
+    db1=gdbname, db2=gdbname,
+    be="Gene"
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading probes
+
+## Probes from GEO
+
+```{r  geoQueries, message=FALSE, warning=FALSE}
+library(GEOquery)
+dir.create("geo", showWarnings=FALSE)
+```
+
+### GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)
+
+**Start**: `r Sys.time()`
+
+```{r GPL6480, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6480"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping with Entrez
+d <- Table(gds)
+toImport <- d[which(!is.na(d$ID)), c("ID", "GENE")]
+colnames(toImport) <- c("probeID", "id")
+toImport$probeID <- as.character(toImport$probeID)
+toImport$id <- as.character(toImport$id)
+toImport <- toImport[which(!is.na(toImport$id)),]
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+## Import mapping with UniGene
+toImport <- d[which(!is.na(d$ID)), c("ID", "UNIGENE_ID")]
+colnames(toImport) <- c("probeID", "id")
+toImport$probeID <- as.character(toImport$probeID)
+toImport$id <- as.character(toImport$id)
+toImport <- toImport[which(!is.na(toImport$id)),]
+dbname <- "UniGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL570: Affymetrix Human Genome U133 Plus 2.0 Array
+
+**Start**: `r Sys.time()`
+
+```{r GPL570, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL570"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL571: Affymetrix Human Genome U133A 2.0 Array
+
+**Start**: `r Sys.time()`
+
+```{r GPL571, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL571"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL13158: Affymetrix HT HG-U133+ PM Array Plate
+
+**Start**: `r Sys.time()`
+
+```{r GPL13158, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL13158"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL96: Affymetrix Human Genome U133A Array
+
+**Start**: `r Sys.time()`
+
+```{r GPL96, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL96"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL1261: Affymetrix Mouse Genome 430 2.0 Array
+
+**Start**: `r Sys.time()`
+
+```{r GPL1261, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL1261"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL1355: Affymetrix Rat Genome 230 2.0 Array
+
+**Start**: `r Sys.time()`
+
+```{r GPL1355, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL1355"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- strsplit(
+    as.character(d$ENTREZ_GENE_ID),
+    split=" /// "
+)
+names(toImport) <- d$ID
+toImport <- stack(toImport)
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL10558: Illumina HumanHT-12 V4.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL10558, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL10558"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- d[,c("Entrez_Gene_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL6947: Illumina HumanHT-12 V3.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL6947, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6947"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- d[,c("Entrez_Gene_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL6885: Illumina MouseRef-8 v2.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL6885, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6885"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Transcript"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- d[,c("RefSeq_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+toImport[,1] <- sub("[.].*$", "", toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "RefSeq"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL6101: Illumina ratRef-12 v1.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL6101, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6101"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+d <- Table(gds)
+toImport <- d[,c("Entrez_Gene_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+<!-- ## Probes from biomaRt -->
+
+<!-- ```{r biomartProbes, message=FALSE} -->
+<!-- library(biomaRt) -->
+<!-- loadBmProbes <- function(dataset, platName, trDb, version){ -->
+
+<!--     ######################################### -->
+<!--     ## The platform -->
+<!--     bm <- "ENSEMBL_MART_ENSEMBL" -->
+<!--     marts <-listMarts() -->
+<!--     if( -->
+<!--         grep( -->
+<!--             sprintf(" %s$", version), -->
+<!--             marts[which(marts$biomart==bm), "version"] -->
+<!--         )==1 -->
+<!--     ){ -->
+<!--         version <- NULL -->
+<!--     } -->
+<!--     mart <- useEnsembl(biomart=bm, dataset=dataset, version=version) -->
+<!--     mattr <- listAttributes(mart) -->
+
+<!--     ######################################### -->
+<!--     ## The platform -->
+<!--     message("Loading the platform") -->
+<!--     description <- mattr[which(mattr$name==platName),"description"] -->
+<!--     BED:::loadPlf(name=platName, description=description, be="Transcript") -->
+
+<!--     ######################################### -->
+<!--     ## The probes -->
+<!--     message("Getting the biomaRt data") -->
+<!--     toImport <- getBM( -->
+<!--         mart=mart, attributes=c("ensembl_transcript_id", platName) -->
+<!--     ) -->
+<!--     toImport <- unique(toImport[which(toImport[,platName]!=""),]) -->
+<!--     colnames(toImport) <- c("id", "probeID") -->
+<!--     message("Loading the probes") -->
+<!--     BED:::loadProbes( -->
+<!--         d=toImport, -->
+<!--         be="Transcript", -->
+<!--         platform=platName, -->
+<!--         dbname=trDb -->
+<!--     ) -->
+
+<!-- } -->
+<!-- ``` -->
+
+<!-- ### Human platforms -->
+
+<!-- **Start**: `r Sys.time()` -->
+
+<!-- ```{r illumina_humanht_12_v4, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="hsapiens_gene_ensembl", -->
+<!--     platName="illumina_humanht_12_v4", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r affy_hg_u133_plus_2, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="hsapiens_gene_ensembl", -->
+<!--     platName="affy_hg_u133_plus_2", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- **End**: `r Sys.time()` -->
+
+<!-- ### Mouse platforms -->
+
+<!-- **Start**: `r Sys.time()` -->
+
+<!-- ```{r illumina_mouseref_8_v2, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="mmusculus_gene_ensembl", -->
+<!--     platName="illumina_mouseref_8_v2", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r affy_mouse430_2, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="mmusculus_gene_ensembl", -->
+<!--     platName="affy_mouse430_2", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- **End**: `r Sys.time()` -->
+
+<!-- ### Rat platforms -->
+
+<!-- **Start**: `r Sys.time()` -->
+
+<!-- ```{r illumina_ratref_12_v1, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="rnorvegicus_gene_ensembl", -->
+<!--     platName="illumina_ratref_12_v1", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- ```{r affy_rat230_2, message=FALSE} -->
+<!-- message(Sys.time()) -->
+<!-- loadBmProbes( -->
+<!--     dataset="rnorvegicus_gene_ensembl", -->
+<!--     platName="affy_rat230_2", -->
+<!--     trDb="Ens_transcript", -->
+<!--     version=ensembl_release -->
+<!-- ) -->
+<!-- ``` -->
+
+<!-- **End**: `r Sys.time()` -->
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Other information
+
+## Databases ID URL
+
+```{r otherIdURL}
+otherIdURL <- list(
+    "HGNC"='http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=%s',
+    "miRBase"='http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=%s',
+    "Vega_gene"='http://vega.sanger.ac.uk/id/%s',
+    "UniGene"='https://www.ncbi.nlm.nih.gov/unigene?term=%s',
+    "Vega_transcript"='http://vega.sanger.ac.uk/id/%s',
+    "MGI"='http://www.informatics.jax.org/marker/MGI:%s',
+    "Vega_translation"='http://vega.sanger.ac.uk/id/%s',
+    "RGD"='https://rgd.mcw.edu/rgdweb/report/gene/main.html?id=%s',
+    "MIM_GENE"='http://www.omim.org/entry/%s',
+    "GO_function"='http://amigo.geneontology.org/amigo/term/%s'
+)
+for(db in names(otherIdURL)){
+    BED:::registerBEDB(
+        name=db,
+        idURL=otherIdURL[[db]]
+    )   
+}
+```
+
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Final procedure
+
+## Shift to read only mode
+
+Shifting to read only mode will avoid unintended modification of the BED
+database.
+
+```{r readOnlyMode, eval=TRUE}
+system(paste("sh", file.path(bash, "readOnly.sh"), bedPath), intern = FALSE)
+```
+
+# Session info
+
+```{r sessionInfo, echo=FALSE}
+sessionInfo()
+```

@@ -1,0 +1,32 @@
+Package: BED
+Type: Package
+Title: Biological Entity Dictionary (BED)
+Version: 0.8.1
+Date: 2018-01-31
+Author: Patrice Godard
+Maintainer: Patrice Godard <patrice.godard@gmail.com>
+Description: This package provides an interface for neo4j database providing
+    mapping between different identifiers of biological entities.
+License: GPL-3
+LazyData: TRUE
+Depends:
+    R (>= 3.4),
+    neo2R,
+    visNetwork
+Imports:
+    dplyr,
+    htmltools,
+    utils,
+    DT,
+    shiny (>= 0.13),
+    miniUI (>= 0.1.1),
+    rstudioapi (>= 0.5)
+Suggests:
+    BiocStyle,
+    knitr,
+    rmarkdown,
+    metabaser,
+    biomaRt,
+    GEOquery
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1

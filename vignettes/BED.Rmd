@@ -1,0 +1,603 @@
+---
+title: "Biological Entity Dictionary (BED): exploring and converting identifiers of biological entities such as genes, transcripts or peptides"
+author: "Patrice Godard"
+date: "`r format(Sys.time(), '%B %d %Y')`"
+package: "BED (version `r packageVersion('BED')`)"
+vignette: >
+    %\VignetteIndexEntry{BED - Tutorial}
+    %\VignetteEncoding{UTF-8}
+    %\VignetteEngine{knitr::rmarkdown}
+output:
+   html_document:
+     keep_md: no
+     number_sections: yes
+     theme: cerulean
+     toc: yes
+     toc_float: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, echo=FALSE}
+library(knitr)
+```
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Introduction
+
+This document shows how to use the **BED (Biological Entity Dictionary)**
+R package to get and explore mapping between
+identifiers of biological entities (BE).
+This package provides a way to connect to a BED Neo4j database in which
+the relationships between the identifiers from different sources are recorded.
+
+## Installation
+
+This BED package depends on the following packages available in the CRAN
+repository:
+
+- **visNetwork**
+- **dplyr**
+- **htmltools**
+- **DT**
+- **shiny**
+- **miniUI**
+- **rstudioapi**
+
+BED also depends on the **neo2R** package co-developped with this project.
+
+All these packages must be installed before installing BED.
+
+## Connection
+
+Before using BED, the connection needs to be established with the
+underlying Neo4j DB.
+`url`, `username` and `password` should be adapted.
+
+```{r, message=FALSE}
+library(BED)
+connectToBed(
+    url="http://localhost:5454",
+    username="neo4j", password="1234"
+)
+```
+
+The connection can be checked the following way.
+
+```{r, message=TRUE}
+checkBedConn(verbose=TRUE)
+```
+
+If the `verbose` parameter is set to TRUE, the URL and the content version
+are displayed as messages.
+
+By default, connections are registered (the `remember` param is set to `TRUE`
+when calling the `connectToBed` function). This way, the connection which
+has been used the last time is automatically used when loading BED during
+a new R session. Connections can be managed with the `lsBedConnections` and
+the `forgetBedConnection()` functions.
+
+```{r}
+lsBedConnections()
+```
+
+The `connection` param of the `connectToBed` function can be used to
+connect to a registered connection other than the last one.
+
+## Data model
+
+The BED underlying data model can be shown at any time using
+the following command.
+
+```{r, eval=FALSE}
+showBedDataModel()
+```
+
+```{r, echo=FALSE}
+htmltools::includeHTML(system.file(
+    "Documentation", "BED-Model", "BED.html",
+    package="BED"
+))
+```
+
+## Direct calls
+
+Cypher queries can be run directly on the Neo4j database using the
+`cypher` function from the neo2R package through the `bedCall` function.
+
+```{r}
+results <- bedCall(
+    cypher,
+    query=prepCql(
+       'MATCH (n:BEID)',
+       'WHERE n.value IN $values',
+       'RETURN DISTINCT n.value AS value, labels(n), n.database'
+    ),
+    parameters=list(values=c("10", "100"))
+)
+results
+```
+
+## Feeding the database
+
+Many functions are provided within the package to build your own BED database
+instance. These functions are not exported in order to avoid their use when
+interacting with BED normally. A vignette showing how to build a BED database
+instance for human, mouse and rat organisms is available in the *Build*
+directory in the package installation directory.
+It can be adapted to user needs.
+
+## Caching
+
+Functions of the BED package used to retrieve thousands of identifiers
+can take some time (generally a few seconds) before returning a result.
+Thus for this kind of query, the query is run for all the relevant ID in the DB
+and thanks to a cache system implemented in the package same queries
+with different filters should be much faster the following times.
+
+By default the cache is flushed when the system detect inconsistencies
+with the BED database. However, it can also be manualy flushed if needed using
+the `clearBedCache()` function.
+
+Queries already in cache can be listed using the `lsBedCache()` function which
+also return the occupied disk space.
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Exploring available data
+
+## Biological entities
+
+BED is organized around the central concept of **Biological Entity** (BE).
+All supported types of BE can be listed.
+
+```{r}
+listBe()
+```
+
+These BE are organized according to how they are related to each other.
+For example a *Gene* *is_expressed_as* a *Transcript*.
+This organization allows to find the first upstream BE common to a set of
+BE.
+
+```{r}
+firstCommonUpstreamBe(c("Object", "Transcript"))
+firstCommonUpstreamBe(c("Peptide", "Transcript"))
+```
+
+## Organisms
+
+Several organims can be supported by the BED underlying database.
+They can be listed the following way.
+
+```{r}
+listOrganisms()
+```
+
+Common names are also supported and the corresponding taxonomic identifiers
+can be retrieved. Conversely the organism names corresponding to a
+taxonomic ID can be listed.
+
+```{r}
+getOrgNames(getTaxId("human"))
+```
+
+## Identifiers of biological entities
+
+The main aim of BED is to allow the mapping of identifiers from different
+sources such as Ensembl or Entrez. Supported sources can be listed the
+following way for each supported organism.
+
+```{r}
+listBeIdSources(be="Transcript", organism="human")
+```
+
+The database gathering the largest number of BE of specific type can also
+be identified.
+
+```{r}
+largestBeSource(be="Transcript", organism="human", restricted=TRUE)
+```
+
+Finally, the `getAllBeIdSources()` function returns all
+the source databases of BE identifiers whatever the BE type.
+
+## Experimental platforms and probes
+
+BED also supports experimental platforms and provides mapping betweens
+probes and BE identifiers (BEID).
+
+The supported platforms can be listed the following way.
+The `getTargetedBe()` function returns the type of BE on which a specific
+platform focus.
+
+```{r}
+head(listPlatforms())
+getTargetedBe("GPL570")
+```
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Managing identifiers
+
+## Retrieving all identifiers from a source
+
+All identifiers of an organism BEs from one source can be retrieved.
+
+```{r}
+beids <- getBeIds(
+    be="Gene", source="EntrezGene", organism="human",
+    restricted=FALSE
+)
+dim(beids)
+head(beids)
+```
+
+The first column, *id*, corresponds to the identifiers of the BE in the source.
+The column named according to the BE type (in this case *Gene*)
+corresponds to the internal identifier of the related BE.
+**BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE**.
+This internal identifier is useful to identify BEIDS corresponding to the
+same BE. The following code can be used to have an overview of such
+redundancy.
+
+```{r}
+sort(table(table(beids$Gene)), decreasing = TRUE)
+```
+
+In the example above we can see that most of Gene BE are identified by only
+one EntrezGene ID. However many of them are identified by two or more
+ID; `r sum(table(table(beids$Gene)[which(table(beids$Gene)>=10)]))` BE
+are even identified by 10 or more EntrezGeneID.
+In this case, most of these redundancies come from ID history extracted
+from Entrez. Legacy ID can be excluded from the retrieved ID
+by setting the `restricted` parameter to TRUE.
+
+```{r}
+beids <- getBeIds(
+    be="Gene", source="EntrezGene", organism="human",
+    restricted = TRUE
+)
+dim(beids)
+```
+
+The same code as above can be used to identify remaining redundancies.
+
+```{r}
+sort(table(table(beids$Gene)), decreasing = TRUE)
+```
+
+In the example above we can see that allmost all Gene BE are identified by only
+one EntrezGene ID. However some of them are identified by two or more ID.
+This result comes from how the BED database is constructed according to
+the ID mapping provided by the different source databases.
+The graph below shows how the mapping was done for such a BE with
+redundant EntrezGene IDs.
+
+<div style="border:solid;overflow:hidden;">
+```{r}
+eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=8)))][1]
+print(eid)
+exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
+   visPhysics(solver="repulsion")
+```
+</div>
+<br>
+
+The way the ID correspondances are reported in the different source databases
+leads to this mapping ambiguity which has to be taken into account
+when comparing identifiers from different databases.
+
+The `getBeIds()` returns other columns providing additional
+information about the *id*.
+The same function can be used to retrieved symbols or probe identifiers.
+
+### Preferred identifier
+
+The BED database is constructed according to the relationships between
+identifiers provided by the different sources. Biological entities (BE) are
+identified as clusters of identifiers which correspond to each other
+directly or indirectly (`corresponds_to` relationship).
+Because of this design a BE can be identified by multiple identifiers (BEID)
+from the same database as shown above.
+These BEID are often related to alternate version of an entity.
+
+For example, Ensembl provides different version (alternative sequences)
+of some chromosomes parts. And genes are also annotated on these alternative
+sequences. In Uniprot some *unreviewed* identifiers can correspond
+to *reviewed* proteins.
+
+When available such kind of information is associated to
+an **Attribute** node through a `has` relationship providing the
+value of the attribute for the BEID. This information can also
+be used to define if a BEID is a *preferred* identifier for
+a BE.
+
+The example below shows the case of the MAPT gene annotated on different
+version of human chromosome 17.
+
+```{r}
+mapt <- convBeIds(
+   "MAPT", from="Gene", from.source="Symbol", from.org="human",
+   to.source="Ens_gene", restricted=TRUE
+)
+exploreBe(
+   mapt[1, "to"],
+   source="Ens_gene",
+   be="Gene"
+)
+getBeIds(
+   be="Gene", source="Ens_gene", organism="human",
+   restricted=TRUE,
+   attributes=listDBAttributes("Ens_gene"),
+   filter=mapt$to
+)
+```
+
+## Checking identifiers
+
+The origin of identifiers can be guessed as following.
+
+```{r}
+oriId <- c(
+    "17237", "105886298", "76429", "80985", "230514", "66459",
+    "93696", "72514", "20352", "13347", "100462961", "100043346",
+    "12400", "106582", "19062", "245607", "79196", "16878", "320727",
+    "230649", "66880", "66245", "103742", "320145", "140795"
+)
+idOrigin <- guessIdOrigin(oriId)
+print(idOrigin$be)
+print(idOrigin$source)
+print(idOrigin$organism)
+```
+
+The best guess is returned as a list but other possible origins are listed in
+the *details* attribute.
+
+```{r}
+print(attr(idOrigin, "details"))
+```
+
+If the origin of identifiers is already known, it can also be tested.
+
+```{r}
+checkBeIds(ids=oriId, be="Gene", source="EntrezGene", organism="mouse")
+```
+
+```{r}
+checkBeIds(ids=oriId, be="Gene", source="HGNC", organism="human")
+```
+
+## Identifier annotation
+
+Identifiers can be annotated with symbols and names according to available
+information. 
+The following code returns the most relevant symbol and the most relevant name
+for each ID.
+Source URL can also be generated with the `getBeIdURL()` function.
+
+```{r}
+toShow <- getBeIdDescription(
+    ids=oriId, be="Gene", source="EntrezGene", organism="mouse"
+)
+toShow$id <- paste0(
+    sprintf(
+        '<a href="%s" target="_blank">',
+        getBeIdURL(toShow$id, "EntrezGene")
+    ),
+    toShow$id,
+    '<a>'
+)
+kable(toShow, escape=FALSE, row.names=FALSE)
+```
+
+All possible symbols and all possible names for each ID can also be retrieved
+using the following functions.
+
+```{r}
+res <- getBeIdSymbols(
+    ids=oriId, be="Gene", source="EntrezGene", organism="mouse",
+    restricted=FALSE
+)
+head(res)
+```
+```{r}
+res <- getBeIdNames(
+    ids=oriId, be="Gene", source="EntrezGene", organism="mouse",
+    restricted=FALSE
+)
+head(res)
+```
+
+Also probes and some biological entities do not have directly associated
+symbols or names. These elements can also be annotated according to information
+related to relevant genes.
+
+```{r}
+someProbes <- c(
+    "238834_at", "1569297_at", "213021_at", "225480_at",
+    "216016_at", "35685_at", "217969_at", "211359_s_at"
+)
+toShow <- getGeneDescription(
+    ids=someProbes, be="Probe", source="GPL570", organism="human"
+)
+kable(toShow, escape=FALSE, row.names=FALSE)
+```
+
+## Products of molecular biology processes
+
+The BED data model has beeing built to fulfill molecular biology processes:
+
+- **is_expressed_as** relationships correspond to the transcription process.
+- **is_translated_in** relationships correspond to the translation process.
+- **codes_for** is a fuzzy relationship allowing the mapping of genes on
+object not necessary corresonpding to the same kind of biological molecule.
+
+These processes are described in different databases with different level of
+granularity. For exemple, Ensembl provides possible transcripts for each gene
+specifying which one of them is canonical.
+
+The following functions are used to retrieve direct products or direct
+origins of molecular biology processes.
+
+```{r}
+getDirectProduct("ENSG00000145335", process="is_expressed_as")
+getDirectProduct("ENST00000336904", process="is_translated_in")
+getDirectOrigin("NM_001146055", process="is_expressed_as")
+```
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Converting identifiers
+
+## Same entity and same organism: from one source to another
+
+```{r}
+res <- convBeIds(
+    ids=oriId,
+    from="Gene",
+    from.source="EntrezGene",
+    from.org="mouse",
+    to.source="Ens_gene",
+    restricted=TRUE,
+    prefFilter=TRUE
+)
+head(res)
+```
+
+## Same organism: from one entity to another
+
+```{r}
+res <- convBeIds(
+    ids=oriId,
+    from="Gene",
+    from.source="EntrezGene",
+    from.org="mouse",
+    to="Peptide",
+    to.source="Ens_translation",
+    restricted=TRUE,
+    prefFilter=TRUE
+)
+head(res)
+```
+
+## From one organism to another
+
+```{r}
+res <- convBeIds(
+    ids=oriId,
+    from="Gene",
+    from.source="EntrezGene",
+    from.org="mouse",
+    to="Peptide",
+    to.source="Ens_translation",
+    to.org="human",
+    restricted=TRUE,
+    prefFilter=TRUE
+)
+head(res)
+```
+
+## Converting lists of identifiers
+
+List of identifiers can be converted the following way.
+Only converted IDs are returned in this case.
+
+```{r}
+humanEnsPeptides <- convBeIdLists(
+    idList=list(a=oriId[1:5], b=oriId[-c(1:5)]),
+    from="Gene",
+    from.source="EntrezGene",
+    from.org="mouse",
+    to="Peptide",
+    to.source="Ens_translation",
+    to.org="human",
+    restricted=TRUE,
+    prefFilter=TRUE
+)
+unlist(lapply(humanEnsPeptides, length))
+lapply(humanEnsPeptides, head)
+```
+
+## Converting data frames
+
+IDs in data frames can also be converted.
+
+```{r}
+toConv <- data.frame(a=1:25, b=runif(25))
+rownames(toConv) <- oriId
+res <- convDfBeIds(
+    df=toConv,
+    from="Gene",
+    from.source="EntrezGene",
+    from.org="mouse",
+    to.source="Ens_gene",
+    restricted=TRUE,
+    prefFilter=TRUE
+)
+head(res)
+```
+
+## Explore convertion shortest path between two identifiers
+
+Because the conversion process takes into account several resources,
+it might be useful to explore the path between two identifiers
+which have been mapped. This can be achieved by the `exploreConvPath`
+function.
+
+```{r}
+from.id <- "ILMN_1220595"
+res <- convBeIds(
+   ids=from.id, from="Probe", from.source="GPL6885", from.org="mouse",
+   to="Peptide", to.source="Uniprot", to.org="human",
+   prefFilter=TRUE
+)
+res
+exploreConvPath(
+   from.id=from.id, from="Probe", from.source="GPL6885",
+   to.id=res$to[1], to="Peptide", to.source="Uniprot"
+)
+```
+
+The figure above shows how the `r from.id` ProbeID, targeting
+the mouse NM_010552 transcript, can be associated
+to the `r res$to[1]` human protein ID in Uniprot.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# An interactive dictionary
+
+IDs, symbols and names can be seeked without knowing the original biological
+entity or probe. Then the results can be converted to the context of interest.
+
+```{r}
+searched <- searchId("sv2A")
+relIds <- getRelevantIds(
+    d=searched,
+    selected=1,
+    be="Gene",
+    source="Ens_gene",
+    organism="human",
+    restricted=TRUE
+)
+```
+
+A shiny gadget integrating these two function has been developped and is also
+available as an Rstudio addins.
+
+```{r, eval=FALSE}
+relIds <- findBe()
+```
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Session info
+
+```{r, echo=FALSE}
+sessionInfo()
+```
