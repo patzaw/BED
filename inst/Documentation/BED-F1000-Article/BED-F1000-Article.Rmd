@@ -2,9 +2,9 @@
 title: "BED: a Biological Entity Dictionary based on a graph data model"
 author: 
   - name: Patrice Godard
-    affiliation: Clarivate Analytics; UCB
+    affiliation: Corresponding author. Clarivate Analytics, 5901 Priestly Drive, 200, Carlsbad, CA 92008, USA. UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium patrice.godard@ucb.com.
   - name: Jonathan van Eyll
-    affiliation: UCB
+    affiliation: UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium jonathan.vaneyll@ucb.com.
 abstract: The understanding of molecular processes involved in
    a specific biological sytem can be significantly improved by combining
    and comparing different data set and knowledge resources.
