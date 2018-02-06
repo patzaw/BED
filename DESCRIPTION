@@ -1,8 +1,8 @@
 Package: BED
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 0.8.1
-Date: 2018-01-31
+Version: 1.0.0
+Date: 2018-02-06
 Author: Patrice Godard
 Maintainer: Patrice Godard <patrice.godard@gmail.com>
 Description: This package provides an interface for neo4j database providing
