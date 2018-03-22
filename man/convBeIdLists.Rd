@@ -4,10 +4,15 @@
 \alias{convBeIdLists}
 \title{Converts lists of BE IDs}
 \usage{
-convBeIdLists(idList, ...)
+convBeIdLists(idList, entity = FALSE, ...)
 }
 \arguments{
 \item{idList}{a list of IDs lists}
+
+\item{entity}{if TRUE returns BE instead of BEID (default: FALSE).
+BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
+This internal identifier is useful to avoid biases related to identifier
+redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
 
 \item{...}{params for the \code{\link{convBeIds}} function}
 }
