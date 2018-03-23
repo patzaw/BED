@@ -33,6 +33,8 @@
 #' }
 #' This data.frame can be filtered in order to remove duplicated
 #' from/to.entity associations which can lead information bias.
+#' Scope ("be", "source" and "organism") is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}
 #'
 #' @examples \dontrun{
 #' oriId <- c("10", "100")
@@ -262,5 +264,8 @@ convBeIds <- function(
    }
    ##
    colnames(toRet) <- c("from", "to", "to.preferred", "to.entity")
+   attr(toRet, "scope") <- list(
+      be=to, source=to.source, organism=to.org
+   )
    return(toRet)
 }

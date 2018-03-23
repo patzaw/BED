@@ -7,7 +7,10 @@
 #' redundancy. See \url{../doc/BED.html#3_managing_identifiers}
 #' @param ... params for the \code{\link{convBeIds}} function
 #'
-#' @return a list of \code{\link{convBeIds}} ouput ids
+#' @return A list of \code{\link{convBeIds}} ouput ids.
+#' Scope ("be", "source" "organism" and "entity" (see Arguments))
+#' is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}
 #'
 #' @examples \dontrun{
 #' convBeIdLists(
@@ -29,7 +32,7 @@ convBeIdLists <- function(
    ...
 ){
    ct <- convBeIds(unique(unlist(idList)), ...)
-   return(lapply(
+   toRet <- lapply(
       idList,
       function(x){
          if(entity){
@@ -38,5 +41,7 @@ convBeIdLists <- function(
             setdiff(unique(ct$to[which(ct$from %in% x)]), NA)
          }
       }
-   ))
+   )
+   attr(toRet, "scope") <- c(attr(ct, "scope"), list(entity=entity))
+   return(toRet)
 }

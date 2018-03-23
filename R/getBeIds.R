@@ -32,6 +32,8 @@
 #'  \item{organism}{IF be is "Probe" the organism of the targeted BE}
 #' }
 #' If attributes are part of the query, additional columns for each of them.
+#' Scope ("be", "source" and "organism") is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}
 #'
 #' @examples \dontrun{
 #' beids <- getBeIds(be="Gene", source="EntrezGene", organism="human", restricted=TRUE)
@@ -274,5 +276,6 @@ getBeIds <- function(
       }
    }
    ##
+   attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    return(toRet)
 }

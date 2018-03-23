@@ -20,6 +20,8 @@
 #'
 #' @return The d data.frame with a new column providing the relevant ID
 #' in the context of interest and without the gene field.
+#' Scope ("be", "source" and "organism") is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}
 #'
 #' @export
 #'
@@ -216,5 +218,6 @@ getRelevantIds <- function(
          toRet <- toRet[!duplicated(toRet[,ncol(toRet)]),]
       }
    }
+   attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    return(toRet)
 }

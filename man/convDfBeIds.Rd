@@ -4,7 +4,7 @@
 \alias{convDfBeIds}
 \title{Add BE ID conversion to a data frame}
 \usage{
-convDfBeIds(df, idCol = NULL, ...)
+convDfBeIds(df, idCol = NULL, entity = FALSE, ...)
 }
 \arguments{
 \item{df}{the data.frame to be converted}
@@ -12,10 +12,18 @@ convDfBeIds(df, idCol = NULL, ...)
 \item{idCol}{the column in which ID to convert are. If NULL (default)
 the row names are taken.}
 
+\item{entity}{if TRUE returns BE instead of BEID (default: FALSE).
+BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
+This internal identifier is useful to avoid biases related to identifier
+redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
+
 \item{...}{params for the \code{\link{convBeIds}} function}
 }
 \value{
-a data.frame with converted IDs
+A data.frame with converted IDs.
+Scope ("be", "source", "organism" and "entity" (see Arguments))
+is provided as a named list
+in the "scope" attributes: \code{attr(x, "scope")}.
 }
 \description{
 Add BE ID conversion to a data frame

@@ -45,8 +45,8 @@ A data frame with the following fields:\itemize{
 \item{Symbol: the symbol(s) of the corresponding gene(s)}
 \item{Name: the symbol(s) of the corresponding gene(s)}
 }
-The following attributes are also provided to document where the relevant
-ID comes from: "be", "source", "organism".
+Scope ("be", "source" and "organism") is provided as a named list
+in the "scope" attributes: \code{attr(x, "scope")}
 }
 \description{
 Find Biological Entity in BED based on their IDs, symbols and names

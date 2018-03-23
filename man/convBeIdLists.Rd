@@ -17,7 +17,10 @@ redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
 \item{...}{params for the \code{\link{convBeIds}} function}
 }
 \value{
-a list of \code{\link{convBeIds}} ouput ids
+A list of \code{\link{convBeIds}} ouput ids.
+Scope ("be", "source" "organism" and "entity" (see Arguments))
+is provided as a named list
+in the "scope" attributes: \code{attr(x, "scope")}
 }
 \description{
 Converts lists of BE IDs

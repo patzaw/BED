@@ -3,9 +3,16 @@
 #' @param df the data.frame to be converted
 #' @param idCol the column in which ID to convert are. If NULL (default)
 #' the row names are taken.
+#' @param entity if TRUE returns BE instead of BEID (default: FALSE).
+#' BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
+#' This internal identifier is useful to avoid biases related to identifier
+#' redundancy. See \url{../doc/BED.html#3_managing_identifiers}
 #' @param ... params for the \code{\link{convBeIds}} function
 #'
-#' @return a data.frame with converted IDs
+#' @return A data.frame with converted IDs.
+#' Scope ("be", "source", "organism" and "entity" (see Arguments))
+#' is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}.
 #'
 #' @examples \dontrun{
 #' toConv <- data.frame(a=1:2, b=3:4)
@@ -24,29 +31,33 @@
 #' @export
 #'
 convDfBeIds <- function(
-    df,
-    idCol=NULL,
-    ...
+   df,
+   idCol=NULL,
+   entity=FALSE,
+   ...
 ){
-    if(any(colnames(df) %in% c("conv.from", "conv.to"))){
-        colnames(df) <- paste("x", colnames(df), sep=".")
-    }
-    if(length(idCol)==0){
-        cols <- colnames(df)
-        ct <- convBeIds(rownames(df), ...)
-        df$conv.from <- rownames(df)
-    }else{
-        if(length(idCol)>1){
-            stop("Only one idCol should be provided")
-        }
-        cols <- setdiff(colnames(df), idCol)
-        ct <- convBeIds(df[, idCol], ...)
-        df$conv.from <- df[, idCol]
-        df <- df[, c(cols, "conv.from")]
-    }
-    ct <- ct[,c("from", "to")]
-    colnames(ct) <- paste("conv", colnames(ct), sep=".")
-    df <- merge(df, ct, by="conv.from")
-    df <- df[, c(cols, "conv.from", "conv.to")]
-    return(df)
+   if(any(colnames(df) %in% c("conv.from", "conv.to"))){
+      colnames(df) <- paste("x", colnames(df), sep=".")
+   }
+   if(length(idCol)==0){
+      cols <- colnames(df)
+      ct <- convBeIds(rownames(df), ...)
+      df$conv.from <- rownames(df)
+   }else{
+      if(length(idCol)>1){
+         stop("Only one idCol should be provided")
+      }
+      cols <- setdiff(colnames(df), idCol)
+      ct <- convBeIds(df[, idCol], ...)
+      df$conv.from <- df[, idCol]
+      df <- df[, c(cols, "conv.from")]
+   }
+   scope <- attr(ct, "scope")
+   ct <- ct[,c("from", ifelse(entity, "to.entity", "to"))]
+   colnames(ct) <- c("from", "to")
+   colnames(ct) <- paste("conv", colnames(ct), sep=".")
+   df <- merge(df, ct, by="conv.from")
+   df <- df[, c(cols, "conv.from", "conv.to")]
+   attr(df, "scope") <- c(scope, list(entity=entity))
+   return(df)
 }

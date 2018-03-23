@@ -31,8 +31,8 @@
 #' \item{Symbol: the symbol(s) of the corresponding gene(s)}
 #' \item{Name: the symbol(s) of the corresponding gene(s)}
 #' }
-#' The following attributes are also provided to document where the relevant
-#' ID comes from: "be", "source", "organism".
+#' Scope ("be", "source" and "organism") is provided as a named list
+#' in the "scope" attributes: \code{attr(x, "scope")}
 #'
 #' @importFrom shiny fluidPage fluidRow column textInput checkboxInput uiOutput reactiveValues renderUI selectInput tags actionButton observe withProgress req isolate observeEvent runGadget stopApp dialogViewer p strong tags
 #' @importFrom miniUI gadgetTitleBar
@@ -737,9 +737,11 @@ findBe <- function(
             stopApp(NULL)
          }else{
             sel <- isolate(input$dispRes_rows_selected)
-            attr(toRet, "be") <- isolate(input$uiBe)
-            attr(toRet, "source") <- isolate(input$uiSource)
-            attr(toRet, "organism") <- isolate(input$uiOrg)
+            attr(toRet, "scope") <- list(
+               be=isolate(input$uiBe),
+               source=isolate(input$uiSource),
+               organism=isolate(input$uiOrg)
+            )
             stopApp(isolate(toRet[sel,]))
          }
       })

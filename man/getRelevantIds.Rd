@@ -30,6 +30,8 @@ a very large result!}}
 \value{
 The d data.frame with a new column providing the relevant ID
 in the context of interest and without the gene field.
+Scope ("be", "source" and "organism") is provided as a named list
+in the "scope" attributes: \code{attr(x, "scope")}
 }
 \description{
 This function is meant to be used with \code{\link{searchId}} in order

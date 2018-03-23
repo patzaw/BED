@@ -55,6 +55,8 @@ a data.frame with 3 columns: \itemize{
 }
 This data.frame can be filtered in order to remove duplicated
 from/to.entity associations which can lead information bias.
+Scope ("be", "source" and "organism") is provided as a named list
+in the "scope" attributes: \code{attr(x, "scope")}
 }
 \description{
 Converts BE IDs
