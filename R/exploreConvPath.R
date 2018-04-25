@@ -67,10 +67,14 @@ exploreConvPath <- function(
    ## Paths
    inPath <- c(
       "corresponds_to", "is_associated_to", "is_replaced_by",
-      "targets", "is_homolog_of",
-      genBePath(fbe, "Gene", onlyR=TRUE),
-      genBePath(tbe, "Gene", onlyR=TRUE)
+      "targets", "is_homolog_of"
    )
+   if(fbe != "Gene"){
+      inPath <- c(inPath, genBePath(fbe, "Gene", onlyR=TRUE))
+   }
+   if(tbe != "Gene"){
+      inPath <- c(inPath, genBePath(tbe, "Gene", onlyR=TRUE))
+   }
    if(fbe != tbe){
       inPath <- c(inPath, genBePath(fbe, tbe, onlyR=TRUE))
    }
