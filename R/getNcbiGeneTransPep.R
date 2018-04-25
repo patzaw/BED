@@ -65,13 +65,33 @@ getNcbiGeneTransPep <- function(
    ################################################
    ## Add gene IDs ----
    message(Sys.time(), " --> Importing gene IDs")
+   geneAss <- unique(gene2refseq[,c("GeneID", "assembly")])
+   notPref <- unique(c(
+      which(geneAss$assembly=="-"),
+      grep("ALT_REF", geneAss$assembly),
+      grep("Alternate", geneAss$assembly)
+   ))
+   if(length(notPref)>0){
+      prefId <- unique(geneAss$GeneID[-notPref])
+   }else{
+      prefId <- unique(geneAss$GeneID)
+   }
    toImport <- unique(gene_info[, "GeneID", drop=F])
    colnames(toImport) <- "id"
+   toImport$preferred <- toImport$id %in% prefId
    loadBE(
       d=toImport, be="Gene",
       dbname=gdbname,
       version=release,
       taxId=taxId
+   )
+   message("      Importing attribute")
+   toImport <- geneAss
+   colnames(toImport) <- c("id", "value")
+   loadBeAttribute(
+      d=toImport, be="Gene",
+      dbname=gdbname,
+      attribute="assembly"
    )
 
    ################################################
@@ -334,16 +354,26 @@ getNcbiGeneTransPep <- function(
    transcriptions <- unique(
       gene2refseq[,c(
          "GeneID", "RNA_nucleotide_accession.version",
-         "status"
+         "assembly"
       )]
    )
-   colnames(transcriptions) <- c("gid", "tid", "status")
-   transcriptions$preferred <- !transcriptions$status %in% c("MODEL")
+   colnames(transcriptions) <- c("gid", "tid", "assembly")
    transcriptions <- transcriptions[which(transcriptions$tid != "-"),]
    transcriptions$tid <- sub("[.].*$", "", transcriptions$tid)
+   notPref <- unique(c(
+      which(transcriptions$assembly=="-"),
+      grep("ALT_REF", transcriptions$assembly),
+      grep("Alternate", transcriptions$assembly)
+   ))
+   if(length(notPref)>0){
+      prefId <- unique(transcriptions$tid[-notPref])
+   }else{
+      prefId <- unique(transcriptions$tid)
+   }
    ##
-   toImport <- unique(transcriptions[, c("tid", "preferred"), drop=F])
-   colnames(toImport) <- c("id", "preferred")
+   toImport <- unique(transcriptions[, c("tid"), drop=F])
+   colnames(toImport) <- "id"
+   toImport$preferred <- toImport$id %in% prefId
    loadBE(
       d=toImport, be="Transcript",
       dbname=tdbname,
@@ -351,15 +381,15 @@ getNcbiGeneTransPep <- function(
       taxId=NA
    )
    message("      Importing attribute")
-   toImport <- unique(transcriptions[, c("tid", "status"), drop=F])
+   toImport <- unique(transcriptions[, c("tid", "assembly"), drop=F])
    colnames(toImport) <- c("id", "value")
    loadBeAttribute(
       d=toImport, be="Transcript",
       dbname=tdbname,
-      attribute="status"
+      attribute="assembly"
    )
    ##
-   toImport <- transcriptions
+   toImport <- unique(transcriptions[, c("gid", "tid")])
    loadIsExpressedAs(
       d=toImport,
       gdb=gdbname,
@@ -429,18 +459,28 @@ getNcbiGeneTransPep <- function(
    translations <- unique(gene2refseq[,c(
       "RNA_nucleotide_accession.version",
       "protein_accession.version",
-      "status"
+      "assembly"
    )])
-   colnames(translations) <- c("tid", "pid", "status")
-   translations$preferred <- !translations$status %in% c("MODEL")
+   colnames(translations) <- c("tid", "pid", "assembly")
    translations <- translations[which(
       translations$tid != "-" & translations$pid != "-"
    ),]
    translations$tid <- sub("[.].*$", "", translations$tid)
    translations$pid <- sub("[.].*$", "", translations$pid)
+   notPref <- unique(c(
+      which(translations$assembly=="-"),
+      grep("ALT_REF", translations$assembly),
+      grep("Alternate", translations$assembly)
+   ))
+   if(length(notPref)>0){
+      prefId <- unique(translations$pid[-notPref])
+   }else{
+      prefId <- unique(translations$pid)
+   }
    ##
-   toImport <- unique(translations[, c("pid", "preferred"), drop=F])
-   colnames(toImport) <- c("id", "preferred")
+   toImport <- unique(translations[, c("pid"), drop=F])
+   colnames(toImport) <- c("id")
+   toImport$preferred <- toImport$id %in% prefId
    loadBE(
       d=toImport, be="Peptide",
       dbname=pdbname,
@@ -448,15 +488,15 @@ getNcbiGeneTransPep <- function(
       taxId=NA
    )
    message("      Importing attribute")
-   toImport <- unique(translations[, c("pid", "status"), drop=F])
+   toImport <- unique(translations[, c("pid", "assembly"), drop=F])
    colnames(toImport) <- c("id", "value")
    loadBeAttribute(
       d=toImport, be="Peptide",
       dbname=pdbname,
-      attribute="status"
+      attribute="assembly"
    )
    ##
-   toImport <- translations
+   toImport <- unique(translations[, c("tid", "pid")])
    loadIsTranslatedIn(
       d=toImport,
       tdb=tdbname,

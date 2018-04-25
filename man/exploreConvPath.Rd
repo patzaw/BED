@@ -5,7 +5,7 @@
 \title{Explore the shortest convertion path between two identifiers}
 \usage{
 exploreConvPath(from.id, from, from.source, to.id, to = from,
-  to.source = from.source, verbose = FALSE)
+  to.source = from.source, edgeDirection = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{from.id}{the first identifier}
@@ -19,6 +19,9 @@ exploreConvPath(from.id, from, from.source, to.id, to = from,
 \item{to}{the type of entity: \code{listBe()} or Probe}
 
 \item{to.source}{the identifier source: database or platform}
+
+\item{edgeDirection}{a logical value indicating if the direction of the
+edges should be drawn.}
 
 \item{verbose}{if TRUE the cypher query is shown}
 }

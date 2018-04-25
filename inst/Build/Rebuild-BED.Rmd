@@ -36,7 +36,7 @@ computer hosting the Neo4j relevant instance.
 
 ```{r neoConfig, message=FALSE}
 ## neo4j config
-neov <- "neo4j-community-3.3.0"
+neov <- "neo4j-community-3.3.5"
 neo.config <- list(
     url="http://localhost:7474",
     username="neo4j", password="1234"
@@ -61,7 +61,7 @@ opts_chunk$set(eval=TRUE, message=FALSE)
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "91"
+ensembl_release <- "92"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",

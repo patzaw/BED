@@ -9,6 +9,8 @@
 #' @param to.id the first identifier
 #' @param to the type of entity: \code{listBe()} or Probe
 #' @param to.source the identifier source: database or platform
+#' @param edgeDirection a logical value indicating if the direction of the
+#' edges should be drawn.
 #' @param verbose if TRUE the cypher query is shown
 #'
 #' @examples \dontrun{
@@ -29,6 +31,7 @@ exploreConvPath <- function(
    to.id,
    to=from,
    to.source=from.source,
+   edgeDirection=FALSE,
    verbose=FALSE
 ){
 
@@ -58,6 +61,9 @@ exploreConvPath <- function(
    }
 
    ## Paths
+   inPath <- c(
+      "corresponds_to", "is_associated_to", "is_replaced_by", "targets"
+   )
    notInPath <- c(
       "is_in", "is_recorded_in", "has",
       "is_named", "is_known_as",
@@ -65,7 +71,8 @@ exploreConvPath <- function(
    )
    pqs <- c(
       "MATCH p=shortestpath((f)-[*0..]-(t))",
-      "WHERE NONE(r IN relationships(p) WHERE type(r) IN $notInPath)"
+      "WHERE ALL(r IN relationships(p) WHERE type(r) IN $inPath)"
+      # "WHERE NONE(r IN relationships(p) WHERE type(r) IN $notInPath)"
    )
 
    ## Final query
@@ -77,7 +84,8 @@ exploreConvPath <- function(
       parameters=list(
          fromId=from.id, fromSource=from.source,
          toId=to.id, toSource=to.source,
-         notInPath=as.list(notInPath)
+         inPath=as.list(inPath)
+         # notInPath=as.list(notInPath)
       ),
       result="graph"
    )
@@ -232,7 +240,11 @@ exploreConvPath <- function(
    tpNodes$color.border="black"
    tpEdges <- edges
    colnames(tpEdges) <- c("id", "title", "from", "to")
-   tpEdges$arrows <- "to"
+   if(edgeDirection){
+      tpEdges$arrows <- "to"
+   }else{
+      tpEdges$arrows <- ""
+   }
    tpEdges$dashes <- ifelse(
       tpEdges$title %in% c("is_associated_to", "is_replaced_by"),
       TRUE,
