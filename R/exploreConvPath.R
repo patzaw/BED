@@ -1,7 +1,7 @@
 #' Explore the shortest convertion path between two identifiers
 #'
-#' This function uses visNetwork to draw the shortest convertion path between
-#' two identifiers (including ProbeID)
+#' This function uses visNetwork to draw all the shortest convertion paths
+#' between two identifiers (including ProbeID).
 #'
 #' @param from.id the first identifier
 #' @param from the type of entity: \code{listBe()} or Probe
@@ -43,34 +43,45 @@ exploreConvPath <- function(
    ## From
    if(from=="Probe"){
       fqs <- "MATCH (f:ProbeID {value:$fromId, platform:$fromSource})"
+      fbe <- getTargetedBe(from.source)
    }else{
       fqs <- sprintf(
          "MATCH (f:%s {value:$fromId, database:$fromSource})",
          paste0(from, "ID")
       )
+      fbe <- from
    }
 
    ## To
    if(to=="Probe"){
       tqs <- "MATCH (t:ProbeID {value:$toId, platform:$toSource})"
+      tbe <- getTargetedBe(to.source)
    }else{
       tqs <- sprintf(
          "MATCH (t:%s {value:$toId, database:$toSource})",
          paste0(to, "ID")
       )
+      tbe <- to
    }
 
    ## Paths
    inPath <- c(
-      "corresponds_to", "is_associated_to", "is_replaced_by", "targets"
+      "corresponds_to", "is_associated_to", "is_replaced_by",
+      "targets", "is_homolog_of",
+      genBePath(fbe, "Gene", onlyR=TRUE),
+      genBePath(tbe, "Gene", onlyR=TRUE)
    )
+   if(fbe != tbe){
+      inPath <- c(inPath, genBePath(fbe, tbe, onlyR=TRUE))
+   }
+   inPath <- unique(inPath)
    notInPath <- c(
       "is_in", "is_recorded_in", "has",
       "is_named", "is_known_as",
       "identifies", "is_member_of"
    )
    pqs <- c(
-      "MATCH p=shortestpath((f)-[*0..]-(t))",
+      "MATCH p=allShortestpaths((f)-[*0..]-(t))",
       "WHERE ALL(r IN relationships(p) WHERE type(r) IN $inPath)"
       # "WHERE NONE(r IN relationships(p) WHERE type(r) IN $notInPath)"
    )

@@ -26,8 +26,8 @@ edges should be drawn.}
 \item{verbose}{if TRUE the cypher query is shown}
 }
 \description{
-This function uses visNetwork to draw the shortest convertion path between
-two identifiers (including ProbeID)
+This function uses visNetwork to draw all the shortest convertion paths
+between two identifiers (including ProbeID).
 }
 \examples{
 \dontrun{

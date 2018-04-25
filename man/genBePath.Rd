@@ -4,15 +4,19 @@
 \alias{genBePath}
 \title{Construct CQL sub-query to map 2 biological entity}
 \usage{
-genBePath(from, to)
+genBePath(from, to, onlyR = FALSE)
 }
 \arguments{
 \item{from}{one biological entity (BE)}
 
 \item{to}{one biological entity (BE)}
+
+\item{onlyR}{logical. If TRUE (default: FALSE) it returns only the names
+of the relationships and not the cypher sub-query}
 }
 \value{
-A character value corresponding to the sub-query
+A character value corresponding to the sub-query.
+Or, if onlyR, a character vector with the names of the relationships.
 }
 \description{
 Internal use
