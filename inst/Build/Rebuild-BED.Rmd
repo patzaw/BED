@@ -12,6 +12,8 @@ output:
         theme: cerulean
         toc: yes
         toc_float: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
 <!----------------------------------------------------------------->
@@ -791,26 +793,30 @@ taxOfInt <- unlist(lapply(
     c("Homo sapiens", "Mus musculus", "Rattus norvegicus"),
     getTaxId
 ))
-BED:::dumpNcbiDb(
-    taxOfInt=taxOfInt[1],
-    reDumpThr=100000,
-    toLoad=c("gene_group"),
-    curDate=curDate
-)
-toImport <- gene_group[
-    which(
-        gene_group$tax_id %in% taxOfInt &
-        gene_group$Other_tax_id %in% taxOfInt &
-        gene_group$relationship == "Ortholog"
-    ),
-    c("GeneID", "Other_GeneID")
-]
-colnames(toImport) <- c("id1", "id2")
-BED:::loadIsHomologOf(
-    d=toImport,
-    db1=gdbname, db2=gdbname,
-    be="Gene"
-)
+for(i in 1:length(taxOfInt)){
+   BED:::dumpNcbiDb(
+       taxOfInt=taxOfInt[i],
+       reDumpThr=reDumpThr,
+       toLoad=c("gene_orthologs"),
+       curDate=curDate
+   )
+   toImport <- gene_orthologs[
+       which(
+           gene_orthologs$tax_id %in% taxOfInt &
+           gene_orthologs$Other_tax_id %in% taxOfInt &
+           gene_orthologs$relationship == "Ortholog"
+       ),
+       c("GeneID", "Other_GeneID")
+   ]
+   if(nrow(toImport)>0){
+      colnames(toImport) <- c("id1", "id2")
+      BED:::loadIsHomologOf(
+          d=toImport,
+          db1=gdbname, db2=gdbname,
+          be="Gene"
+      )
+   }
+}
 gc()
 ```
 

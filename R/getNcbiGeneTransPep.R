@@ -24,8 +24,8 @@ getNcbiGeneTransPep <- function(
    ## Dump ----
    dumpDate <- gene_info <- gene2ensembl <-
       gene2unigene <- gene2vega <-
-      gene_group <- gene_history <-
-      gene2refseq <-
+      gene_group <- gene_orthologs <-
+      gene_history <- gene2refseq <-
       NULL
    dumpNcbiDb(
       taxOfInt=taxId,
@@ -33,8 +33,8 @@ getNcbiGeneTransPep <- function(
       toLoad=c(
          "gene_info", "gene2ensembl",
          "gene2unigene", "gene2vega",
-         "gene_group", "gene_history",
-         "gene2refseq"
+         "gene_group", "gene_orthologs",
+         "gene_history", "gene2refseq"
       ),
       curDate=curDate
    )
