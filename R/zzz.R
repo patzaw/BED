@@ -63,9 +63,13 @@ connectToBed <- function(
       ),
       bedEnv
    )
-   if(!checkBedConn(verbose=TRUE)){
+   corrConn <- checkBedConn(verbose=TRUE)
+   if(!corrConn){
       rm("graph", envir=bedEnv)
       return(FALSE)
+   }else{
+      connections[[1]][colnames(attr(corrConn, "dbVersion")[1,])] <-
+         as.character(attr(checkBedConn(), "dbVersion")[1,])
    }
    ##
    if(remember){

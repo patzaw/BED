@@ -64,5 +64,7 @@ checkBedConn <- function(verbose=FALSE){
       print(get("graph", bedEnv)$url)
       return(FALSE)
    }
-   return(TRUE)
+   toRet <- TRUE
+   attr(toRet, "dbVersion") <- dbVersion
+   return(toRet)
 }
