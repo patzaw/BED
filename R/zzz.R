@@ -73,7 +73,14 @@ connectToBed <- function(
    }
    ##
    if(remember){
-      connections <- unique(connections)
+      connections <- connections[which(
+         !duplicated(unlist(lapply(
+            connections,
+            function(x){
+               x["url"]
+            }
+         )))
+      )]
       save(connections, file=conFile)
    }
    ## The SQLite cache
