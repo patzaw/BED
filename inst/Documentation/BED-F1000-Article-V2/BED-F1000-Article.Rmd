@@ -51,7 +51,7 @@ metadata field `natbiboptions` to either
 ------------------------------------------------------------------------------->
 
 ```{r setup, include=FALSE}
-reComp <- TRUE
+reComp <- FALSE
 library(knitr)
 library(RColorBrewer)
 library(VennDiagram)
@@ -473,9 +473,9 @@ if needed (`lsBEdCache` and `clearBedCache` functions).
 
 Minimal system requirements for running BED and neo2R R packages:
 
-- **R** ≥ 3.4
+- **R** $\geq$ 3.4
 - **Operating system**: Linux, macOS, Windows
-- **Memory** ≥ 4GB RAM
+- **Memory** $\geq$ 4GB RAM
 
 The graph database has been implemented
 with \neo{} version 3 [@neo4j_inc_neo4j_2017].
@@ -605,7 +605,7 @@ Ensembl versions.
 include_graphics('img/TAS2R8-Identifiers.png')
 ```
 
-## Converting identifiers
+## Converting gene identifiers
 
 ```{r, eval=!reComp}
 ## Save/load results from commmands below to not recompute everything
@@ -624,28 +624,7 @@ restricted to current - non-deprecated - version of Entrez gene identifiers.
 Nevertheless all the input BEID are taken into account,
 current and deprecated ones.
 
-```{r, eval=reComp}
-runTimes <- list()
-##
-clearBedCache()
-s <- Sys.time()
-bedConv <- convBeIds(
-   ids=beids$id, from="Gene", from.source="Ens_gene", from.org="human",
-   to.source="EntrezGene", restricted=TRUE
-)
-e <- Sys.time()
-runTimes[["BED (Not cached)"]] <- e-s
-##
-s <- Sys.time()
-bedConv <- convBeIds(
-   ids=beids$id, from="Gene", from.source="Ens_gene", from.org="human",
-   to.source="EntrezGene", restricted=TRUE
-)
-e <- Sys.time()
-runTimes[["BED (Cached)"]] <- e-s
-```
-
-```{r, include=TRUE, echo=TRUE, eval=FALSE}
+```{r, include=TRUE, echo=TRUE, eval=reComp}
 bedConv <- convBeIds(
    ids=beids$id, from="Gene", from.source="Ens_gene", from.org="human",
    to.source="EntrezGene", restricted=TRUE
@@ -673,31 +652,24 @@ of the `r bigFormat(length(depBeid))` deprecated identifiers.
 ## biomaRt
 library(biomaRt)
 bmEnsembl = useMart("ensembl",dataset="hsapiens_gene_ensembl")
-s <- Sys.time()
 bmConv <- getBM(
    values = unique(beids$id),
    filters = 'ensembl_gene_id',
    attributes=c('ensembl_gene_id', 'entrezgene'),
    mart = bmEnsembl
 )
-e <- Sys.time()
-runTimes[["biomaRt"]] <- e-s
 
 ## mygene
 library(mygene)
-s <- Sys.time()
 mgConv <- queryMany(
    qterm=unique(beids$id),
    scopes = "ensembl.gene",
    fields="entrezgene",
    species="human"
 )
-e <- Sys.time()
-runTimes[["mygene"]] <- e-s
 
 ## gProfileR
 library(gProfileR)
-s <- Sys.time()
 gpConv <- gconvert(
    query=unique(beids$id),
    target="ENTREZGENE_ACC",
@@ -722,14 +694,12 @@ gpConv$target <- sub("ENTREZGENE_ACC:", "", gpConv$target)
 gpConv$target <- ifelse(gpConv$target=="N/A", NA, gpConv$target)
 rownames(gpConv) <- c()
 gpConv <- unique(gpConv)
-e <- Sys.time()
-runTimes[["gProfileR"]] <- e-s
 ```
 
 ```{r, eval=reComp}
 evalDate <- Sys.Date()
 save(
-   bedConv, bmConv, mgConv, gpConv, evalDate, runTimes,
+   bedConv, bmConv, mgConv, gpConv, evalDate,
    file="~/Tmp/ConvTables-3rdTools.rda"
 )
 ```
@@ -739,8 +709,8 @@ to perform the same conversion task:
 biomaRt [@kinsella_ensembl_2011; @durinck_mapping_2009],
 mygene [@wu_biogps_2013; @mark_mygene:_2014],
 and gProfileR [@reimand_g:profiler-web_2016; @reimand_gprofiler:_2016].
-At that time, biomaRt and mygene were based on the Ensembl 91 release
-whereas gProfileR was based on release 90.
+At that time, biomaRt was based on the Ensembl 92 release,
+mygene on release 91 and gProfileR on release 90.
 
 ```{r}
 gq.all <- unique(beids$id)
@@ -783,6 +753,7 @@ grid.arrange(
 ```
 
 ```{r}
+## Exploring mappings only from BED
 onlyInBed <- bedConv[
    which(
       !bedConv$from %in% unlist(toComp.all[-1]) &
@@ -800,9 +771,7 @@ onlyInBedDep <- onlyInBed[
 head(onlyInBedDep[order(as.numeric(onlyInBedDep$to)),])
 head(onlyInBedCur[order(as.numeric(onlyInBedCur$to)),])
 sum(unique(onlyInBedCur$from) %in% beids$id[which(beids$preferred)])
-```
-
-```{r}
+##
 fromNcbi <- bedCall(
    cypher,
    query=prepCql(c(
@@ -835,13 +804,45 @@ remaining <- setdiff(
 )
 ```
 
+```{r}
+## Numbers from venn diagram
+onlyInGp <- setdiff(
+   toComp.all$gProfileR,
+   unlist(toComp.all[which(names(toComp.all)!="gProfileR")])
+)
+onlyInGp.l <- length(onlyInGp)
+onlyInMg <- setdiff(
+   toComp.all$mygene,
+   unlist(toComp.all[which(names(toComp.all)!="mygene")])
+)
+onlyInMg.l <- length(onlyInMg)
+onlyInGpAndMg <- setdiff(
+   intersect(toComp.all$gProfileR, toComp.all$mygene),
+   unlist(toComp.all[which(!names(toComp.all) %in% c("gProfileR", "mygene"))])
+)
+onlyInGpAndMg.l <- length(onlyInGpAndMg)
+##
+onlyInBedAndBm <- setdiff(
+   intersect( toComp.all$BED, toComp.all$biomaRt),
+   unlist(toComp.all[which(!names(toComp.all) %in% c("BED", "biomaRt"))])
+)
+onlyInBedAndBm.l <- length(onlyInBedAndBm)
+```
+
+
 The numbers of human Ensembl gene identifiers successfully converted by each
 method are compared in Figure \@ref(fig:vennTools).
-Five identifiers were only converted by gProfileR. 
-They were provided by former versions of Ensembl or NCBI
-but are now deprecated in the current releases of these two resources.
-All the other gene identifiers converted by the different methods
-were also converted by BED. However, BED was able to map at least
+Mappings returned only by gProfileR or by mygene
+(`r onlyInGp.l` + `r onlyInMg.l` + `r onlyInGpAndMg.l`)
+are available in releases
+90 and 91 of Ensembl respectively but not in release 92.
+Similarly mappings returned by both BED and biomaRt but neither by gProfileR
+nor mygene
+(`r onlyInBedAndBm.l`)
+are available in release 92 of Ensembl but not in releases 91 or 90.
+All the gene identifiers successfully converted by biomaRt were also
+converted by BED.
+However, BED was able to map at least
 `r bigFormat(length(unique(onlyInBed$from)))` more identifiers than all the
 other tools (Figure \@ref(fig:vennTools).a). A few of these mappings
 (`r bigFormat(length(unique(onlyInBedDep$from)))`)
@@ -858,44 +859,169 @@ are directly provided by the NCBI. But most of them
 are inferred from a mapping of the Ensembl and Entrez gene identifiers
 to the same HGNC [@gray_genenames.org:_2015] identifier.
 
-A rough approximation of running times of the different methods is provided
-in Table \@ref(tab:runTimes). The aim of this table is to show that BED,
-as a dedicated and locally available tool,
-is a very efficient option to convert large lists of identifiers on the fly and
-recurrently.
-The aim of BED is to improve the efficiency of identifier conversion
-in a well defined context (organism, information resources of interest...)
-and not to replace biomaRt, mygene, gProfileR
-or other tools which provide many more features
-for many organisms and which should not be narrowed to this task for a
-complete comparison.
-
-```{r runTimes, include=TRUE, results='asis'}
-# runTimes <- c(
-#    "BED (Not cached)"="~10 seconds",
-#    "BED (Cached)"="~3 seconds",
-#    "biomaRt"="~1 minute",
-#    "mygene"="~4 minutes",
-#    "gProfileR"="~1 minute"
-# )
-runTimes <- data.frame(
-   "Method"=names(runTimes),
-   "Running time"=paste0(
-      "~",
-      unlist(lapply(runTimes, function(x) format(signif(x, 2))))
-   ),
-   stringsAsFactors=FALSE,
-   check.names=FALSE
+```{r}
+## Gene locations
+load("~/Tmp/gene-locations.rda")
+mappings <- list()
+## Reference
+toAdd <- unique(bmConv[which(
+   bmConv$ensembl_gene_id %in% intersect(
+      intersect(toComp.all$BED, toComp.all$biomaRt),
+      intersect(toComp.all$mygene, toComp.all$gProfileR)
+   )
+),])
+colnames(toAdd) <- c("ensembl", "entrez")
+toAdd$ensembl <- as.character(toAdd$ensembl)
+toAdd$entrez <- as.character(toAdd$entrez)
+toAdd <- toAdd[which(
+      toAdd$ensembl %in% ensemblGenes$gene &
+         toAdd$entrez %in% entrezGenes$gene
+),]
+toAdd <- cbind(
+   cbind(toAdd, ensemblGenes[toAdd$ensembl,c("chromosome", "start", "stop")]),
+   entrezGenes[toAdd$entrez,c("chromosome", "start", "stop")]
 )
-kable(
-   runTimes,
-   row.names=FALSE,
-   format='pandoc',
-   format.args=list(big.mark=","),
-   caption='Rough approximation of running time of different methods
-   to convert human Ensembl gene identifiers in human Entrez gene identifiers.'
+colnames(toAdd) <- c(
+   "ensembl", "entrez",
+   "chr.ens", "start.ens", "stop.ens",
+   "chr.ncbi", "start.ncbi", "stop.ncbi"
 )
+mappings$"Reference" <- toAdd
+## Former
+toAdd <- unique(as.data.frame(mgConv[which(
+   mgConv$query %in% setdiff(
+      toComp.all$mygene,
+      unlist(toComp.all[c("BED", "biomaRt")])
+   )
+), c("query", "entrezgene")]))
+colnames(toAdd) <- c("ensembl", "entrez")
+toAdd$ensembl <- as.character(toAdd$ensembl)
+toAdd$entrez <- as.character(toAdd$entrez)
+toAdd <- toAdd[which(
+      toAdd$ensembl %in% ensemblGenes$gene &
+         toAdd$entrez %in% entrezGenes$gene
+),]
+toAdd <- cbind(
+   cbind(toAdd, ensemblGenes[toAdd$ensembl,c("chromosome", "start", "stop")]),
+   entrezGenes[toAdd$entrez,c("chromosome", "start", "stop")]
+)
+colnames(toAdd) <- c(
+   "ensembl", "entrez",
+   "chr.ens", "start.ens", "stop.ens",
+   "chr.ncbi", "start.ncbi", "stop.ncbi"
+)
+mappings$"Former" <- toAdd
+##
+toAdd <- unique(bedConv[which(
+   bedConv$from %in% setdiff(
+      toComp.cur$BED,
+      unlist(toComp.cur[c("biomaRt", "mygene", "gProfileR")])
+   )
+), c("from", "to")])
+colnames(toAdd) <- c("ensembl", "entrez")
+toAdd$ensembl <- as.character(toAdd$ensembl)
+toAdd$entrez <- as.character(toAdd$entrez)
+toAdd <- toAdd[which(
+      toAdd$ensembl %in% ensemblGenes$gene &
+         toAdd$entrez %in% entrezGenes$gene
+),]
+toAdd <- cbind(
+   cbind(toAdd, ensemblGenes[toAdd$ensembl,c("chromosome", "start", "stop")]),
+   entrezGenes[toAdd$entrez,c("chromosome", "start", "stop")]
+)
+colnames(toAdd) <- c(
+   "ensembl", "entrez",
+   "chr.ens", "start.ens", "stop.ens",
+   "chr.ncbi", "start.ncbi", "stop.ncbi"
+)
+mappings$"BED" <- toAdd
 ```
+
+We assessed the validity of the mappings by comparing the location on the human
+genome (GRCh38) of Ensembl gene identifiers as reported by Ensembl
+and the location of the corresponding Entrez gene identifiers
+as reported by the NCBI. If the mapping between two identifiers is correct
+their location on the genome should be identical or higly similar.
+Only gene identifiers located on on canonical version
+of chromosome sequences were considered for this comparison.
+We compared the following mappings:
+
+   - Reference (n = `r nrow(mappings$"Reference")`): the mappings provided
+   by biomaRt for identifiers successfully converted by all the tools.
+   
+   - Former (n = `r nrow(mappings$"Former")`): the mappings
+   provided by mygene for identifers
+   successfully converted by mygene but neither by biomaRt nor BED.
+   
+   - BED (n = `r nrow(mappings$"BED")`): the mappings
+   provided by BED for identifers
+   successfully converted by BED but not by any of the 3 other tools.
+   
+```{r}
+par(
+   mfrow=c(1,3),
+   mar=c(4.1, 4.5, 1.1, 0.5)
+)
+## Chromosomes
+toPlot <- unlist(lapply(
+   mappings,
+   function(d){
+      sum(d$chr.ens!=d$chr.ncbi)/nrow(d)
+   }
+))
+bp <- barplot(
+   toPlot*100,
+   ylab=expression("" != "chromosomes (%)"),
+   beside=TRUE
+)
+text(
+   bp, 1,
+   paste(signif(toPlot*100,2), "%"),
+   pos=3
+)
+mtext(text="(a)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+## Starts
+toPlot <- lapply(
+   mappings,
+   function(d){
+      d <- d[which(d$chr.ens==d$chr.ncbi),]
+      abs(d$start.ens-d$start.ncbi)
+   }
+)
+bp <- boxplot(
+   toPlot[1:2],
+   col="grey",
+   outline=FALSE,
+   ylab=expression(group("|", Delta(start), "|"))
+)
+text(
+   2, bp$stats[3,2], round(bp$stats[3,2]),
+   pos=3
+)
+text(
+   2, bp$stats[4,2], round(bp$stats[4,2]),
+   pos=3
+)
+mtext(text="(b)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+bp <- boxplot(
+   toPlot[c(1,3)],
+   col="grey",
+   outline=FALSE,
+   ylab=expression(group("|", Delta(start), "|"))
+)
+text(
+   1:2, bp$stats[3,], round(bp$stats[3,]),
+   pos=3
+)
+text(
+   1:2, bp$stats[4,], round(bp$stats[4,]),
+   pos=3
+)
+mtext(text="(c)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+```
+
+<!-- TODO -->
+## Transitivity and mapping rules
 
 The BED `convBeIds` function can be used to convert identifiers from
 any available scope to any other one. It automatically find the most
@@ -910,9 +1036,6 @@ two different identifiers (Figure \@ref(fig:explConv)).
 ```{r explConv, include=TRUE, out.width='100%', fig.cap = 'BED conversion shortest path between the ILMN\\_1220595 probe identifier targeting a transcript of the mouse Il17a gene and the Uniprot Q16552 identifier of the human IL17 protein. The legend is shown to the left of the figure. The red arrow represents the \\emph{is\\_homolog\\_of} relationship. This graph has been drawn with the \\texttt{exploreConvPath} function.'}
 include_graphics('img/ILMN_1220595-Conversion.png')
 ```
-
-<!-- TODO -->
-## Transitivity and mapping rules
 
 <!-- TODO -->
 ## Comparing transcriptomics results from different experimental design
