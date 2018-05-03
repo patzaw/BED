@@ -6,25 +6,30 @@ author:
   - name: Jonathan van Eyll
     affiliation: UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium jonathan.vaneyll@ucb.com.
 abstract: The understanding of molecular processes involved in
-   a specific biological sytem can be significantly improved by combining
+   a specific biological system can be significantly improved by combining
    and comparing different data set and knowledge resources.
    However these information sources often use different
    identification systems and an identifier conversion step is required
    before any integration effort. Mapping between identifiers is often provided
    by the reference information resources
    and several tools have been implemented
-   to simplify their use. However these tools cannot be easily customized and
-   optimized for any specific use. Also the information provided by different
+   to simplify their use.
+   However, the way the mapping is done by most of these tools cannot be
+   customized, optimized or extended  by the user according to his knowledge
+   or to internal, non-public or non-standard information.
+   Also the information provided by different
    resources is not combined to increase the efficiency of the mapping process
    and deprecated identifiers from former version of databases are not taken
    into account. Finally finding automatically the most relevant path to
    map identifiers from one scope to the other is often not trivial.
-   The Biological Entity Dictionary (BED) adresses these challenges by
+   The Biological Entity Dictionary (BED) addresses these challenges by
    relying on a graph data model describing possible
    relationships between entities and their identifiers.
    This model has been implemented using Neo4j and an R
    package provides functions to query the graph but also to create and feed
    a custom instance of the database.
+   This design combined with a local installation of the graph database and
+   a cache sytem make BED very efficient to convert large lists of identifiers.
 keywords: genomics, transcriptomics, proteomics, RNA-seq, microarray,
    database, identifiers.
 bibliography: BED-References.bib
@@ -46,7 +51,7 @@ metadata field `natbiboptions` to either
 ------------------------------------------------------------------------------->
 
 ```{r setup, include=FALSE}
-reComp <- FALSE
+reComp <- TRUE
 library(knitr)
 library(RColorBrewer)
 library(VennDiagram)
@@ -68,57 +73,57 @@ connectToBed(url="localhost:5454", username="neo4j", password="1234")
 \newcommand{\docker}{Docker\tm{}}
 \newcommand{\metabase}{MetaBase\tm{}}
 
-<!----
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # Introduction
 
 Since the advent of genome sequencing projects, many technologies have been
-developped to get access to different molecular information at a large scale
-and with high throughput. DNA microarrays are probably the archetype of such
+developed to get access to different molecular information on a large scale
+and with high throughput. DNA micro-arrays are probably the archetype of such
 technology because of their historical impact on gathering data related
 to nucleic acids: genomic DNA and RNA. They triggered the emergence of
 "omics" fields of research such as genomics, epigenomics or transcriptomics.
 Lately massive parallel sequencing
 further increased the throughput of data generation related to nucleic acids
 by several orders of magnitude.
-In a different way mass spectrometry-related technologies allow the
+In a different way, mass spectrometry-related technologies allow the
 identification and the quantification of many kinds of molecular entities
 such as metabolites and proteins.
 Many information systems have been developped to manage
 the exploding amount of data and knowledge related to biological
 molecular entities.
 These resources manage different aspects of
-the knowledge.
-For example some are genome or proteome centered whereas other
+the data.
+For example some are genome or proteome centered, whereas others
 are focused on molecular interactions and pathways.
-Thus all these resources rely on different identifier systems to organise
+Thus all these resources rely on different identifier systems to organize
 the concepts of interest.
 The value of all the experimental data and all the knowledge
 collected in public or private resources is very high as such
-but is also often synegistically leveraged by their cross comparison
+but is also often synergistically leveraged by their cross comparison
 in a dedicated manner. Indeed many datasets can be relevant when
-adressing the understanding of a specific biological system, a phenotypic trait
+addressing the understanding of a specific biological system, a phenotypic trait
 or a disease for example. These datasets can focus on different biological
 entities such as transcripts or proteins in different tissues, conditions
 or organisms. Comparing all these data and integrating them with
-available knowledge require the ability to map the identifiers on which
+available knowledge requires the ability to map the identifiers on which
 each resource relies.
 
 To achieve this task public and proprietary information systems
 provide mapping tables between their own identifiers and those
 from other resources.
-Furthermore many tools have been developped to facilitate the access
+Furthermore many tools have been developed to facilitate the access
 to this information.
 Ensembl BioMarts [@kinsella_ensembl_2011],
 mygene [@wu_biogps_2013],
 and g:Profiler [@reimand_g:profiler-web_2016]
 are popular examples among many others.
-However, as pointed by @van_iersel_bridgedb_2010, these tools
-are generally dedicated to a particular domain not necessarly
-relevant or complete for all research project and keeping them
-up-to-date can also be an issue.
+These resourses are convenient and easy to use with information
+managed by their maintainers.
+However, in general, this information cannot be customized, optimized
+or extended by an enpowered user according to his knowledge or to internal,
+non-public or non-standard data.
 Recognizing these challenges @van_iersel_bridgedb_2010 proposed
 the BridgeDb framework providing to bioinformatics developers
 a standard interface between tools and
@@ -126,15 +131,15 @@ mapping services and also allowing the easy integration of custom data
 by a transitivity mechanism.
 
 Here we present BED: a biological entity dictionary.
-BED has been developped to adress three main challenges.
+BED has been developed to address three main challenges.
 The first one is related to the completeness of identifier mappings.
 Indeed direct mapping information provided by the different
 systems are not always complete and can be enriched by mappings provided
 by other resources. More interestingly direct mappings not identified by
-any of these resources can be indireclty infered by using mappings to a
-third reference. For example many human Ensembl gene identifiers not
-directly mapped to any Entrez gene identifiers by neither Ensembl nor the NCBI
-can be indirectly mapped using mappings to HGNC identifiers.
+any of these resources can be indirectly inferred by using mappings to a
+third reference. For example, many human Ensembl gene identifiers are not
+directly mapped to any Entrez gene identifiers but such mapping can be inferred
+using respective mappings to HGNC identifiers.
 The second challenge is related to the mapping of deprecated identifiers.
 Indeed entity identifiers can change from one resource release to another.
 The identifier history is provided by some resources, such as Ensembl or
@@ -149,11 +154,25 @@ using gene ortholog information.
 To meet these challenges we designed a graph data model describing possible
 relationships between different biological entities and their identifiers.
 This data model has been implemented with the \neo{} graph
-database [@neo4j_inc_neo4j_2017]
-and conversion rules have been defined and coded in
-an R [@r_core_team_r:_2017] package.
-We provide an instance of the BED database focused on human, mouse and
-rat organism but many functions are available to construct other instances
+database [@neo4j_inc_neo4j_2017].
+Graph databases are very efficient to implement biological data models.
+They are more and more used in different fields of application.
+For example, they are successfully used for
+integrating various
+pieces of knowledge [@pareja-tobes_bio4j:_2015 + @yoon_use_2017],
+describing disease and phenotype relationships [@pareja-tobes_bio4j:_2015]
+or modeling molecular networks
+and pathways [@dai_hrgrn:_2016, @fabregat_reactome_2018-1].
+
+In addition to the \neo{} graph database,
+conversion rules have been defined and coded in
+an R [@r_core_team_r:_2017] package. A particular attention has been put
+on the efficiency of the tool by implementing a cache system making
+recurrent queries fast.
+
+Finally, we provide, for convenience, an instance of the BED database focused
+on human, mouse and rat organisms. Nevertheless, many functions are available
+in the R package to customize this instance or to construct other instances
 tailored to other needs.
 
 <!----------------------------------------------------------------------------->
@@ -185,37 +204,47 @@ status provided by Uniprot [@the_uniprot_consortium_uniprot:_2017].
 *BEID* can have one or several associated names (*BENames*) and symbols
 (*BESymbol*). *GeneID* can have one or several homologs in other organisms
 belonging to the same *GeneIDFamily*.
-Many genomics platforms, such as microarray, allow the identification of
-biological entity by using probes identified by *ProbeID*. In general
+Many genomics platforms, such as micro-array, allow the identification of
+biological entity by using probes identified by *ProbeID*. In general,
 *BEID* can be targeted by several probes belonging to a *Platform* which
-is focused on one and only one type of entity (BEType) among those described
-above: *Gene*, *Transcript*, *Peptide* or *Object*. A BEType can have several
+is focused on one, and only one, type of entity (BEType) among those described
+above: *Gene*, *Transcript*, *Peptide* or *Object*.
+
+According to this data model the scope of an identifier is defined by three
+features:
+
+   - its type: a BEType or Probe
+   - its source: a database for BE identifiers
+   or a platform for probe identifiers
+   - the organism to which it refers
+
+A BEType can have several
 BEType products but can be the product of at most one BEType.
 This constraint allows the unambiguous identification of the most relevant path
-to convert identfiers from one scope to another and
+to convert identifiers from one scope to another and
 is fulfilled by the current data model:
-peptides are only produced from transcripts which are only produced
-from genes which can also code for objects.
+peptides are only produced from transcripts, which are only produced
+from genes, which can also code for objects.
 
 *BEID* identifying the same biological entity are related through three
 different kinds of relationship according to the information available
-in the source databases and to the decision made by the database administrator
+in the source databases, and to the decision made by the database administrator
 about how to use them. Two *BEID* which *corresponds_to* each other both
 *identify* the same biological entity. A *BEID* which *is_associated_to* or
 which *is_replaced_by* another *BEID* does not directly
 identify any biological entity: the link is always indirect through
-one or several other *BEID*. Therefore by design a *BEID*
+one or several other *BEID*. Therefore, by design a *BEID*
 which *is_associated_to* or which *is_replaced_by* another *BEID* can be
 related to several different biological entities. It is not the case for
 other *BEID* which identify one and only one biological entity.
 This set of possible relationship allows the indirect mapping of
 different identifiers not necessarily provided by any integrated resource.
 
-In order to efficiently leverage indirect path through these different
+## Implementation
+
+In order to efficiently leverage an indirect path through these different
 relationships the data model has been implemented in
 a \neo{} graph database [@neo4j_inc_neo4j_2017].
-
-## Feeding the database
 
 Two R [@r_core_team_r:_2017] packages have been developed to feed and query
 the database.
@@ -224,6 +253,8 @@ The first one, neo2R, provides low level functions to interact with
 provides functions to feed and query the BED
 \neo{} graph database according to the
 data model described above.
+
+## Feeding the database
 
 Many functions are provided within the package to build a tailored BED database
 instance. These functions are not exported in order not to mislead
@@ -234,50 +265,37 @@ package. It can be adapted to other organisms or needs.
 
 Briefly these functions can be divided according to three main levels:
 
-- The lowest level function is the `bedImport` function
-which load a table in the \neo{} database according to a \cypher{} query.
-- Functions of the second level allow loading identifiers and relationships
-tables ensuring the integrity of the data model.
-- Highest level functions are helpers for loading information provided by
-some public resources in different specific format.
-
-## Querying the database
-
-The *BED* R package provides several functions to retrieve identifiers
-from different resources and also to convert identifiers from one
-reference to another.
-These functions generate and call \cypher{} queries on the \neo{} database.
-Converting thousands of identifiers can take some time
-(generally a few seconds). Also such conversions are often recurrent and
-redundant. In order to improve the performance for such recurrent and redundant
-queries, a cache system has been implemented. The first time, the query is run
-on \neo{} for all the relevant ID related to user input and the result is saved
-in a local file. Next time similar queries are requested, the system does
-not call \neo{} but loads the cached results and filters it according
-to user input.
-By default the cache is flushed when the system detects inconsistencies
-with the BED database. It can also be manually flushed if needed.
-
-## Operation
-
-The graph database has been implemented
-with \neo{} version 3 [@neo4j_inc_neo4j_2017].
-The BED R package depends on the following packages available in the
-Comprehensive R Archive Network [@cran_comprehensive_nodate]:
-
-- *visNetwork* [@almende_b.v._visnetwork:_2017]
-- *dplyr* [@wickham_dplyr:_2017]
-- *htmltools* [@rstudio_inc_htmltools:_2017]
-- *DT* [@xie_dt:_2016]
-- *shiny* [@chang_shiny:_2017]
-- *miniUI* [@cheng_miniui:_2016]
-- *rstudioapi* [@allaire_rstudioapi:_2017]
-
-
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-# Use Cases
-
+   - The lowest level function is the `bedImport` function
+   which loads a table in the \neo{} database according to a \cypher{} query.
+   
+   - Functions of the second level allow loading identifiers and relationships
+   tables ensuring the integrity of the data model:
+   
+      - `loadBE`, `loadProbes`, `loadOrganisms`, `loadBeAttribute`,
+      `loadBEsymbols`, `loadBENames` and `loadBEVersion`
+      are used to load information about BE and probes.
+      
+      - `loadHistory`, `loadCorrespondsTo`, `loadIsAssociatedTo`,
+      `loadIsExpressedAs`,  `loadIsTranslatedIn`, `loadCodesFor`
+      and `loadIsHomologOf`are used to load relationships existing
+      between BEIDs and ProbeIDs.
+      
+   - Highest level functions are helpers for loading information provided by
+   some public resources in different specific formats.
+   The following resources are currently supported but other resources can
+   be managed by the user by calling the function mentioned above.
+      
+      - Ensembl [@zerbino_ensembl_2017]:
+      `getEnsemblGeneIds`, `getEnsemblTranscriptIds`, `getEnsemblPeptideIds`
+      
+      - NCBI[@ncbi_resource_coordinators_database_2017]:
+      `loadNcbiTax`, `getNcbiGeneTransPep`, `loadNCBIEntrezGOFunctions`
+      
+      - Uniprot [@the_uniprot_consortium_uniprot:_2017]: `getUniprot`
+      
+      - Clarivate Analytics \metabase{} [@clarivate_analytics_metacore_2017]:
+      `loadMBObjects`
+      
 ## Available database instance
 
 An instance of the BED database (UCB-Human)
@@ -332,13 +350,13 @@ kable(
    caption='Numbers of BEID available in the BED UCB-Human database instance.
    Numbers have been split according to the BE type
    and the organism.
-   Only BEID which can be mapped to each other are taken into account.'
+   Only BEID which can be mapped to each other are taken into account
+   (i.e. excluding deprecated identifiers without successor).'
 )
 ```
 
 ```{r, eval=!reComp}
-nbBeIds <- 3519181
-nbProbeIds <- 354205
+load("~/Tmp/BEIDs-Stats.rda")
 ```
 
 ```{r, eval=reComp}
@@ -359,17 +377,21 @@ nbProbeIds <- bedCall(
       'RETURN count(distinct n);'
    ))
 )
+save(
+   nbBeIds, nbProbeIds,
+   file="~/Tmp/BEIDs-Stats.rda"
+)
 ```
 
 The numbers of biological entity (BE) identifiers (BEID) available in this
 BED database instance and which can be mapped to each other are shown
-in table \@ref(tab:ID-Numbers).
+in Table \@ref(tab:ID-Numbers).
 In total, `r bigFormat(nbBeIds)` BEID are available in this
-BED instance but many
-of them cannot be mapped to other BEID because corresponding to deprecated
-identifiers not corresponding to any identifier currently in use.
-Also all the genomics platforms included in this BED database instance are
-shown in table \@ref(tab:Platforms) . They provide mapping to BEID from
+BED instance.
+This number includes deprecated identifiers without successor and which
+therefore cannot be mapped to any other identifier.
+All the genomics platforms included in this BED database instance are
+shown in Table \@ref(tab:Platforms) . They provide mapping to BEID from
 `r bigFormat(nbProbeIds)` ProbeID in total.
 
 ```{r Platforms, include=TRUE, results='asis'}
@@ -384,13 +406,106 @@ kable(
 )
 ```
 
+## Querying the database
+
+The *BED* R package provides functions
+to connect to the \neo{} database (`connectToBed`)
+and to directly query it (`bedCall`).
+Beside these two functions, others of higher level are provided
+to explore available data, to manage identifiers
+and to convert them from one scope to another.
+
+Different functions can be used to explore the data model
+by listing the type of BE (`listBe`)
+or describing their relationships (`firstCommonUpstreamBe`).
+Available organisms, databases and platforms can also be retrieved using
+`listOrganisms`, `listBeIdSources` and `listPlatforms` functions.
+
+All BEIDs of matching a specific scope can be get with the `getBeIds` function.
+A specific BEID and its relationships with others can be graphically explored
+with the `exploreBe` function.
+The use and the results of these two functions are exemplified in Use Cases.
+Also, the functions `guessIdOrigin` and `checkBeIds` are used to guess and to
+check the scope of any list of identifiers.
+This set of functions is completed by the `getBeIdSymbols`and `getBeIdNames`
+and `getBeIdDescription` functions which provided different ways to annotate
+identifiers taking advantage of information related to connected identifiers.
+Other functions are also provided to seek relevant identifiers of a specific
+biological entity. These functions are used by a shiny [@chang_shiny:_2017]
+gadget providing an interactive dictionary of BEID which is also made
+available as an Rstudio add-in [@cheng_miniui:_2016; @allaire_rstudioapi:_2017].
+
+As described above, the BED data model has beeing built to fulfill
+molecular biology processes.
+The *is_expressed_as* and *is_translated_in* relationships correspond to the transcription  and translation processes respectively
+whereas *codes_for* is a fuzzy relationship allowing the mapping
+of genes on objects
+not necessarily corresonpding to the same kind of biological molecules.
+These processes are described in different databases with different
+levels of granularity. For exemple, Ensembl [@zerbino_ensembl_2017] provides
+possible transcripts for each gene specifying which of them is canonical.
+The `getDirectProduct` and `getDirectOrigin` function allow the user
+to retrieve direct products or direct origins
+of such molecular biology processes.
+
+The automatic conversion of identifiers from one scope to another is handled
+by the `convBeIds` function.
+This conversion process can be applied directly
+on lists of identifiers (`convBeIdLists`)
+or on data frames with an identifer column (`convDfBeIds`).
+Because such conversion can be intricate, the `exploreConvPath` function
+is provided to display the shortest path between two identifiers.
+These function are also exemplified in Use Cases.
+
+Converting thousands of identifiers can take some time
+(generally a few seconds). Also such conversions are often recurrent and
+redundant. In order to improve the performance for such recurrent and redundant
+queries, a cache system has been implemented. The first time, the query is run
+on \neo{} for all the relevant ID related to user input and the result is saved
+in a local file. Next time similar queries are requested, the system does
+not call \neo{} but loads the cached results and filters it according
+to user input.
+By default the cache is flushed when the system detects inconsistencies
+with the BED database. It can also be manually flushed
+if needed (`lsBEdCache` and `clearBedCache` functions).
+
+## Operation
+
+Minimal system requirements for running BED and neo2R R packages:
+
+- **R** ≥ 3.4
+- **Operating system**: Linux, macOS, Windows
+- **Memory** ≥ 4GB RAM
+
+The graph database has been implemented
+with \neo{} version 3 [@neo4j_inc_neo4j_2017].
+The BED R package depends on the following packages available in the
+Comprehensive R Archive Network [@cran_comprehensive_nodate]:
+
+- *visNetwork* [@almende_b.v._visnetwork:_2017]
+- *dplyr* [@wickham_dplyr:_2017]
+- *htmltools* [@rstudio_inc_htmltools:_2017]
+- *DT* [@xie_dt:_2016]
+- *shiny* [@chang_shiny:_2017]
+- *miniUI* [@cheng_miniui:_2016]
+- *rstudioapi* [@allaire_rstudioapi:_2017]
+
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+# Use Cases
+
+In addition to those described below,
+other use cases and examples are provided in the BED R package vignette.
+
 ## Exploring identifiers of biological entities
 
-The `getBeIds` function returns all BE identifiers from a specific scope.
-A scopes is defined
-by the type of BE or probe, the source of the identifiers (database or platform)
-and the organism.
-For example the following code
+The `getBeIds` function returns all identifiers from a specific scope.
+As described in Methods a scope is defined
+by its type (the type of biological entity (BE) or probe),
+its source (a database for BE or a platform fro probes)
+and the organism to which it refers.
+For example, the following code
 returns all the Ensembl identifiers of human genes.
 
 ```{r include=TRUE, echo=TRUE}
@@ -412,7 +527,7 @@ ensVersion <- bedCall(
 )
 ```
 
-```{r beidTables, fig.width=6, fig.height=3, out.width='100%', include=TRUE, fig.cap=sprintf('Barplots showing the number of gene BE (log scale) identified by one or more Ensembl gene BEID. a) All Ensembl gene BEID. b) Current Ensembl gene ID (version %s).', ensVersion)}
+```{r beidTables, fig.width=6, fig.height=3, out.width='100%', include=TRUE, fig.cap=sprintf('Barplots showing the number of gene BE (log scale) identified by one or more Ensembl gene BEID. a) All Ensembl gene ID. b) Current Ensembl gene ID (version %s).', ensVersion)}
 layout(matrix(c(1,1,1,1,2,2,2), 1, 7, byrow = TRUE))
 par(mar=c(5.1, 4.5, 1.1, 0.5))
 barplot(
@@ -446,7 +561,7 @@ The *id* column corresponds to the BEID from the source of interest.
 The column named according to the BE type (in this case *Gene*)
 corresponds to the internal identifiers of the related BE.
 This internal identifier is not a stable reference that can be used as such.
-Nevertheless it is useful to identify BEID identifying the
+Nevertheless, it is useful to identify BEID identifying the
 same BE.
 In the example above even if most of Gene BE are identified by only
 one Ensembl gene BEID, many of them are identified by two or more
@@ -457,7 +572,7 @@ one Ensembl gene BEID, many of them are identified by two or more
 are even identified by more than 10 Ensembl BEID
 (Figure \@ref(fig:beidTables).a).
 In this case, most of these redundancies come from deprecated ID from former
-versions of the Ensembl database (version in used here: `r ensVersion`)
+versions of the Ensembl database (version in use here: `r ensVersion`)
 and can be excluded by setting the `restricted` parameter to `TRUE` when calling
 the `getBeIds` function (Figure \@ref(fig:beidTables).b).
 However many BE are still identified by two or more current Ensembl BEID
@@ -469,7 +584,7 @@ When two identifiers from the same resource correspond to the same identifier
 in another resource (*correspond_to* relationship in the data model),
 all these BEID are considered to identify the same BE.
 
-A complex example of such mapping is shown in figure \@ref(fig:TAS2R8)
+A complex example of such mapping is shown in Figure \@ref(fig:TAS2R8)
 mapping all the BEID of the human TAS2R8 gene which codes for a protein
 of the family of candidate taste receptors. There are three identifiers
 corresponding to this gene symbol in Ensembl. All these three identifiers
@@ -486,7 +601,7 @@ of chromosome sequences.
 The ENSG00000272712 identifier shows also a complex history in former
 Ensembl versions.
 
-```{r TAS2R8, include=TRUE, out.width='100%', fig.cap = 'BED relationshsips between all the different identifiers of the human TAS2R8 gene recorded in the database. BEID are shown as circle and gene symbol in the rounded box. The color legend is shown to the left of the figure. BEID surrounded in bold correspond to \\emph{preferred} identifiers. Solid arrows represent \\emph{correspond\\_to} and \\emph{is\\_known\\_as} relationships. Dotted arrows represent \\emph{is\\_replaced\\_by} and \\emph{is\\_associated\\_to} relationships. This graph has been drawn with the \\texttt{exploreBe} function.'}
+```{r TAS2R8, include=TRUE, out.width='100%', fig.cap = 'BED relationships between all the different identifiers of the human TAS2R8 gene recorded in the database. BEID are shown as circle and gene symbol in the rounded box. The color legend is shown to the left of the figure. BEID surrounded in bold correspond to \\emph{preferred} identifiers. Solid arrows represent \\emph{correspond\\_to} and \\emph{is\\_known\\_as} relationships. Dotted arrows represent \\emph{is\\_replaced\\_by} and \\emph{is\\_associated\\_to} relationships. This graph has been drawn with the \\texttt{exploreBe} function.'}
 include_graphics('img/TAS2R8-Identifiers.png')
 ```
 
@@ -502,8 +617,6 @@ easily, rapidly and with high completeness.
 It has been thought in order to allow recurring comparisons to each other of
 many lists of biological entities from various origins.
 
-The function `guessIdOrigin` can be used to guess the scope
-of any list of identifiers.
 A simple example regarding the conversion of human Ensembl
 gene to human Entrez gene identifiers is shown below and discussed hereafter.
 By setting the `restricted` parameter to `TRUE` the converted BEID are
@@ -723,14 +836,14 @@ remaining <- setdiff(
 ```
 
 The numbers of human Ensembl gene identifiers successfully converted by each
-method are compared in figure \@ref(fig:vennTools).
+method are compared in Figure \@ref(fig:vennTools).
 Five identifiers were only converted by gProfileR. 
 They were provided by former versions of Ensembl or NCBI
 but are now deprecated in the current releases of these two resources.
 All the other gene identifiers converted by the different methods
-were also converted by BED. However BED was able to map at least
+were also converted by BED. However, BED was able to map at least
 `r bigFormat(length(unique(onlyInBed$from)))` more identifiers than all the
-other tools (figure \@ref(fig:vennTools).a). A few of these mappings
+other tools (Figure \@ref(fig:vennTools).a). A few of these mappings
 (`r bigFormat(length(unique(onlyInBedDep$from)))`)
 are explained by the fact that BED is the only tool mapping
 deprecated identifiers to current versions.
@@ -738,7 +851,7 @@ Nevertheless, even when focusing on the mapping of current versions of
 Ensembl identifiers BED was able to
 map `r bigFormat(length(unique(onlyInBedCur$from)))`
 more identifiers than all the
-other tools (figure \@ref(fig:vennTools).b).
+other tools (Figure \@ref(fig:vennTools).b).
 A few of these mappings (`r bigFormat(length(unique(fromNcbi$from)))`)
 are directly provided by the NCBI. But most of them
 (`r bigFormat(length(unique(fromHgnc$from)))`)
@@ -746,8 +859,8 @@ are inferred from a mapping of the Ensembl and Entrez gene identifiers
 to the same HGNC [@gray_genenames.org:_2015] identifier.
 
 A rough approximation of running times of the different methods is provided
-in table \@ref(tab:runTimes). The aim of this table is to show that BED,
-as a dedicated and localy available tool,
+in Table \@ref(tab:runTimes). The aim of this table is to show that BED,
+as a dedicated and locally available tool,
 is a very efficient option to convert large lists of identifiers on the fly and
 recurrently.
 The aim of BED is to improve the efficiency of identifier conversion
@@ -785,12 +898,12 @@ kable(
 ```
 
 The BED `convBeIds` function can be used to convert identifiers from
-any available scope to any other one. It automaticaly find the most
+any available scope to any other one. It automatically find the most
 relevant path according to the considered biological entities.
 It allows elaborate mapping such as the conversion between
 probe identifiers from a platform focused on mouse transcripts into
 human protein identifiers.
-Because such mappings can be intricated,
+Because such mappings can be intricate,
 BED also provides a function to show the shortest relevant path between
 two different identifiers (Figure \@ref(fig:explConv)).
 
@@ -798,26 +911,19 @@ two different identifiers (Figure \@ref(fig:explConv)).
 include_graphics('img/ILMN_1220595-Conversion.png')
 ```
 
-## Additional features
+<!-- TODO -->
+## Transitivity and mapping rules
 
-Some additional use cases and examples are provided in
-the BED R package vignette.
-Several functions are available for annotating BEID with symbols and names,
-again taking advantage of information related to connected identifiers.
-Other functions are also provided to seek relevant identifier of a specific
-biological entity. These functions are used by a shiny [@chang_shiny:_2017]
-gadget (Figure \@ref(fig:findBe))
-providing an interactive dictionary of BEID which is also made
-available as an Rstudio addin [@cheng_miniui:_2016; @allaire_rstudioapi:_2017].
+<!-- TODO -->
+## Comparing transcriptomics results from different experimental design
 
-```{r findBe, include=TRUE, out.width='80%', fig.cap = '\\texttt{findBe} Shiny gadget to seek relevant identifier of a specific biological entity. In this example the user is looking after human Ensembl transcript identifiers corresponding to \`\`il6\'\'.'}
-include_graphics('img/findBe.png')
-```
+<!-- TODO -->
+## Performance
 
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# Summary
+# Conclusions
 
 BED is a system dedicated to the mapping between identifiers of molecular
 biological entities. It relies on a graph data model implemented with
@@ -840,30 +946,33 @@ mouse and rat organisms. This database instance can be directly used
 in relevant projects but it can also be enriched depending on user or
 community needs.
 
+<!-- TODO -->
+<!-- BED usage contexts -->
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # Software availability
-This section will be generated by the Editorial Office before publication. Authors are asked to provide some initial information to assist the Editorial Office, as detailed below.
 
-1. URL link to where the software can be downloaded from or used by a non-coder (AUTHOR TO PROVIDE; optional): NO
-2. URL link to the author's version control system repository containing the source code (AUTHOR TO PROVIDE; required):
-   - https://github.com/patzaw/BED
-   - https://github.com/patzaw/neo2R
-3. Link to source code as at time of publication (*F1000Research* TO GENERATE)
-4. Link to archived source code as at time of publication (*F1000Research* TO GENERATE)
-5. Software license (AUTHOR TO PROVIDE; required): GPL-3
+Latest source code is available at:
+
+https://github.com/patzaw/BED
+
+https://github.com/patzaw/neo2R
+
+Archived source code as at time of publication:
+
+<!---------->
+<!-- TODO -->
+<!-- Add BED and neo2R doi in bibliography -->
+
+https://zenodo.org/badge/latestdoi/<!--DOI??--> <!-- (Godard, 2018a) -->
+https://zenodo.org/badge/latestdoi/<!--DOI??--> <!-- (Godard, 2018b) -->
+
+Software is available to use under a GPL-3 license
 
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# Author contributions
-
-PG designed and implemented the BED graph database,
-the neo2R and BED R packages.
-PG and JVE defined use cases, tested the whole system and
-wrote the manuscript.
-
 # Competing interests
 
 No competing interests were disclosed.
@@ -879,3 +988,4 @@ We are grateful to Frédéric Vanclef, Malte Lucken, Liesbeth François,
 Matthew Page,
 Massimo de Francesco, and Marina Bessarabova for fruitful discussions
 and constructive criticisms.
+
