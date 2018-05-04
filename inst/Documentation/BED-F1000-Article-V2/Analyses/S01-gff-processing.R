@@ -1,3 +1,5 @@
+###############################################################################@
+## From NCBI ----
 f <- "~/Tmp/ref_GRCh38.p12_top_level.gff3.gz"
 if(!file.exists(f)){
    download.file(
@@ -12,7 +14,7 @@ gff <- read.table(
    comment.char="#", fill=F
 )
 
-## Chromosomes
+## * Chromosomes ----
 chr <- gff[which(gff$V3=="region"),]
 chrAnno <- as.data.frame(do.call(rbind, lapply(
    strsplit(chr$V9, split=";"),
@@ -36,7 +38,7 @@ chr <- chr[which(!duplicated(chr$chrid)),]
 rownames(chr) <- chr$chrid
 rm(chrAnno)
 
-## Genes
+## * Genes ----
 genes <- gff[which(gff$V3 %in% c("gene", "pseudogene")),]
 geneIds <-unlist(lapply(
    strsplit(genes$V9, split=";"),
@@ -79,6 +81,7 @@ entrezGenes <- genes
 rm(genes, chr, geneIds, gff)
 
 ###############################################################################@
+## From Ensembl ----
 f <- "~/Tmp/Homo_sapiens.GRCh38.92.gff3.gz"
 if(!file.exists(f)){
    download.file(
@@ -119,6 +122,7 @@ rownames(genes) <- genes$gene
 ensemblGenes <- genes
 
 ###############################################################################@
+## Save the data ----
 save(
    entrezGenes, ensemblGenes,
    file="~/Tmp/gene-locations.rda"
