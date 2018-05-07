@@ -1,0 +1,1201 @@
+\documentclass[9pt,a4paper,]{extarticle}
+
+\usepackage{f1000_styles}
+
+\usepackage[pdfborder={0 0 0}]{hyperref}
+
+\usepackage[round]{natbib}
+\bibliographystyle{unsrtnat}
+\let\cite\citep
+
+%% maxwidth is the original width if it is less than linewidth
+%% otherwise use linewidth (to make sure the graphics do not exceed the margin)
+\makeatletter
+\def\maxwidth{ %
+  \ifdim\Gin@nat@width>\linewidth
+    \linewidth
+  \else
+    \Gin@nat@width
+  \fi
+}
+\makeatother
+
+\usepackage{color}
+\usepackage{fancyvrb}
+\newcommand{\VerbBar}{|}
+\newcommand{\VERB}{\Verb[commandchars=\\\{\}]}
+\DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+% Add ',fontsize=\small' for more characters per line
+\usepackage{framed}
+\definecolor{shadecolor}{RGB}{248,248,248}
+\newenvironment{Shaded}{\begin{snugshade}}{\end{snugshade}}
+\newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{#1}}
+\newcommand{\DecValTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\FloatTok}[1]{\textcolor[rgb]{0.00,0.00,0.81}{#1}}
+\newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\CharTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\StringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.31,0.60,0.02}{#1}}
+\newcommand{\ImportTok}[1]{#1}
+\newcommand{\CommentTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\OtherTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{#1}}
+\newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\VariableTok}[1]{\textcolor[rgb]{0.00,0.00,0.00}{#1}}
+\newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.13,0.29,0.53}{\textbf{#1}}}
+\newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.81,0.36,0.00}{\textbf{#1}}}
+\newcommand{\BuiltInTok}[1]{#1}
+\newcommand{\ExtensionTok}[1]{#1}
+\newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textit{#1}}}
+\newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.77,0.63,0.00}{#1}}
+\newcommand{\RegionMarkerTok}[1]{#1}
+\newcommand{\InformationTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\WarningTok}[1]{\textcolor[rgb]{0.56,0.35,0.01}{\textbf{\textit{#1}}}}
+\newcommand{\AlertTok}[1]{\textcolor[rgb]{0.94,0.16,0.16}{#1}}
+\newcommand{\ErrorTok}[1]{\textcolor[rgb]{0.64,0.00,0.00}{\textbf{#1}}}
+\newcommand{\NormalTok}[1]{#1}
+
+% disable code chunks background
+%\renewenvironment{Shaded}{}{}
+
+% disable section numbers
+\setcounter{secnumdepth}{0}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{6pt plus 2pt minus 1pt}
+
+
+
+\usepackage{amsthm}
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\theoremstyle{definition}
+\newtheorem{definition}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{proposition}{Proposition}
+\theoremstyle{definition}
+\newtheorem{example}{Example}
+\theoremstyle{definition}
+\newtheorem{exercise}{Exercise}
+\theoremstyle{remark}
+\newtheorem*{remark}{Remark}
+\newtheorem*{solution}{Solution}
+\begin{document}
+\pagestyle{front}
+
+\title{BED: a Biological Entity Dictionary based on a graph data model}
+
+\author[1]{Patrice Godard}
+\author[2]{Jonathan van Eyll}
+\affil[1]{Corresponding author. Clarivate Analytics, 5901 Priestly Drive, 200, Carlsbad, CA 92008, USA. UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium patrice.godard@ucb.com.}
+\affil[2]{UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium jonathan.vaneyll@ucb.com.}
+
+\maketitle
+\thispagestyle{front}
+
+\begin{abstract}
+The understanding of molecular processes involved in a specific biological system can be significantly improved by combining and comparing different data sets and knowledge resources. However these information sources often use different identification systems and an identifier conversion step is required before any integration effort. Mapping between identifiers is often provided by the reference information resources and several tools have been implemented to simplify their use. However, most of these tools do not combine the information provided by different resources to increase the efficiency of the mapping process and deprecated identifiers from former version of databases are not taken into account. Finally finding automatically the most relevant path to map identifiers from one scope to the other is often not trivial. The Biological Entity Dictionary (BED) addresses these challenges by relying on a graph data model describing possible relationships between entities and their identifiers. This model has been implemented using Neo4j and an R package provides functions to query the graph but also to create and feed a custom instance of the database. This design combined with a local installation of the graph database and a cache sytem make BED very efficient to convert large lists of identifiers.
+\end{abstract}
+
+\section*{Keywords}
+genomics, transcriptomics, proteomics, RNA-seq, microarray, database, identifiers.
+
+
+\clearpage
+\pagestyle{main}
+
+\newcommand{\tm}{\textsuperscript{\textregistered}}
+\newcommand{\neo}{Neo4j\tm{}}
+\newcommand{\cypher}{Cypher\tm{}}
+\newcommand{\docker}{Docker\tm{}}
+\newcommand{\metabase}{MetaBase\tm{}}
+
+
+\section{Introduction}\label{introduction}
+
+Since the advent of genome sequencing projects, many technologies have been
+developed to get access to different molecular information on a large scale
+and with high throughput. DNA micro-arrays are probably the archetype of such
+technology because of their historical impact on gathering data related
+to nucleic acids: genomic DNA and RNA. They triggered the emergence of
+``omics'' fields of research such as genomics, epigenomics or transcriptomics.
+Lately massive parallel sequencing
+further increased the throughput of data generation related to nucleic acids
+by several orders of magnitude.
+In a different way, mass spectrometry-related technologies allow the
+identification and the quantification of many kinds of molecular entities
+such as metabolites and proteins.
+Many information systems have been developped to manage
+the exploding amount of data and knowledge related to biological
+molecular entities.
+These resources manage different aspects of the data.
+For example some are genome or proteome centered, whereas others
+are focused on molecular interactions and pathways.
+Thus all these resources rely on different identifier systems to organize
+the concepts of interest.
+The value of all the experimental data and all the knowledge
+collected in public or private resources is very high as such
+but is also often synergistically leveraged by their cross comparison
+in a dedicated manner. Indeed many data sets can be relevant when
+addressing the understanding of a specific biological system, a phenotypic trait
+or a disease for example. These data sets can focus on different biological
+entities such as transcripts or proteins in different tissues, conditions
+or organisms. Comparing all these data and integrating them with
+available knowledge requires the ability to map the identifiers on which
+each resource relies.
+
+To achieve this task public and proprietary information systems
+provide mapping tables between their own identifiers and those
+from other resources.
+Furthermore many tools have been developed to facilitate the access
+to this information.
+Ensembl BioMart \citep{kinsella_ensembl_2011},
+mygene \citep{wu_biogps_2013},
+and g:Profiler \citep{reimand_g:profiler-web_2016}
+are popular examples among many others.
+These resourses are convenient and easy to use with information
+managed by their maintainers.
+However, in general (BioMart provides tools to configure marts),
+this information cannot be easily customized, optimized
+or extended by an empowered user according to his knowledge or to internal,
+non-public or non-standard data.
+Recognizing these challenges \citet{van_iersel_bridgedb_2010} proposed
+the BridgeDb framework providing to bioinformatics developers
+a standard interface between tools and
+mapping services and also allowing the easy integration of custom data
+by a transitivity mechanism.
+
+Here we present BED: a biological entity dictionary.
+BED has been developed to address three main challenges.
+The first one is related to the completeness of identifier mappings.
+Indeed direct mapping information provided by the different
+systems are not always complete and can be enriched by mappings provided
+by other resources. More interestingly direct mappings not identified by
+any of these resources can be indirectly inferred by using mappings to a
+third reference. For example, many human Ensembl gene identifiers are not
+directly mapped to any Entrez gene identifiers but such mapping can be inferred
+using respective mappings to HGNC identifiers.
+The second challenge is related to the mapping of deprecated identifiers.
+Indeed entity identifiers can change from one resource release to another.
+The identifier history is provided by some resources, such as Ensembl or
+the NCBI, but it is generally not used by mapping tools.
+The third challenge is related to the automation of the mapping process
+according to the relationships between the biological entities of interest.
+Indeed mapping between gene and protein identifier scopes should not be done
+the same way than two scopes of gene identifiers.
+Also converting identifiers from different organism should be possible
+using gene ortholog information.
+
+To meet these challenges we designed a graph data model describing possible
+relationships between different biological entities and their identifiers.
+This data model has been implemented with the \neo{} graph
+database \citep{neo4j_inc_neo4j_2017}.
+Graph databases are very efficient to implement biological data models.
+They are more and more used in different fields of application.
+For example, they are successfully used for
+integrating various
+pieces of knowledge \citep[\citet{yoon_use_2017}]{pareja-tobes_bio4j:_2015},
+describing disease and phenotype relationships \citep{pareja-tobes_bio4j:_2015}
+or modeling molecular networks
+and pathways \citep[\citet{fabregat_reactome_2018-1}]{dai_hrgrn:_2016}.
+
+In addition to the \neo{} graph database,
+conversion rules have been defined and coded in
+an R \citep{r_core_team_r:_2017} package. A particular attention has been put
+on the efficiency of the tool by implementing a cache system making
+recurrent queries fast.
+
+Finally, we provide, for convenience, an instance of the BED database focused
+on human, mouse and rat organisms. Nevertheless, many functions are available
+in the R package to customize this instance or to construct other instances
+tailored to other needs.
+
+\section{Methods}\label{methods}
+
+\subsection{Data model}\label{data-model}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{img/BED-Data-Model} 
+
+}
+
+\caption{The BED graph data model. The model is shown as an Entity/Relationship (ER) diagram: entities correspond to graph nodes and relationships to graph edges. ``ID'' and ``idx'' indicate if the corresponding entity property is unique or indexed respectively. Some redundancies occur in this data model. Indeed some ``value'' properties are duplicated in upper case (``value\_up'') in order to improve the performance of case-insensitive searches. Also the database of a BEID node is provided as a property to ensure uniqueness of the couples of ``database'' and ``value'' properties. The same approach has been applied for the ``platform'' property of ProbeID nodes.}\label{fig:Data-Model}
+\end{figure}
+
+The BED (Biological Entity Dictionary) system relies on a data model
+inspired by the central dogma of
+molecular biology \citep{crick_central_1970} and describing
+relationships between molecular concepts
+usually manipulated in the frame of genomics studies
+(Figure \ref{fig:Data-Model}).
+A biological entity identifier (\emph{BEID}) can identify either a \emph{Gene} (\emph{GeneID}),
+a \emph{Transcript} (\emph{TranscriptID}), a \emph{Peptide} (\emph{PeptideID}) or
+an \emph{Object} (\emph{ObjectID}). \emph{Object} entities can correspond to complex concepts
+coded by any number of genes (i.e.~a protein complex or a molecular function).
+\emph{BEID} are extracted from public or private databases (\emph{BEDB}).
+\emph{BEDB} can provide an \emph{Attribute} related to each \emph{BEID}.
+For example it can be the
+sequencing region provided by the Ensembl database \citep{zerbino_ensembl_2017}
+or the identifier
+status provided by Uniprot \citep{the_uniprot_consortium_uniprot:_2017}.
+\emph{BEID} can have one or several associated names (\emph{BENames}) and symbols
+(\emph{BESymbol}). \emph{GeneID} can have one or several homologs in other organisms
+belonging to the same \emph{GeneIDFamily}.
+Many genomics platforms, such as micro-array, allow the identification of
+biological entity by using probes identified by \emph{ProbeID}. In general,
+\emph{BEID} can be targeted by several probes belonging to a \emph{Platform} which
+is focused on one, and only one, type of entity (BEType) among those described
+above: \emph{Gene}, \emph{Transcript}, \emph{Peptide} or \emph{Object}.
+
+According to this data model the scope of an identifier is defined by three
+features:
+
+\begin{itemize}
+\item
+  its type: a \emph{BEType} or ``Probe''
+\item
+  its source: a database for \emph{BEID}
+  or a platform for \emph{ProbeID}
+\item
+  the organism to which it refers
+\end{itemize}
+
+A \emph{BEType} can have several
+\emph{BEType} products but can be the product of at most one \emph{BEType}.
+This constraint allows the unambiguous identification of the most relevant path
+to convert identifiers from one scope to another and
+is fulfilled by the current data model:
+peptides are only produced from transcripts, which are only produced
+from genes, which can also code for objects.
+
+\emph{BEID} identifying the same biological entity are related through three
+different kinds of relationship according to the information available
+in the source databases, and to the decision made by the database administrator
+about how to use them. Two \emph{BEID} which \emph{corresponds\_to} each other both
+\emph{identify} the same biological entity. A \emph{BEID} which \emph{is\_associated\_to} or
+which \emph{is\_replaced\_by} another \emph{BEID} does not directly
+identify any biological entity: the link is always indirect through
+one or several other \emph{BEID}. Therefore, by design a \emph{BEID}
+which \emph{is\_associated\_to} or which \emph{is\_replaced\_by} another \emph{BEID} can be
+related to several different biological entities. It is not the case for
+other \emph{BEID} which identify one and only one biological entity.
+This set of possible relationship allows the indirect mapping of
+different identifiers not necessarily provided by any integrated resource.
+
+\subsection{Implementation}\label{implementation}
+
+In order to efficiently leverage an indirect path through these different
+relationships the data model has been implemented in
+a \neo{} graph database \citep{neo4j_inc_neo4j_2017}.
+
+Two R \citep{r_core_team_r:_2017} packages have been developed to feed and query
+the database.
+The first one, neo2R, provides low level functions to interact with
+\neo{}. The second R package, BED,
+provides functions to feed and query the BED
+\neo{} graph database according to the
+data model described above.
+
+\subsection{Feeding the database}\label{feeding-the-database}
+
+Many functions are provided within the package to build a tailored BED database
+instance. These functions are not exported in order not to mislead
+the user when querying the database (which is the expected most frequent
+usage of the system). An R markdown document showing how to build a BED database
+instance for human, mouse and rat organisms is provided within the
+package. It can be adapted to other organisms or needs.
+
+Briefly these functions can be divided according to three main levels:
+
+\begin{itemize}
+\item
+  The lowest level function is the \texttt{bedImport} function
+  which loads a table in the \neo{} database according to a \cypher{} query.
+\item
+  Functions of the second level allow loading identifiers and relationships
+  tables ensuring the integrity of the data model:
+
+  \begin{itemize}
+  \item
+    \texttt{loadBE}, \texttt{loadProbes}, \texttt{loadOrganisms}, \texttt{loadBeAttribute},
+    \texttt{loadBEsymbols}, \texttt{loadBENames} and \texttt{loadBEVersion}
+    are used to load information about BEID and ProbeID.
+  \item
+    \texttt{loadHistory}, \texttt{loadCorrespondsTo}, \texttt{loadIsAssociatedTo},
+    \texttt{loadIsExpressedAs}, \texttt{loadIsTranslatedIn}, \texttt{loadCodesFor}
+    and \texttt{loadIsHomologOf}are used to load relationships existing
+    between BEID and ProbeID.
+  \end{itemize}
+\item
+  Highest level functions are helpers for loading information provided by
+  some public resources in different specific formats.
+  The following resources are currently supported but other resources can
+  be managed by the user by calling the function mentioned above.
+
+  \begin{itemize}
+  \item
+    Ensembl \citep{zerbino_ensembl_2017}:
+    \texttt{getEnsemblGeneIds}, \texttt{getEnsemblTranscriptIds}, \texttt{getEnsemblPeptideIds}
+  \item
+    NCBI\citep{ncbi_resource_coordinators_database_2017}:
+    \texttt{loadNcbiTax}, \texttt{getNcbiGeneTransPep}, \texttt{loadNCBIEntrezGOFunctions}
+  \item
+    Uniprot \citep{the_uniprot_consortium_uniprot:_2017}: \texttt{getUniprot}
+  \item
+    Clarivate Analytics \metabase{} \citep{clarivate_analytics_metacore_2017}:
+    \texttt{loadMBObjects}
+  \end{itemize}
+\end{itemize}
+
+\subsection{Available database instance}\label{available-database-instance}
+
+An instance of the BED database (UCB-Human),
+built using the script provided
+in the BED R package, is available in a \docker{}
+image \citep{docker_inc_docker_2017} available here:
+\url{https://hub.docker.com/r/patzaw/bed-ucb-human/} (tag 2018-04-30).
+
+This instance, used to exemplify the following use cases,
+is focused on \emph{Homo sapiens}, \emph{Mus musculus} and \emph{Rattus norvegicus} organisms
+and it has been built from these resources:
+
+\begin{itemize}
+\item
+  Ensembl \citep{zerbino_ensembl_2017}
+\item
+  NCBI \citep{ncbi_resource_coordinators_database_2017}
+\item
+  Uniprot \citep{the_uniprot_consortium_uniprot:_2017}
+\item
+  biomaRt \citep{durinck_mapping_2009}
+\item
+  GEOquery \citep{davis_geoquery:_2007}
+\item
+  Clarivate Analytics \metabase{} \citep{clarivate_analytics_metacore_2017}
+\end{itemize}
+
+\begin{table}[htbp]
+\caption{\label{tab:ID-Numbers}Numbers of BEID available in the BED UCB-Human database instance.
+Numbers have been split according to the BEType
+and the organism.
+Only BEID which can be mapped to each other are taken into account
+(i.e.~excluding deprecated identifiers without successor).}
+\centering
+\begin{tabledata}{@{}lllrl@{}}
+\header BE & Organism & Database & BEID & URL\\
+\row Gene & Homo sapiens & MIM\_GENE & 17,215 & \url{http://www.omim.org}\\
+\row Gene & Homo sapiens & miRBase & 1,881 & \url{http://www.mirbase.org}\\
+\row Gene & Homo sapiens & UniGene & 29,237 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Homo sapiens & Ens\_gene & 69,056 & \url{http://www.ensembl.org}\\
+\row Gene & Homo sapiens & HGNC & 41,233 & \url{http://www.genenames.org}\\
+\row Gene & Homo sapiens & EntrezGene & 81,684 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Homo sapiens & Vega\_gene & 19,141 & \url{http://vega.sanger.ac.uk}\\
+\row Gene & Homo sapiens & MetaBase\_gene & 23,356 & \url{https://portal.genego.com}\\
+\row Gene & Mus musculus & miRBase & 1,193 & \url{http://www.mirbase.org}\\
+\row Gene & Mus musculus & UniGene & 29,826 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Mus musculus & Ens\_gene & 57,601 & \url{http://www.ensembl.org}\\
+\row Gene & Mus musculus & MGI & 80,387 & \url{http://www.informatics.jax.org}\\
+\row Gene & Mus musculus & EntrezGene & 103,570 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Mus musculus & Vega\_gene & 18,163 & \url{http://vega.sanger.ac.uk}\\
+\row Gene & Mus musculus & MetaBase\_gene & 20,628 & \url{https://portal.genego.com}\\
+\row Gene & Rattus norvegicus & miRBase & 495 & \url{http://www.mirbase.org}\\
+\row Gene & Rattus norvegicus & UniGene & 18,570 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Rattus norvegicus & Ens\_gene & 34,963 & \url{http://www.ensembl.org}\\
+\row Gene & Rattus norvegicus & RGD & 46,973 & \url{https://rgd.mcw.edu}\\
+\row Gene & Rattus norvegicus & EntrezGene & 57,026 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Gene & Rattus norvegicus & Vega\_gene & 1,146 & \url{http://vega.sanger.ac.uk}\\
+\row Gene & Rattus norvegicus & MetaBase\_gene & 17,505 & \url{https://portal.genego.com}\\
+\row Transcript & Homo sapiens & Ens\_transcript & 233,600 & \url{http://www.ensembl.org}\\
+\row Transcript & Homo sapiens & Vega\_transcript & 34,302 & \url{http://vega.sanger.ac.uk}\\
+\row Transcript & Homo sapiens & RefSeq & 175,183 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Transcript & Mus musculus & Ens\_transcript & 139,040 & \url{http://www.ensembl.org}\\
+\row Transcript & Mus musculus & Vega\_transcript & 25,704 & \url{http://vega.sanger.ac.uk}\\
+\row Transcript & Mus musculus & RefSeq & 114,509 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Transcript & Rattus norvegicus & Ens\_transcript & 42,393 & \url{http://www.ensembl.org}\\
+\row Transcript & Rattus norvegicus & Vega\_transcript & 1,271 & \url{http://vega.sanger.ac.uk}\\
+\row Transcript & Rattus norvegicus & RefSeq & 97,882 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Peptide & Homo sapiens & Ens\_translation & 112,939 & \url{http://www.ensembl.org}\\
+\row Peptide & Homo sapiens & Vega\_translation & 35,332 & \url{http://vega.sanger.ac.uk}\\
+\row Peptide & Homo sapiens & RefSeq\_peptide & 121,813 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Peptide & Homo sapiens & Uniprot & 233,935 & \url{http://www.uniprot.org}\\
+\row Peptide & Mus musculus & Ens\_translation & 66,352 & \url{http://www.ensembl.org}\\
+\row Peptide & Mus musculus & Vega\_translation & 26,386 & \url{http://vega.sanger.ac.uk}\\
+\row Peptide & Mus musculus & RefSeq\_peptide & 81,089 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Peptide & Mus musculus & Uniprot & 115,377 & \url{http://www.uniprot.org}\\
+\row Peptide & Rattus norvegicus & Ens\_translation & 30,245 & \url{http://www.ensembl.org}\\
+\row Peptide & Rattus norvegicus & Vega\_translation & 1,260 & \url{http://vega.sanger.ac.uk}\\
+\row Peptide & Rattus norvegicus & RefSeq\_peptide & 68,777 & \url{https://www.ncbi.nlm.nih.gov}\\
+\row Peptide & Rattus norvegicus & Uniprot & 40,789 & \url{http://www.uniprot.org}\\
+\row Object & Homo sapiens & MetaBase\_object & 24,727 & \url{https://portal.genego.com}\\
+\row Object & Homo sapiens & GO\_function & 4,130 & \url{http://amigo.geneontology.org}\\
+\row Object & Mus musculus & MetaBase\_object & 22,000 & \url{https://portal.genego.com}\\
+\row Object & Mus musculus & GO\_function & 4,094 & \url{http://amigo.geneontology.org}\\
+\row Object & Rattus norvegicus & MetaBase\_object & 18,648 & \url{https://portal.genego.com}\\
+\row Object & Rattus norvegicus & GO\_function & 4,060 & \url{http://amigo.geneontology.org}\\
+\end{tabledata}
+\end{table}
+
+The numbers of BEID available in this
+BED database instance and which can be mapped to each other are shown
+in Table \ref{tab:ID-Numbers}.
+In total, 3,559,720 BEID are available in this
+BED instance.
+This number includes deprecated identifiers without successor and which
+therefore cannot be mapped to any other identifier.
+All the genomics platforms included in this BED database instance are
+shown in Table \ref{tab:Platforms}. They provide mapping to BEID from
+354,205 ProbeID in total.
+
+\begin{table}[htbp]
+\caption{\label{tab:Platforms}Genomics platforms available in the BED UCB-Human database instance.}
+\centering
+\begin{tabledata}{@{}lll@{}}
+\header Name & Description & BE\\
+\row GPL6101 & Illumina ratRef-12 v1.0 expression beadchip & Gene\\
+\row GPL6947 & Illumina HumanHT-12 V3.0 expression beadchip & Gene\\
+\row GPL10558 & Illumina HumanHT-12 V4.0 expression beadchip & Gene\\
+\row GPL1355 & {[}Rat230\_2{]} Affymetrix Rat Genome 230 2.0 Array & Gene\\
+\row GPL1261 & {[}Mouse430\_2{]} Affymetrix Mouse Genome 430 2.0 Array & Gene\\
+\row GPL96 & {[}HG-U133A{]} Affymetrix Human Genome U133A Array & Gene\\
+\row GPL13158 & {[}HT\_HG-U133\_Plus\_PM{]} Affymetrix HT HG-U133+ PM Array Plate & Gene\\
+\row GPL571 & {[}HG-U133A\_2{]} Affymetrix Human Genome U133A 2.0 Array & Gene\\
+\row GPL570 & {[}HG-U133\_Plus\_2{]} Affymetrix Human Genome U133 Plus 2.0 Array & Gene\\
+\row GPL6480 & Agilent-014850 Whole Human Genome Microarray 4x44K G4112F & Gene\\
+\row GPL6885 & Illumina MouseRef-8 v2.0 expression beadchip & Transcript\\
+\end{tabledata}
+\end{table}
+
+\subsection{Querying the database}\label{querying-the-database}
+
+The \emph{BED} R package provides functions
+to connect to the \neo{} database (\texttt{connectToBed})
+and to directly query it (\texttt{bedCall}).
+Beside these two functions, others of higher level are provided
+to explore available data, to manage identifiers
+and to convert them from one scope to another.
+
+Different functions can be used to explore the data model
+by listing the type of BE (\texttt{listBe})
+or describing their relationships (\texttt{firstCommonUpstreamBe}).
+Available organisms, databases and platforms can also be retrieved using
+\texttt{listOrganisms}, \texttt{listBeIdSources} and \texttt{listPlatforms} functions.
+
+All BEID from a specific scope can be get with the \texttt{getBeIds} function.
+A specific BEID and its relationships with others can be graphically explored
+with the \texttt{exploreBe} function.
+The use and the results of these two functions are exemplified in Use Cases.
+Also, the functions \texttt{guessIdOrigin} and \texttt{checkBeIds} are used to guess and to
+check the scope of any list of identifiers.
+This set of functions is completed by the \texttt{getBeIdSymbols}, \texttt{getBeIdNames},
+\texttt{getGeneDescription} and \texttt{getBeIdDescription} functions
+which provide different ways to annotate
+identifiers taking advantage of information related to connected BEID.
+Other functions, \texttt{searchId} and \texttt{getRelevantIds}, are also provided
+to seek relevant identifiers for a specific
+BE. These functions are used by a shiny \citep{chang_shiny:_2017}
+gadget (\texttt{findBe}) providing an interactive dictionary of BEID which is also made
+available as an Rstudio add-in \citep{cheng_miniui:_2016, allaire_rstudioapi:_2017}.
+
+As described above, the BED data model has beeing built to fulfill
+molecular biology processes.
+The \emph{is\_expressed\_as} and \emph{is\_translated\_in} relationships correspond
+to the transcription and translation processes respectively
+whereas \emph{codes\_for} is a fuzzy relationship allowing the mapping
+of genes on objects
+not necessarily corresonpding to the same kind of biological molecules.
+These processes are described in different databases with different
+levels of granularity. For exemple, Ensembl \citep{zerbino_ensembl_2017} provides
+possible transcripts for each gene specifying which of them is canonical.
+The \texttt{getDirectProduct} and \texttt{getDirectOrigin} function allow the user
+to retrieve direct products or direct origins
+of such molecular biology processes.
+
+The automatic conversion of identifiers from one scope to another is handled
+by the \texttt{convBeIds} function.
+This conversion process can be applied directly
+on lists of identifiers (\texttt{convBeIdLists})
+or on data frames with an identifer column (\texttt{convDfBeIds}).
+Because such conversion can be intricate, the \texttt{exploreConvPath} function
+is provided to display the shortest relevant paths between two identifiers.
+These functions are also exemplified in Use Cases.
+
+Converting thousands of identifiers can take some time
+(generally a few seconds). Also such conversions are often recurrent and
+redundant. In order to improve the performance for such recurrent and redundant
+queries, a cache system has been implemented. The first time, the query is run
+on \neo{} for all the relevant ID related to user input and the result is saved
+in a local file. Next time similar queries are requested, the system does
+not call \neo{} but loads the cached results and filters it according
+to user input.
+By default the cache is flushed when the system detects inconsistencies
+with the BED database. If needed, it can also be manually flushed
+by using the \texttt{lsBEdCache} and \texttt{clearBedCache} functions.
+
+\subsection{Operation}\label{operation}
+
+Minimal system requirements for running BED and neo2R R packages:
+
+\begin{itemize}
+\item
+  \textbf{R} \(\geq\) 3.4
+\item
+  \textbf{Operating system}: Linux, macOS, Windows
+\item
+  \textbf{Memory} \(\geq\) 4GB RAM
+\end{itemize}
+
+The graph database has been implemented
+with \neo{} version 3 \citep{neo4j_inc_neo4j_2017}.
+The BED R package depends on the following packages available in the
+Comprehensive R Archive Network \citep{cran_comprehensive_nodate}:
+
+\begin{itemize}
+\item
+  \emph{visNetwork} \citep{almende_b.v._visnetwork:_2017}
+\item
+  \emph{dplyr} \citep{wickham_dplyr:_2017}
+\item
+  \emph{htmltools} \citep{rstudio_inc_htmltools:_2017}
+\item
+  \emph{DT} \citep{xie_dt:_2016}
+\item
+  \emph{shiny} \citep{chang_shiny:_2017}
+\item
+  \emph{miniUI} \citep{cheng_miniui:_2016}
+\item
+  \emph{rstudioapi} \citep{allaire_rstudioapi:_2017}
+\end{itemize}
+
+\section{Use Cases}\label{use-cases}
+
+In addition to those described below,
+other use cases and examples are provided in the BED R package vignette.
+All these use cases were executed using the instance of the BED database
+described in Methods and which is available
+in Docker Hub: \url{https://hub.docker.com/r/patzaw/bed-ucb-human/}
+(tag 2018-04-30).
+
+\subsection{Exploring identifiers of biological entities}\label{exploring-identifiers-of-biological-entities}
+
+Identifiers (ID) in BED can identify a biological entity (BEID)
+or a probe (ProbeID).
+The \texttt{getBeIds} function returns all ID from a specific scope.
+As described in Methods a scope is defined
+by its type (the type of BE or ``Probe''),
+its source (a database for BEID or a platform for ProbeID)
+and the organism to which it refers.
+For example, the following code
+returns all the Ensembl identifiers of human genes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{beids <-}\StringTok{ }\KeywordTok{getBeIds}\NormalTok{(}
+    \DataTypeTok{be=}\StringTok{"Gene"}\NormalTok{, }\DataTypeTok{source=}\StringTok{"Ens_gene"}\NormalTok{, }\DataTypeTok{organism=}\StringTok{"human"}\NormalTok{,}
+    \DataTypeTok{restricted=}\OtherTok{FALSE}
+\NormalTok{)}
+\KeywordTok{head}\NormalTok{(beids)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                    id preferred  Gene db.version db.deprecated
+## 83452 ENSG00000276626      TRUE 65397         92         FALSE
+## 83453 ENSG00000199595      TRUE 65401         92         FALSE
+## 83454 ENSG00000201381     FALSE 65401         54      20090519
+## 83468 ENSG00000200605      TRUE 65406         92         FALSE
+## 83469 ENSG00000206757     FALSE 65406         54      20090519
+## 83455 ENSG00000207395      TRUE 65407         92         FALSE
+\end{verbatim}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/beidTables-1} 
+
+}
+
+\caption{Barplots showing the number of gene BE (log scale) identified by one or more Ensembl gene BEID. a) All Ensembl gene ID. b) Current Ensembl gene ID (version 92).}\label{fig:beidTables}
+\end{figure}
+
+The \emph{id} column corresponds to the BEID from the source of interest.
+The column named according to the type of BE (in this case \emph{Gene})
+corresponds to the internal identifiers of the related BE.
+This internal identifier is not a stable reference that can be used as such.
+Nevertheless, it is useful to identify BEID identifying the
+same BE.
+In the example above even if most of Gene BE are identified by only
+one Ensembl gene BEID, many of them are identified by two or more
+(6,031
+/ 59,901
+\(\approx\) 10\%);
+277 BE
+are even identified by more than 10 Ensembl BEID
+(Figure \ref{fig:beidTables}.a).
+In this case, most of these redundancies come from deprecated BEID from former
+versions of the Ensembl database (version in use here: 92)
+and can be excluded by setting the \texttt{restricted} parameter to \texttt{TRUE} when calling
+the \texttt{getBeIds} function (Figure \ref{fig:beidTables}.b).
+However many BE are still identified by two or more current Ensembl BEID
+(2,944
+/ 59,901
+\(\approx\) 5\%).
+This result comes from the way the BED database is constructed:
+When two BEID from the same resource correspond to the same BEID
+in another resource (\emph{correspond\_to} relationship in the data model),
+all these BEID are considered to identify the same BE.
+
+A complex example of such mapping is shown in Figure \ref{fig:TAS2R8}
+mapping all the BEID of the human TAS2R8 gene which codes for a protein
+of the family of candidate taste receptors. There are three identifiers
+corresponding to this gene symbol in Ensembl. All these three BEID
+correspond to the same Entrez gene and the same HGNC identifiers.
+All these BEID are thus considered to identify the same gene. It turns out
+that the three Ensembl BEID correspond to the same gene mapped on different
+sequence version of the chromosome 12: the canonical (ENSG00000121314),
+CHR\_HSCHR12\_2\_CTG2 (ENSG00000272712)
+and CHR\_HSCHR12\_3\_CTG2 (ENSG00000277316).
+This information provided by Ensembl is encoded in the \emph{seq\_region}
+attribute for each Ensembl BEID (see data model)
+and is used to define \emph{preferred} BEID which are mapped on canonical version
+of chromosome sequences.
+The ENSG00000272712 identifier shows also a complex history in former
+Ensembl versions.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{img/TAS2R8-Identifiers} 
+
+}
+
+\caption{BED relationships between all the different identifiers of the human TAS2R8 gene recorded in the database. BEID are shown as circle and gene symbol in the rounded box. The color legend is shown to the left of the figure. BEID surrounded in bold correspond to \emph{preferred} identifiers. Solid arrows represent \emph{correspond\_to} (between two nodes of identical shape) and \emph{is\_known\_as} (between two nodes of different shapes) relationships. Dotted arrows represent \emph{is\_replaced\_by} (between two nodes of identical color) and \emph{is\_associated\_to} (between two nodes of different colors) relationships. This graph has been drawn with the \texttt{exploreBe} function.}\label{fig:TAS2R8}
+\end{figure}
+
+\subsection{Converting gene identifiers}\label{converting-gene-identifiers}
+
+The main goal of BED is to convert identifiers from one scope to another
+easily, rapidly and with high completeness.
+It has been thought in order to allow recurring comparisons to each other of
+many lists of BEID from various origins.
+
+A simple example regarding the conversion of human Ensembl
+gene to human Entrez gene identifiers is shown below and discussed hereafter.
+By setting the \texttt{restricted} parameter to \texttt{TRUE} the converted BEID are
+restricted to current - non-deprecated - version of Entrez gene identifiers.
+Nevertheless all the input BEID are taken into account,
+current and deprecated ones.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{bedConv <-}\StringTok{ }\KeywordTok{convBeIds}\NormalTok{(}
+   \DataTypeTok{ids=}\NormalTok{beids}\OperatorTok{$}\NormalTok{id, }\DataTypeTok{from=}\StringTok{"Gene"}\NormalTok{, }\DataTypeTok{from.source=}\StringTok{"Ens_gene"}\NormalTok{, }\DataTypeTok{from.org=}\StringTok{"human"}\NormalTok{,}
+   \DataTypeTok{to.source=}\StringTok{"EntrezGene"}\NormalTok{, }\DataTypeTok{restricted=}\OtherTok{TRUE}
+\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+Among all the 69,056
+human Ensembl gene identifiers available in the
+database, 22,056
+(32\%)
+were not converted to any human Entrez gene
+identifier: 21,416
+(33\%)
+of the 65,256 non-deprecated
+and 640
+(17\%)
+of the 3,800 deprecated identifiers.
+
+Three other tools were used on May 03, 2018
+to perform the same conversion task:
+biomaRt \citep{kinsella_ensembl_2011, durinck_mapping_2009},
+mygene \citep{wu_biogps_2013, mark_mygene:_2014},
+and gProfileR \citep{reimand_g:profiler-web_2016, reimand_gprofiler:_2016}.
+At that time, biomaRt was based on the Ensembl 92 release
+(as the BED database instance),
+mygene on release 91 and gProfileR on release 90.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/vennTools-1} 
+
+}
+
+\caption{Venn diagrams showing the number of human Ensembl gene identifiers mapped to at least one human Entrez gene identifier by the different tested tools when focusing (a) on all 69,056 or (b) on current 65,256 BEID (Ensembl 92 release).}\label{fig:vennTools}
+\end{figure}
+
+The numbers of human Ensembl gene identifiers successfully converted by each
+method are compared in Figure \ref{fig:vennTools}.
+Mappings returned only by gProfileR or by mygene
+(33 + 94 + 76)
+are available in releases
+90 and 91 of Ensembl respectively but not in release 92.
+They probably correspond to deprecated cross-references.
+Conversely, mappings returned by both BED and biomaRt but neither by gProfileR
+nor mygene
+(319)
+are available in release 92 of Ensembl but not in releases 91 or 90.
+All the gene identifiers successfully converted by biomaRt were also
+converted by BED.
+However, BED was able to map at least
+18,080 more identifiers than all the
+other tools (Figure \ref{fig:vennTools}.a). A few of these mappings
+(3,160)
+are explained by the fact that BED is the only tool mapping
+deprecated identifiers to current versions.
+Nevertheless, even when focusing on the mapping of current versions of
+Ensembl identifiers BED was able to
+map 14,920
+more identifiers than all the
+other tools (Figure \ref{fig:vennTools}.b).
+A few of these mappings (683)
+are directly provided by the NCBI. But most of them
+(14,237)
+are inferred from a mapping of the Ensembl and Entrez gene identifiers
+to the same HGNC \citep{gray_genenames.org:_2015} identifier.
+
+We assessed the validity of the mappings by comparing the location on the human
+genome (GRCh38) of Ensembl gene identifiers as reported by Ensembl
+and the location of the corresponding Entrez gene identifiers
+as reported by the NCBI. If the mapping between two identifiers is correct
+their location on the genome should be identical or higly similar.
+Only gene identifiers located on on canonical version
+of chromosome sequences were considered for this comparison.
+We compared the following mappings:
+
+\begin{itemize}
+\item
+  Reference (N = 19,166): the mappings
+  provided by biomaRt for identifiers successfully converted by all the tools.
+\item
+  Former (N = 67): the mappings
+  provided by mygene for identifers
+  successfully converted by mygene but neither by biomaRt nor BED.
+\item
+  BED (N = 12,913): the mappings
+  provided by BED for identifers
+  successfully converted by BED but not by any of the three other tools.
+\end{itemize}
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/geneLocations-1} 
+
+}
+
+\caption{Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.}\label{fig:geneLocations}
+\end{figure}
+
+As shown in Figure \ref{fig:geneLocations}.a,
+the proportion of former cross-referenced identifiers located on different
+chromosomes is much higher than for the reference.
+The proportion of BED cross-referenced identifiers located on different
+chromosomes is higher than for the reference but still low.
+Figures \ref{fig:geneLocations}.a and b show that gene start location
+and gene size are much more
+different between identifiers cross-referenced in former version
+of Ensembl than in the current version.
+Such difference is not observed between the reference mappings and the
+additional mappings provided by BED.
+These results shows that the general quality of former mappings is lower
+than the reference. More interestingly, additional mappings provided by BED
+are of similar quality to the reference.
+
+\subsection{Transitivity and mapping rules}\label{transitivity-and-mapping-rules}
+
+As shown above, additional mappings between Ensembl and Entrez gene identifiers
+inferred thanks to the use of HGNC cross-references by BED are many and of good
+quality. However, this transitivity mechanism is not always desirable
+depending on how different resources define biological entities.
+It is specially true for gene which is an unstable concept as described
+by \citet{gerstein_what_2007}.
+For example, in Entrez the Hs.103110 UniGene identifier is mapped
+to \href{https://www.ncbi.nlm.nih.gov/gene/5465}{5465} and
+to \href{https://www.ncbi.nlm.nih.gov/gene/150383}{150383}
+Entrez gene identifiers which correspond to two different genes
+in Entrez (PPARA and CDPF1) but also in
+Ensembl (\href{http://www.ensembl.org/id/ENSG00000186951}{ENSG00000186951}
+and \href{http://www.ensembl.org/id/ENSG00000205643}{ENSG00000205643})
+and in HGNC (\href{http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=9232}{9232}
+and \href{http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=33710}{33710}).
+These two genes are located closely on the same chromosome but
+at different positions and on different directions.
+The same feature has been observed for many UniGene identifiers which makes
+UniGene unsuitable for transitivity mappings between gene identifiers.
+
+In BED the transitivity mechanism is managed by the two following relationships:
+\emph{corresponds\_to} and \emph{is\_associated\_to}. On one hand the \emph{corresponds\_to}
+relationships make the mapping transitive since two BEIDs which are connected
+through this kind of relationship are considered to \emph{identify} the same BE.
+On the other hand a BEID which \emph{is\_associated\_to} to another one does not
+automatically \emph{identify} the same BE making this kind of relationship not
+available for transitive mappings.
+When the BED database is fed, the user chooses which relationship should be
+of type \emph{corresponds\_to} or of type \emph{is\_associated\_to}.
+For example, in the instance used for executing these use cases,
+cross-references provided by
+Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
+are considered as \emph{corresponds\_to} relationships whereas cross-references to
+miRbase, Unigene and OMIM are considered as \emph{is\_associated\_to} relationships.
+
+Beside cross-referencing identifiers of identical type of BE,
+BED uses the biological relationship between genes, transcript and peptides
+to convert identifiers accross different type of BE.
+For example, when converting peptides identifiers from the same species
+it uses only mapping done at the peptide level and does not use mapping
+to transcripts and genes. This strategy seems to be applied by biomaRt
+but not by mygene nor by gProfileR which map, for example,
+one Uniprot identifier
+to all the Ensembl peptide identifier coded by the same gene.
+For example
+the (A6NI28){[}\url{http://www.uniprot.org/uniprot/A6NI28}{]} Uniprot identifier
+is unambiguously mapped to the
+ENSP00000298815 Ensembl peptide identifier by BED and biomaRt but is
+wrongly mapped to
+three additional Ensembl peptide identifiers by mygene and gProfileR
+((ENSP00000431776){[}\url{http://www.ensembl.org/id/ENSP00000431776}{]},
+(ENSP00000434304){[}\url{http://www.ensembl.org/id/ENSP00000434304}{]}
+and (ENSP00000435961){[}\url{http://www.ensembl.org/id/ENSP00000435961}{]}
+which are encoded by
+the same gene ((ENSG00000165895){[}\url{http://www.ensembl.org/id/ENSG00000165895}{]})).
+
+Finally mapping BEID which are not genes from two different
+organisms using ortholog information requires at least two steps in biomaRt,
+mygene and gProfileR: one for finding the ortholog genes and the other
+for finding the relevant BEID.
+These two steps are integrated and transparent in BED.
+
+Because all these indirect mappings can be intricate,
+BED provides a function to show the shortest relevant paths between
+two different identifiers (Figure \ref{fig:explConv}).
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{img/ILMN_1220595-Conversion} 
+
+}
+
+\caption{BED conversion shortest path between the ILMN\_1220595 probe identifier targeting a transcript of the mouse Il17a gene and the Uniprot Q16552 identifier of the human IL17 protein. The legend is shown to the left of the figure. The red arrow represents the \emph{is\_homolog\_of} relationship. BEID surrounded in bold correspond to \emph{preferred} identifiers. This graph has been drawn with the \texttt{exploreConvPath} function.}\label{fig:explConv}
+\end{figure}
+
+\subsection{Comparing transcriptomics results from different experimental design}\label{comparing-transcriptomics-results-from-different-experimental-design}
+
+The mechanisms implemented in the BED R package make easy the
+conversion of a set of identifiers from one scope to any other.
+Thus the comparison of data from different genome wide experiments
+is straigtforward from a technical point of view.
+
+To examplify this statement we show below how to compare differential expression
+data from three experiments adressing the understanding of Psoriais mecahnisms
+with different experimental designs:
+
+\begin{itemize}
+\item
+  \citet{nair_genome-wide_2009} compared gene expression data in lesional
+  and non-lesional skin from Psoriasis patients using
+  Affymetrix GeneChip Human Genome U133 Plus 2.0.
+  Starting from published data
+  ((E-GEOD-13355){[}\url{https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/}{]})
+  we recomputed differential expression between these two groups of samples.
+\item
+  \citet{chiricozzi_integrative_2011} measured transcriptomics responses
+  to IL-17 and TNF-\(\alpha\) cytokines
+  in human keratinocytes using Illumina HumanHT-12 v3.0 Expression BeadChips.
+  Starting from published data
+  ((E-GEOD-24767){[}\url{https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/}{]})
+  we recomputed differential expression between keratinocytes
+  co-stimulated with both cytokines and controls.
+\item
+  \citet{swindell_genome-wide_2011} compared gene expression data in lesional
+  and non-lesional skink from five psoriasis mouse models using
+  Affymetrix GeneChip Mouse Genome 430 2.0.
+  Starting from published data
+  ((E-GEOD-27628){[}\url{https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/}{]})
+  we recomputed differential expression between affected and non-affected
+  skin samples.
+\end{itemize}
+
+The head of these three data tables is shown below.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## E-GEOD-13355: Human skin}
+\KeywordTok{head}\NormalTok{(hsSkin.DE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                logFC   AveExpr        t      P.Value    adj.P.Val        B
+## 41469_at    5.140278 0.5523489 40.78083 8.384147e-46 4.584033e-41 93.83004
+## 232170_at   5.766759 0.5624087 39.83855 3.293084e-45 9.002469e-41 92.51495
+## 205863_at   4.715087 0.4439447 39.45503 5.796620e-45 1.056434e-40 91.97049
+## 203691_at   5.396590 0.6140546 39.15392 9.068285e-45 1.239521e-40 91.53922
+## 217388_s_at 3.926282 0.3818259 38.05322 4.785688e-44 5.233150e-40 89.93339
+## 207356_at   5.806316 0.6525531 37.57034 1.006845e-43 9.174875e-40 89.21400
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## E-GEOD-24767: Human keratinocytes}
+\KeywordTok{head}\NormalTok{(hsKera.DE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 logFC   AveExpr        t      P.Value    adj.P.Val
+## ILMN_2048043 6.297295  8.214566 68.44411 2.186104e-14 1.066841e-09
+## ILMN_1672295 3.507524  8.536838 38.47825 5.823956e-12 1.051466e-07
+## ILMN_1680965 6.114791  8.682000 38.06585 6.463797e-12 1.051466e-07
+## ILMN_1799575 6.093054  7.921023 19.62628 3.759130e-09 4.586232e-05
+## ILMN_1795359 4.930397 10.920341 18.17466 7.797664e-09 6.838764e-05
+## ILMN_1757351 2.554070  6.793824 18.03065 8.408145e-09 6.838764e-05
+##                      B
+## ILMN_2048043 11.989637
+## ILMN_1672295 11.327400
+## ILMN_1680965 11.307684
+## ILMN_1799575  9.253457
+## ILMN_1795359  8.888501
+## ILMN_1757351  8.849106
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## E-GEOD-27628: Mouse skin}
+\KeywordTok{head}\NormalTok{(mmSkin.DE)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##                 logFC  AveExpr         t      P.Value   adj.P.Val        B
+## 1440888_at -1.3929330 6.980290 -7.325822 3.317833e-08 0.000732987 8.677033
+## 1449319_at -0.9672017 6.303944 -7.247096 4.105579e-08 0.000732987 8.484408
+## 1422803_at -0.7688354 8.452405 -7.113243 5.906985e-08 0.000732987 8.154970
+## 1435272_at -0.7092831 9.788428 -7.031605 7.381416e-08 0.000732987 7.952878
+## 1428499_at -0.7661095 7.306794 -6.996465 8.126241e-08 0.000732987 7.865623
+## 1416084_at  0.5313674 9.273609  6.724232 1.718620e-07 0.001115532 7.184418
+\end{verbatim}
+
+The aim of the following commands is to allow the comparison of the three
+logFC values by converting ProbeID (row names) of one or the other data set.
+The function \texttt{guessIdOrigin} is used to identify the scope of the different
+set of identifiers.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{scopes <-}\StringTok{ }\KeywordTok{data.frame}\NormalTok{(}
+   \StringTok{"Human skin"}\NormalTok{=}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{guessIdOrigin}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(hsSkin.DE), }\DataTypeTok{tcLim=}\DecValTok{1000}\NormalTok{)),}
+   \StringTok{"Human keratinocytes"}\NormalTok{=}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{guessIdOrigin}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(hsKera.DE), }\DataTypeTok{tcLim=}\DecValTok{1000}\NormalTok{)),}
+   \StringTok{"Mouse skin"}\NormalTok{=}\KeywordTok{unlist}\NormalTok{(}\KeywordTok{guessIdOrigin}\NormalTok{(}\KeywordTok{rownames}\NormalTok{(mmSkin.DE), }\DataTypeTok{tcLim=}\DecValTok{1000}\NormalTok{)),}
+   \DataTypeTok{stringsAsFactors=}\OtherTok{FALSE}\NormalTok{, }\DataTypeTok{check.names=}\OtherTok{FALSE}
+\NormalTok{)}
+\NormalTok{scopes}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+##            Human skin Human keratinocytes   Mouse skin
+## be              Probe               Probe        Probe
+## source         GPL570            GPL10558      GPL1261
+## organism Homo sapiens        Homo sapiens Mus musculus
+\end{verbatim}
+
+To compare the two human data sets,
+the keratinocyte data set can be converted to
+the same scope of the skin data set using the \texttt{convDfBeIds} function.
+After conversion the two data sets can be merged before
+computing the correlation between logFC values.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Human skin VS keratinocytes}
+\NormalTok{convHsKera.DE <-}\StringTok{ }\KeywordTok{convDfBeIds}\NormalTok{(}
+   \DataTypeTok{df=}\NormalTok{hsKera.DE,}
+   \DataTypeTok{from=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{from.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{from.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{to=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{to.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{to.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{restricted=}\OtherTok{TRUE}
+\NormalTok{)}
+\NormalTok{toCompare <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(}
+\NormalTok{   hsSkin.DE[,}\StringTok{"logFC"}\NormalTok{, }\DataTypeTok{drop=}\OtherTok{FALSE}\NormalTok{],}
+\NormalTok{   convHsKera.DE[,}\KeywordTok{c}\NormalTok{(}\StringTok{"conv.to"}\NormalTok{, }\StringTok{"logFC"}\NormalTok{)],}
+   \DataTypeTok{by.x=}\DecValTok{0}\NormalTok{, }\DataTypeTok{by.y=}\StringTok{"conv.to"}
+\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(toCompare) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{, }\StringTok{"Skin"}\NormalTok{, }\StringTok{"Keratinocytes"}\NormalTok{)}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{cor}\NormalTok{(toCompare}\OperatorTok{$}\StringTok{"Skin"}\NormalTok{, toCompare}\OperatorTok{$}\StringTok{"Keratinocytes"}\NormalTok{), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.15
+\end{verbatim}
+
+A similar procedure can be applied to compare the two skin data sets or to
+compare mouse skin and human keratinocytes.
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Human skin VS mouse skin}
+\NormalTok{convMmSkin.DE <-}\StringTok{ }\KeywordTok{convDfBeIds}\NormalTok{(}
+   \DataTypeTok{df=}\NormalTok{mmSkin.DE,}
+   \DataTypeTok{from=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{from.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{from.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{to=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{to.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{to.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Human skin"}\NormalTok{],}
+   \DataTypeTok{restricted=}\OtherTok{TRUE}
+\NormalTok{)}
+\NormalTok{toCompare <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(}
+\NormalTok{   hsSkin.DE[,}\StringTok{"logFC"}\NormalTok{, }\DataTypeTok{drop=}\OtherTok{FALSE}\NormalTok{],}
+\NormalTok{   convMmSkin.DE[,}\KeywordTok{c}\NormalTok{(}\StringTok{"conv.to"}\NormalTok{, }\StringTok{"logFC"}\NormalTok{)],}
+   \DataTypeTok{by.x=}\DecValTok{0}\NormalTok{, }\DataTypeTok{by.y=}\StringTok{"conv.to"}
+\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(toCompare) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{, }\StringTok{"Human"}\NormalTok{, }\StringTok{"Mouse"}\NormalTok{)}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{cor}\NormalTok{(toCompare}\OperatorTok{$}\StringTok{"Human"}\NormalTok{, toCompare}\OperatorTok{$}\StringTok{"Mouse"}\NormalTok{), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.24
+\end{verbatim}
+
+\begin{Shaded}
+\begin{Highlighting}[]
+\NormalTok{## Mouse skin VS human keratinocytes}
+\NormalTok{conv2HsKera.DE <-}\StringTok{ }\KeywordTok{convDfBeIds}\NormalTok{(}
+   \DataTypeTok{df=}\NormalTok{hsKera.DE,}
+   \DataTypeTok{from=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{from.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{from.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{],}
+   \DataTypeTok{to=}\NormalTok{scopes[}\StringTok{"be"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{to.source=}\NormalTok{scopes[}\StringTok{"source"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{to.org=}\NormalTok{scopes[}\StringTok{"organism"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{],}
+   \DataTypeTok{restricted=}\OtherTok{TRUE}
+\NormalTok{)}
+\NormalTok{toCompare <-}\StringTok{ }\KeywordTok{merge}\NormalTok{(}
+\NormalTok{   mmSkin.DE[,}\StringTok{"logFC"}\NormalTok{, }\DataTypeTok{drop=}\OtherTok{FALSE}\NormalTok{],}
+\NormalTok{   conv2HsKera.DE[,}\KeywordTok{c}\NormalTok{(}\StringTok{"conv.to"}\NormalTok{, }\StringTok{"logFC"}\NormalTok{)],}
+   \DataTypeTok{by.x=}\DecValTok{0}\NormalTok{, }\DataTypeTok{by.y=}\StringTok{"conv.to"}
+\NormalTok{)}
+\KeywordTok{colnames}\NormalTok{(toCompare) <-}\StringTok{ }\KeywordTok{c}\NormalTok{(}\StringTok{"ID"}\NormalTok{, }\StringTok{"Mouse skin"}\NormalTok{, }\StringTok{"Human keratinocytes"}\NormalTok{)}
+\KeywordTok{round}\NormalTok{(}\KeywordTok{cor}\NormalTok{(toCompare}\OperatorTok{$}\StringTok{"Mouse skin"}\NormalTok{, toCompare}\OperatorTok{$}\StringTok{"Human keratinocytes"}\NormalTok{), }\DecValTok{2}\NormalTok{)}
+\end{Highlighting}
+\end{Shaded}
+
+\begin{verbatim}
+## [1] 0.07
+\end{verbatim}
+
+\subsection{Performance}\label{performance}
+
+The time taken by BED to convert different sets of identifiers from one scope
+to another has been compared to the time taken by biomaRt, mygene and gProfileR.
+Three different queries have been executed
+starting from 100 or 20,000 identifiers.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/perf-1} 
+
+}
+
+\caption{Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assess without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.}\label{fig:perf}
+\end{figure}
+
+As shown in Figure \ref{fig:perf},
+BED outperforms mygene and gProfileR in all the tested cases even when not
+using its cache system.
+It also outperforms biomaRt for converting Affymetrix probe ID into Ensembl
+mouse peptide ID (Figures \ref{fig:perf}.e and \ref{fig:perf}.f).
+Without using its cache system, BED performs equaly well as biomaRt for
+converting Ensembl human gene ID into Entrez gene ID
+(Figures \ref{fig:perf}.a and \ref{fig:perf}.b).
+It ouperforms biomaRt for converting 100 Uniprot mouse peptide ID
+into Ensembl transcript ID (Figures \ref{fig:perf}.c)
+but is outperformed by biomaRt when 20,000
+identifiers are considered (Figures \ref{fig:perf}.d).
+Nevertheless when cache is used, BED outperforms all the tools whatever the
+conversion scenario
+(Figures \ref{fig:perf}.b, \ref{fig:perf}.d and \ref{fig:perf}.f).
+These results show that BED, as a dedicated and locally available tool,
+is a very efficient option to convert large lists of identifiers on the fly
+and recurrently.
+
+\section{Conclusions}\label{conclusions}
+
+BED is a system dedicated to the mapping between identifiers of molecular
+biological entities. It relies on a graph data model implemented with
+\neo{} and on rules coded in an R package.
+BED leverages mapping information provided by different resources in order
+to increase the mapping efficiency between each of them.
+It also allows the mapping of deprecated identifiers.
+Rules are used to automatically convert identifiers from one scope to another
+using the most appropriate path.
+
+The intend of BED is to be tailored to specific needs and
+beside functions for querying the system the BED R package provides functions
+to build custom instances of the database.
+Database instances can be localy installed or shared accross a community.
+This design combined with a cache system makes BED performant for converting
+large lists of identifiers from and to a large variety of scopes.
+Because of our research field we provide an instance focused on human,
+mouse and rat organisms. This database instance can be directly used
+in relevant projects but it can also be enriched depending on user or
+community needs.
+
+Beside a casual use for analyzing and comparing data in the frame of a
+research project, BED can be advantageously employed by sytems dealing with
+biological and molecular information from heterogenous sources.
+Indeed various pieces of knowledge can be efficiently managed
+in their original scope
+(e.g.~gene ID for genomics or epigenomics data, transcript ID
+for transcriptomics data and protein ID for proteomics data).
+Thanks to the automatic and fast conversion of identifiers all these
+data can then be compared to each other or to any user input.
+We do not provide BED API for other languages than R but we expect that
+publishing the source code under an open source license (GPL-3)
+will encourage other developpers to extend or improve it according to their
+needs and their expertise.
+
+\section{Software availability}\label{software-availability}
+
+Latest source code is available at:
+
+\url{https://github.com/patzaw/BED}
+
+\url{https://github.com/patzaw/neo2R}
+
+Archived source code as at time of publication:
+
+\url{https://zenodo.org/badge/latestdoi/}
+\url{https://zenodo.org/badge/latestdoi/}
+
+Software is available to use under a GPL-3 license
+
+\section{Competing interests}\label{competing-interests}
+
+No competing interests were disclosed.
+
+\section{Grant information}\label{grant-information}
+
+This work was entirely supported by UCB Pharma.
+The authors declared that no grants were involved in supporting this work.
+
+\section{Acknowledgments}\label{acknowledgments}
+
+We are grateful to Frédéric Vanclef, Malte Lucken, Liesbeth François,
+Matthew Page,
+Massimo de Francesco, and Marina Bessarabova for fruitful discussions
+and constructive criticisms.
+
+{\small\bibliography{BED-References.bib}}
+
+\end{document}

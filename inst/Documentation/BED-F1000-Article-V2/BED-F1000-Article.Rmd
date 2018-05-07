@@ -7,18 +7,14 @@ author:
     affiliation: UCB Pharma, Chemin du Foriest, 1420 Braine-l'Alleud, Belgium jonathan.vaneyll@ucb.com.
 abstract: The understanding of molecular processes involved in
    a specific biological system can be significantly improved by combining
-   and comparing different data set and knowledge resources.
+   and comparing different data sets and knowledge resources.
    However these information sources often use different
    identification systems and an identifier conversion step is required
    before any integration effort. Mapping between identifiers is often provided
-   by the reference information resources
-   and several tools have been implemented
-   to simplify their use.
-   However, the way the mapping is done by most of these tools cannot be
-   customized, optimized or extended  by the user according to his knowledge
-   or to internal, non-public or non-standard information.
-   Also the information provided by different
-   resources is not combined to increase the efficiency of the mapping process
+   by the reference information resources and several tools have been
+   implemented to simplify their use.
+   However, most of these tools do not combine the information provided
+   by different resources to increase the efficiency of the mapping process
    and deprecated identifiers from former version of databases are not taken
    into account. Finally finding automatically the most relevant path to
    map identifiers from one scope to the other is often not trivial.
@@ -55,6 +51,7 @@ reComp <- FALSE
 library(knitr)
 library(RColorBrewer)
 library(VennDiagram)
+library(beeswarm)
 library(gridExtra)
 flog.threshold(futile.logger::ERROR, name = "VennDiagramLogger")
 opts_chunk$set(
@@ -66,6 +63,14 @@ bigFormat <- function(x) {format(x, big.mark=",")}
 library(BED)
 connectToBed(url="localhost:5454", username="neo4j", password="1234")
 ```
+
+```{r}
+## Preprocess bib file
+bib <- readLines("BED-References.bib", warn=FALSE)
+bib <- gsub("α", "$\\\\alpha$", bib)
+write(bib, file="BED-References.bib")
+```
+
 
 \newcommand{\tm}{\textsuperscript{\textregistered}}
 \newcommand{\neo}{Neo4j\tm{}}
@@ -93,8 +98,7 @@ such as metabolites and proteins.
 Many information systems have been developped to manage
 the exploding amount of data and knowledge related to biological
 molecular entities.
-These resources manage different aspects of
-the data.
+These resources manage different aspects of the data.
 For example some are genome or proteome centered, whereas others
 are focused on molecular interactions and pathways.
 Thus all these resources rely on different identifier systems to organize
@@ -102,9 +106,9 @@ the concepts of interest.
 The value of all the experimental data and all the knowledge
 collected in public or private resources is very high as such
 but is also often synergistically leveraged by their cross comparison
-in a dedicated manner. Indeed many datasets can be relevant when
+in a dedicated manner. Indeed many data sets can be relevant when
 addressing the understanding of a specific biological system, a phenotypic trait
-or a disease for example. These datasets can focus on different biological
+or a disease for example. These data sets can focus on different biological
 entities such as transcripts or proteins in different tissues, conditions
 or organisms. Comparing all these data and integrating them with
 available knowledge requires the ability to map the identifiers on which
@@ -115,14 +119,15 @@ provide mapping tables between their own identifiers and those
 from other resources.
 Furthermore many tools have been developed to facilitate the access
 to this information.
-Ensembl BioMarts [@kinsella_ensembl_2011],
+Ensembl BioMart [@kinsella_ensembl_2011],
 mygene [@wu_biogps_2013],
 and g:Profiler [@reimand_g:profiler-web_2016]
 are popular examples among many others.
 These resourses are convenient and easy to use with information
 managed by their maintainers.
-However, in general, this information cannot be customized, optimized
-or extended by an enpowered user according to his knowledge or to internal,
+However, in general (BioMart provides tools to configure marts),
+this information cannot be easily customized, optimized
+or extended by an empowered user according to his knowledge or to internal,
 non-public or non-standard data.
 Recognizing these challenges @van_iersel_bridgedb_2010 proposed
 the BridgeDb framework providing to bioinformatics developers
@@ -159,7 +164,7 @@ Graph databases are very efficient to implement biological data models.
 They are more and more used in different fields of application.
 For example, they are successfully used for
 integrating various
-pieces of knowledge [@pareja-tobes_bio4j:_2015 + @yoon_use_2017],
+pieces of knowledge [@pareja-tobes_bio4j:_2015, @yoon_use_2017],
 describing disease and phenotype relationships [@pareja-tobes_bio4j:_2015]
 or modeling molecular networks
 and pathways [@dai_hrgrn:_2016, @fabregat_reactome_2018-1].
@@ -213,13 +218,13 @@ above: *Gene*, *Transcript*, *Peptide* or *Object*.
 According to this data model the scope of an identifier is defined by three
 features:
 
-   - its type: a BEType or Probe
-   - its source: a database for BE identifiers
-   or a platform for probe identifiers
+   - its type: a *BEType* or "Probe"
+   - its source: a database for *BEID*
+   or a platform for *ProbeID*
    - the organism to which it refers
 
-A BEType can have several
-BEType products but can be the product of at most one BEType.
+A *BEType* can have several
+*BEType* products but can be the product of at most one *BEType*.
 This constraint allows the unambiguous identification of the most relevant path
 to convert identifiers from one scope to another and
 is fulfilled by the current data model:
@@ -273,12 +278,12 @@ Briefly these functions can be divided according to three main levels:
    
       - `loadBE`, `loadProbes`, `loadOrganisms`, `loadBeAttribute`,
       `loadBEsymbols`, `loadBENames` and `loadBEVersion`
-      are used to load information about BE and probes.
+      are used to load information about BEID and ProbeID.
       
       - `loadHistory`, `loadCorrespondsTo`, `loadIsAssociatedTo`,
       `loadIsExpressedAs`,  `loadIsTranslatedIn`, `loadCodesFor`
       and `loadIsHomologOf`are used to load relationships existing
-      between BEIDs and ProbeIDs.
+      between BEID and ProbeID.
       
    - Highest level functions are helpers for loading information provided by
    some public resources in different specific formats.
@@ -298,15 +303,15 @@ Briefly these functions can be divided according to three main levels:
       
 ## Available database instance
 
-An instance of the BED database (UCB-Human)
-has been built using the script provided
-in the BED R package and made available in a \docker{}
+An instance of the BED database (UCB-Human),
+built using the script provided
+in the BED R package, is available in a \docker{}
 image [@docker_inc_docker_2017] available here:
-https://hub.docker.com/r/patzaw/bed-ucb-human/
+https://hub.docker.com/r/patzaw/bed-ucb-human/ (tag 2018-04-30).
 
-This instance used to exemplify the following use cases
+This instance, used to exemplify the following use cases,
 is focused on *Homo sapiens*, *Mus musculus* and *Rattus norvegicus* organisms
-and it has been built from the following resources:
+and it has been built from these resources:
 
 - Ensembl [@zerbino_ensembl_2017]
 - NCBI [@ncbi_resource_coordinators_database_2017]
@@ -348,7 +353,7 @@ kable(
    format='pandoc',
    format.args=list(big.mark=","),
    caption='Numbers of BEID available in the BED UCB-Human database instance.
-   Numbers have been split according to the BE type
+   Numbers have been split according to the BEType
    and the organism.
    Only BEID which can be mapped to each other are taken into account
    (i.e. excluding deprecated identifiers without successor).'
@@ -383,7 +388,7 @@ save(
 )
 ```
 
-The numbers of biological entity (BE) identifiers (BEID) available in this
+The numbers of BEID available in this
 BED database instance and which can be mapped to each other are shown
 in Table \@ref(tab:ID-Numbers).
 In total, `r bigFormat(nbBeIds)` BEID are available in this
@@ -391,7 +396,7 @@ BED instance.
 This number includes deprecated identifiers without successor and which
 therefore cannot be mapped to any other identifier.
 All the genomics platforms included in this BED database instance are
-shown in Table \@ref(tab:Platforms) . They provide mapping to BEID from
+shown in Table \@ref(tab:Platforms). They provide mapping to BEID from
 `r bigFormat(nbProbeIds)` ProbeID in total.
 
 ```{r Platforms, include=TRUE, results='asis'}
@@ -421,23 +426,26 @@ or describing their relationships (`firstCommonUpstreamBe`).
 Available organisms, databases and platforms can also be retrieved using
 `listOrganisms`, `listBeIdSources` and `listPlatforms` functions.
 
-All BEIDs of matching a specific scope can be get with the `getBeIds` function.
+All BEID from a specific scope can be get with the `getBeIds` function.
 A specific BEID and its relationships with others can be graphically explored
 with the `exploreBe` function.
 The use and the results of these two functions are exemplified in Use Cases.
 Also, the functions `guessIdOrigin` and `checkBeIds` are used to guess and to
 check the scope of any list of identifiers.
-This set of functions is completed by the `getBeIdSymbols`and `getBeIdNames`
-and `getBeIdDescription` functions which provided different ways to annotate
-identifiers taking advantage of information related to connected identifiers.
-Other functions are also provided to seek relevant identifiers of a specific
-biological entity. These functions are used by a shiny [@chang_shiny:_2017]
-gadget providing an interactive dictionary of BEID which is also made
+This set of functions is completed by the `getBeIdSymbols`, `getBeIdNames`,
+`getGeneDescription` and `getBeIdDescription` functions
+which provide different ways to annotate
+identifiers taking advantage of information related to connected BEID.
+Other functions, `searchId` and `getRelevantIds`, are also provided
+to seek relevant identifiers for a specific
+BE. These functions are used by a shiny [@chang_shiny:_2017]
+gadget (`findBe`) providing an interactive dictionary of BEID which is also made
 available as an Rstudio add-in [@cheng_miniui:_2016; @allaire_rstudioapi:_2017].
 
 As described above, the BED data model has beeing built to fulfill
 molecular biology processes.
-The *is_expressed_as* and *is_translated_in* relationships correspond to the transcription  and translation processes respectively
+The *is_expressed_as* and *is_translated_in* relationships correspond
+to the transcription  and translation processes respectively
 whereas *codes_for* is a fuzzy relationship allowing the mapping
 of genes on objects
 not necessarily corresonpding to the same kind of biological molecules.
@@ -454,8 +462,8 @@ This conversion process can be applied directly
 on lists of identifiers (`convBeIdLists`)
 or on data frames with an identifer column (`convDfBeIds`).
 Because such conversion can be intricate, the `exploreConvPath` function
-is provided to display the shortest path between two identifiers.
-These function are also exemplified in Use Cases.
+is provided to display the shortest relevant paths between two identifiers.
+These functions are also exemplified in Use Cases.
 
 Converting thousands of identifiers can take some time
 (generally a few seconds). Also such conversions are often recurrent and
@@ -466,8 +474,8 @@ in a local file. Next time similar queries are requested, the system does
 not call \neo{} but loads the cached results and filters it according
 to user input.
 By default the cache is flushed when the system detects inconsistencies
-with the BED database. It can also be manually flushed
-if needed (`lsBEdCache` and `clearBedCache` functions).
+with the BED database. If needed, it can also be manually flushed
+by using the `lsBEdCache` and `clearBedCache` functions.
 
 ## Operation
 
@@ -497,13 +505,19 @@ Comprehensive R Archive Network [@cran_comprehensive_nodate]:
 
 In addition to those described below,
 other use cases and examples are provided in the BED R package vignette.
+All these use cases were executed using the instance of the BED database
+described in Methods and which is available
+in Docker Hub: https://hub.docker.com/r/patzaw/bed-ucb-human/
+(tag 2018-04-30).
 
 ## Exploring identifiers of biological entities
 
-The `getBeIds` function returns all identifiers from a specific scope.
+Identifiers (ID) in BED can identify a biological entity (BEID)
+or a probe (ProbeID).
+The `getBeIds` function returns all ID from a specific scope.
 As described in Methods a scope is defined
-by its type (the type of biological entity (BE) or probe),
-its source (a database for BE or a platform fro probes)
+by its type (the type of BE or "Probe"),
+its source (a database for BEID or a platform for ProbeID)
 and the organism to which it refers.
 For example, the following code
 returns all the Ensembl identifiers of human genes.
@@ -558,7 +572,7 @@ mtext(text="(b)", side=2, line=3, at=10^par()$usr[4], las=2, font=2)
 ```
 
 The *id* column corresponds to the BEID from the source of interest.
-The column named according to the BE type (in this case *Gene*)
+The column named according to the type of BE (in this case *Gene*)
 corresponds to the internal identifiers of the related BE.
 This internal identifier is not a stable reference that can be used as such.
 Nevertheless, it is useful to identify BEID identifying the
@@ -567,27 +581,27 @@ In the example above even if most of Gene BE are identified by only
 one Ensembl gene BEID, many of them are identified by two or more
 (`r bigFormat(sum(redUnRestIds[which(as.numeric(names(redUnRestIds))>=2)]))`
 / `r bigFormat(sum(redUnRestIds))`
-= `r round(100*sum(redUnRestIds[which(as.numeric(names(redUnRestIds))>=2)])/sum(redUnRestIds))`&nbsp;%);
+$\approx$ `r round(100*sum(redUnRestIds[which(as.numeric(names(redUnRestIds))>=2)])/sum(redUnRestIds))`%);
 `r sum(redUnRestIds[which(as.numeric(names(redUnRestIds))>=10)])` BE
 are even identified by more than 10 Ensembl BEID
 (Figure \@ref(fig:beidTables).a).
-In this case, most of these redundancies come from deprecated ID from former
+In this case, most of these redundancies come from deprecated BEID from former
 versions of the Ensembl database (version in use here: `r ensVersion`)
 and can be excluded by setting the `restricted` parameter to `TRUE` when calling
 the `getBeIds` function (Figure \@ref(fig:beidTables).b).
 However many BE are still identified by two or more current Ensembl BEID
 (`r bigFormat(sum(redIds[which(as.numeric(names(redIds))>=2)]))`
 / `r bigFormat(sum(redIds))`
-= `r round(100*sum(redIds[which(as.numeric(names(redIds))>=2)])/sum(redIds))`~%).
+$\approx$ `r round(100*sum(redIds[which(as.numeric(names(redIds))>=2)])/sum(redIds))`%).
 This result comes from the way the BED database is constructed:
-When two identifiers from the same resource correspond to the same identifier
+When two BEID from the same resource correspond to the same BEID
 in another resource (*correspond_to* relationship in the data model),
 all these BEID are considered to identify the same BE.
 
 A complex example of such mapping is shown in Figure \@ref(fig:TAS2R8)
 mapping all the BEID of the human TAS2R8 gene which codes for a protein
 of the family of candidate taste receptors. There are three identifiers
-corresponding to this gene symbol in Ensembl. All these three identifiers
+corresponding to this gene symbol in Ensembl. All these three BEID
 correspond to the same Entrez gene and the same HGNC identifiers.
 All these BEID are thus considered to identify the same gene. It turns out
 that the three Ensembl BEID correspond to the same gene mapped on different
@@ -601,7 +615,7 @@ of chromosome sequences.
 The ENSG00000272712 identifier shows also a complex history in former
 Ensembl versions.
 
-```{r TAS2R8, include=TRUE, out.width='100%', fig.cap = 'BED relationships between all the different identifiers of the human TAS2R8 gene recorded in the database. BEID are shown as circle and gene symbol in the rounded box. The color legend is shown to the left of the figure. BEID surrounded in bold correspond to \\emph{preferred} identifiers. Solid arrows represent \\emph{correspond\\_to} and \\emph{is\\_known\\_as} relationships. Dotted arrows represent \\emph{is\\_replaced\\_by} and \\emph{is\\_associated\\_to} relationships. This graph has been drawn with the \\texttt{exploreBe} function.'}
+```{r TAS2R8, include=TRUE, out.width='100%', fig.cap = 'BED relationships between all the different identifiers of the human TAS2R8 gene recorded in the database. BEID are shown as circle and gene symbol in the rounded box. The color legend is shown to the left of the figure. BEID surrounded in bold correspond to \\emph{preferred} identifiers. Solid arrows represent \\emph{correspond\\_to} (between two nodes of identical shape) and \\emph{is\\_known\\_as} (between two nodes of different shapes) relationships. Dotted arrows represent \\emph{is\\_replaced\\_by} (between two nodes of identical color) and \\emph{is\\_associated\\_to} (between two nodes of different colors) relationships. This graph has been drawn with the \\texttt{exploreBe} function.'}
 include_graphics('img/TAS2R8-Identifiers.png')
 ```
 
@@ -615,7 +629,7 @@ load("~/Tmp/ConvTables-3rdTools.rda")
 The main goal of BED is to convert identifiers from one scope to another
 easily, rapidly and with high completeness.
 It has been thought in order to allow recurring comparisons to each other of
-many lists of biological entities from various origins.
+many lists of BEID from various origins.
 
 A simple example regarding the conversion of human Ensembl
 gene to human Entrez gene identifiers is shown below and discussed hereafter.
@@ -639,13 +653,13 @@ depBeid <- unique(beids$id[which(beids$db.deprecated!="FALSE")])
 Among all the `r bigFormat(length(curBeid)+ length(depBeid))`
 human Ensembl gene identifiers available in the
 database, `r bigFormat(sum(is.na(bedConv$to)))`
-(`r round(100*sum(is.na(bedConv$to))/length(unique(bedConv$from)))`&nbsp;%)
+(`r round(100*sum(is.na(bedConv$to))/length(unique(bedConv$from)))`%)
 were not converted to any human Entrez gene
 identifier: `r bigFormat(sum(is.na(bedConv$to[which(bedConv$from %in% curBeid)])))`
-(`r round(100*sum(is.na(bedConv$to[which(bedConv$from %in% curBeid)]))/length(curBeid))`&nbsp;%)
+(`r round(100*sum(is.na(bedConv$to[which(bedConv$from %in% curBeid)]))/length(curBeid))`%)
 of the `r bigFormat(length(curBeid))` non-deprecated
 and `r bigFormat(sum(is.na(bedConv$to[which(bedConv$from %in% depBeid)])))`
-(`r round(100*sum(is.na(bedConv$to[which(bedConv$from %in% depBeid)]))/length(depBeid))`&nbsp;%)
+(`r round(100*sum(is.na(bedConv$to[which(bedConv$from %in% depBeid)]))/length(depBeid))`%)
 of the `r bigFormat(length(depBeid))` deprecated identifiers.
 
 ```{r, eval=reComp}
@@ -709,7 +723,8 @@ to perform the same conversion task:
 biomaRt [@kinsella_ensembl_2011; @durinck_mapping_2009],
 mygene [@wu_biogps_2013; @mark_mygene:_2014],
 and gProfileR [@reimand_g:profiler-web_2016; @reimand_gprofiler:_2016].
-At that time, biomaRt was based on the Ensembl 92 release,
+At that time, biomaRt was based on the Ensembl 92 release
+(as the BED database instance),
 mygene on release 91 and gProfileR on release 90.
 
 ```{r}
@@ -829,14 +844,14 @@ onlyInBedAndBm <- setdiff(
 onlyInBedAndBm.l <- length(onlyInBedAndBm)
 ```
 
-
 The numbers of human Ensembl gene identifiers successfully converted by each
 method are compared in Figure \@ref(fig:vennTools).
 Mappings returned only by gProfileR or by mygene
 (`r onlyInGp.l` + `r onlyInMg.l` + `r onlyInGpAndMg.l`)
 are available in releases
 90 and 91 of Ensembl respectively but not in release 92.
-Similarly mappings returned by both BED and biomaRt but neither by gProfileR
+They probably correspond to deprecated cross-references.
+Conversely, mappings returned by both BED and biomaRt but neither by gProfileR
 nor mygene
 (`r onlyInBedAndBm.l`)
 are available in release 92 of Ensembl but not in releases 91 or 90.
@@ -861,6 +876,7 @@ to the same HGNC [@gray_genenames.org:_2015] identifier.
 
 ```{r}
 ## Gene locations
+## Run "Analyses/S01-gff-processing.R" to generate the rda file used below
 load("~/Tmp/gene-locations.rda")
 mappings <- list()
 ## Reference
@@ -946,41 +962,48 @@ Only gene identifiers located on on canonical version
 of chromosome sequences were considered for this comparison.
 We compared the following mappings:
 
-   - Reference (n = `r nrow(mappings$"Reference")`): the mappings provided
-   by biomaRt for identifiers successfully converted by all the tools.
+   - Reference (N = `r bigFormat(nrow(mappings$"Reference"))`): the mappings
+   provided by biomaRt for identifiers successfully converted by all the tools.
    
-   - Former (n = `r nrow(mappings$"Former")`): the mappings
+   - Former (N = `r bigFormat(nrow(mappings$"Former"))`): the mappings
    provided by mygene for identifers
    successfully converted by mygene but neither by biomaRt nor BED.
    
-   - BED (n = `r nrow(mappings$"BED")`): the mappings
+   - BED (N = `r bigFormat(nrow(mappings$"BED"))`): the mappings
    provided by BED for identifers
-   successfully converted by BED but not by any of the 3 other tools.
+   successfully converted by BED but not by any of the three other tools.
    
-```{r}
-par(
-   mfrow=c(1,3),
-   mar=c(4.1, 4.5, 1.1, 0.5)
-)
+```{r geneLocations, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.'}
+# par(mfrow=c(1,5))
+i <- 10
+layout(matrix(c(rep(1,i+1), rep(2,i), rep(3,i-1), rep(4,i), rep(5,i-1)), 1, (i*5)-1, byrow = TRUE))
 ## Chromosomes
+par(mar=c(5.1, 4.5, 1.1, 0.5))
 toPlot <- unlist(lapply(
    mappings,
    function(d){
       sum(d$chr.ens!=d$chr.ncbi)/nrow(d)
    }
 ))
+names(toPlot) <- paste0(
+   names(toPlot),
+   "\n(N=", unlist(lapply(mappings, function(x) bigFormat(nrow(x)))), ")"
+)
 bp <- barplot(
    toPlot*100,
    ylab=expression("" != "chromosomes (%)"),
+   las=3,
    beside=TRUE
 )
 text(
    bp, 1,
    paste(signif(toPlot*100,2), "%"),
-   pos=3
+   pos=3,
+   srt=90
 )
-mtext(text="(a)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+mtext(text="(a)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
 ## Starts
+par(mar=c(5.1, 4.5, 1.1, 0))
 toPlot <- lapply(
    mappings,
    function(d){
@@ -988,60 +1011,602 @@ toPlot <- lapply(
       abs(d$start.ens-d$start.ncbi)
    }
 )
+names(toPlot) <- paste0(
+   names(toPlot),
+   "\n(N=", unlist(lapply(mappings, function(x) bigFormat(nrow(x)))), ")"
+)
 bp <- boxplot(
    toPlot[1:2],
    col="grey",
    outline=FALSE,
+   las=3,
    ylab=expression(group("|", Delta(start), "|"))
 )
 text(
-   2, bp$stats[3,2], round(bp$stats[3,2]),
-   pos=3
+   2, bp$stats[3,2],
+   paste(" ", round(bp$stats[3,2])),
+   pos=4,
+   srt=90
 )
 text(
-   2, bp$stats[4,2], round(bp$stats[4,2]),
-   pos=3
+   2, bp$stats[4,2],
+   paste(" ", round(bp$stats[4,2])),
+   pos=4,
+   srt=90
 )
-mtext(text="(b)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+mtext(text="(b)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
+par(mar=c(5.1, 2.5, 1.1, 0.5))
 bp <- boxplot(
    toPlot[c(1,3)],
    col="grey",
+   # ylab=expression(group("|", Delta(start), "|")),
+   las=3,
+   outline=FALSE
+)
+text(
+   1:2, bp$stats[3,],
+   paste(" ", round(bp$stats[3,])),
+   pos=4,
+   srt=90
+)
+text(
+   1:2, bp$stats[4,],
+   paste(" ", round(bp$stats[4,])),
+   pos=4,
+   srt=90
+)
+## Sizes
+par(mar=c(5.1, 4.5, 1.1, 0))
+toPlot <- lapply(
+   mappings,
+   function(d){
+      d <- d[which(d$chr.ens==d$chr.ncbi),]
+      abs(d$stop.ens-d$start.ens-d$stop.ncbi+d$start.ncbi)
+   }
+)
+names(toPlot) <- paste0(
+   names(toPlot),
+   "\n(N=", unlist(lapply(mappings, function(x) bigFormat(nrow(x)))), ")"
+)
+bp <- boxplot(
+   toPlot[1:2],
+   col="grey",
    outline=FALSE,
-   ylab=expression(group("|", Delta(start), "|"))
+   las=3,
+   ylab=expression(group("|", Delta(size), "|"))
 )
 text(
-   1:2, bp$stats[3,], round(bp$stats[3,]),
-   pos=3
+   2, bp$stats[3,2],
+   paste(" ", round(bp$stats[3,2])),
+   pos=4,
+   srt=90
 )
 text(
-   1:2, bp$stats[4,], round(bp$stats[4,]),
-   pos=3
+   2, bp$stats[4,2],
+   paste(" ", round(bp$stats[4,2])),
+   pos=4,
+   srt=90
 )
-mtext(text="(c)", side=2, line=3, at=par()$usr[4], las=2, font=2)
+mtext(text="(c)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
+par(mar=c(5.1, 2.5, 1.1, 0.5))
+bp <- boxplot(
+   toPlot[c(1,3)],
+   col="grey",
+   las=3,
+   # ylab=expression(group("|", Delta(size), "|")),
+   outline=FALSE
+)
+text(
+   1:2, bp$stats[3,],
+   paste("  ", round(bp$stats[3,])),
+   pos=3,
+   srt=90
+)
+text(
+   1:2, bp$stats[4,],
+   paste(" ", round(bp$stats[4,])),
+   pos=4,
+   srt=90
+)
 ```
 
-<!-- TODO -->
+As shown in Figure \@ref(fig:geneLocations).a,
+the proportion of former cross-referenced identifiers located on different
+chromosomes is much higher than for the reference.
+The proportion of BED cross-referenced identifiers located on different
+chromosomes is higher than for the reference but still low.
+Figures \@ref(fig:geneLocations).a and b show that gene start location
+and gene size are much more
+different between identifiers cross-referenced in former version
+of Ensembl than in the current version.
+Such difference is not observed between the reference mappings and the
+additional mappings provided by BED.
+These results shows that the general quality of former mappings is lower
+than the reference. More interestingly, additional mappings provided by BED
+are of similar quality to the reference. 
+
 ## Transitivity and mapping rules
 
-The BED `convBeIds` function can be used to convert identifiers from
-any available scope to any other one. It automatically find the most
-relevant path according to the considered biological entities.
-It allows elaborate mapping such as the conversion between
-probe identifiers from a platform focused on mouse transcripts into
-human protein identifiers.
-Because such mappings can be intricate,
-BED also provides a function to show the shortest relevant path between
+As shown above, additional mappings between Ensembl and Entrez gene identifiers
+inferred thanks to the use of HGNC cross-references by BED are many and of good
+quality. However, this transitivity mechanism is not always desirable
+depending on how different resources define biological entities.
+It is specially true for gene which is an unstable concept as described
+by @gerstein_what_2007.
+For example, in Entrez the Hs.103110 UniGene identifier is mapped
+to [5465](https://www.ncbi.nlm.nih.gov/gene/5465) and
+to [150383](https://www.ncbi.nlm.nih.gov/gene/150383)
+Entrez gene identifiers which correspond to two different genes
+in Entrez (PPARA and CDPF1) but also in
+Ensembl ([ENSG00000186951](http://www.ensembl.org/id/ENSG00000186951)
+and [ENSG00000205643](http://www.ensembl.org/id/ENSG00000205643))
+and in HGNC ([9232](http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=9232)
+and [33710](http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=33710)).
+These two genes are located closely on the same chromosome but
+at different positions and on different directions.
+The same feature has been observed for many UniGene identifiers which makes
+UniGene unsuitable for transitivity mappings between gene identifiers.
+
+```{r, eval=FALSE}
+## Other examples can be found using the following query
+x <- bedCall(
+   cypher,
+   query='
+   MATCH (g2:Gene)<-[:identifies]-(tgid2:GeneID)<-[:is_associated_to]-
+   (ogid:GeneID)-[:is_associated_to]->(tgid1:GeneID)-[:identifies]->(g1:Gene)
+   OPTIONAL MATCH (tgid1)-[:is_known_as]->(tgn1:BESymbol)
+   WHERE g1<>g2 AND tgid1.database=tgid2.database
+   RETURN ogid.value, ogid.database, tgid1.value, tgid1.database, tgid2.value,
+   tgid2.database, tgn1.value order by tgn1.value;'
+)
+```
+
+In BED the transitivity mechanism is managed by the two following relationships:
+*corresponds_to* and *is_associated_to*. On one hand the *corresponds_to*
+relationships make the mapping transitive since two BEIDs which are connected
+through this kind of relationship are considered to *identify* the same BE.
+On the other hand a BEID which *is_associated_to* to another one does not
+automatically *identify* the same BE making this kind of relationship not
+available for transitive mappings.
+When the BED database is fed, the user chooses which relationship should be
+of type *corresponds_to* or of type *is_associated_to*.
+For example, in the instance used for executing these use cases,
+cross-references provided by
+Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
+are considered as *corresponds_to* relationships whereas cross-references to
+miRbase, Unigene and OMIM are considered as *is_associated_to* relationships.
+
+Beside cross-referencing identifiers of identical type of BE,
+BED uses the biological relationship between genes, transcript and peptides
+to convert identifiers accross different type of BE.
+For example, when converting peptides identifiers from the same species
+it uses only mapping done at the peptide level and does not use mapping
+to transcripts and genes. This strategy seems to be applied by biomaRt
+but not by mygene nor by gProfileR which map, for example,
+one Uniprot identifier
+to all the Ensembl peptide identifier coded by the same gene.
+For example
+the (A6NI28)[http://www.uniprot.org/uniprot/A6NI28] Uniprot identifier
+is unambiguously mapped to the
+ENSP00000298815 Ensembl peptide identifier by BED and biomaRt but is
+wrongly mapped to
+three additional Ensembl peptide identifiers by mygene and gProfileR
+((ENSP00000431776)[http://www.ensembl.org/id/ENSP00000431776],
+(ENSP00000434304)[http://www.ensembl.org/id/ENSP00000434304]
+and (ENSP00000435961)[http://www.ensembl.org/id/ENSP00000435961]
+which are encoded by
+the same gene ((ENSG00000165895)[http://www.ensembl.org/id/ENSG00000165895])).
+
+Finally mapping BEID which are not genes from two different
+organisms using ortholog information requires at least two steps in biomaRt,
+mygene and gProfileR: one for finding the ortholog genes and the other
+for finding the relevant BEID.
+These two steps are integrated and transparent in BED.
+
+Because all these indirect mappings can be intricate,
+BED provides a function to show the shortest relevant paths between
 two different identifiers (Figure \@ref(fig:explConv)).
 
-```{r explConv, include=TRUE, out.width='100%', fig.cap = 'BED conversion shortest path between the ILMN\\_1220595 probe identifier targeting a transcript of the mouse Il17a gene and the Uniprot Q16552 identifier of the human IL17 protein. The legend is shown to the left of the figure. The red arrow represents the \\emph{is\\_homolog\\_of} relationship. This graph has been drawn with the \\texttt{exploreConvPath} function.'}
+```{r explConv, include=TRUE, out.width='100%', fig.cap = 'BED conversion shortest path between the ILMN\\_1220595 probe identifier targeting a transcript of the mouse Il17a gene and the Uniprot Q16552 identifier of the human IL17 protein. The legend is shown to the left of the figure. The red arrow represents the \\emph{is\\_homolog\\_of} relationship. BEID surrounded in bold correspond to \\emph{preferred} identifiers. This graph has been drawn with the \\texttt{exploreConvPath} function.'}
 include_graphics('img/ILMN_1220595-Conversion.png')
 ```
 
-<!-- TODO -->
 ## Comparing transcriptomics results from different experimental design
 
-<!-- TODO -->
+The mechanisms implemented in the BED R package make easy the
+conversion of a set of identifiers from one scope to any other.
+Thus the comparison of data from different genome wide experiments
+is straigtforward from a technical point of view.
+
+To examplify this statement we show below how to compare differential expression
+data from three experiments adressing the understanding of Psoriais mecahnisms
+with different experimental designs:
+
+   - @nair_genome-wide_2009 compared gene expression data in lesional
+   and non-lesional skin from Psoriasis patients using
+   Affymetrix GeneChip Human Genome U133 Plus 2.0.
+   Starting from published data
+   ((E-GEOD-13355)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/])
+   we recomputed differential expression between these two groups of samples.
+
+   - @chiricozzi_integrative_2011 measured transcriptomics responses
+   to IL-17 and TNF-$\alpha$ cytokines
+   in human keratinocytes using Illumina HumanHT-12 v3.0 Expression BeadChips.
+   Starting from published data
+   ((E-GEOD-24767)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/])
+   we recomputed differential expression between keratinocytes
+   co-stimulated with both cytokines and controls.
+   
+   - @swindell_genome-wide_2011 compared gene expression data in lesional
+   and non-lesional skink from five psoriasis mouse models using
+   Affymetrix GeneChip Mouse Genome 430 2.0.
+   Starting from published data
+   ((E-GEOD-27628)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/])
+   we recomputed differential expression between affected and non-affected
+   skin samples.
+
+```{r}
+## DE data
+## Run "Analyses/S02-Datasets.R" to generate the rda file used below
+load("~/Tmp/BED-Comp-UseCase/DEG.rda")
+```
+
+The head of these three data tables is shown below.
+
+```{r, include=TRUE, echo=TRUE}
+## E-GEOD-13355: Human skin
+head(hsSkin.DE)
+## E-GEOD-24767: Human keratinocytes
+head(hsKera.DE)
+## E-GEOD-27628: Mouse skin
+head(mmSkin.DE)
+```
+
+The aim of the following commands is to allow the comparison of the three
+logFC values by converting ProbeID (row names) of one or the other data set.
+The function `guessIdOrigin` is used to identify the scope of the different
+set of identifiers.
+
+```{r, include=TRUE, echo=TRUE}
+scopes <- data.frame(
+   "Human skin"=unlist(guessIdOrigin(rownames(hsSkin.DE), tcLim=1000)),
+   "Human keratinocytes"=unlist(guessIdOrigin(rownames(hsKera.DE), tcLim=1000)),
+   "Mouse skin"=unlist(guessIdOrigin(rownames(mmSkin.DE), tcLim=1000)),
+   stringsAsFactors=FALSE, check.names=FALSE
+)
+scopes
+```
+
+To compare the two human data sets,
+the keratinocyte data set can be converted to
+the same scope of the skin data set using the `convDfBeIds` function.
+After conversion the two data sets can be merged before
+computing the correlation between logFC values.
+
+```{r, include=TRUE, echo=TRUE}
+## Human skin VS keratinocytes
+convHsKera.DE <- convDfBeIds(
+   df=hsKera.DE,
+   from=scopes["be", "Human keratinocytes"],
+   from.source=scopes["source", "Human keratinocytes"],
+   from.org=scopes["organism", "Human keratinocytes"],
+   to=scopes["be", "Human skin"],
+   to.source=scopes["source", "Human skin"],
+   to.org=scopes["organism", "Human skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   hsSkin.DE[,"logFC", drop=FALSE],
+   convHsKera.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Skin", "Keratinocytes")
+round(cor(toCompare$"Skin", toCompare$"Keratinocytes"), 2)
+```
+
+A similar procedure can be applied to compare the two skin data sets or to
+compare mouse skin and human keratinocytes.
+
+```{r, include=TRUE, echo=TRUE}
+## Human skin VS mouse skin
+convMmSkin.DE <- convDfBeIds(
+   df=mmSkin.DE,
+   from=scopes["be", "Mouse skin"],
+   from.source=scopes["source", "Mouse skin"],
+   from.org=scopes["organism", "Mouse skin"],
+   to=scopes["be", "Human skin"],
+   to.source=scopes["source", "Human skin"],
+   to.org=scopes["organism", "Human skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   hsSkin.DE[,"logFC", drop=FALSE],
+   convMmSkin.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Human", "Mouse")
+round(cor(toCompare$"Human", toCompare$"Mouse"), 2)
+
+## Mouse skin VS human keratinocytes
+conv2HsKera.DE <- convDfBeIds(
+   df=hsKera.DE,
+   from=scopes["be", "Human keratinocytes"],
+   from.source=scopes["source", "Human keratinocytes"],
+   from.org=scopes["organism", "Human keratinocytes"],
+   to=scopes["be", "Mouse skin"],
+   to.source=scopes["source", "Mouse skin"],
+   to.org=scopes["organism", "Mouse skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   mmSkin.DE[,"logFC", drop=FALSE],
+   conv2HsKera.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Mouse skin", "Human keratinocytes")
+round(cor(toCompare$"Mouse skin", toCompare$"Human keratinocytes"), 2)
+```
+
 ## Performance
+
+The time taken by BED to convert different sets of identifiers from one scope
+to another has been compared to the time taken by biomaRt, mygene and gProfileR.
+Three different queries have been executed
+starting from 100 or 20,000 identifiers.
+
+```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assess without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
+## The files used below were generated by calling
+## the "Analyses/S03-Performance.R" script several times
+i <- 10
+j <- 2
+k <- 2
+lm <- c(rep(1,i+k), rep(2,i+j), rep(3,i), rep(4,i+j), rep(5,i), rep(6,i+j))
+layout(matrix(lm, 1, length(lm), byrow = TRUE))
+################################################################################
+par(mar=c(7.1, 4.5, 1.1, 0.1))
+bn <- "Human-Genes-Ensembl-Entrez"
+main <- "Ensembl Genes to Entrez genes (human)"
+n <- 100
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   col="transparent",
+   las=3,
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(a)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
+#############################
+par(mar=c(7.1, 2.5, 1.1, 0.1))
+n <- 20000
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "BED (cached)"=c(toPlot$"BED (cached)", bedcTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   # ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   las=3,
+   col="transparent",
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#A6D854", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(b)", side=2, line=0.5, at=par()$usr[4], las=2, font=2)
+################################################################################
+par(mar=c(7.1, 2.5, 1.1, 0.1))
+bn <- "Mouse-Peptides-Uniprot-Transcript-Ensembl"
+main <- "Uniprot Peptides to Ensembl Transcripts (mouse)"
+n <- 100
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   col="transparent",
+   las=3,
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(c)", side=2, line=0.5, at=par()$usr[4], las=2, font=2)
+#############################
+par(mar=c(7.1, 2.5, 1.1, 0.1))
+n <- 20000
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "BED (cached)"=c(toPlot$"BED (cached)", bedcTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   # ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   las=3,
+   col="transparent",
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#A6D854", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(d)", side=2, line=0.5, at=par()$usr[4], las=2, font=2)
+################################################################################
+par(mar=c(7.1, 2.5, 1.1, 0.1))
+bn <- "Mouse-Affy-Peptide-Ensembl"
+main <- "Affymetrix Probes to Ensembl Peptide (mouse)"
+n <- 100
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   col="transparent",
+   las=3,
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(e)", side=2, line=0.5, at=par()$usr[4], las=2, font=2)
+#############################
+par(mar=c(7.1, 2.5, 1.1, 0.1))
+n <- 20000
+toPlot <- list()
+for(i in 1:4){
+   rdir <- sprintf("Analyses/Perf-Results/Day0%s", i)
+   load(sprintf("%s/%s-%s.rda", rdir, bn, n))
+   toPlot <- list(
+      "BED"=c(toPlot$"BED", bedTC[,"elapsed"]),
+      "BED (cached)"=c(toPlot$"BED (cached)", bedcTC[,"elapsed"]),
+      "biomaRt"=c(toPlot$"biomaRt", bmTC[,"elapsed"]),
+      "mygene"=c(toPlot$"mygene", mgTC[,"elapsed"]),
+      "gProfileR"=c(toPlot$"gProfileR", gpTC[,"elapsed"])
+   )
+}
+## Remove strong outliers probably because of network issue
+toPlot <- lapply(
+   toPlot,
+   function(x){
+      x[which(x < median(x)+40*mad(x))]
+   }
+)
+boxplot(
+   toPlot,
+   # ylab="Elapsed time (seconds)",
+   # main=paste(n, main),
+   las=3,
+   col="transparent",
+   outline=FALSE
+)
+beeswarm(
+   toPlot,
+   col=c("#66C2A5", "#A6D854", "#FC8D62", "#8DA0CB", "#E78AC3"),
+   add=TRUE,
+   corral="random"
+)
+mtext(text="(f)", side=2, line=0.5, at=par()$usr[4], las=2, font=2)
+```
+
+As shown in Figure \@ref(fig:perf),
+BED outperforms mygene and gProfileR in all the tested cases even when not
+using its cache system.
+It also outperforms biomaRt for converting Affymetrix probe ID into Ensembl
+mouse peptide ID (Figures \@ref(fig:perf).e and \@ref(fig:perf).f).
+Without using its cache system, BED performs equaly well as biomaRt for
+converting Ensembl human gene ID into Entrez gene ID
+(Figures \@ref(fig:perf).a and \@ref(fig:perf).b).
+It ouperforms biomaRt for converting 100 Uniprot mouse peptide ID
+into Ensembl transcript ID (Figures \@ref(fig:perf).c)
+but is outperformed by biomaRt when 20,000
+identifiers are considered (Figures \@ref(fig:perf).d).
+Nevertheless when cache is used, BED outperforms all the tools whatever the
+conversion scenario
+(Figures \@ref(fig:perf).b, \@ref(fig:perf).d and \@ref(fig:perf).f).
+These results show that BED, as a dedicated and locally available tool,
+is a very efficient option to convert large lists of identifiers on the fly
+and recurrently.
 
 
 <!----------------------------------------------------------------------------->
@@ -1063,11 +1628,24 @@ to build custom instances of the database.
 Database instances can be localy installed or shared accross a community.
 This design combined with a cache system makes BED performant for converting
 large lists of identifiers from and to a large variety of scopes.
-
 Because of our research field we provide an instance focused on human,
 mouse and rat organisms. This database instance can be directly used
 in relevant projects but it can also be enriched depending on user or
 community needs.
+
+Beside a casual use for analyzing and comparing data in the frame of a
+research project, BED can be advantageously employed by sytems dealing with
+biological and molecular information from heterogenous sources.
+Indeed various pieces of knowledge can be efficiently managed
+in their original scope
+(e.g. gene ID for genomics or epigenomics data, transcript ID
+for transcriptomics data and protein ID for proteomics data).
+Thanks to the automatic and fast conversion of identifiers all these
+data can then be compared to each other or to any user input.
+We do not provide BED API for other languages than R but we expect that
+publishing the source code under an open source license (GPL-3)
+will encourage other developpers to extend or improve it according to their
+needs and their expertise.
 
 <!-- TODO -->
 <!-- BED usage contexts -->
