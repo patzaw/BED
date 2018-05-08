@@ -14,11 +14,11 @@ abstract: The understanding of molecular processes involved in
    by the reference information resources and several tools have been
    implemented to simplify their use.
    However, most of these tools do not combine the information provided
-   by different resources to increase the efficiency of the mapping process
-   and deprecated identifiers from former version of databases are not taken
-   into account. Finally finding automatically the most relevant path to
+   by individual resources to increase the completeness of the mapping process.
+   Also, deprecated identifiers from former versions of databases are not taken
+   into account. Finally, finding automatically the most relevant path to
    map identifiers from one scope to the other is often not trivial.
-   The Biological Entity Dictionary (BED) addresses these challenges by
+   The Biological Entity Dictionary (BED) addresses these three challenges by
    relying on a graph data model describing possible
    relationships between entities and their identifiers.
    This model has been implemented using Neo4j and an R
@@ -95,14 +95,14 @@ by several orders of magnitude.
 In a different way, mass spectrometry-related technologies allow the
 identification and the quantification of many kinds of molecular entities
 such as metabolites and proteins.
-Many information systems have been developped to manage
+Many information systems have been developed to manage
 the exploding amount of data and knowledge related to biological
 molecular entities.
 These resources manage different aspects of the data.
 For example some are genome or proteome centered, whereas others
 are focused on molecular interactions and pathways.
-Thus all these resources rely on different identifier systems to organize
-the concepts of interest.
+Thus, all these resources rely on different identifier systems to organize
+concepts of their interest.
 The value of all the experimental data and all the knowledge
 collected in public or private resources is very high as such
 but is also often synergistically leveraged by their cross comparison
@@ -115,7 +115,7 @@ available knowledge requires the ability to map the identifiers on which
 each resource relies.
 
 To achieve this task public and proprietary information systems
-provide mapping tables between their own identifiers and those
+provide mapping tables between their own identifiers (ID) and those
 from other resources.
 Furthermore many tools have been developed to facilitate the access
 to this information.
@@ -123,7 +123,7 @@ Ensembl BioMart [@kinsella_ensembl_2011],
 mygene [@wu_biogps_2013],
 and g:Profiler [@reimand_g:profiler-web_2016]
 are popular examples among many others.
-These resourses are convenient and easy to use with information
+These resources are convenient and easy to use with information
 managed by their maintainers.
 However, in general (BioMart provides tools to configure marts),
 this information cannot be easily customized, optimized
@@ -133,28 +133,31 @@ Recognizing these challenges @van_iersel_bridgedb_2010 proposed
 the BridgeDb framework providing to bioinformatics developers
 a standard interface between tools and
 mapping services and also allowing the easy integration of custom data
-by a transitivity mechanism.
+by a transitivity mechanism. However, to our knowledge,
+transitivity in the BridgeDb framework is not leveraged to improve the
+completeness of ID conversion (e.g. the number of Ensembl
+gene ID actually converted to Entrez gene ID).
 
 Here we present BED: a biological entity dictionary.
 BED has been developed to address three main challenges.
-The first one is related to the completeness of identifier mappings.
-Indeed direct mapping information provided by the different
+The first one is related to the completeness of identifiers mappings.
+Indeed, direct mapping information provided by the different
 systems are not always complete and can be enriched by mappings provided
-by other resources. More interestingly direct mappings not identified by
+by other resources. More interestingly, direct mappings not identified by
 any of these resources can be indirectly inferred by using mappings to a
-third reference. For example, many human Ensembl gene identifiers are not
-directly mapped to any Entrez gene identifiers but such mapping can be inferred
-using respective mappings to HGNC identifiers.
+third reference. For example, many human Ensembl gene ID are not
+directly mapped to any Entrez gene ID but such mapping can be inferred
+using respective mappings to HGNC ID.
 The second challenge is related to the mapping of deprecated identifiers.
-Indeed entity identifiers can change from one resource release to another.
+Indeed, entity identifiers can change from one resource release to another.
 The identifier history is provided by some resources, such as Ensembl or
 the NCBI, but it is generally not used by mapping tools.
 The third challenge is related to the automation of the mapping process
 according to the relationships between the biological entities of interest.
-Indeed mapping between gene and protein identifier scopes should not be done
-the same way than two scopes of gene identifiers.
-Also converting identifiers from different organism should be possible
-using gene ortholog information.
+Indeed, mapping between gene and protein ID scopes should not be done
+the same way than between two scopes regarding gene ID.
+Also converting identifiers from different organisms should be possible
+using gene orthologs information.
 
 To meet these challenges we designed a graph data model describing possible
 relationships between different biological entities and their identifiers.
@@ -308,8 +311,7 @@ built using the script provided
 in the BED R package, is available in a \docker{}
 image [@docker_inc_docker_2017] available here:
 https://hub.docker.com/r/patzaw/bed-ucb-human/ (tag 2018-04-30).
-
-This instance, used to exemplify the following use cases,
+This instance
 is focused on *Homo sapiens*, *Mus musculus* and *Rattus norvegicus* organisms
 and it has been built from these resources:
 
@@ -319,6 +321,9 @@ and it has been built from these resources:
 - biomaRt [@durinck_mapping_2009]
 - GEOquery [@davis_geoquery:_2007]
 - Clarivate Analytics \metabase{} [@clarivate_analytics_metacore_2017]
+
+The results and the use cases described below were obtained and executed
+using this instance of the BED database.
 
 ```{r ID-Numbers, include=TRUE, results='asis'}
 toShow <- c()
@@ -411,6 +416,28 @@ kable(
 )
 ```
 
+## Transitivity management
+
+In the context of mapping identifiers, transitivity is the inference of
+a cross-reference between A and C based on existing cross-references
+between and A and B and between B and C.
+Depending on how biological entities are defined,
+transitivity is desirable or not.
+In BED the transitivity mechanism is managed by the two following relationships:
+*corresponds_to* and *is_associated_to*. On one hand the *corresponds_to*
+relationships make the mapping transitive since two BEIDs which are connected
+through this kind of relationship are considered to *identify* the same BE.
+On the other hand a BEID which *is_associated_to* another one does not
+automatically *identify* the same BE making this kind of relationship not
+available for transitive mappings.
+When the BED database is fed, the user chooses which relationship should be
+of type *corresponds_to* or of type *is_associated_to*.
+For example, in the instance described above,
+cross-references provided by
+Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
+are considered as *corresponds_to* relationships whereas cross-references to
+miRbase, Unigene and OMIM are considered as *is_associated_to* relationships.
+
 ## Querying the database
 
 The *BED* R package provides functions
@@ -426,7 +453,7 @@ or describing their relationships (`firstCommonUpstreamBe`).
 Available organisms, databases and platforms can also be retrieved using
 `listOrganisms`, `listBeIdSources` and `listPlatforms` functions.
 
-All BEID from a specific scope can be get with the `getBeIds` function.
+All BEID from a specific scope can be obtained with the `getBeIds` function.
 A specific BEID and its relationships with others can be graphically explored
 with the `exploreBe` function.
 The use and the results of these two functions are exemplified in Use Cases.
@@ -442,17 +469,18 @@ BE. These functions are used by a shiny [@chang_shiny:_2017]
 gadget (`findBe`) providing an interactive dictionary of BEID which is also made
 available as an Rstudio add-in [@cheng_miniui:_2016; @allaire_rstudioapi:_2017].
 
-As described above, the BED data model has beeing built to fulfill
-molecular biology processes.
+As described above, the BED data model has been built to fulfill
+molecular biology processes
+in order to ensure the biological relevance of identifier mappings.
 The *is_expressed_as* and *is_translated_in* relationships correspond
 to the transcription  and translation processes respectively
 whereas *codes_for* is a fuzzy relationship allowing the mapping
 of genes on objects
-not necessarily corresonpding to the same kind of biological molecules.
+not necessarily corresponding to the same kind of biological molecules.
 These processes are described in different databases with different
-levels of granularity. For exemple, Ensembl [@zerbino_ensembl_2017] provides
+levels of granularity. For example, Ensembl [@zerbino_ensembl_2017] provides
 possible transcripts for each gene specifying which of them is canonical.
-The `getDirectProduct` and `getDirectOrigin` function allow the user
+The `getDirectProduct` and `getDirectOrigin` functions allow the user
 to retrieve direct products or direct origins
 of such molecular biology processes.
 
@@ -460,7 +488,7 @@ The automatic conversion of identifiers from one scope to another is handled
 by the `convBeIds` function.
 This conversion process can be applied directly
 on lists of identifiers (`convBeIdLists`)
-or on data frames with an identifer column (`convDfBeIds`).
+or on data frames with an identifier column (`convDfBeIds`).
 Because such conversion can be intricate, the `exploreConvPath` function
 is provided to display the shortest relevant paths between two identifiers.
 These functions are also exemplified in Use Cases.
@@ -501,16 +529,22 @@ Comprehensive R Archive Network [@cran_comprehensive_nodate]:
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# Use Cases
+# Results
 
-In addition to those described below,
-other use cases and examples are provided in the BED R package vignette.
-All these use cases were executed using the instance of the BED database
-described in Methods and which is available
+The results below exemplify how BED efficiently tackle the three challenges
+described in the introduction. (1) The way identifiers are managed allow the
+mapping of deprecated identifiers. (2) The identifier conversion process takes
+advantage of the transitivity mechanism described in Methods to improve
+its completeness. (3) Mapping rules between different type of
+biological entities (BE) allow the correct and automatic conversion of
+identifiers. Finally, BED run time has been compared to three other tools
+in different contexts.
+These results were obtained using the instance
+of the BED database described in Methods and which is available
 in Docker Hub: https://hub.docker.com/r/patzaw/bed-ucb-human/
 (tag 2018-04-30).
 
-## Exploring identifiers of biological entities
+## Management of identifiers
 
 Identifiers (ID) in BED can identify a biological entity (BEID)
 or a probe (ProbeID).
@@ -718,11 +752,13 @@ save(
 )
 ```
 
-Three other tools were used on `r format(evalDate, "%b %d, %Y")`
-to perform the same conversion task:
+In order to assess the improvement of completeness achieved by BED, we compared
+it to three other tools:
 biomaRt [@kinsella_ensembl_2011; @durinck_mapping_2009],
 mygene [@wu_biogps_2013; @mark_mygene:_2014],
 and gProfileR [@reimand_g:profiler-web_2016; @reimand_gprofiler:_2016].
+All these tools were used on `r format(evalDate, "%b %d, %Y")`
+to perform the same conversion task.
 At that time, biomaRt was based on the Ensembl 92 release
 (as the BED database instance),
 mygene on release 91 and gProfileR on release 90.
@@ -957,23 +993,30 @@ We assessed the validity of the mappings by comparing the location on the human
 genome (GRCh38) of Ensembl gene identifiers as reported by Ensembl
 and the location of the corresponding Entrez gene identifiers
 as reported by the NCBI. If the mapping between two identifiers is correct
-their location on the genome should be identical or higly similar.
-Only gene identifiers located on on canonical version
-of chromosome sequences were considered for this comparison.
-We compared the following mappings:
+their location on the genome should be identical or highly similar
+(only gene identifiers located on canonical versions
+of chromosome sequences were considered for this comparison).
+We compared the following mapping results:
 
-   - Reference (N = `r bigFormat(nrow(mappings$"Reference"))`): the mappings
-   provided by biomaRt for identifiers successfully converted by all the tools.
+   - The mappings provided by biomaRt for identifiers successfully converted
+   by all the tools were considered as the reference
+   (`r bigFormat(nrow(mappings$"Reference"))` regard genes on canonical versions
+   of chromosomes).
    
-   - Former (N = `r bigFormat(nrow(mappings$"Former"))`): the mappings
-   provided by mygene for identifers
-   successfully converted by mygene but neither by biomaRt nor BED.
+   - The mappings provided by mygene for identifiers
+   successfully converted by mygene but neither by biomaRt nor BED
+   correspond to mappings only available in the former version (91) of Ensembl
+   (`r bigFormat(nrow(mappings$"Former"))` regard genes on canonical versions
+   of chromosomes).
    
-   - BED (N = `r bigFormat(nrow(mappings$"BED"))`): the mappings
-   provided by BED for identifers
-   successfully converted by BED but not by any of the three other tools.
+   - The mappings provided by BED for identifiers
+   successfully converted by BED but not by any of the three other tools
+   correspond to the mappings achieved mostly thanks
+   to transitivity through HGNC identifiers
+   (`r bigFormat(nrow(mappings$"BED"))` regard genes on canonical versions
+   of chromosomes).
    
-```{r geneLocations, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.'}
+```{r geneLocations, fig.width=8.1, fig.height=5.2, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. \`\`Reference\'\' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. \`\`Former\'\' mappings provided by mygene for identifers successfully converted by mygene but neither by biomaRt nor BED. \`\`BED\'\' corresponds to mappings provided by BED for identifers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.'}
 # par(mfrow=c(1,5))
 i <- 10
 layout(matrix(c(rep(1,i+1), rep(2,i), rep(3,i-1), rep(4,i), rep(5,i-1)), 1, (i*5)-1, byrow = TRUE))
@@ -1123,9 +1166,7 @@ Such difference is not observed between the reference mappings and the
 additional mappings provided by BED.
 These results shows that the general quality of former mappings is lower
 than the reference. More interestingly, additional mappings provided by BED
-are of similar quality to the reference. 
-
-## Transitivity and mapping rules
+are of similar quality to the reference.
 
 As shown above, additional mappings between Ensembl and Entrez gene identifiers
 inferred thanks to the use of HGNC cross-references by BED are many and of good
@@ -1146,6 +1187,9 @@ These two genes are located closely on the same chromosome but
 at different positions and on different directions.
 The same feature has been observed for many UniGene identifiers which makes
 UniGene unsuitable for transitivity mappings between gene identifiers.
+Therefore, in this instance of the BED database, as described in Methods,
+cross-references between Ensembl and Unigene gene identifiers are considered
+as *is_associated_to* relationships avoiding transitivity.
 
 ```{r, eval=FALSE}
 ## Other examples can be found using the following query
@@ -1161,24 +1205,11 @@ x <- bedCall(
 )
 ```
 
-In BED the transitivity mechanism is managed by the two following relationships:
-*corresponds_to* and *is_associated_to*. On one hand the *corresponds_to*
-relationships make the mapping transitive since two BEIDs which are connected
-through this kind of relationship are considered to *identify* the same BE.
-On the other hand a BEID which *is_associated_to* to another one does not
-automatically *identify* the same BE making this kind of relationship not
-available for transitive mappings.
-When the BED database is fed, the user chooses which relationship should be
-of type *corresponds_to* or of type *is_associated_to*.
-For example, in the instance used for executing these use cases,
-cross-references provided by
-Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
-are considered as *corresponds_to* relationships whereas cross-references to
-miRbase, Unigene and OMIM are considered as *is_associated_to* relationships.
+## Mapping rules
 
 Beside cross-referencing identifiers of identical type of BE,
 BED uses the biological relationship between genes, transcript and peptides
-to convert identifiers accross different type of BE.
+to convert identifiers across different type of BE.
 For example, when converting peptides identifiers from the same species
 it uses only mapping done at the peptide level and does not use mapping
 to transcripts and genes. This strategy seems to be applied by biomaRt
@@ -1197,11 +1228,15 @@ and (ENSP00000435961)[http://www.ensembl.org/id/ENSP00000435961]
 which are encoded by
 the same gene ((ENSG00000165895)[http://www.ensembl.org/id/ENSG00000165895])).
 
-Finally mapping BEID which are not genes from two different
-organisms using ortholog information requires at least two steps in biomaRt,
-mygene and gProfileR: one for finding the ortholog genes and the other
-for finding the relevant BEID.
+Furthermore, in biomaRt, mygene and gProfileR, mapping of BEIDs that are not
+genes from two different organisms using orthologs information requires at
+least 2 steps: one to find the ortholog genes and the other to find the
+relevant BEID.
 These two steps are integrated and transparent in BED.
+
+In general, thanks to the BED data model and to mapping rules,
+identifier conversions from one scope to another are biologically
+relevant and automatic as exemplified in the use case described below.
 
 Because all these indirect mappings can be intricate,
 BED provides a function to show the shortest relevant paths between
@@ -1211,142 +1246,6 @@ two different identifiers (Figure \@ref(fig:explConv)).
 include_graphics('img/ILMN_1220595-Conversion.png')
 ```
 
-## Comparing transcriptomics results from different experimental design
-
-The mechanisms implemented in the BED R package make easy the
-conversion of a set of identifiers from one scope to any other.
-Thus the comparison of data from different genome wide experiments
-is straigtforward from a technical point of view.
-
-To examplify this statement we show below how to compare differential expression
-data from three experiments adressing the understanding of Psoriais mecahnisms
-with different experimental designs:
-
-   - @nair_genome-wide_2009 compared gene expression data in lesional
-   and non-lesional skin from Psoriasis patients using
-   Affymetrix GeneChip Human Genome U133 Plus 2.0.
-   Starting from published data
-   ((E-GEOD-13355)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/])
-   we recomputed differential expression between these two groups of samples.
-
-   - @chiricozzi_integrative_2011 measured transcriptomics responses
-   to IL-17 and TNF-$\alpha$ cytokines
-   in human keratinocytes using Illumina HumanHT-12 v3.0 Expression BeadChips.
-   Starting from published data
-   ((E-GEOD-24767)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/])
-   we recomputed differential expression between keratinocytes
-   co-stimulated with both cytokines and controls.
-   
-   - @swindell_genome-wide_2011 compared gene expression data in lesional
-   and non-lesional skink from five psoriasis mouse models using
-   Affymetrix GeneChip Mouse Genome 430 2.0.
-   Starting from published data
-   ((E-GEOD-27628)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/])
-   we recomputed differential expression between affected and non-affected
-   skin samples.
-
-```{r}
-## DE data
-## Run "Analyses/S02-Datasets.R" to generate the rda file used below
-load("~/Tmp/BED-Comp-UseCase/DEG.rda")
-```
-
-The head of these three data tables is shown below.
-
-```{r, include=TRUE, echo=TRUE}
-## E-GEOD-13355: Human skin
-head(hsSkin.DE)
-## E-GEOD-24767: Human keratinocytes
-head(hsKera.DE)
-## E-GEOD-27628: Mouse skin
-head(mmSkin.DE)
-```
-
-The aim of the following commands is to allow the comparison of the three
-logFC values by converting ProbeID (row names) of one or the other data set.
-The function `guessIdOrigin` is used to identify the scope of the different
-set of identifiers.
-
-```{r, include=TRUE, echo=TRUE}
-scopes <- data.frame(
-   "Human skin"=unlist(guessIdOrigin(rownames(hsSkin.DE), tcLim=1000)),
-   "Human keratinocytes"=unlist(guessIdOrigin(rownames(hsKera.DE), tcLim=1000)),
-   "Mouse skin"=unlist(guessIdOrigin(rownames(mmSkin.DE), tcLim=1000)),
-   stringsAsFactors=FALSE, check.names=FALSE
-)
-scopes
-```
-
-To compare the two human data sets,
-the keratinocyte data set can be converted to
-the same scope of the skin data set using the `convDfBeIds` function.
-After conversion the two data sets can be merged before
-computing the correlation between logFC values.
-
-```{r, include=TRUE, echo=TRUE}
-## Human skin VS keratinocytes
-convHsKera.DE <- convDfBeIds(
-   df=hsKera.DE,
-   from=scopes["be", "Human keratinocytes"],
-   from.source=scopes["source", "Human keratinocytes"],
-   from.org=scopes["organism", "Human keratinocytes"],
-   to=scopes["be", "Human skin"],
-   to.source=scopes["source", "Human skin"],
-   to.org=scopes["organism", "Human skin"],
-   restricted=TRUE
-)
-toCompare <- merge(
-   hsSkin.DE[,"logFC", drop=FALSE],
-   convHsKera.DE[,c("conv.to", "logFC")],
-   by.x=0, by.y="conv.to"
-)
-colnames(toCompare) <- c("ID", "Skin", "Keratinocytes")
-round(cor(toCompare$"Skin", toCompare$"Keratinocytes"), 2)
-```
-
-A similar procedure can be applied to compare the two skin data sets or to
-compare mouse skin and human keratinocytes.
-
-```{r, include=TRUE, echo=TRUE}
-## Human skin VS mouse skin
-convMmSkin.DE <- convDfBeIds(
-   df=mmSkin.DE,
-   from=scopes["be", "Mouse skin"],
-   from.source=scopes["source", "Mouse skin"],
-   from.org=scopes["organism", "Mouse skin"],
-   to=scopes["be", "Human skin"],
-   to.source=scopes["source", "Human skin"],
-   to.org=scopes["organism", "Human skin"],
-   restricted=TRUE
-)
-toCompare <- merge(
-   hsSkin.DE[,"logFC", drop=FALSE],
-   convMmSkin.DE[,c("conv.to", "logFC")],
-   by.x=0, by.y="conv.to"
-)
-colnames(toCompare) <- c("ID", "Human", "Mouse")
-round(cor(toCompare$"Human", toCompare$"Mouse"), 2)
-
-## Mouse skin VS human keratinocytes
-conv2HsKera.DE <- convDfBeIds(
-   df=hsKera.DE,
-   from=scopes["be", "Human keratinocytes"],
-   from.source=scopes["source", "Human keratinocytes"],
-   from.org=scopes["organism", "Human keratinocytes"],
-   to=scopes["be", "Mouse skin"],
-   to.source=scopes["source", "Mouse skin"],
-   to.org=scopes["organism", "Mouse skin"],
-   restricted=TRUE
-)
-toCompare <- merge(
-   mmSkin.DE[,"logFC", drop=FALSE],
-   conv2HsKera.DE[,c("conv.to", "logFC")],
-   by.x=0, by.y="conv.to"
-)
-colnames(toCompare) <- c("ID", "Mouse skin", "Human keratinocytes")
-round(cor(toCompare$"Mouse skin", toCompare$"Human keratinocytes"), 2)
-```
-
 ## Performance
 
 The time taken by BED to convert different sets of identifiers from one scope
@@ -1354,7 +1253,7 @@ to another has been compared to the time taken by biomaRt, mygene and gProfileR.
 Three different queries have been executed
 starting from 100 or 20,000 identifiers.
 
-```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assess without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
+```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
 ## The files used below were generated by calling
 ## the "Analyses/S03-Performance.R" script several times
 i <- 10
@@ -1594,10 +1493,10 @@ BED outperforms mygene and gProfileR in all the tested cases even when not
 using its cache system.
 It also outperforms biomaRt for converting Affymetrix probe ID into Ensembl
 mouse peptide ID (Figures \@ref(fig:perf).e and \@ref(fig:perf).f).
-Without using its cache system, BED performs equaly well as biomaRt for
+Without using its cache system, BED performs equally well as biomaRt for
 converting Ensembl human gene ID into Entrez gene ID
 (Figures \@ref(fig:perf).a and \@ref(fig:perf).b).
-It ouperforms biomaRt for converting 100 Uniprot mouse peptide ID
+It outperforms biomaRt for converting 100 Uniprot mouse peptide ID
 into Ensembl transcript ID (Figures \@ref(fig:perf).c)
 but is outperformed by biomaRt when 20,000
 identifiers are considered (Figures \@ref(fig:perf).d).
@@ -1611,22 +1510,194 @@ and recurrently.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+# Use Case: comparing transcriptomics data sets
+
+In this use case we show how BED facilitates the comparison of
+data sets relying on identifiers with different scopes.
+Indeed, the mechanisms implemented in the BED R package make easy the
+conversion of a set of identifiers from one scope to any other.
+Thus the comparison of data from different genome wide experiments
+is straightforward from a technical point of view.
+
+To exemplify this statement we show below how to compare differential expression
+data from three experiments addressing the understanding of Psoriasis mechanisms
+with different experimental designs and platforms:
+
+   - @nair_genome-wide_2009 compared gene expression data in lesional
+   and non-lesional skin from Psoriasis patients using
+   Affymetrix GeneChip Human Genome U133 Plus 2.0.
+   Starting from published data
+   ((E-GEOD-13355)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/])
+   we recomputed differential expression between these two groups of samples.
+
+   - @chiricozzi_integrative_2011 measured transcriptomics responses
+   to IL-17 and TNF-$\alpha$ cytokines
+   in human keratinocytes using Illumina HumanHT-12 v3.0 Expression BeadChips.
+   Starting from published data
+   ((E-GEOD-24767)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/])
+   we recomputed differential expression between keratinocytes
+   co-stimulated with both cytokines and controls.
+   
+   - @swindell_genome-wide_2011 compared gene expression data in lesional
+   and non-lesional skink from five psoriasis mouse models using
+   Affymetrix GeneChip Mouse Genome 430 2.0.
+   Starting from published data
+   ((E-GEOD-27628)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/])
+   we recomputed differential expression between affected and non-affected
+   skin samples.
+
+```{r}
+## DE data
+## Run "Analyses/S02-Datasets.R" to generate the rda file used below
+load("~/Tmp/BED-Comp-UseCase/DEG.rda")
+```
+
+The head of these three data tables is shown below.
+
+```{r, include=TRUE, echo=TRUE}
+## E-GEOD-13355: Human skin
+head(hsSkin.DE)
+## E-GEOD-24767: Human keratinocytes
+head(hsKera.DE)
+## E-GEOD-27628: Mouse skin
+head(mmSkin.DE)
+```
+
+The aim of the following commands is to allow the comparison of the three
+logFC values by converting ProbeID (row names) of one or the other data set.
+The function `guessIdOrigin` is used to identify the scope of the different
+set of identifiers.
+
+```{r, include=TRUE, echo=TRUE}
+scopes <- data.frame(
+   "Human skin"=unlist(guessIdOrigin(rownames(hsSkin.DE), tcLim=1000)),
+   "Human keratinocytes"=unlist(guessIdOrigin(rownames(hsKera.DE), tcLim=1000)),
+   "Mouse skin"=unlist(guessIdOrigin(rownames(mmSkin.DE), tcLim=1000)),
+   stringsAsFactors=FALSE, check.names=FALSE
+)
+scopes
+```
+
+To compare the two human data sets,
+the keratinocyte data set can be converted to
+the same scope of the skin data set using the `convDfBeIds` function.
+After conversion the two data sets can be merged before
+computing the correlation between logFC values.
+
+```{r, include=TRUE, echo=TRUE}
+## Human skin VS keratinocytes
+convHsKera.DE <- convDfBeIds(
+   df=hsKera.DE,
+   from=scopes["be", "Human keratinocytes"],
+   from.source=scopes["source", "Human keratinocytes"],
+   from.org=scopes["organism", "Human keratinocytes"],
+   to=scopes["be", "Human skin"],
+   to.source=scopes["source", "Human skin"],
+   to.org=scopes["organism", "Human skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   hsSkin.DE[,"logFC", drop=FALSE],
+   convHsKera.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Skin", "Keratinocytes")
+round(cor(toCompare$"Skin", toCompare$"Keratinocytes"), 2)
+```
+
+A similar procedure can be applied to compare the two skin data sets or to
+compare mouse skin and human keratinocytes.
+
+```{r, include=TRUE, echo=TRUE}
+## Human skin VS mouse skin
+convMmSkin.DE <- convDfBeIds(
+   df=mmSkin.DE,
+   from=scopes["be", "Mouse skin"],
+   from.source=scopes["source", "Mouse skin"],
+   from.org=scopes["organism", "Mouse skin"],
+   to=scopes["be", "Human skin"],
+   to.source=scopes["source", "Human skin"],
+   to.org=scopes["organism", "Human skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   hsSkin.DE[,"logFC", drop=FALSE],
+   convMmSkin.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Human", "Mouse")
+round(cor(toCompare$"Human", toCompare$"Mouse"), 2)
+
+## Mouse skin VS human keratinocytes
+conv2HsKera.DE <- convDfBeIds(
+   df=hsKera.DE,
+   from=scopes["be", "Human keratinocytes"],
+   from.source=scopes["source", "Human keratinocytes"],
+   from.org=scopes["organism", "Human keratinocytes"],
+   to=scopes["be", "Mouse skin"],
+   to.source=scopes["source", "Mouse skin"],
+   to.org=scopes["organism", "Mouse skin"],
+   restricted=TRUE
+)
+toCompare <- merge(
+   mmSkin.DE[,"logFC", drop=FALSE],
+   conv2HsKera.DE[,c("conv.to", "logFC")],
+   by.x=0, by.y="conv.to"
+)
+colnames(toCompare) <- c("ID", "Mouse skin", "Human keratinocytes")
+round(cor(toCompare$"Mouse skin", toCompare$"Human keratinocytes"), 2)
+```
+
+As shown above, converting the identifier scope of transcriptomic data sets
+is straightforward and quickly executed using BED.
+It makes the comparison (such as correlation analyses performed in this use
+case) and the integration of multiple heterogeneous data very easy to achieve.
+
+Additional examples of BED functionalities are provided in the R package
+vignette.
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 # Conclusions
+
+The appearance of "omics" technologies, biological knowledge databases and
+systems biology analytical approaches have opened the possibility to
+integrate various data sets to get a better understanding of
+biological processes underlying different complex phenotypes
+such as diseases.
+However, this promising interoperability of data sets  is largely hampered
+by the heterogeneity of identifiers used by technical platforms but also
+those used by knowledge databases to organize information.
+Comparing and integrating all these data
+requires the ability to map the identifiers on which each resource relies.
+Many tools have been developed to achieve this task
+(e.g. @kinsella_ensembl_2011, @wu_biogps_2013, @reimand_g:profiler-web_2016
+or @van_iersel_bridgedb_2010).
+However, we identified three challenges generally not addressed by the
+available tools:
+- Information provided by different data sources is not leveraged to increase
+the completeness of identifier conversion.
+- Deprecated identifiers, used in former versions of resources, are not
+available anymore for conversion in up-to-date versions of mapping tools,
+damaging the integration of historical data sets.
+- The mapping between very different scopes of identifiers is either
+difficult to automate or not biologically relevant.
 
 BED is a system dedicated to the mapping between identifiers of molecular
 biological entities. It relies on a graph data model implemented with
 \neo{} and on rules coded in an R package.
 BED leverages mapping information provided by different resources in order
-to increase the mapping efficiency between each of them.
+to increase the mapping completeness between each of them.
 It also allows the mapping of deprecated identifiers.
 Rules are used to automatically convert identifiers from one scope to another
 using the most appropriate path.
 
-The intend of BED is to be tailored to specific needs and
+The intent of BED is to be tailored to specific needs and
 beside functions for querying the system the BED R package provides functions
-to build custom instances of the database.
-Database instances can be localy installed or shared accross a community.
-This design combined with a cache system makes BED performant for converting
+to build custom instances of the database, including internal
+or proprietary resources for example.
+Database instances can be locally installed or shared across a community.
+This design combined with a cache system makes BED efficient for converting
 large lists of identifiers from and to a large variety of scopes.
 Because of our research field we provide an instance focused on human,
 mouse and rat organisms. This database instance can be directly used
@@ -1634,8 +1705,8 @@ in relevant projects but it can also be enriched depending on user or
 community needs.
 
 Beside a casual use for analyzing and comparing data in the frame of a
-research project, BED can be advantageously employed by sytems dealing with
-biological and molecular information from heterogenous sources.
+research project, BED can be advantageously employed by systems dealing with
+biological and molecular information from heterogeneous sources.
 Indeed various pieces of knowledge can be efficiently managed
 in their original scope
 (e.g. gene ID for genomics or epigenomics data, transcript ID
@@ -1644,11 +1715,9 @@ Thanks to the automatic and fast conversion of identifiers all these
 data can then be compared to each other or to any user input.
 We do not provide BED API for other languages than R but we expect that
 publishing the source code under an open source license (GPL-3)
-will encourage other developpers to extend or improve it according to their
+will encourage other developers to extend or improve it according to their
 needs and their expertise.
 
-<!-- TODO -->
-<!-- BED usage contexts -->
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

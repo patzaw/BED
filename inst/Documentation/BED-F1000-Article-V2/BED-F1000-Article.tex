@@ -100,7 +100,7 @@
 \thispagestyle{front}
 
 \begin{abstract}
-The understanding of molecular processes involved in a specific biological system can be significantly improved by combining and comparing different data sets and knowledge resources. However these information sources often use different identification systems and an identifier conversion step is required before any integration effort. Mapping between identifiers is often provided by the reference information resources and several tools have been implemented to simplify their use. However, most of these tools do not combine the information provided by different resources to increase the efficiency of the mapping process and deprecated identifiers from former version of databases are not taken into account. Finally finding automatically the most relevant path to map identifiers from one scope to the other is often not trivial. The Biological Entity Dictionary (BED) addresses these challenges by relying on a graph data model describing possible relationships between entities and their identifiers. This model has been implemented using Neo4j and an R package provides functions to query the graph but also to create and feed a custom instance of the database. This design combined with a local installation of the graph database and a cache sytem make BED very efficient to convert large lists of identifiers.
+The understanding of molecular processes involved in a specific biological system can be significantly improved by combining and comparing different data sets and knowledge resources. However these information sources often use different identification systems and an identifier conversion step is required before any integration effort. Mapping between identifiers is often provided by the reference information resources and several tools have been implemented to simplify their use. However, most of these tools do not combine the information provided by individual resources to increase the completeness of the mapping process. Also, deprecated identifiers from former versions of databases are not taken into account. Finally, finding automatically the most relevant path to map identifiers from one scope to the other is often not trivial. The Biological Entity Dictionary (BED) addresses these three challenges by relying on a graph data model describing possible relationships between entities and their identifiers. This model has been implemented using Neo4j and an R package provides functions to query the graph but also to create and feed a custom instance of the database. This design combined with a local installation of the graph database and a cache sytem make BED very efficient to convert large lists of identifiers.
 \end{abstract}
 
 \section*{Keywords}
@@ -131,14 +131,14 @@ by several orders of magnitude.
 In a different way, mass spectrometry-related technologies allow the
 identification and the quantification of many kinds of molecular entities
 such as metabolites and proteins.
-Many information systems have been developped to manage
+Many information systems have been developed to manage
 the exploding amount of data and knowledge related to biological
 molecular entities.
 These resources manage different aspects of the data.
 For example some are genome or proteome centered, whereas others
 are focused on molecular interactions and pathways.
-Thus all these resources rely on different identifier systems to organize
-the concepts of interest.
+Thus, all these resources rely on different identifier systems to organize
+concepts of their interest.
 The value of all the experimental data and all the knowledge
 collected in public or private resources is very high as such
 but is also often synergistically leveraged by their cross comparison
@@ -151,7 +151,7 @@ available knowledge requires the ability to map the identifiers on which
 each resource relies.
 
 To achieve this task public and proprietary information systems
-provide mapping tables between their own identifiers and those
+provide mapping tables between their own identifiers (ID) and those
 from other resources.
 Furthermore many tools have been developed to facilitate the access
 to this information.
@@ -159,7 +159,7 @@ Ensembl BioMart \citep{kinsella_ensembl_2011},
 mygene \citep{wu_biogps_2013},
 and g:Profiler \citep{reimand_g:profiler-web_2016}
 are popular examples among many others.
-These resourses are convenient and easy to use with information
+These resources are convenient and easy to use with information
 managed by their maintainers.
 However, in general (BioMart provides tools to configure marts),
 this information cannot be easily customized, optimized
@@ -169,28 +169,31 @@ Recognizing these challenges \citet{van_iersel_bridgedb_2010} proposed
 the BridgeDb framework providing to bioinformatics developers
 a standard interface between tools and
 mapping services and also allowing the easy integration of custom data
-by a transitivity mechanism.
+by a transitivity mechanism. However, to our knowledge,
+transitivity in the BridgeDb framework is not leveraged to improve the
+completeness of ID conversion (e.g.~the number of Ensembl
+gene ID actually converted to Entrez gene ID).
 
 Here we present BED: a biological entity dictionary.
 BED has been developed to address three main challenges.
-The first one is related to the completeness of identifier mappings.
-Indeed direct mapping information provided by the different
+The first one is related to the completeness of identifiers mappings.
+Indeed, direct mapping information provided by the different
 systems are not always complete and can be enriched by mappings provided
-by other resources. More interestingly direct mappings not identified by
+by other resources. More interestingly, direct mappings not identified by
 any of these resources can be indirectly inferred by using mappings to a
-third reference. For example, many human Ensembl gene identifiers are not
-directly mapped to any Entrez gene identifiers but such mapping can be inferred
-using respective mappings to HGNC identifiers.
+third reference. For example, many human Ensembl gene ID are not
+directly mapped to any Entrez gene ID but such mapping can be inferred
+using respective mappings to HGNC ID.
 The second challenge is related to the mapping of deprecated identifiers.
-Indeed entity identifiers can change from one resource release to another.
+Indeed, entity identifiers can change from one resource release to another.
 The identifier history is provided by some resources, such as Ensembl or
 the NCBI, but it is generally not used by mapping tools.
 The third challenge is related to the automation of the mapping process
 according to the relationships between the biological entities of interest.
-Indeed mapping between gene and protein identifier scopes should not be done
-the same way than two scopes of gene identifiers.
-Also converting identifiers from different organism should be possible
-using gene ortholog information.
+Indeed, mapping between gene and protein ID scopes should not be done
+the same way than between two scopes regarding gene ID.
+Also converting identifiers from different organisms should be possible
+using gene orthologs information.
 
 To meet these challenges we designed a graph data model describing possible
 relationships between different biological entities and their identifiers.
@@ -361,8 +364,7 @@ built using the script provided
 in the BED R package, is available in a \docker{}
 image \citep{docker_inc_docker_2017} available here:
 \url{https://hub.docker.com/r/patzaw/bed-ucb-human/} (tag 2018-04-30).
-
-This instance, used to exemplify the following use cases,
+This instance
 is focused on \emph{Homo sapiens}, \emph{Mus musculus} and \emph{Rattus norvegicus} organisms
 and it has been built from these resources:
 
@@ -380,6 +382,9 @@ and it has been built from these resources:
 \item
   Clarivate Analytics \metabase{} \citep{clarivate_analytics_metacore_2017}
 \end{itemize}
+
+The results and the use cases described below were obtained and executed
+using this instance of the BED database.
 
 \begin{table}[htbp]
 \caption{\label{tab:ID-Numbers}Numbers of BEID available in the BED UCB-Human database instance.
@@ -472,6 +477,28 @@ shown in Table \ref{tab:Platforms}. They provide mapping to BEID from
 \end{tabledata}
 \end{table}
 
+\subsection{Transitivity management}\label{transitivity-management}
+
+In the context of mapping identifiers, transitivity is the inference of
+a cross-reference between A and C based on existing cross-references
+between and A and B and between B and C.
+Depending on how biological entities are defined,
+transitivity is desirable or not.
+In BED the transitivity mechanism is managed by the two following relationships:
+\emph{corresponds\_to} and \emph{is\_associated\_to}. On one hand the \emph{corresponds\_to}
+relationships make the mapping transitive since two BEIDs which are connected
+through this kind of relationship are considered to \emph{identify} the same BE.
+On the other hand a BEID which \emph{is\_associated\_to} another one does not
+automatically \emph{identify} the same BE making this kind of relationship not
+available for transitive mappings.
+When the BED database is fed, the user chooses which relationship should be
+of type \emph{corresponds\_to} or of type \emph{is\_associated\_to}.
+For example, in the instance described above,
+cross-references provided by
+Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
+are considered as \emph{corresponds\_to} relationships whereas cross-references to
+miRbase, Unigene and OMIM are considered as \emph{is\_associated\_to} relationships.
+
 \subsection{Querying the database}\label{querying-the-database}
 
 The \emph{BED} R package provides functions
@@ -487,7 +514,7 @@ or describing their relationships (\texttt{firstCommonUpstreamBe}).
 Available organisms, databases and platforms can also be retrieved using
 \texttt{listOrganisms}, \texttt{listBeIdSources} and \texttt{listPlatforms} functions.
 
-All BEID from a specific scope can be get with the \texttt{getBeIds} function.
+All BEID from a specific scope can be obtained with the \texttt{getBeIds} function.
 A specific BEID and its relationships with others can be graphically explored
 with the \texttt{exploreBe} function.
 The use and the results of these two functions are exemplified in Use Cases.
@@ -503,17 +530,18 @@ BE. These functions are used by a shiny \citep{chang_shiny:_2017}
 gadget (\texttt{findBe}) providing an interactive dictionary of BEID which is also made
 available as an Rstudio add-in \citep{cheng_miniui:_2016, allaire_rstudioapi:_2017}.
 
-As described above, the BED data model has beeing built to fulfill
-molecular biology processes.
+As described above, the BED data model has been built to fulfill
+molecular biology processes
+in order to ensure the biological relevance of identifier mappings.
 The \emph{is\_expressed\_as} and \emph{is\_translated\_in} relationships correspond
 to the transcription and translation processes respectively
 whereas \emph{codes\_for} is a fuzzy relationship allowing the mapping
 of genes on objects
-not necessarily corresonpding to the same kind of biological molecules.
+not necessarily corresponding to the same kind of biological molecules.
 These processes are described in different databases with different
-levels of granularity. For exemple, Ensembl \citep{zerbino_ensembl_2017} provides
+levels of granularity. For example, Ensembl \citep{zerbino_ensembl_2017} provides
 possible transcripts for each gene specifying which of them is canonical.
-The \texttt{getDirectProduct} and \texttt{getDirectOrigin} function allow the user
+The \texttt{getDirectProduct} and \texttt{getDirectOrigin} functions allow the user
 to retrieve direct products or direct origins
 of such molecular biology processes.
 
@@ -521,7 +549,7 @@ The automatic conversion of identifiers from one scope to another is handled
 by the \texttt{convBeIds} function.
 This conversion process can be applied directly
 on lists of identifiers (\texttt{convBeIdLists})
-or on data frames with an identifer column (\texttt{convDfBeIds}).
+or on data frames with an identifier column (\texttt{convDfBeIds}).
 Because such conversion can be intricate, the \texttt{exploreConvPath} function
 is provided to display the shortest relevant paths between two identifiers.
 These functions are also exemplified in Use Cases.
@@ -573,16 +601,22 @@ Comprehensive R Archive Network \citep{cran_comprehensive_nodate}:
   \emph{rstudioapi} \citep{allaire_rstudioapi:_2017}
 \end{itemize}
 
-\section{Use Cases}\label{use-cases}
+\section{Results}\label{results}
 
-In addition to those described below,
-other use cases and examples are provided in the BED R package vignette.
-All these use cases were executed using the instance of the BED database
-described in Methods and which is available
+The results below exemplify how BED efficiently tackle the three challenges
+described in the introduction. (1) The way identifiers are managed allow the
+mapping of deprecated identifiers. (2) The identifier conversion process takes
+advantage of the transitivity mechanism described in Methods to improve
+its completeness. (3) Mapping rules between different type of
+biological entities (BE) allow the correct and automatic conversion of
+identifiers. Finally, BED run time has been compared to three other tools
+in different contexts.
+These results were obtained using the instance
+of the BED database described in Methods and which is available
 in Docker Hub: \url{https://hub.docker.com/r/patzaw/bed-ucb-human/}
 (tag 2018-04-30).
 
-\subsection{Exploring identifiers of biological entities}\label{exploring-identifiers-of-biological-entities}
+\subsection{Management of identifiers}\label{management-of-identifiers}
 
 Identifiers (ID) in BED can identify a biological entity (BEID)
 or a probe (ProbeID).
@@ -711,11 +745,13 @@ and 640
 (17\%)
 of the 3,800 deprecated identifiers.
 
-Three other tools were used on May 03, 2018
-to perform the same conversion task:
+In order to assess the improvement of completeness achieved by BED, we compared
+it to three other tools:
 biomaRt \citep{kinsella_ensembl_2011, durinck_mapping_2009},
 mygene \citep{wu_biogps_2013, mark_mygene:_2014},
 and gProfileR \citep{reimand_g:profiler-web_2016, reimand_gprofiler:_2016}.
+All these tools were used on May 03, 2018
+to perform the same conversion task.
 At that time, biomaRt was based on the Ensembl 92 release
 (as the BED database instance),
 mygene on release 91 and gProfileR on release 90.
@@ -763,23 +799,30 @@ We assessed the validity of the mappings by comparing the location on the human
 genome (GRCh38) of Ensembl gene identifiers as reported by Ensembl
 and the location of the corresponding Entrez gene identifiers
 as reported by the NCBI. If the mapping between two identifiers is correct
-their location on the genome should be identical or higly similar.
-Only gene identifiers located on on canonical version
-of chromosome sequences were considered for this comparison.
-We compared the following mappings:
+their location on the genome should be identical or highly similar
+(only gene identifiers located on canonical versions
+of chromosome sequences were considered for this comparison).
+We compared the following mapping results:
 
 \begin{itemize}
 \item
-  Reference (N = 19,166): the mappings
-  provided by biomaRt for identifiers successfully converted by all the tools.
+  The mappings provided by biomaRt for identifiers successfully converted
+  by all the tools were considered as the reference
+  (19,166 regard genes on canonical versions
+  of chromosomes).
 \item
-  Former (N = 67): the mappings
-  provided by mygene for identifers
-  successfully converted by mygene but neither by biomaRt nor BED.
+  The mappings provided by mygene for identifiers
+  successfully converted by mygene but neither by biomaRt nor BED
+  correspond to mappings only available in the former version (91) of Ensembl
+  (67 regard genes on canonical versions
+  of chromosomes).
 \item
-  BED (N = 12,913): the mappings
-  provided by BED for identifers
-  successfully converted by BED but not by any of the three other tools.
+  The mappings provided by BED for identifiers
+  successfully converted by BED but not by any of the three other tools
+  correspond to the mappings achieved mostly thanks
+  to transitivity through HGNC identifiers
+  (12,913 regard genes on canonical versions
+  of chromosomes).
 \end{itemize}
 
 \begin{figure}
@@ -788,7 +831,7 @@ We compared the following mappings:
 
 }
 
-\caption{Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.}\label{fig:geneLocations}
+\caption{Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. ``Reference'' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. ``Former'' mappings provided by mygene for identifers successfully converted by mygene but neither by biomaRt nor BED. ``BED'' corresponds to mappings provided by BED for identifers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.}\label{fig:geneLocations}
 \end{figure}
 
 As shown in Figure \ref{fig:geneLocations}.a,
@@ -805,8 +848,6 @@ additional mappings provided by BED.
 These results shows that the general quality of former mappings is lower
 than the reference. More interestingly, additional mappings provided by BED
 are of similar quality to the reference.
-
-\subsection{Transitivity and mapping rules}\label{transitivity-and-mapping-rules}
 
 As shown above, additional mappings between Ensembl and Entrez gene identifiers
 inferred thanks to the use of HGNC cross-references by BED are many and of good
@@ -827,25 +868,15 @@ These two genes are located closely on the same chromosome but
 at different positions and on different directions.
 The same feature has been observed for many UniGene identifiers which makes
 UniGene unsuitable for transitivity mappings between gene identifiers.
+Therefore, in this instance of the BED database, as described in Methods,
+cross-references between Ensembl and Unigene gene identifiers are considered
+as \emph{is\_associated\_to} relationships avoiding transitivity.
 
-In BED the transitivity mechanism is managed by the two following relationships:
-\emph{corresponds\_to} and \emph{is\_associated\_to}. On one hand the \emph{corresponds\_to}
-relationships make the mapping transitive since two BEIDs which are connected
-through this kind of relationship are considered to \emph{identify} the same BE.
-On the other hand a BEID which \emph{is\_associated\_to} to another one does not
-automatically \emph{identify} the same BE making this kind of relationship not
-available for transitive mappings.
-When the BED database is fed, the user chooses which relationship should be
-of type \emph{corresponds\_to} or of type \emph{is\_associated\_to}.
-For example, in the instance used for executing these use cases,
-cross-references provided by
-Ensembl from Ensembl gene identifiers to Entrez, HGNC and Vega gene identifiers
-are considered as \emph{corresponds\_to} relationships whereas cross-references to
-miRbase, Unigene and OMIM are considered as \emph{is\_associated\_to} relationships.
+\subsection{Mapping rules}\label{mapping-rules}
 
 Beside cross-referencing identifiers of identical type of BE,
 BED uses the biological relationship between genes, transcript and peptides
-to convert identifiers accross different type of BE.
+to convert identifiers across different type of BE.
 For example, when converting peptides identifiers from the same species
 it uses only mapping done at the peptide level and does not use mapping
 to transcripts and genes. This strategy seems to be applied by biomaRt
@@ -864,11 +895,15 @@ and (ENSP00000435961){[}\url{http://www.ensembl.org/id/ENSP00000435961}{]}
 which are encoded by
 the same gene ((ENSG00000165895){[}\url{http://www.ensembl.org/id/ENSG00000165895}{]})).
 
-Finally mapping BEID which are not genes from two different
-organisms using ortholog information requires at least two steps in biomaRt,
-mygene and gProfileR: one for finding the ortholog genes and the other
-for finding the relevant BEID.
+Furthermore, in biomaRt, mygene and gProfileR, mapping of BEIDs that are not
+genes from two different organisms using orthologs information requires at
+least 2 steps: one to find the ortholog genes and the other to find the
+relevant BEID.
 These two steps are integrated and transparent in BED.
+
+In general, thanks to the BED data model and to mapping rules,
+identifier conversions from one scope to another are biologically
+relevant and automatic as exemplified in the use case described below.
 
 Because all these indirect mappings can be intricate,
 BED provides a function to show the shortest relevant paths between
@@ -883,16 +918,53 @@ two different identifiers (Figure \ref{fig:explConv}).
 \caption{BED conversion shortest path between the ILMN\_1220595 probe identifier targeting a transcript of the mouse Il17a gene and the Uniprot Q16552 identifier of the human IL17 protein. The legend is shown to the left of the figure. The red arrow represents the \emph{is\_homolog\_of} relationship. BEID surrounded in bold correspond to \emph{preferred} identifiers. This graph has been drawn with the \texttt{exploreConvPath} function.}\label{fig:explConv}
 \end{figure}
 
-\subsection{Comparing transcriptomics results from different experimental design}\label{comparing-transcriptomics-results-from-different-experimental-design}
+\subsection{Performance}\label{performance}
 
-The mechanisms implemented in the BED R package make easy the
+The time taken by BED to convert different sets of identifiers from one scope
+to another has been compared to the time taken by biomaRt, mygene and gProfileR.
+Three different queries have been executed
+starting from 100 or 20,000 identifiers.
+
+\begin{figure}
+
+{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/perf-1} 
+
+}
+
+\caption{Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.}\label{fig:perf}
+\end{figure}
+
+As shown in Figure \ref{fig:perf},
+BED outperforms mygene and gProfileR in all the tested cases even when not
+using its cache system.
+It also outperforms biomaRt for converting Affymetrix probe ID into Ensembl
+mouse peptide ID (Figures \ref{fig:perf}.e and \ref{fig:perf}.f).
+Without using its cache system, BED performs equally well as biomaRt for
+converting Ensembl human gene ID into Entrez gene ID
+(Figures \ref{fig:perf}.a and \ref{fig:perf}.b).
+It outperforms biomaRt for converting 100 Uniprot mouse peptide ID
+into Ensembl transcript ID (Figures \ref{fig:perf}.c)
+but is outperformed by biomaRt when 20,000
+identifiers are considered (Figures \ref{fig:perf}.d).
+Nevertheless when cache is used, BED outperforms all the tools whatever the
+conversion scenario
+(Figures \ref{fig:perf}.b, \ref{fig:perf}.d and \ref{fig:perf}.f).
+These results show that BED, as a dedicated and locally available tool,
+is a very efficient option to convert large lists of identifiers on the fly
+and recurrently.
+
+\section{Use Case: comparing transcriptomics data sets}\label{use-case-comparing-transcriptomics-data-sets}
+
+In this use case we show how BED facilitates the comparison of
+data sets relying on identifiers with different scopes.
+Indeed, the mechanisms implemented in the BED R package make easy the
 conversion of a set of identifiers from one scope to any other.
 Thus the comparison of data from different genome wide experiments
-is straigtforward from a technical point of view.
+is straightforward from a technical point of view.
 
-To examplify this statement we show below how to compare differential expression
-data from three experiments adressing the understanding of Psoriais mecahnisms
-with different experimental designs:
+To exemplify this statement we show below how to compare differential expression
+data from three experiments addressing the understanding of Psoriasis mechanisms
+with different experimental designs and platforms:
 
 \begin{itemize}
 \item
@@ -1094,57 +1166,54 @@ compare mouse skin and human keratinocytes.
 ## [1] 0.07
 \end{verbatim}
 
-\subsection{Performance}\label{performance}
+As shown above, converting the identifier scope of transcriptomic data sets
+is straightforward and quickly executed using BED.
+It makes the comparison (such as correlation analyses performed in this use
+case) and the integration of multiple heterogeneous data very easy to achieve.
 
-The time taken by BED to convert different sets of identifiers from one scope
-to another has been compared to the time taken by biomaRt, mygene and gProfileR.
-Three different queries have been executed
-starting from 100 or 20,000 identifiers.
-
-\begin{figure}
-
-{\centering \includegraphics[width=1\linewidth]{BED-F1000-Article_files/figure-latex/perf-1} 
-
-}
-
-\caption{Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assess without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.}\label{fig:perf}
-\end{figure}
-
-As shown in Figure \ref{fig:perf},
-BED outperforms mygene and gProfileR in all the tested cases even when not
-using its cache system.
-It also outperforms biomaRt for converting Affymetrix probe ID into Ensembl
-mouse peptide ID (Figures \ref{fig:perf}.e and \ref{fig:perf}.f).
-Without using its cache system, BED performs equaly well as biomaRt for
-converting Ensembl human gene ID into Entrez gene ID
-(Figures \ref{fig:perf}.a and \ref{fig:perf}.b).
-It ouperforms biomaRt for converting 100 Uniprot mouse peptide ID
-into Ensembl transcript ID (Figures \ref{fig:perf}.c)
-but is outperformed by biomaRt when 20,000
-identifiers are considered (Figures \ref{fig:perf}.d).
-Nevertheless when cache is used, BED outperforms all the tools whatever the
-conversion scenario
-(Figures \ref{fig:perf}.b, \ref{fig:perf}.d and \ref{fig:perf}.f).
-These results show that BED, as a dedicated and locally available tool,
-is a very efficient option to convert large lists of identifiers on the fly
-and recurrently.
+Additional examples of BED functionalities are provided in the R package
+vignette.
 
 \section{Conclusions}\label{conclusions}
+
+The appearance of ``omics'' technologies, biological knowledge databases and
+systems biology analytical approaches have opened the possibility to
+integrate various data sets to get a better understanding of
+biological processes underlying different complex phenotypes
+such as diseases.
+However, this promising interoperability of data sets is largely hampered
+by the heterogeneity of identifiers used by technical platforms but also
+those used by knowledge databases to organize information.
+Comparing and integrating all these data
+requires the ability to map the identifiers on which each resource relies.
+Many tools have been developed to achieve this task
+(e.g. \citet{kinsella_ensembl_2011}, \citet{wu_biogps_2013}, \citet{reimand_g:profiler-web_2016}
+or \citet{van_iersel_bridgedb_2010}).
+However, we identified three challenges generally not addressed by the
+available tools:
+- Information provided by different data sources is not leveraged to increase
+the completeness of identifier conversion.
+- Deprecated identifiers, used in former versions of resources, are not
+available anymore for conversion in up-to-date versions of mapping tools,
+damaging the integration of historical data sets.
+- The mapping between very different scopes of identifiers is either
+difficult to automate or not biologically relevant.
 
 BED is a system dedicated to the mapping between identifiers of molecular
 biological entities. It relies on a graph data model implemented with
 \neo{} and on rules coded in an R package.
 BED leverages mapping information provided by different resources in order
-to increase the mapping efficiency between each of them.
+to increase the mapping completeness between each of them.
 It also allows the mapping of deprecated identifiers.
 Rules are used to automatically convert identifiers from one scope to another
 using the most appropriate path.
 
-The intend of BED is to be tailored to specific needs and
+The intent of BED is to be tailored to specific needs and
 beside functions for querying the system the BED R package provides functions
-to build custom instances of the database.
-Database instances can be localy installed or shared accross a community.
-This design combined with a cache system makes BED performant for converting
+to build custom instances of the database, including internal
+or proprietary resources for example.
+Database instances can be locally installed or shared across a community.
+This design combined with a cache system makes BED efficient for converting
 large lists of identifiers from and to a large variety of scopes.
 Because of our research field we provide an instance focused on human,
 mouse and rat organisms. This database instance can be directly used
@@ -1152,8 +1221,8 @@ in relevant projects but it can also be enriched depending on user or
 community needs.
 
 Beside a casual use for analyzing and comparing data in the frame of a
-research project, BED can be advantageously employed by sytems dealing with
-biological and molecular information from heterogenous sources.
+research project, BED can be advantageously employed by systems dealing with
+biological and molecular information from heterogeneous sources.
 Indeed various pieces of knowledge can be efficiently managed
 in their original scope
 (e.g.~gene ID for genomics or epigenomics data, transcript ID
@@ -1162,7 +1231,7 @@ Thanks to the automatic and fast conversion of identifiers all these
 data can then be compared to each other or to any user input.
 We do not provide BED API for other languages than R but we expect that
 publishing the source code under an open source license (GPL-3)
-will encourage other developpers to extend or improve it according to their
+will encourage other developers to extend or improve it according to their
 needs and their expertise.
 
 \section{Software availability}\label{software-availability}
