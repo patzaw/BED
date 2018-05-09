@@ -998,19 +998,19 @@ their location on the genome should be identical or highly similar
 of chromosome sequences were considered for this comparison).
 We compared the following mapping results:
 
-   - The mappings provided by biomaRt for identifiers
+   - The "Reference" mappings provided by biomaRt for identifiers
    successfully converted
    by all the tools were considered as the reference
    (`r bigFormat(nrow(mappings$"Reference"))` regard genes on canonical versions
    of chromosomes).
    
-   - The mappings provided by mygene for identifiers
+   - The "Former" mappings provided by mygene for identifiers
    successfully converted by mygene but neither by biomaRt nor BED
    correspond to mappings only available in the former version (91) of Ensembl
    (`r bigFormat(nrow(mappings$"Former"))` regard genes on canonical versions
    of chromosomes).
    
-   - The mappings provided by BED for identifiers
+   - The "BED" mappings provided by BED for identifiers
    successfully converted by BED but not by any of the three other tools
    correspond to the mappings achieved mostly thanks
    to transitivity through HGNC identifiers
