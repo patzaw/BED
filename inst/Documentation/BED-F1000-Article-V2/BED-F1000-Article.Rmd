@@ -140,13 +140,13 @@ gene ID actually converted to Entrez gene ID).
 
 Here we present BED: a biological entity dictionary.
 BED has been developed to address three main challenges.
-The first one is related to the completeness of identifiers mappings.
+The first one is related to the completeness of identifier mappings.
 Indeed, direct mapping information provided by the different
 systems are not always complete and can be enriched by mappings provided
 by other resources. More interestingly, direct mappings not identified by
 any of these resources can be indirectly inferred by using mappings to a
 third reference. For example, many human Ensembl gene ID are not
-directly mapped to any Entrez gene ID but such mapping can be inferred
+directly mapped to any Entrez gene ID but such mappings can be inferred
 using respective mappings to HGNC ID.
 The second challenge is related to the mapping of deprecated identifiers.
 Indeed, entity identifiers can change from one resource release to another.
@@ -212,8 +212,8 @@ status provided by Uniprot [@the_uniprot_consortium_uniprot:_2017].
 *BEID* can have one or several associated names (*BENames*) and symbols
 (*BESymbol*). *GeneID* can have one or several homologs in other organisms
 belonging to the same *GeneIDFamily*.
-Many genomics platforms, such as micro-array, allow the identification of
-biological entity by using probes identified by *ProbeID*. In general,
+Many genomics platforms, such as micro-arrays, allow the identification of
+biological entities by using probes identified by *ProbeID*. In general,
 *BEID* can be targeted by several probes belonging to a *Platform* which
 is focused on one, and only one, type of entity (BEType) among those described
 above: *Gene*, *Transcript*, *Peptide* or *Object*.
@@ -245,7 +245,7 @@ one or several other *BEID*. Therefore, by design a *BEID*
 which *is_associated_to* or which *is_replaced_by* another *BEID* can be
 related to several different biological entities. It is not the case for
 other *BEID* which identify one and only one biological entity.
-This set of possible relationship allows the indirect mapping of
+This set of possible relationships allows the indirect mapping of
 different identifiers not necessarily provided by any integrated resource.
 
 ## Implementation
@@ -503,7 +503,7 @@ not call \neo{} but loads the cached results and filters it according
 to user input.
 By default the cache is flushed when the system detects inconsistencies
 with the BED database. If needed, it can also be manually flushed
-by using the `lsBEdCache` and `clearBedCache` functions.
+by using the `lsBedCache` and `clearBedCache` functions.
 
 ## Operation
 
@@ -535,7 +535,7 @@ The results below exemplify how BED efficiently tackle the three challenges
 described in the introduction. (1) The way identifiers are managed allow the
 mapping of deprecated identifiers. (2) The identifier conversion process takes
 advantage of the transitivity mechanism described in Methods to improve
-its completeness. (3) Mapping rules between different type of
+its completeness. (3) Mapping rules between different types of
 biological entities (BE) allow the correct and automatic conversion of
 identifiers. Finally, BED run time has been compared to three other tools
 in different contexts.
@@ -575,7 +575,7 @@ ensVersion <- bedCall(
 )
 ```
 
-```{r beidTables, fig.width=6, fig.height=3, out.width='100%', include=TRUE, fig.cap=sprintf('Barplots showing the number of gene BE (log scale) identified by one or more Ensembl gene BEID. a) All Ensembl gene ID. b) Current Ensembl gene ID (version %s).', ensVersion)}
+```{r beidTables, fig.width=6, fig.height=3, out.width='100%', include=TRUE, fig.cap=sprintf('Barplots showing the number (log scale) of gene BE identified by one or more Ensembl gene BEID. a) All Ensembl gene ID. b) Current Ensembl gene ID (version %s).', ensVersion)}
 layout(matrix(c(1,1,1,1,2,2,2), 1, 7, byrow = TRUE))
 par(mar=c(5.1, 4.5, 1.1, 0.5))
 barplot(
@@ -639,12 +639,12 @@ corresponding to this gene symbol in Ensembl. All these three BEID
 correspond to the same Entrez gene and the same HGNC identifiers.
 All these BEID are thus considered to identify the same gene. It turns out
 that the three Ensembl BEID correspond to the same gene mapped on different
-sequence version of the chromosome 12: the canonical (ENSG00000121314),
+sequence versions of the chromosome 12: the canonical (ENSG00000121314),
 CHR_HSCHR12_2_CTG2 (ENSG00000272712)
 and CHR_HSCHR12_3_CTG2 (ENSG00000277316).
 This information provided by Ensembl is encoded in the *seq_region*
 attribute for each Ensembl BEID (see data model)
-and is used to define *preferred* BEID which are mapped on canonical version
+and is used to define *preferred* BEID which are mapped on canonical versions
 of chromosome sequences.
 The ENSG00000272712 identifier shows also a complex history in former
 Ensembl versions.
@@ -1016,7 +1016,7 @@ We compared the following mapping results:
    (`r bigFormat(nrow(mappings$"BED"))` regard genes on canonical versions
    of chromosomes).
    
-```{r geneLocations, fig.width=8.1, fig.height=5.2, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. \`\`Reference\'\' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. \`\`Former\'\' mappings provided by mygene for identifers successfully converted by mygene but neither by biomaRt nor BED. \`\`BED\'\' corresponds to mappings provided by BED for identifers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile are indicated. Outliers are not shown. BED and Former results are compared to Reference on different boxplots because of scale shift.'}
+```{r geneLocations, fig.width=8.1, fig.height=5.2, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. \`\`Reference\'\' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. \`\`Former\'\' corresponds to mappings provided by mygene for identifers successfully converted by mygene but neither by biomaRt nor BED. \`\`BED\'\' corresponds to mappings provided by BED for identifers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile values are indicated. Outliers are not shown. \`\`BED\'\' and \`\`Former\'\' results are compared to Reference on different boxplots because of scale shift.'}
 # par(mfrow=c(1,5))
 i <- 10
 layout(matrix(c(rep(1,i+1), rep(2,i), rep(3,i-1), rep(4,i), rep(5,i-1)), 1, (i*5)-1, byrow = TRUE))
@@ -1164,7 +1164,7 @@ different between identifiers cross-referenced in former version
 of Ensembl than in the current version.
 Such difference is not observed between the reference mappings and the
 additional mappings provided by BED.
-These results shows that the general quality of former mappings is lower
+These results show that the general quality of former mappings is lower
 than the reference. More interestingly, additional mappings provided by BED
 are of similar quality to the reference.
 
@@ -1217,20 +1217,20 @@ but not by mygene nor by gProfileR which map, for example,
 one Uniprot identifier
 to all the Ensembl peptide identifier coded by the same gene.
 For example
-the (A6NI28)[http://www.uniprot.org/uniprot/A6NI28] Uniprot identifier
+the [A6NI28](http://www.uniprot.org/uniprot/A6NI28) Uniprot identifier
 is unambiguously mapped to the
 ENSP00000298815 Ensembl peptide identifier by BED and biomaRt but is
 wrongly mapped to
 three additional Ensembl peptide identifiers by mygene and gProfileR
-((ENSP00000431776)[http://www.ensembl.org/id/ENSP00000431776],
-(ENSP00000434304)[http://www.ensembl.org/id/ENSP00000434304]
-and (ENSP00000435961)[http://www.ensembl.org/id/ENSP00000435961]
+([ENSP00000431776](http://www.ensembl.org/id/ENSP00000431776),
+[ENSP00000434304](http://www.ensembl.org/id/ENSP00000434304)
+and [ENSP00000435961](http://www.ensembl.org/id/ENSP00000435961))
 which are encoded by
-the same gene ((ENSG00000165895)[http://www.ensembl.org/id/ENSG00000165895])).
+the same gene ([ENSG00000165895](http://www.ensembl.org/id/ENSG00000165895)).
 
 Furthermore, in biomaRt, mygene and gProfileR, mapping of BEIDs that are not
 genes from two different organisms using orthologs information requires at
-least 2 steps: one to find the ortholog genes and the other to find the
+least two steps: one to find the ortholog genes and the other to find the
 relevant BEID.
 These two steps are integrated and transparent in BED.
 
@@ -1253,7 +1253,7 @@ to another has been compared to the time taken by biomaRt, mygene and gProfileR.
 Three different queries have been executed
 starting from 100 or 20,000 identifiers.
 
-```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each the considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
+```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
 ## The files used below were generated by calling
 ## the "Analyses/S03-Performance.R" script several times
 i <- 10
@@ -1527,14 +1527,14 @@ with different experimental designs and platforms:
    and non-lesional skin from Psoriasis patients using
    Affymetrix GeneChip Human Genome U133 Plus 2.0.
    Starting from published data
-   ((E-GEOD-13355)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/])
+   (ArrayExpress (https://www.ebi.ac.uk/arrayexpress) accession number: [E-GEOD-13355](https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-13355/))
    we recomputed differential expression between these two groups of samples.
 
    - @chiricozzi_integrative_2011 measured transcriptomics responses
    to IL-17 and TNF-$\alpha$ cytokines
    in human keratinocytes using Illumina HumanHT-12 v3.0 Expression BeadChips.
    Starting from published data
-   ((E-GEOD-24767)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/])
+   ([E-GEOD-24767](https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-24767/))
    we recomputed differential expression between keratinocytes
    co-stimulated with both cytokines and controls.
    
@@ -1542,7 +1542,7 @@ with different experimental designs and platforms:
    and non-lesional skink from five psoriasis mouse models using
    Affymetrix GeneChip Mouse Genome 430 2.0.
    Starting from published data
-   ((E-GEOD-27628)[https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/])
+   ([E-GEOD-27628](https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/))
    we recomputed differential expression between affected and non-affected
    skin samples.
 
@@ -1550,6 +1550,9 @@ with different experimental designs and platforms:
 ## DE data
 ## Run "Analyses/S02-Datasets.R" to generate the rda file used below
 load("~/Tmp/BED-Comp-UseCase/DEG.rda")
+hsSkin.DE <- hsSkin.DE[,c("logFC", "P.Value", "adj.P.Val")]
+hsKera.DE <- hsKera.DE[,c("logFC", "P.Value", "adj.P.Val")]
+mmSkin.DE <- mmSkin.DE[,c("logFC", "P.Value", "adj.P.Val")]
 ```
 
 The head of these three data tables is shown below.
@@ -1566,7 +1569,7 @@ head(mmSkin.DE)
 The aim of the following commands is to allow the comparison of the three
 logFC values by converting ProbeID (row names) of one or the other data set.
 The function `guessIdOrigin` is used to identify the scope of the different
-set of identifiers.
+sets of identifiers.
 
 ```{r, include=TRUE, echo=TRUE}
 scopes <- data.frame(
@@ -1675,13 +1678,14 @@ Many tools have been developed to achieve this task
 or @van_iersel_bridgedb_2010).
 However, we identified three challenges generally not addressed by the
 available tools:
-- Information provided by different data sources is not leveraged to increase
-the completeness of identifier conversion.
-- Deprecated identifiers, used in former versions of resources, are not
-available anymore for conversion in up-to-date versions of mapping tools,
-damaging the integration of historical data sets.
-- The mapping between very different scopes of identifiers is either
-difficult to automate or not biologically relevant.
+   
+   - Information provided by different data sources is not leveraged to increase
+   the completeness of identifier conversion.
+   - Deprecated identifiers, used in former versions of resources, are not
+   available anymore for conversion in up-to-date versions of mapping tools,
+   damaging the integration of historical data sets.
+   - The mapping between very different scopes of identifiers is either
+   difficult to automate or not biologically relevant.
 
 BED is a system dedicated to the mapping between identifiers of molecular
 biological entities. It relies on a graph data model implemented with
