@@ -998,7 +998,8 @@ their location on the genome should be identical or highly similar
 of chromosome sequences were considered for this comparison).
 We compared the following mapping results:
 
-   - The mappings provided by biomaRt for identifiers successfully converted
+   - The mappings provided by biomaRt for identifiers
+   successfully converted
    by all the tools were considered as the reference
    (`r bigFormat(nrow(mappings$"Reference"))` regard genes on canonical versions
    of chromosomes).
@@ -1154,19 +1155,20 @@ text(
 ```
 
 As shown in Figure \@ref(fig:geneLocations).a,
-the proportion of former cross-referenced identifiers located on different
-chromosomes is much higher than for the reference.
-The proportion of BED cross-referenced identifiers located on different
-chromosomes is higher than for the reference but still low.
+the proportion of former cross-referenced identifiers ("Former")
+located on different
+chromosomes is much higher than for the reference ("Reference").
+The proportion of BED cross-referenced identifiers ("BED") located on different
+chromosomes is higher than for "Reference" but still low.
 Figures \@ref(fig:geneLocations).a and b show that gene start location
 and gene size are much more
-different between identifiers cross-referenced in former version
-of Ensembl than in the current version.
-Such difference is not observed between the reference mappings and the
+different between "Former" and "Reference" mappings.
+Such difference is not observed between the "Reference" mappings and the
 additional mappings provided by BED.
-These results show that the general quality of former mappings is lower
-than the reference. More interestingly, additional mappings provided by BED
-are of similar quality to the reference.
+These results show that the general quality of "Former" mappings is lower
+than the "Reference", which is in agreement with their deprecation.
+More interestingly, additional mappings provided by BED
+are of similar quality to the "Reference" making their use as valuable.
 
 As shown above, additional mappings between Ensembl and Entrez gene identifiers
 inferred thanks to the use of HGNC cross-references by BED are many and of good
