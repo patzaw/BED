@@ -25,7 +25,7 @@ abstract: The understanding of molecular processes involved in
    package provides functions to query the graph but also to create and feed
    a custom instance of the database.
    This design combined with a local installation of the graph database and
-   a cache sytem make BED very efficient to convert large lists of identifiers.
+   a cache system make BED very efficient to convert large lists of identifiers.
 keywords: genomics, transcriptomics, proteomics, RNA-seq, microarray,
    database, identifiers.
 bibliography: BED-References.bib
