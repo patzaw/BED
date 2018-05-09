@@ -1555,15 +1555,15 @@ hsKera.DE <- hsKera.DE[,c("logFC", "P.Value", "adj.P.Val")]
 mmSkin.DE <- mmSkin.DE[,c("logFC", "P.Value", "adj.P.Val")]
 ```
 
-The head of these three data tables is shown below.
+The first rows of these three data tables are shown below.
 
 ```{r, include=TRUE, echo=TRUE}
 ## E-GEOD-13355: Human skin
-head(hsSkin.DE)
+head(hsSkin.DE, n=3)
 ## E-GEOD-24767: Human keratinocytes
-head(hsKera.DE)
+head(hsKera.DE, n=3)
 ## E-GEOD-27628: Mouse skin
-head(mmSkin.DE)
+head(mmSkin.DE, n=3)
 ```
 
 The aim of the following commands is to allow the comparison of the three

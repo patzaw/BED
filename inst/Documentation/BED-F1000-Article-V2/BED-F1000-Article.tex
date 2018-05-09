@@ -992,29 +992,26 @@ with different experimental designs and platforms:
   skin samples.
 \end{itemize}
 
-The head of these three data tables is shown below.
+The first rows of these three data tables are shown below.
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## E-GEOD-13355: Human skin}
-\KeywordTok{head}\NormalTok{(hsSkin.DE)}
+\KeywordTok{head}\NormalTok{(hsSkin.DE, }\DataTypeTok{n=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
 \begin{verbatim}
-##                logFC      P.Value    adj.P.Val
-## 41469_at    5.140278 8.384147e-46 4.584033e-41
-## 232170_at   5.766759 3.293084e-45 9.002469e-41
-## 205863_at   4.715087 5.796620e-45 1.056434e-40
-## 203691_at   5.396590 9.068285e-45 1.239521e-40
-## 217388_s_at 3.926282 4.785688e-44 5.233150e-40
-## 207356_at   5.806316 1.006845e-43 9.174875e-40
+##              logFC      P.Value    adj.P.Val
+## 41469_at  5.140278 8.384147e-46 4.584033e-41
+## 232170_at 5.766759 3.293084e-45 9.002469e-41
+## 205863_at 4.715087 5.796620e-45 1.056434e-40
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## E-GEOD-24767: Human keratinocytes}
-\KeywordTok{head}\NormalTok{(hsKera.DE)}
+\KeywordTok{head}\NormalTok{(hsKera.DE, }\DataTypeTok{n=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1023,15 +1020,12 @@ The head of these three data tables is shown below.
 ## ILMN_2048043 6.297295 2.186104e-14 1.066841e-09
 ## ILMN_1672295 3.507524 5.823956e-12 1.051466e-07
 ## ILMN_1680965 6.114791 6.463797e-12 1.051466e-07
-## ILMN_1799575 6.093054 3.759130e-09 4.586232e-05
-## ILMN_1795359 4.930397 7.797664e-09 6.838764e-05
-## ILMN_1757351 2.554070 8.408145e-09 6.838764e-05
 \end{verbatim}
 
 \begin{Shaded}
 \begin{Highlighting}[]
 \NormalTok{## E-GEOD-27628: Mouse skin}
-\KeywordTok{head}\NormalTok{(mmSkin.DE)}
+\KeywordTok{head}\NormalTok{(mmSkin.DE, }\DataTypeTok{n=}\DecValTok{3}\NormalTok{)}
 \end{Highlighting}
 \end{Shaded}
 
@@ -1040,9 +1034,6 @@ The head of these three data tables is shown below.
 ## 1440888_at -1.3929330 3.317833e-08 0.000732987
 ## 1449319_at -0.9672017 4.105579e-08 0.000732987
 ## 1422803_at -0.7688354 5.906985e-08 0.000732987
-## 1435272_at -0.7092831 7.381416e-08 0.000732987
-## 1428499_at -0.7661095 8.126241e-08 0.000732987
-## 1416084_at  0.5313674 1.718620e-07 0.001115532
 \end{verbatim}
 
 The aim of the following commands is to allow the comparison of the three
