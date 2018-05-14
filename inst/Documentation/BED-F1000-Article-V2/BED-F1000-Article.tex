@@ -333,14 +333,14 @@ Briefly these functions can be divided according to three main levels:
   \item
     \texttt{loadHistory}, \texttt{loadCorrespondsTo}, \texttt{loadIsAssociatedTo},
     \texttt{loadIsExpressedAs}, \texttt{loadIsTranslatedIn}, \texttt{loadCodesFor}
-    and \texttt{loadIsHomologOf}are used to load relationships existing
+    and \texttt{loadIsHomologOf} are used to load relationships existing
     between BEID and ProbeID.
   \end{itemize}
 \item
   Highest level functions are helpers for loading information provided by
   some public resources in different specific formats.
   The following resources are currently supported but other resources can
-  be managed by the user by calling the function mentioned above.
+  be managed by the user by calling the functions mentioned above:
 
   \begin{itemize}
   \item
@@ -481,7 +481,7 @@ shown in Table \ref{tab:Platforms}. They provide mapping to BEID from
 
 In the context of mapping identifiers, transitivity is the inference of
 a cross-reference between A and C based on existing cross-references
-between and A and B and between B and C.
+between A and B and between B and C.
 Depending on how biological entities are defined,
 transitivity is desirable or not.
 In BED the transitivity mechanism is managed by the two following relationships:
@@ -517,7 +517,7 @@ Available organisms, databases and platforms can also be retrieved using
 All BEID from a specific scope can be obtained with the \texttt{getBeIds} function.
 A specific BEID and its relationships with others can be graphically explored
 with the \texttt{exploreBe} function.
-The use and the results of these two functions are exemplified in Use Cases.
+The use and the results of these two functions are exemplified in Results.
 Also, the functions \texttt{guessIdOrigin} and \texttt{checkBeIds} are used to guess and to
 check the scope of any list of identifiers.
 This set of functions is completed by the \texttt{getBeIdSymbols}, \texttt{getBeIdNames},
@@ -552,7 +552,7 @@ on lists of identifiers (\texttt{convBeIdLists})
 or on data frames with an identifier column (\texttt{convDfBeIds}).
 Because such conversion can be intricate, the \texttt{exploreConvPath} function
 is provided to display the shortest relevant paths between two identifiers.
-These functions are also exemplified in Use Cases.
+These functions are also exemplified in Results and Use case.
 
 Converting thousands of identifiers can take some time
 (generally a few seconds). Also such conversions are often recurrent and

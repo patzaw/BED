@@ -285,13 +285,13 @@ Briefly these functions can be divided according to three main levels:
       
       - `loadHistory`, `loadCorrespondsTo`, `loadIsAssociatedTo`,
       `loadIsExpressedAs`,  `loadIsTranslatedIn`, `loadCodesFor`
-      and `loadIsHomologOf`are used to load relationships existing
+      and `loadIsHomologOf` are used to load relationships existing
       between BEID and ProbeID.
       
    - Highest level functions are helpers for loading information provided by
    some public resources in different specific formats.
    The following resources are currently supported but other resources can
-   be managed by the user by calling the function mentioned above.
+   be managed by the user by calling the functions mentioned above:
       
       - Ensembl [@zerbino_ensembl_2017]:
       `getEnsemblGeneIds`, `getEnsemblTranscriptIds`, `getEnsemblPeptideIds`
@@ -420,7 +420,7 @@ kable(
 
 In the context of mapping identifiers, transitivity is the inference of
 a cross-reference between A and C based on existing cross-references
-between and A and B and between B and C.
+between A and B and between B and C.
 Depending on how biological entities are defined,
 transitivity is desirable or not.
 In BED the transitivity mechanism is managed by the two following relationships:
@@ -456,7 +456,7 @@ Available organisms, databases and platforms can also be retrieved using
 All BEID from a specific scope can be obtained with the `getBeIds` function.
 A specific BEID and its relationships with others can be graphically explored
 with the `exploreBe` function.
-The use and the results of these two functions are exemplified in Use Cases.
+The use and the results of these two functions are exemplified in Results.
 Also, the functions `guessIdOrigin` and `checkBeIds` are used to guess and to
 check the scope of any list of identifiers.
 This set of functions is completed by the `getBeIdSymbols`, `getBeIdNames`,
@@ -491,7 +491,7 @@ on lists of identifiers (`convBeIdLists`)
 or on data frames with an identifier column (`convDfBeIds`).
 Because such conversion can be intricate, the `exploreConvPath` function
 is provided to display the shortest relevant paths between two identifiers.
-These functions are also exemplified in Use Cases.
+These functions are also exemplified in Results and Use case.
 
 Converting thousands of identifiers can take some time
 (generally a few seconds). Also such conversions are often recurrent and
@@ -1022,7 +1022,7 @@ We compared the following mapping results:
 i <- 10
 layout(matrix(c(rep(1,i+1), rep(2,i), rep(3,i-1), rep(4,i), rep(5,i-1)), 1, (i*5)-1, byrow = TRUE))
 ## Chromosomes
-par(mar=c(5.1, 4.5, 1.1, 0.5))
+par(mar=c(5.3, 4.5, 1.1, 0.5))
 toPlot <- unlist(lapply(
    mappings,
    function(d){
@@ -1047,7 +1047,7 @@ text(
 )
 mtext(text="(a)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
 ## Starts
-par(mar=c(5.1, 4.5, 1.1, 0))
+par(mar=c(5.3, 4.5, 1.1, 0))
 toPlot <- lapply(
    mappings,
    function(d){
@@ -1079,7 +1079,7 @@ text(
    srt=90
 )
 mtext(text="(b)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
-par(mar=c(5.1, 2.5, 1.1, 0.5))
+par(mar=c(5.3, 2.5, 1.1, 0.5))
 bp <- boxplot(
    toPlot[c(1,3)],
    col="grey",
@@ -1100,7 +1100,7 @@ text(
    srt=90
 )
 ## Sizes
-par(mar=c(5.1, 4.5, 1.1, 0))
+par(mar=c(5.3, 4.5, 1.1, 0))
 toPlot <- lapply(
    mappings,
    function(d){
@@ -1132,7 +1132,7 @@ text(
    srt=90
 )
 mtext(text="(c)", side=2, line=2.5, at=par()$usr[4], las=2, font=2)
-par(mar=c(5.1, 2.5, 1.1, 0.5))
+par(mar=c(5.3, 2.5, 1.1, 0.5))
 bp <- boxplot(
    toPlot[c(1,3)],
    col="grey",
