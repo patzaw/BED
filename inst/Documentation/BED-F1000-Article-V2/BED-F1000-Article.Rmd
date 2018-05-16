@@ -8,7 +8,7 @@ author:
 abstract: The understanding of molecular processes involved in
    a specific biological system can be significantly improved by combining
    and comparing different data sets and knowledge resources.
-   However these information sources often use different
+   However, these information sources often use different
    identification systems and an identifier conversion step is required
    before any integration effort. Mapping between identifiers is often provided
    by the reference information resources and several tools have been
@@ -34,6 +34,13 @@ output: BiocWorkflowTools::f1000_article
 editor_options: 
   chunk_output_type: console
 ---
+
+<!----------------------------------------------------------------------------->
+<!--
+To compile this file, go in its directory and call the following command in R:
+> rmarkdown::render("BED-F1000-Article.Rmd")
+<!----------------------------------------------------------------------------->
+
 
 <!----------------------------------------------------------------------------->
 <!-- Citations
@@ -99,14 +106,14 @@ Many information systems have been developed to manage
 the exploding amount of data and knowledge related to biological
 molecular entities.
 These resources manage different aspects of the data.
-For example some are genome or proteome centered, whereas others
+For example, some are genome or proteome centered, whereas others
 are focused on molecular interactions and pathways.
 Thus, all these resources rely on different identifier systems to organize
 concepts of their interest.
 The value of all the experimental data and all the knowledge
 collected in public or private resources is very high as such
 but is also often synergistically leveraged by their cross comparison
-in a dedicated manner. Indeed many data sets can be relevant when
+in a dedicated manner. Indeed, many data sets can be relevant when
 addressing the understanding of a specific biological system, a phenotypic trait
 or a disease for example. These data sets can focus on different biological
 entities such as transcripts or proteins in different tissues, conditions
@@ -117,7 +124,7 @@ each resource relies.
 To achieve this task public and proprietary information systems
 provide mapping tables between their own identifiers (ID) and those
 from other resources.
-Furthermore many tools have been developed to facilitate the access
+Furthermore, many tools have been developed to facilitate the access
 to this information.
 Ensembl BioMart [@kinsella_ensembl_2011],
 mygene [@wu_biogps_2013],
@@ -156,10 +163,10 @@ The third challenge is related to the automation of the mapping process
 according to the relationships between the biological entities of interest.
 Indeed, mapping between gene and protein ID scopes should not be done
 the same way than between two scopes regarding gene ID.
-Also converting identifiers from different organisms should be possible
+Also, converting identifiers from different organisms should be possible
 using gene orthologs information.
 
-To meet these challenges we designed a graph data model describing possible
+To meet these challenges, we designed a graph data model describing possible
 relationships between different biological entities and their identifiers.
 This data model has been implemented with the \neo{} graph
 database [@neo4j_inc_neo4j_2017].
@@ -189,7 +196,7 @@ tailored to other needs.
 
 ## Data model
 
-```{r Data-Model, include=TRUE, out.width='100%', fig.cap = 'The BED graph data model. The model is shown as an Entity/Relationship (ER) diagram: entities correspond to graph nodes and relationships to graph edges. \`\`ID\'\' and \`\`idx\'\' indicate if the corresponding entity property is unique or indexed respectively. Some redundancies occur in this data model. Indeed some \`\`value\'\' properties are duplicated in upper case (\`\`value\\_up\'\') in order to improve the performance of case-insensitive searches. Also the database of a BEID node is provided as a property to ensure uniqueness of the couples of \`\`database\'\' and \`\`value\'\' properties. The same approach has been applied for the \`\`platform\'\' property of ProbeID nodes.'}
+```{r Data-Model, include=TRUE, out.width='100%', fig.cap = 'The BED graph data model. The model is shown as an Entity/Relationship (ER) diagram: entities correspond to graph nodes and relationships to graph edges. \`\`ID\'\' and \`\`idx\'\' indicate if the corresponding entity property is unique or indexed respectively. Some redundancies occur in this data model. Indeed some \`\`value\'\' properties are duplicated in upper case (\`\`value\\_up\'\') in order to improve the performance of case-insensitive searches. Also, the database of a BEID node is provided as a property to ensure uniqueness of the couples of \`\`database\'\' and \`\`value\'\' properties. The same approach has been applied for the \`\`platform\'\' property of ProbeID nodes.'}
 include_graphics('img/BED-Data-Model.pdf')
 ```
 
@@ -205,7 +212,7 @@ an *Object* (*ObjectID*). *Object* entities can correspond to complex concepts
 coded by any number of genes (i.e. a protein complex or a molecular function).
 *BEID* are extracted from public or private databases (*BEDB*).
 *BEDB* can provide an *Attribute* related to each *BEID*.
-For example it can be the
+For example, it can be the
 sequencing region provided by the Ensembl database [@zerbino_ensembl_2017]
 or the identifier
 status provided by Uniprot [@the_uniprot_consortium_uniprot:_2017].
@@ -218,7 +225,7 @@ biological entities by using probes identified by *ProbeID*. In general,
 is focused on one, and only one, type of entity (BEType) among those described
 above: *Gene*, *Transcript*, *Peptide* or *Object*.
 
-According to this data model the scope of an identifier is defined by three
+According to this data model, the scope of an identifier is defined by three
 features:
 
    - its type: a *BEType* or "Probe"
@@ -251,7 +258,7 @@ different identifiers not necessarily provided by any integrated resource.
 ## Implementation
 
 In order to efficiently leverage an indirect path through these different
-relationships the data model has been implemented in
+relationships, the data model has been implemented in
 a \neo{} graph database [@neo4j_inc_neo4j_2017].
 
 Two R [@r_core_team_r:_2017] packages have been developed to feed and query
@@ -271,7 +278,7 @@ usage of the system). An R markdown document showing how to build a BED database
 instance for human, mouse and rat organisms is provided within the
 package. It can be adapted to other organisms or needs.
 
-Briefly these functions can be divided according to three main levels:
+Briefly, these functions can be divided according to three main levels:
 
    - The lowest level function is the `bedImport` function
    which loads a table in the \neo{} database according to a \cypher{} query.
@@ -424,10 +431,10 @@ between A and B and between B and C.
 Depending on how biological entities are defined,
 transitivity is desirable or not.
 In BED the transitivity mechanism is managed by the two following relationships:
-*corresponds_to* and *is_associated_to*. On one hand the *corresponds_to*
+*corresponds_to* and *is_associated_to*. On one hand, the *corresponds_to*
 relationships make the mapping transitive since two BEIDs which are connected
 through this kind of relationship are considered to *identify* the same BE.
-On the other hand a BEID which *is_associated_to* another one does not
+On the other hand, a BEID which *is_associated_to* another one does not
 automatically *identify* the same BE making this kind of relationship not
 available for transitive mappings.
 When the BED database is fed, the user chooses which relationship should be
@@ -494,14 +501,14 @@ is provided to display the shortest relevant paths between two identifiers.
 These functions are also exemplified in Results and Use case.
 
 Converting thousands of identifiers can take some time
-(generally a few seconds). Also such conversions are often recurrent and
+(generally a few seconds). Also, such conversions are often recurrent and
 redundant. In order to improve the performance for such recurrent and redundant
 queries, a cache system has been implemented. The first time, the query is run
 on \neo{} for all the relevant ID related to user input and the result is saved
 in a local file. Next time similar queries are requested, the system does
 not call \neo{} but loads the cached results and filters it according
 to user input.
-By default the cache is flushed when the system detects inconsistencies
+By default, the cache is flushed when the system detects inconsistencies
 with the BED database. If needed, it can also be manually flushed
 by using the `lsBedCache` and `clearBedCache` functions.
 
@@ -611,7 +618,7 @@ corresponds to the internal identifiers of the related BE.
 This internal identifier is not a stable reference that can be used as such.
 Nevertheless, it is useful to identify BEID identifying the
 same BE.
-In the example above even if most of Gene BE are identified by only
+In the example above, even if most Gene BE are identified by only
 one Ensembl gene BEID, many of them are identified by two or more
 (`r bigFormat(sum(redUnRestIds[which(as.numeric(names(redUnRestIds))>=2)]))`
 / `r bigFormat(sum(redUnRestIds))`
@@ -623,7 +630,7 @@ In this case, most of these redundancies come from deprecated BEID from former
 versions of the Ensembl database (version in use here: `r ensVersion`)
 and can be excluded by setting the `restricted` parameter to `TRUE` when calling
 the `getBeIds` function (Figure \@ref(fig:beidTables).b).
-However many BE are still identified by two or more current Ensembl BEID
+However, many BE are still identified by two or more current Ensembl BEID
 (`r bigFormat(sum(redIds[which(as.numeric(names(redIds))>=2)]))`
 / `r bigFormat(sum(redIds))`
 $\approx$ `r round(100*sum(redIds[which(as.numeric(names(redIds))>=2)])/sum(redIds))`%).
@@ -669,7 +676,7 @@ A simple example regarding the conversion of human Ensembl
 gene to human Entrez gene identifiers is shown below and discussed hereafter.
 By setting the `restricted` parameter to `TRUE` the converted BEID are
 restricted to current - non-deprecated - version of Entrez gene identifiers.
-Nevertheless all the input BEID are taken into account,
+Nevertheless, all the input BEID are taken into account,
 current and deprecated ones.
 
 ```{r, include=TRUE, echo=TRUE, eval=reComp}
@@ -900,7 +907,7 @@ other tools (Figure \@ref(fig:vennTools).a). A few of these mappings
 are explained by the fact that BED is the only tool mapping
 deprecated identifiers to current versions.
 Nevertheless, even when focusing on the mapping of current versions of
-Ensembl identifiers BED was able to
+Ensembl identifiers, BED was able to
 map `r bigFormat(length(unique(onlyInBedCur$from)))`
 more identifiers than all the
 other tools (Figure \@ref(fig:vennTools).b).
@@ -1017,7 +1024,7 @@ We compared the following mapping results:
    (`r bigFormat(nrow(mappings$"BED"))` regard genes on canonical versions
    of chromosomes).
    
-```{r geneLocations, fig.width=8.1, fig.height=5.2, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. \`\`Reference\'\' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. \`\`Former\'\' corresponds to mappings provided by mygene for identifers successfully converted by mygene but neither by biomaRt nor BED. \`\`BED\'\' corresponds to mappings provided by BED for identifers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile values are indicated. Outliers are not shown. \`\`BED\'\' and \`\`Former\'\' results are compared to Reference on different boxplots because of scale shift.'}
+```{r geneLocations, fig.width=8.1, fig.height=5.2, out.width='100%', include=TRUE, fig.cap='Comparison of gene locations provided by Ensembl for Ensembl identifiers and by the NCBI for the cross-referenced Entrez identifiers. \`\`Reference\'\' corresponds to mappings provided by biomaRt for identifiers successfully converted by all the tools. \`\`Former\'\' corresponds to mappings provided by mygene for identifiers successfully converted by mygene but neither by biomaRt nor BED. \`\`BED\'\' corresponds to mappings provided by BED for identifiers successfully converted by BED but not by any of the three other tools. Numbers of considered mappings (N) in each group are indicated (see text for details). a) Proportion of cross-referenced identifiers located on different chromosomes. b) Absolute distance (base pairs) between gene start positions for cross-referenced identifiers located on the same chromosome. c) Absolute difference (base pairs) between gene sizes for cross-referenced identifiers located on the same chromosome. Median and third quartile values are indicated. Outliers are not shown. \`\`BED\'\' and \`\`Former\'\' results are compared to Reference on different boxplots because of scale shift.'}
 # par(mfrow=c(1,5))
 i <- 10
 layout(matrix(c(rep(1,i+1), rep(2,i), rep(3,i-1), rep(4,i), rep(5,i-1)), 1, (i*5)-1, byrow = TRUE))
@@ -1174,7 +1181,7 @@ As shown above, additional mappings between Ensembl and Entrez gene identifiers
 inferred thanks to the use of HGNC cross-references by BED are many and of good
 quality. However, this transitivity mechanism is not always desirable
 depending on how different resources define biological entities.
-It is specially true for gene which is an unstable concept as described
+It is especially true for gene which is an unstable concept as described
 by @gerstein_what_2007.
 For example, in Entrez the Hs.103110 UniGene identifier is mapped
 to [5465](https://www.ncbi.nlm.nih.gov/gene/5465) and
@@ -1218,7 +1225,7 @@ to transcripts and genes. This strategy seems to be applied by biomaRt
 but not by mygene nor by gProfileR which map, for example,
 one Uniprot identifier
 to all the Ensembl peptide identifier coded by the same gene.
-For example
+For example,
 the [A6NI28](http://www.uniprot.org/uniprot/A6NI28) Uniprot identifier
 is unambiguously mapped to the
 ENSP00000298815 Ensembl peptide identifier by BED and biomaRt but is
@@ -1255,7 +1262,7 @@ to another has been compared to the time taken by biomaRt, mygene and gProfileR.
 Three different queries have been executed
 starting from 100 or 20,000 identifiers.
 
-```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
+```{r perf, fig.width=8, fig.height=5, out.width='100%', include=TRUE, fig.cap='Comparison of the time taken to convert a set of randomly selected BE identifiers. Random selections of 100 or 20,000 identifiers have been executed 40 times before conversion by each considered tools. BED performance was assessed without using its cache system for all the queries and also using its cache system for queries regarding 20,000 identifiers. a) Conversion of 100 Ensembl human gene ID into Entrez gene ID. b) Conversion of 20,000 Ensembl human gene ID into Entrez gene ID. c) Conversion of 100 Uniprot mouse peptide ID into Ensembl transcript ID. d) Conversion of 20,000 Uniprot mouse peptide ID into Ensembl transcript ID. e) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID. f) Conversion of 100 Affymetrix probe ID into Ensembl mouse peptide ID.'}
 ## The files used below were generated by calling
 ## the "Analyses/S03-Performance.R" script several times
 i <- 10
@@ -1502,7 +1509,7 @@ It outperforms biomaRt for converting 100 Uniprot mouse peptide ID
 into Ensembl transcript ID (Figures \@ref(fig:perf).c)
 but is outperformed by biomaRt when 20,000
 identifiers are considered (Figures \@ref(fig:perf).d).
-Nevertheless when cache is used, BED outperforms all the tools whatever the
+Nevertheless, when cache is used, BED outperforms all the tools whatever the
 conversion scenario
 (Figures \@ref(fig:perf).b, \@ref(fig:perf).d and \@ref(fig:perf).f).
 These results show that BED, as a dedicated and locally available tool,
@@ -1514,14 +1521,14 @@ and recurrently.
 <!----------------------------------------------------------------------------->
 # Use Case: comparing transcriptomics data sets
 
-In this use case we show how BED facilitates the comparison of
+In this use case, we show how BED facilitates the comparison of
 data sets relying on identifiers with different scopes.
 Indeed, the mechanisms implemented in the BED R package make easy the
 conversion of a set of identifiers from one scope to any other.
-Thus the comparison of data from different genome wide experiments
+Thus, the comparison of data from different genome wide experiments
 is straightforward from a technical point of view.
 
-To exemplify this statement we show below how to compare differential expression
+To exemplify this statement, we show below how to compare differential expression
 data from three experiments addressing the understanding of Psoriasis mechanisms
 with different experimental designs and platforms:
 
@@ -1541,7 +1548,7 @@ with different experimental designs and platforms:
    co-stimulated with both cytokines and controls.
    
    - @swindell_genome-wide_2011 compared gene expression data in lesional
-   and non-lesional skink from five psoriasis mouse models using
+   and non-lesional skin from five psoriasis mouse models using
    Affymetrix GeneChip Mouse Genome 430 2.0.
    Starting from published data
    ([E-GEOD-27628](https://www.ebi.ac.uk/arrayexpress/experiments/E-GEOD-27628/))
@@ -1586,7 +1593,7 @@ scopes
 To compare the two human data sets,
 the keratinocyte data set can be converted to
 the same scope of the skin data set using the `convDfBeIds` function.
-After conversion the two data sets can be merged before
+After conversion, the two data sets can be merged before
 computing the correlation between logFC values.
 
 ```{r, include=TRUE, echo=TRUE}
@@ -1713,7 +1720,7 @@ community needs.
 Beside a casual use for analyzing and comparing data in the frame of a
 research project, BED can be advantageously employed by systems dealing with
 biological and molecular information from heterogeneous sources.
-Indeed various pieces of knowledge can be efficiently managed
+Indeed, various pieces of knowledge can be efficiently managed
 in their original scope
 (e.g. gene ID for genomics or epigenomics data, transcript ID
 for transcriptomics data and protein ID for proteomics data).
