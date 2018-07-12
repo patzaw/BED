@@ -16,6 +16,7 @@
 #' incomplete symbol matches.
 #' @param ncharName The minimum number of characters in searched to consider
 #' incomplete name matches.
+#' @param verbose boolean indicating if the CQL queries should be displayed
 #'
 #'
 #' @return A data frame with the following fields:\itemize{
@@ -36,7 +37,8 @@
 #'
 searchId <- function(
     searched, be=NULL, organism=NULL,
-    ncharSymb=4, ncharName=8
+    ncharSymb=4, ncharName=8,
+    verbose=FALSE
 ){
     ##
     if(length(searched)!=1){
@@ -53,131 +55,132 @@ searchId <- function(
         org=as.list(toupper(organism))
     )
     ##
+    query <- prepCql(
+       'MATCH (n:BEID)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
+       'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (g)-[:belongs_to]->(t:TaxID)',
+       'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
+       'WHERE n.value = $searched',
+       ifelse(
+          !is.null(be),
+          # 'AND labels(e) IN $be',
+          'AND SIZE(FILTER(x in labels(e) WHERE x IN $be)) > 0',
+          ''
+       ),
+       ifelse(
+          !is.null(organism),
+          'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
+          ''
+       ),
+       'RETURN n.value as found',
+       ', labels(e) as be, n.database as source',
+       ', o.value as organism',
+       ', id(e) as entity',
+       ', labels(e) as ebe',
+       ', id(g) as gene'
+    )
+    if(verbose) message(query)
     beids <- unique(bedCall(
         f=cypher,
-        query=prepCql(
-            'MATCH (n:BEID)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
-            'MATCH (g)-[:belongs_to]->(t:TaxID)',
-            'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
-            'WHERE n.value = $searched',
-            ifelse(
-                !is.null(be),
-                'AND labels(e) IN $be',
-                ''
-            ),
-            ifelse(
-                !is.null(organism),
-                'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
-                ''
-            ),
-            'RETURN n.value as found',
-            ', labels(e) as be, n.database as source',
-            ', o.value as organism',
-            ', id(e) as entity',
-            ', labels(e) as ebe',
-            ', id(g) as gene'
-        ),
+        query=query,
         parameters=parameters
     ))
     ##
+    query <- prepCql(
+       'MATCH (n:BESymbol)',
+       ifelse(
+          nchar(searched)>=ncharSymb,
+          'WHERE n.value_up CONTAINS $upSearched',
+          'WHERE n.value_up = $upSearched'
+       ),
+       'MATCH (n)<-[ik:is_known_as]-(nii:BEID)',
+       'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
+       'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+       ifelse(
+          !is.null(be),
+          # 'WHERE labels(e) IN $be',
+          'WHERE SIZE(FILTER(x in labels(e) WHERE x IN $be)) > 0',
+          ''
+       ),
+       'MATCH (g)-[:belongs_to]->(t:TaxID)',
+       'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
+       ifelse(
+          !is.null(organism),
+          'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
+          ''
+       ),
+       'RETURN n.value as found',
+       ', labels(e) as be, "Symbol" as source',
+       ', o.value as organism',
+       ', id(e) as entity',
+       ', labels(e) as ebe',
+       ', id(g) as gene',
+       ', ik.canonical as canonical'
+    )
+    if(verbose) message(query)
     besymbs <- unique(bedCall(
         f=cypher,
-        query=prepCql(
-            'MATCH (n:BESymbol)',
-            ifelse(
-                nchar(searched)>=ncharSymb,
-                'WHERE n.value_up CONTAINS $upSearched',
-                'WHERE n.value_up = $upSearched'
-            ),
-            'MATCH (n)<-[ik:is_known_as]-(nii:BEID)',
-            'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
-            ifelse(
-                !is.null(be),
-                'WHERE labels(e) IN $be',
-                ''
-            ),
-            # ifelse(
-            #     nchar(searched)>=ncharSymb,
-            #     'WHERE "Gene" IN labels(e)',
-            #     ''
-            # ),
-            'MATCH (g)-[:belongs_to]->(t:TaxID)',
-            'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
-            ifelse(
-                !is.null(organism),
-                'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
-                ''
-            ),
-            'RETURN n.value as found',
-            ', labels(e) as be, "Symbol" as source',
-            ', o.value as organism',
-            ', id(e) as entity',
-            ', labels(e) as ebe',
-            ', id(g) as gene',
-            ', ik.canonical as canonical'
-        ),
+        query=query,
         parameters=parameters
     ))
     ##
+    query <-prepCql(
+       'MATCH (n:BEName)',
+       ifelse(
+          nchar(searched)>=ncharName,
+          'WHERE n.value_up CONTAINS $upSearched',
+          'WHERE n.value_up = $upSearched'
+       ),
+       'MATCH (n)<-[:is_named]-(nii:BEID)',
+       'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
+       'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+       ifelse(
+          !is.null(be),
+          # 'WHERE labels(e) IN $be',
+          'WHERE SIZE(FILTER(x in labels(e) WHERE x IN $be)) > 0',
+          ''
+       ),
+       'MATCH (g)-[:belongs_to]->(t:TaxID)',
+       'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
+       ifelse(
+          !is.null(organism),
+          'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
+          ''
+       ),
+       'RETURN n.value as found',
+       ', labels(e) as be, "Name" as source',
+       ', o.value as organism',
+       ', id(e) as entity',
+       ', labels(e) as ebe',
+       ', id(g) as gene'
+    )
+    if(verbose) message(query)
     benames <- unique(bedCall(
         f=cypher,
-        query=prepCql(
-            'MATCH (n:BEName)',
-            ifelse(
-                nchar(searched)>=ncharName,
-                'WHERE n.value_up CONTAINS $upSearched',
-                'WHERE n.value_up = $upSearched'
-            ),
-            'MATCH (n)<-[:is_named]-(nii:BEID)',
-            'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
-            ifelse(
-                !is.null(be),
-                'WHERE labels(e) IN $be',
-                ''
-            ),
-            # ifelse(
-            #     nchar(searched)>=ncharName,
-            #     'WHERE "Gene" IN labels(e)',
-            #     ''
-            # ),
-            'MATCH (g)-[:belongs_to]->(t:TaxID)',
-            'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
-            ifelse(
-                !is.null(organism),
-                'MATCH (t)-[:is_named]->(on:OrganismName) WHERE on.value_up IN $org',
-                ''
-            ),
-            'RETURN n.value as found',
-            ', labels(e) as be, "Name" as source',
-            ', o.value as organism',
-            ', id(e) as entity',
-            ', labels(e) as ebe',
-            ', id(g) as gene'
-        ),
+        query=query,
         parameters=parameters
     ))
     ##
+    query <- prepCql(
+       'MATCH (n:ProbeID)',
+       'WHERE n.value = $searched',
+       'WITH n',
+       'MATCH (n)-[:targets]->(nii:BEID)',
+       'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
+       'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (g)-[:belongs_to]->(t:TaxID)',
+       'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
+       'RETURN n.value as found',
+       ', "Probe" as be, n.platform as source',
+       ', o.value as organism',
+       ', id(e) as entity',
+       ', labels(e) as ebe',
+       ', id(g) as gene'
+    )
+    if(verbose) message(query)
     probes <- unique(bedCall(
         f=cypher,
-        query=prepCql(
-            'MATCH (n:ProbeID)',
-            'WHERE n.value = $searched',
-            'WITH n',
-            'MATCH (n)-[:targets]->(nii:BEID)',
-            'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
-            'MATCH (g)-[:belongs_to]->(t:TaxID)',
-            'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
-            'RETURN n.value as found',
-            ', "Probe" as be, n.platform as source',
-            ', o.value as organism',
-            ', id(e) as entity',
-            ', labels(e) as ebe',
-            ', id(g) as gene'
-        ),
+        query=query,
         parameters=parameters
     ))
     ##

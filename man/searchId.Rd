@@ -5,7 +5,7 @@
 \title{Search identifier, symbol or name information}
 \usage{
 searchId(searched, be = NULL, organism = NULL, ncharSymb = 4,
-  ncharName = 8)
+  ncharName = 8, verbose = FALSE)
 }
 \arguments{
 \item{searched}{the searched term. Identifiers are searched by exact match.
@@ -22,6 +22,8 @@ incomplete symbol matches.}
 
 \item{ncharName}{The minimum number of characters in searched to consider
 incomplete name matches.}
+
+\item{verbose}{boolean indicating if the CQL queries should be displayed}
 }
 \value{
 A data frame with the following fields:\itemize{
