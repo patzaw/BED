@@ -517,3 +517,15 @@ AVAILABILITY: http://biodbnet.abcc.ncifcrf.gov.},
 	year = {2018},
 	doi = {10.5281/zenodo.1244150}
 }
+
+@misc{godard_docker-bed-ucb-human-2018.04.30_2018,
+	title = {docker-bed-ucb-human-2018.04.30},
+	shorttitle = {docker-bed-ucb-human},
+	abstract = {This docker image provides an instance of the BED database focused on Homo sapiens, Mus musculus and Rattus norvegicus organisms and it has been built from the following resources: Ensembl NCBI Uniprot biomaRt GEOquery Clarivate Analytics MetaBase To install it run: gzip -d docker-bed-ucb-human-2018.04.30.tar.gz cat docker-bed-ucb-human-2018.04.30.tar {\textbar} docker load To run it with docker: docker run -d {\textbackslash} --publish=5454:7474 --publish=5687:7687 {\textbackslash} --env=NEO4J\_dbms\_memory\_heap\_initial\_\_size=2g {\textbackslash} --env=NEO4J\_dbms\_memory\_heap\_max\_\_size=2G {\textbackslash} --env=NEO4J\_dbms\_memory\_pagecache\_size=2g {\textbackslash} --env=NEO4J\_dbms\_read\_\_only=true {\textbackslash} --env=NEO4J\_dbms\_security\_procedures\_unrestricted=apoc.* {\textbackslash} --restart=always {\textbackslash} bed-ucb-human:2018.04.30 Newer version will be available here: https://hub.docker.com/r/patzaw/bed-ucb-human/},
+	urldate = {2018-07-13},
+	author = {Godard, Patrice},
+	month = apr,
+	year = {2018},
+	doi = {10.5281/zenodo.1311362},
+	file = {Zenodo Snapshot:C\:\\Users\\E149081\\Zotero\\storage\\RD7FXBLY\\1311362.html:text/html}
+}
