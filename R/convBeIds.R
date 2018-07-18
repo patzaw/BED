@@ -177,6 +177,7 @@ convBeIds <- function(
                to.org=to.org,
                from.source=fgs,
                to.source=tgs,
+               restricted=TRUE,
                filter=filter
             )
             if(!is.null(ht) && ncol(ht)>0){
