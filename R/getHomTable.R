@@ -4,6 +4,10 @@
 #' @param to.org organism name
 #' @param from.source the from gene ID database
 #' @param to.source the to gene ID database
+#' @param restricted boolean indicating if the results should be restricted to
+#' current version of to BEID db. If FALSE former BEID are also returned:
+#' \strong{Depending on history it can take a very long time to return
+#' a very large result!}
 #' @param verbose boolean indicating if the CQL query should be displayed
 #' @param recache boolean indicating if the CQL query should be run even if
 #' the table is already in cache
@@ -35,6 +39,7 @@ getHomTable <- function(
     to.org,
     from.source="Ens_gene",
     to.source=from.source,
+    restricted=TRUE,
     verbose=FALSE,
     recache=FALSE,
     filter=NULL
@@ -87,7 +92,12 @@ getHomTable <- function(
             '(t:GeneID {database:"%s"})',
             to.source
         ),
-        '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
+        # '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
+        ifelse(
+           restricted,
+           '-[:is_associated_to*0..]->(:GeneID)',
+           '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)'
+        ),
         '-[:identifies]->(tbe:Gene)',
         sprintf(
             '-[:belongs_to]->(:TaxID {value:"%s"})',

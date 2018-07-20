@@ -71,6 +71,7 @@ getRelevantIds <- function(
             'WHERE id(fg) IN $fromGene AND tid.value=$tax',
             'RETURN id(tg) as gene'
          )
+         if(verbose) message(prepCql(hqs))
          targGene <- unique(bedCall(
             f=cypher,
             query=prepCql(hqs),
@@ -180,9 +181,7 @@ getRelevantIds <- function(
          qs,
          'RETURN t.preferred as preferred, t.value as id'
       )
-      if(verbose){
-         message(prepCql(qs))
-      }
+      if(verbose) message(prepCql(qs))
       value <- unique(bedCall(
          f=cypher,
          query=prepCql(qs),

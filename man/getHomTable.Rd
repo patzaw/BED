@@ -5,8 +5,8 @@
 \title{Get gene homologs between 2 organisms}
 \usage{
 getHomTable(from.org, to.org, from.source = "Ens_gene",
-  to.source = from.source, verbose = FALSE, recache = FALSE,
-  filter = NULL)
+  to.source = from.source, restricted = TRUE, verbose = FALSE,
+  recache = FALSE, filter = NULL)
 }
 \arguments{
 \item{from.org}{organism name}
@@ -16,6 +16,11 @@ getHomTable(from.org, to.org, from.source = "Ens_gene",
 \item{from.source}{the from gene ID database}
 
 \item{to.source}{the to gene ID database}
+
+\item{restricted}{boolean indicating if the results should be restricted to
+current version of to BEID db. If FALSE former BEID are also returned:
+\strong{Depending on history it can take a very long time to return
+a very large result!}}
 
 \item{verbose}{boolean indicating if the CQL query should be displayed}
 

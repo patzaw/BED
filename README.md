@@ -59,8 +59,9 @@ The following commands can be adapted according to user needs and called to
 get a running container with a BED database instance.
 
 ```
-docker pull patzaw/bed-ucb-human:2018.04.30
+docker pull patzaw/bed-ucb-human:2018.07.20
 docker run -d \
+   --name bed \
    --publish=5454:7474 --publish=5687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=2g \
    --env=NEO4J_dbms_memory_heap_max__size=2G \
@@ -68,7 +69,7 @@ docker run -d \
    --env=NEO4J_dbms_read__only=true \
    --env=NEO4J_dbms_security_procedures_unrestricted=apoc.* \
    --restart=always \
-   patzaw/bed-ucb-human:2018.04.30
+   patzaw/bed-ucb-human:2018.07.20
 ```
 
 # Build a BED database instance
@@ -107,10 +108,10 @@ sudo systemctl enable docker
 Put in a **Dockerfile** the following lines:
 
 ```
-FROM neo4j:3.3.5
-COPY bed-dev-neo4j-community-3.3.5/data /data
-COPY bed-dev-neo4j-community-3.3.5/plugins /plugins
-# COPY bed-dev-neo4j-community-3.3.5/conf/neo4j.conf /var/lib/neo4j/conf/
+FROM neo4j:3.4.4
+COPY bed-dev-neo4j-community-3.4.4/data /data
+COPY bed-dev-neo4j-community-3.4.4/plugins /plugins
+# COPY bed-dev-neo4j-community-3.4.4/conf/neo4j.conf /var/lib/neo4j/conf/
 ```
 
 Be careful that the *bed-dev-neo4j-community-3.3.5* directory (neo4j
@@ -120,19 +121,19 @@ containing the *Dockerfile*.
 Run the following command in the directory containing the *Dockerfile*:
 
 ```
-docker build -t bed-ucb-human:2018.04.30 .
+docker build -t bed-ucb-human:2018.07.20 .
 ```
 
 You can then save the created image:
 
 ```
-docker save bed-ucb-human:2018.04.30 > docker-bed-ucb-human-2018.04.30.tar
+docker save bed-ucb-human:2018.07.20 > docker-bed-ucb-human-2018.07.20.tar
 ```
 
 And the image archive can be loaded with the following command:
 
 ```
-cat docker-bed-ucb-human-2018.04.30.tar | docker load
+cat docker-bed-ucb-human-2018.07.20.tar | docker load
 ```
 
 ## Run the BED Docker image
@@ -141,14 +142,15 @@ cat docker-bed-ucb-human-2018.04.30.tar | docker load
 
 ```
 docker run -d \
-   --publish=5454:7474 --publish=5687:7687 \
+   --name bed_test \
+   --publish=7474:7474 --publish=7687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=2g \
    --env=NEO4J_dbms_memory_heap_max__size=2G \
    --env=NEO4J_dbms_memory_pagecache_size=2g \
    --env=NEO4J_dbms_read__only=true \
    --env=NEO4J_dbms_security_procedures_unrestricted=apoc.* \
    --restart=always \
-   bed-ucb-human:2018.04.30
+   bed-ucb-human:2018.07.20
 # --publish=hostport:containerport
 # --restart=always ==> start when the docker daemon starts
 # --env=NEO4J_dbms_memory_heap_maxSize --> http://neo4j.com/docs/operations-manual/current/installation/docker/
@@ -161,9 +163,9 @@ docker run -d \
 ```
 export DOCKER_ID_USER="username"
 docker login
-docker tag bed-ucb-human:2018.04.30 $DOCKER_ID_USER/bed-ucb-human:2018.04.30
-docker tag $DOCKER_ID_USER/bed-ucb-human:2018.04.30 $DOCKER_ID_USER/bed-ucb-human:latest
-docker push $DOCKER_ID_USER/bed-ucb-human:2018.04.30
+docker tag bed-ucb-human:2018.07.20 $DOCKER_ID_USER/bed-ucb-human:2018.07.20
+docker tag $DOCKER_ID_USER/bed-ucb-human:2018.07.20 $DOCKER_ID_USER/bed-ucb-human:latest
+docker push $DOCKER_ID_USER/bed-ucb-human:2018.07.20
 docker push $DOCKER_ID_USER/bed-ucb-human:latest
 ```
 
