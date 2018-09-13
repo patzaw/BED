@@ -5,8 +5,8 @@
 \title{Get a conversion table between biological entity (BE) identifiers}
 \usage{
 getBeIdConvTable(from, to = from, from.source, to.source, organism,
-  restricted = TRUE, entity = TRUE, verbose = FALSE, recache = FALSE,
-  filter = NULL)
+  restricted = TRUE, entity = TRUE, verbose = FALSE,
+  recache = FALSE, filter = NULL)
 }
 \arguments{
 \item{from}{one BE or "Probe"}

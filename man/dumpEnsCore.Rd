@@ -4,9 +4,10 @@
 \alias{dumpEnsCore}
 \title{Feeding BED: Dump table from the Ensembl core database}
 \usage{
-dumpEnsCore(organism, release, gv, toDump = c("attrib_type", "gene_attrib",
-  "transcript", "external_db", "gene", "translation", "external_synonym",
-  "object_xref", "xref", "stable_id_event"), env = parent.frame(n = 1))
+dumpEnsCore(organism, release, gv, toDump = c("attrib_type",
+  "gene_attrib", "transcript", "external_db", "gene", "translation",
+  "external_synonym", "object_xref", "xref", "stable_id_event"),
+  env = parent.frame(n = 1))
 }
 \arguments{
 \item{organism}{the organism to download (e.g. "Homo sapiens").}

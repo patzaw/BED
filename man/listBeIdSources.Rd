@@ -6,7 +6,8 @@
 for a biological entity (BE)}
 \usage{
 listBeIdSources(be = listBe(), organism, direct = FALSE, rel = NA,
-  restricted = FALSE, recache = FALSE, verbose = FALSE, exclude = c())
+  restricted = FALSE, recache = FALSE, verbose = FALSE,
+  exclude = c())
 }
 \arguments{
 \item{be}{the BE on which to focus}

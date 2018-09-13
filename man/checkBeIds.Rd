@@ -4,7 +4,8 @@
 \alias{checkBeIds}
 \title{Check biological entities (BE) identifiers}
 \usage{
-checkBeIds(ids, be, source, organism, stopThr = 1, caseSensitive = FALSE)
+checkBeIds(ids, be, source, organism, stopThr = 1,
+  caseSensitive = FALSE)
 }
 \arguments{
 \item{ids}{a vector of identifiers to be checked}

@@ -236,7 +236,7 @@ convBeIds <- function(
       )
       ct$FROM <- toupper(ct$from)
       ct <- merge(oriIds, ct[,setdiff(colnames(ct), "from")], by="FROM")
-      ct <- ct[, setdiff(colnames(ct), "FROM")]
+      ct <- unique(ct[, setdiff(colnames(ct), "FROM")])
    }
    ##
    toRet <- ct[,c("from", "to", "preferred", "entity")]

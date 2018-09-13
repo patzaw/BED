@@ -4,8 +4,8 @@
 \alias{getRelevantIds}
 \title{Get relevant IDs for a formerly identified BE in a context of interest}
 \usage{
-getRelevantIds(d, selected = 1, be = c(listBe(), "Probe"), source, organism,
-  restricted = TRUE, simplify = TRUE, verbose = FALSE)
+getRelevantIds(d, selected = 1, be = c(listBe(), "Probe"), source,
+  organism, restricted = TRUE, simplify = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{d}{the data.frame returned by \code{\link{searchId}}.}

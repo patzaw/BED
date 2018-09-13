@@ -1,3 +1,11 @@
+<!----------------------------------------------------------------------------->
+## Version 1.1.3 - notes
+
+### Bug fixes
+
+   - Avoid duplicated lines returned by convBeIds when converting from Symbols.
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.2 - Release notes - 2018-07-20
    
 ### Methodological changes

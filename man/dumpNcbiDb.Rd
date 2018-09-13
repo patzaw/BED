@@ -5,8 +5,8 @@
 \title{Feeding BED: Dump tables from the NCBI gene DATA}
 \usage{
 dumpNcbiDb(taxOfInt, reDumpThr, toLoad = c("gene_info", "gene2ensembl",
-  "gene2unigene", "gene2vega", "gene_group", "gene_orthologs", "gene_history",
-  "gene2refseq"), env = parent.frame(n = 1), curDate)
+  "gene2unigene", "gene2vega", "gene_group", "gene_orthologs",
+  "gene_history", "gene2refseq"), env = parent.frame(n = 1), curDate)
 }
 \arguments{
 \item{taxOfInt}{the organism to download (e.g. "9606").}
