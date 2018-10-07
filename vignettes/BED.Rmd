@@ -567,6 +567,95 @@ The figure above shows how the `r from.id` ProbeID, targeting
 the mouse NM_010552 transcript, can be associated
 to the `r res$to[1]` human protein ID in Uniprot.
 
+## Notes about converting from and to gene symbols
+
+Canonical and non-canonical symbols are associated to genes.
+In some cases the same symbol (canonical or not) can be associated to
+several genes. This can lead to ambiguous mapping.
+The strategy to apply for such mapping depends
+on the aim of the user and his knowledge about the origin of the
+symbols to consider.
+
+The complete mapping between Ensembl gene identifiers and symbols is
+retrieved by using the `getBeIDSymbolTable` function.
+
+```{r}
+compMap <- getBeIdSymbolTable(
+   be="Gene", source="Ens_gene", organism="rat",
+   restricted=FALSE
+)
+dim(compMap)
+head(compMap)
+```
+
+The canonical field indicates if the symbol is canonical for the identifier.
+The direct field indicates if the symbol is directly associated to the
+identifier or indirectly through a relationship with another identifier.
+
+As an example, let's consider the "Snca" symbol in rat. As shown below, this
+symbol is associated to 2 genes; it is canonical for one gene and
+not for another. These 2 genes are also associated to other symbols.
+
+```{r}
+sncaEid <- compMap[which(compMap$symbol=="Snca"),]
+sncaEid
+compMap[which(compMap$id %in% sncaEid$id),]
+```
+
+The `getBeIdDescription` function described before, reports only one symbol
+for each identifier. Canonical and direct symbols are prioritized. 
+
+```{r}
+getBeIdDescription(
+   sncaEid$id,
+   be="Gene", source="Ens_gene", organism="rat"
+)
+```
+
+The `convBeIds` works differently in order to provide a mapping as exhaustive
+as possible. If a symbol is associated to several input identifiers,
+non-canonical associations with this symbol are removed if a canonical
+association exists for any other identifier. This can lead to inconsistent
+results, depending on the user input, as show below.
+
+```{r}
+convBeIds(
+   sncaEid$id[1],
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+convBeIds(
+   sncaEid$id[2],
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+convBeIds(
+   sncaEid$id,
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+```
+
+In the example above, when the query is run for each identifier independently,
+the association to the "Snca" symbol is reported for both.
+However, when running the same query with the 2 identifiers at the same time,
+the "Snca" symbol is reported only for one gene corresponding to the canonical
+association. Finally, as show below, when running the query the other way,
+"Snca" is only associated to the gene for which it is the canonical symbol.
+
+```{r}
+convBeIds(
+   "Snca",
+   from="Gene", from.source="Symbol", from.org="rat",
+   to.source="Ens_gene"
+)
+```
+
+<strong>
+Therefore, the user should chose the function to use with care when needing
+to convert from or to gene symbol.
+</strong>
+
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # An interactive dictionary
