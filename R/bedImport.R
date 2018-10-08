@@ -17,7 +17,18 @@
 #' @importFrom utils write.table
 #'
 bedImport <- function(cql, toImport, periodicCommit=10000){
-   tf = tempfile()
+   if(!inherits(toImport, "data.frame")){
+      stop("toImport must be a data.frame")
+   }
+   importPath <- get("importPath", bedEnv)
+   if(!is.null(importPath)){
+      if(!file.exists(importPath)){
+         stop(sprintf("Import path (%s) does not exist.", importPath))
+      }
+      tf <- tempfile(tmpdir=importPath)
+   }else{
+      tf <- tempfile()
+   }
    for(cn in colnames(toImport)){
       toImport[,cn] <- as.character(toImport[,cn])
    }
@@ -28,6 +39,7 @@ bedImport <- function(cql, toImport, periodicCommit=10000){
       quote=T,
       row.names=F, col.names=T
    )
+   on.exit(file.remove(tf))
    pc <- c()
    if(is.numeric(periodicCommit) && length(periodicCommit)==1){
       pc <- sprintf("USING PERIODIC COMMIT %s", periodicCommit)
@@ -36,13 +48,16 @@ bedImport <- function(cql, toImport, periodicCommit=10000){
       pc,
       paste0(
          'LOAD CSV WITH HEADERS FROM "file:',
-         tf,
+         ifelse(
+            !is.null(importPath),
+            file.path("", basename(tf)),
+            tf
+         ),
          '" AS row FIELDTERMINATOR "\\t"'
       ),
       cql
    ))
    toRet <- bedCall(cypher, query=cql)
-   file.remove(tf)
    ##
    invisible(toRet)
 }

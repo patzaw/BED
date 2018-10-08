@@ -27,26 +27,6 @@ The BED functions used to feed the DB are not exported to avoid
 unintended modifications of the DB. To call them, they are preceded
 by `BED:::`.
 
-BED is based on [Neo4j](https://neo4j.com/). The following chunk is used
-to config Neo4j. The automation of the installation has been done for Linux
-and according to current needs. It should be adapted for other operating
-systems and according to specific needs.
-
-Also, because the import functions use massively the `LOAD CSV` Neo4j query, 
-the feeding of the BED database can only be down from the
-computer hosting the Neo4j relevant instance.
-
-```{r neoConfig, message=FALSE}
-## neo4j config
-neov <- "neo4j-community-3.4.4"
-neo.config <- list(
-    url="http://localhost:7474",
-    username="neo4j", password="1234"
-)
-bedPath <- sprintf("./BED-Image-Data/bed-dev-%s", neov)
-bash <- file.path("neo4j/bash", neov)
-```
-
 In this example several source databases are dumped and their content
 is integrated in BED.
 Some helper functions are provided to get information from famous databases.
@@ -59,11 +39,18 @@ data sources should not be re-downloaded.
 library(knitr)
 library(BED)
 ##
-opts_chunk$set(eval=TRUE, message=FALSE)
+workingDirectory <- "working"
+##
+opts_knit$set(root.dir=workingDirectory)
+opts_chunk$set(
+   eval=TRUE,
+   message=FALSE,
+   root.dir=workingDirectory
+)
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "93"
+ensembl_release <- "94"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -168,43 +155,28 @@ curDate <- Sys.Date()
 
 # BED initialization
 
-<a name="reset"></a>
+BED is based on [Neo4j](https://neo4j.com/).
 
-## Neo4j installation
+The S01-NewBED-Container.sh shows how to run it in
+a [docker](https://www.docker.com/) container.
 
-Again, this part has been automated according to current needs and on a Linux
-computer.
+Because the import functions use massively the `LOAD CSV` Neo4j query, 
+the feeding of the BED database can only be down from the
+computer hosting the Neo4j relevant instance.
 
-### Backup and removing existing former build
-
-```{r backup_and_clean, eval=TRUE}
-if(file.exists(bedPath)){
-    system(paste("sh", file.path(bash, "bedBckClean.sh"), bedPath))
-}
-```
-
-### Neo4j installation
-
-```{r installation, eval=TRUE}
-system(paste("sh", file.path(bash, "installNeo4j.sh"), neov, bedPath))
-```
-
-### Start Neo4j
-
-```{r startNeo4j, eval=TRUE}
-system(paste("sh", file.path(bash, "startNeo4j.sh"), bedPath))
-```
-
-## Starting BED
-
-### Connect to BED
+The chunk below shows how to connect to BED. In this example,
+neo4j authentication is disabled.
 
 ```{r bedConnect, message=FALSE}
-do.call(connectToBed, neo.config)
+connectToBed(
+   url="http://localhost:5410",
+   importPath=file.path(getwd(), "neo4jImport")
+)
 ```
 
+## Check empty DB
+
 Do not go further if your BED DB is not empty.
-Check the procedure described [above](#reset).
 
 ```{r checkEmptyDB, message=FALSE}
 dbSize <- bedCall(cypher, 'MATCH (n) RETURN count(n)')[,1]
@@ -213,14 +185,15 @@ if(dbSize!=0){
 }
 ```
 
-### Set BED Version
+## Set BED instance and version
 
 ```{r bedVersion, message=FALSE}
+print(bedInstance)
 print(bedVersion)
 BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
 ```
 
-### Load Data model
+## Load Data model
 
 **Start**: `r Sys.time()`
 
@@ -1369,18 +1342,6 @@ for(db in names(otherIdURL)){
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
-
-# Final procedure
-
-## Shift to read only mode
-
-Shifting to read only mode will avoid unintended modification of the BED
-database.
-
-```{r readOnlyMode, eval=TRUE}
-system(paste("sh", file.path(bash, "readOnly.sh"), bedPath), intern = FALSE)
-```
-
 # Session info
 
 ```{r sessionInfo, echo=FALSE}

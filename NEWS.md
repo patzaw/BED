@@ -2,6 +2,7 @@
 ## Version 1.1.4 - notes
 
    - Notes about converting from and to gene symbols in the BED vignette.
+   - Simplification of the feeding procedure based on docker (see README.md)
 
 <!----------------------------------------------------------------------------->
 ## Version 1.1.3 - notes

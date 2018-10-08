@@ -5,7 +5,7 @@
 \title{Connect to a neo4j BED database}
 \usage{
 connectToBed(url = NULL, username = NULL, password = NULL,
-  connection = 1, remember = TRUE)
+  connection = 1, remember = TRUE, importPath = NULL)
 }
 \arguments{
 \item{url}{a character string. The host and the port are sufficient
@@ -21,6 +21,9 @@ default the first registered connection is used.}
 \item{remember}{if TRUE the connection is registered. All the registered
 connections can be listed with \code{\link{lsBedConnections}} and any of
 them can be forgotten with \code{\link{forgetBedConnection}}.}
+
+\item{importPath}{the path to the import folder for loading information
+in BED (used only when feeding the database ==> default: NULL)}
 }
 \value{
 This function does not return any value. It prepares the BED

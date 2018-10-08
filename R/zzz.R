@@ -9,6 +9,8 @@
 #' @param remember if TRUE the connection is registered. All the registered
 #' connections can be listed with \code{\link{lsBedConnections}} and any of
 #' them can be forgotten with \code{\link{forgetBedConnection}}.
+#' @param importPath the path to the import folder for loading information
+#' in BED (used only when feeding the database ==> default: NULL)
 #'
 #' @return This function does not return any value. It prepares the BED
 #' environment to allow transparent DB calls.
@@ -24,7 +26,8 @@
 #'
 connectToBed <- function(
    url=NULL, username=NULL, password=NULL, connection=1,
-   remember=TRUE
+   remember=TRUE,
+   importPath=NULL
 ){
    bedDir <- file.path(
       Sys.getenv("HOME"), "R", "BED"
@@ -48,6 +51,9 @@ connectToBed <- function(
       }
       connections <- c(connections[connection], connections[-connection])
    }else{
+      if(length(username)==0 && length(password)==0){
+         username <- password <- NA
+      }
       connections <- c(
          list(c(url=url, username=username, password=password)),
          connections
@@ -122,6 +128,12 @@ connectToBed <- function(
    )
    ## Managing cache vs DB version
    checkBedCache(newCon=TRUE)
+   ## Setting the import path for feeding the database
+   assign(
+      "importPath",
+      importPath,
+      bedEnv
+   )
 }
 
 ##########################

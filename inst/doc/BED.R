@@ -248,6 +248,49 @@ exploreConvPath(
 )
 
 ## ------------------------------------------------------------------------
+compMap <- getBeIdSymbolTable(
+   be="Gene", source="Ens_gene", organism="rat",
+   restricted=FALSE
+)
+dim(compMap)
+head(compMap)
+
+## ------------------------------------------------------------------------
+sncaEid <- compMap[which(compMap$symbol=="Snca"),]
+sncaEid
+compMap[which(compMap$id %in% sncaEid$id),]
+
+## ------------------------------------------------------------------------
+getBeIdDescription(
+   sncaEid$id,
+   be="Gene", source="Ens_gene", organism="rat"
+)
+
+## ------------------------------------------------------------------------
+convBeIds(
+   sncaEid$id[1],
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+convBeIds(
+   sncaEid$id[2],
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+convBeIds(
+   sncaEid$id,
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol"
+)
+
+## ------------------------------------------------------------------------
+convBeIds(
+   "Snca",
+   from="Gene", from.source="Symbol", from.org="rat",
+   to.source="Ens_gene"
+)
+
+## ------------------------------------------------------------------------
 searched <- searchId("sv2A")
 relIds <- getRelevantIds(
     d=searched,
