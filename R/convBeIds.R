@@ -7,8 +7,11 @@
 #' @param to a character corresponding to the biological entity or Probe
 #' @param to.source a character corresponding to the ID source
 #' @param to.org a character corresponding to the organism
-#' @param caseSensitive if true the case of provided ids is taken into account
-#' during search.
+#' @param caseSensitive if TRUE the case of provided symbols
+#' is taken into account
+#' during search. This option will only affect the conversion from "Symbol"
+#' (default: caseSensitive=FALSE).
+#' All the other conversion will be case sensitive.
 #' @param prefFilter boolean indicating if the results should be filter
 #' to keep only preferred BEID of BE when they exist (default: FALSE).
 #' If there are several
@@ -116,6 +119,7 @@ convBeIds <- function(
             from.source=from.source,
             to.source=to.source,
             organism=from.org,
+            caseSensitive=caseSensitive,
             restricted=restricted,
             entity=TRUE,
             filter=filter
@@ -151,6 +155,7 @@ convBeIds <- function(
             from.source=from.source,
             to.source=fgs,
             organism=from.org,
+            caseSensitive=caseSensitive,
             restricted=restricted,
             entity=FALSE,
             filter=filter
@@ -198,6 +203,7 @@ convBeIds <- function(
                   from.source=tgs,
                   to.source=to.source,
                   organism=to.org,
+                  caseSensitive=caseSensitive,
                   restricted=restricted,
                   entity=TRUE,
                   filter=filter
@@ -227,7 +233,7 @@ convBeIds <- function(
          cacheBedResult(value=ct, name=tn)
       }
    }
-   if(caseSensitive){
+   if(caseSensitive | from.source!="Symbol"){
       ct <- ct[which(ct$from %in% ids),]
    }else{
       oriIds <- data.frame(

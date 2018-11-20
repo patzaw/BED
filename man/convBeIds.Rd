@@ -24,8 +24,11 @@ convBeIds(ids, from, from.source, from.org, to = from,
 
 \item{to.org}{a character corresponding to the organism}
 
-\item{caseSensitive}{if true the case of provided ids is taken into account
-during search.}
+\item{caseSensitive}{if TRUE the case of provided symbols
+is taken into account
+during search. This option will only affect the conversion from "Symbol"
+(default: caseSensitive=FALSE).
+All the other conversion will be case sensitive.}
 
 \item{prefFilter}{boolean indicating if the results should be filter
 to keep only preferred BEID of BE when they exist (default: FALSE).

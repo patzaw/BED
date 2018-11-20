@@ -1,4 +1,9 @@
 <!----------------------------------------------------------------------------->
+## Version 1.1.5 - notes
+
+   - Improving case insentive conversion from and to symbols
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.4 - notes
 
    - Notes about converting from and to gene symbols in the BED vignette.

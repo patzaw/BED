@@ -5,8 +5,8 @@
 \title{Get a conversion table between biological entity (BE) identifiers}
 \usage{
 getBeIdConvTable(from, to = from, from.source, to.source, organism,
-  restricted = TRUE, entity = TRUE, verbose = FALSE,
-  recache = FALSE, filter = NULL)
+  caseSensitive = FALSE, restricted = TRUE, entity = TRUE,
+  verbose = FALSE, recache = FALSE, filter = NULL)
 }
 \arguments{
 \item{from}{one BE or "Probe"}
@@ -20,6 +20,13 @@ the from probe platform if Probe}
 the to probe platform if Probe}
 
 \item{organism}{organism name}
+
+\item{caseSensitive}{if TRUE the case of provided symbols
+is taken into account
+during the conversion and selection.
+This option will only affect the conversion from "Symbol"
+(default: caseSensitive=FALSE).
+All the other conversion will be case sensitive.}
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
@@ -36,7 +43,7 @@ the table is already in cache}
 
 \item{filter}{character vector on which to filter from IDs.
 If NULL (default), the result is not filtered:
-all from IDs are taken into account. Filtering is case insensitive.}
+all from IDs are taken into account.}
 }
 \value{
 a data.frame mapping BE IDs with the

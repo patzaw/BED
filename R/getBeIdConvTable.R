@@ -7,6 +7,12 @@
 #' @param to.source the to BE ID database if BE or
 #' the to probe platform if Probe
 #' @param organism organism name
+#' @param caseSensitive if TRUE the case of provided symbols
+#' is taken into account
+#' during the conversion and selection.
+#' This option will only affect the conversion from "Symbol"
+#' (default: caseSensitive=FALSE).
+#' All the other conversion will be case sensitive.
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
 #' \strong{Depending on history it can take a very long time to return
@@ -18,7 +24,7 @@
 #' the table is already in cache
 #' @param filter character vector on which to filter from IDs.
 #' If NULL (default), the result is not filtered:
-#' all from IDs are taken into account. Filtering is case insensitive.
+#' all from IDs are taken into account.
 #'
 #' @return a data.frame mapping BE IDs with the
 #' following fields:
@@ -48,6 +54,7 @@ getBeIdConvTable <- function(
     from.source,
     to.source,
     organism,
+    caseSensitive=FALSE,
     restricted=TRUE,
     entity=TRUE,
     verbose=FALSE,
@@ -67,6 +74,9 @@ getBeIdConvTable <- function(
     ## Filter
     if(length(filter)>0 && !inherits(filter, "character")){
         stop("filter should be a character vector")
+    }
+    if(from.source=="Symbol" & !caseSensitive){
+       filter <- toupper(filter)
     }
 
     ## Other verifications
@@ -257,7 +267,7 @@ getBeIdConvTable <- function(
             sprintf(
                 'WHERE f.%s IN $filter',
                 ifelse(
-                    from.source=="Symbol",
+                    from.source=="Symbol" & !caseSensitive,
                     "value_up",
                     "value"
                 )
@@ -332,7 +342,8 @@ getBeIdConvTable <- function(
             f=cypher,
             query=prepCql(cql),
             parameters=list(filter=as.list(
-                unique(c(filter, tolower(filter), toupper(filter)))
+               filter
+               # unique(c(filter, tolower(filter), toupper(filter)))
             ))
         )
     }
@@ -351,14 +362,29 @@ getBeIdConvTable <- function(
     toRet <- toRet[order(toRet$fika+toRet$tika, decreasing=TRUE),]
     toRet$preferred <- as.logical(toRet$preferred)
     ##
-    toDel <- union(
-        which(
-            toRet$fika==0 & (toRet$from %in% toRet$from[which(toRet$fika==1)])
-        ),
-        which(
-            toRet$tika==0 & (toRet$to %in% toRet$to[which(toRet$tika==1)])
-        )
-    )
+    if(caseSensitive){
+       toDel <- union(
+          which(
+             toRet$fika==0 &
+                (toRet$from) %in% (toRet$from[which(toRet$fika==1)])
+          ),
+          which(
+             toRet$tika==0 &
+                (toRet$to) %in% (toRet$to[which(toRet$tika==1)])
+          )
+       )
+    }else{
+       toDel <- union(
+           which(
+               toRet$fika==0 &
+               toupper(toRet$from) %in% toupper(toRet$from[which(toRet$fika==1)])
+           ),
+           which(
+               toRet$tika==0 &
+               toupper(toRet$to) %in% toupper(toRet$to[which(toRet$tika==1)])
+           )
+       )
+    }
     if(length(toDel)>0){
         toRet <- toRet[-toDel,]
     }
