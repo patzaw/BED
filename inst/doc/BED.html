@@ -104,6 +104,9 @@ img {
 button.code-folding-btn:focus {
   outline: none;
 }
+summary {
+  display: list-item;
+}
 </style>
 
 
@@ -111,14 +114,74 @@ button.code-folding-btn:focus {
 <div class="container-fluid main-container">
 
 <!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
 <script>
 $(document).ready(function () {
   window.buildTabsets("TOC");
 });
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open')
+  });
+});
 </script>
 
 <!-- code folding -->
-
 
 
 
@@ -225,7 +288,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Biological Entity Dictionary (BED): exploring and converting identifiers of biological entities such as genes, transcripts or peptides</h1>
 <h4 class="author"><em>Patrice Godard</em></h4>
-<h4 class="date"><em>November 20 2018</em></h4>
+<h4 class="date"><em>January 30 2019</em></h4>
 
 </div>
 
@@ -263,11 +326,11 @@ connectToBed(
 <pre><code>## http://localhost:5454/db/data/</code></pre>
 <pre><code>## BED</code></pre>
 <pre><code>## UCB-Human</code></pre>
-<pre><code>## 2018.10.07</code></pre>
+<pre><code>## 2019.01.30</code></pre>
 <pre><code>## [1] TRUE
 ## attr(,&quot;dbVersion&quot;)
 ##   name  instance    version
-## 1  BED UCB-Human 2018.10.07</code></pre>
+## 1  BED UCB-Human 2019.01.30</code></pre>
 <p>If the <code>verbose</code> parameter is set to TRUE, the URL and the content version are displayed as messages.</p>
 <p>By default, connections are registered (the <code>remember</code> param is set to <code>TRUE</code> when calling the <code>connectToBed</code> function). This way, the connection which has been used the last time is automatically used when loading BED during a new R session. Connections can be managed with the <code>lsBedConnections</code> and the <code>forgetBedConnection()</code> functions.</p>
 <pre class="r"><code>lsBedConnections()</code></pre>
@@ -275,15 +338,21 @@ connectToBed(
 ##                     url                username                password 
 ## &quot;http://localhost:5454&quot;                 &quot;neo4j&quot;                  &quot;1234&quot; 
 ##                    name                instance                 version 
-##                   &quot;BED&quot;             &quot;UCB-Human&quot;            &quot;2018.10.07&quot; 
+##                   &quot;BED&quot;             &quot;UCB-Human&quot;            &quot;2019.01.30&quot; 
 ## 
 ## [[2]]
+##                     url                username                password 
+## &quot;http://localhost:5410&quot;                      NA                      NA 
+##                    name                instance                 version 
+##                   &quot;BED&quot;             &quot;UCB-Human&quot;            &quot;2019.01.30&quot; 
+## 
+## [[3]]
 ##              url         username         password             name 
 ## &quot;localhost:5454&quot;               NA               NA            &quot;BED&quot; 
 ##         instance          version 
 ##      &quot;UCB-Human&quot;     &quot;2018.10.07&quot; 
 ## 
-## [[3]]
+## [[4]]
 ##              url         username         password             name 
 ## &quot;bel028272:5454&quot;               NA               NA            &quot;BED&quot; 
 ##         instance          version 
@@ -359,34 +428,21 @@ results</code></pre>
 <pre><code>## [1] &quot;Homo sapiens&quot;      &quot;Mus musculus&quot;      &quot;Rattus norvegicus&quot;</code></pre>
 <p>Common names are also supported and the corresponding taxonomic identifiers can be retrieved. Conversely the organism names corresponding to a taxonomic ID can be listed.</p>
 <pre class="r"><code>getOrgNames(getTaxId(&quot;human&quot;))</code></pre>
-<pre><code>##    taxID                        name           nameClass
-## 1   9606 Homo sapiens Linnaeus, 1758           authority
-## 2   9606                         man         common name
-## 3   9606                       human genbank common name
-## 4   9606               Homo sampiens         misspelling
-## 5   9606                Home sapiens         misspelling
-## 6   9606                 Homo sapian         misspelling
-## 7   9606                Homo sapeins         misspelling
-## 8   9606                 Homo sapien         misspelling
-## 9   9606                Homo sapians         misspelling
-## 10  9606               Homo sapience         misspelling
-## 11  9606               Homo sapiense         misspelling
-## 12  9606                Homo sapines         misspelling
-## 13  9606               Homo sapients         misspelling
-## 14  9606                Humo sapiens         misspelling
-## 15  9606                Homo spaiens         misspelling
-## 16  9606                 Homo spiens         misspelling
-## 17  9606                Homo sapiens     scientific name</code></pre>
+<pre><code>##   taxID                        name           nameClass
+## 1  9606 Homo sapiens Linnaeus, 1758           authority
+## 2  9606                         man         common name
+## 3  9606                       human genbank common name
+## 4  9606                Homo sapiens     scientific name</code></pre>
 </div>
 <div id="identifiers-of-biological-entities" class="section level2">
 <h2><span class="header-section-number">2.3</span> Identifiers of biological entities</h2>
 <p>The main aim of BED is to allow the mapping of identifiers from different sources such as Ensembl or Entrez. Supported sources can be listed the following way for each supported organism.</p>
 <pre class="r"><code>listBeIdSources(be=&quot;Transcript&quot;, organism=&quot;human&quot;)</code></pre>
 <pre><code>##             database   nbBe   nbId         be
-## 1 BEDTech_transcript  91973  91973 Transcript
-## 2             RefSeq 103177 176718 Transcript
-## 3    Vega_transcript  32691  33927 Transcript
-## 4     Ens_transcript 220186 236680 Transcript</code></pre>
+## 1 BEDTech_transcript  85971  85971 Transcript
+## 2             RefSeq  90850 166264 Transcript
+## 3    Vega_transcript  23353  24152 Transcript
+## 4     Ens_transcript 220125 236691 Transcript</code></pre>
 <p>The database gathering the largest number of BE of specific type can also be identified.</p>
 <pre class="r"><code>largestBeSource(be=&quot;Transcript&quot;, organism=&quot;human&quot;, restricted=TRUE)</code></pre>
 <pre><code>## [1] &quot;Ens_transcript&quot;</code></pre>
@@ -420,45 +476,45 @@ results</code></pre>
     restricted=FALSE
 )
 dim(beids)</code></pre>
-<pre><code>## [1] 82653     5</code></pre>
+<pre><code>## [1] 83069     5</code></pre>
 <pre class="r"><code>head(beids)</code></pre>
 <pre><code>##              id preferred  Gene db.version db.deprecated
-## 81458 100616388      TRUE 65833   20181007         FALSE
-## 81459 102464834      TRUE 65836   20181007         FALSE
-## 81454 100313778      TRUE 65839   20181007         FALSE
-## 81455 100422909      TRUE 65843   20181007         FALSE
-## 81456 100302174      TRUE 65844   20181007         FALSE
-## 81457    406955      TRUE 65846   20181007         FALSE</code></pre>
+## 81914 100616388      TRUE 65852   20190130         FALSE
+## 81915 102464834      TRUE 65855   20190130         FALSE
+## 81916 100313778      TRUE 65858   20190130         FALSE
+## 81912 100422909      TRUE 65862   20190130         FALSE
+## 81913 100302174      TRUE 65863   20190130         FALSE
+## 81911    406955      TRUE 65865   20190130         FALSE</code></pre>
 <p>The first column, <em>id</em>, corresponds to the identifiers of the BE in the source. The column named according to the BE type (in this case <em>Gene</em>) corresponds to the internal identifier of the related BE. <strong>BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE</strong>. This internal identifier is useful to identify BEIDS corresponding to the same BE. The following code can be used to have an overview of such redundancy.</p>
 <pre class="r"><code>sort(table(table(beids$Gene)), decreasing = TRUE)</code></pre>
 <pre><code>## 
-##     1     2     3     4     5     6     7     8     9    11    10    12 
-## 46966  9033  3025  1010   383   153    84    40    27    14    11     8 
-##    14    13    16    21    30 
-##     4     3     1     1     1</code></pre>
-<p>In the example above we can see that most of Gene BE are identified by only one EntrezGene ID. However many of them are identified by two or more ID; 43 BE are even identified by 10 or more EntrezGeneID. In this case, most of these redundancies come from ID history extracted from Entrez. Legacy ID can be excluded from the retrieved ID by setting the <code>restricted</code> parameter to TRUE.</p>
+##     1     2     3     4     5     6     7     8     9    10    11    12 
+## 47481  9022  3021  1001   386   152    85    45    26    11    11     6 
+##    13    14    16    30 
+##     3     3     2     1</code></pre>
+<p>In the example above we can see that most of Gene BE are identified by only one EntrezGene ID. However many of them are identified by two or more ID; 37 BE are even identified by 10 or more EntrezGeneID. In this case, most of these redundancies come from ID history extracted from Entrez. Legacy ID can be excluded from the retrieved ID by setting the <code>restricted</code> parameter to TRUE.</p>
 <pre class="r"><code>beids &lt;- getBeIds(
     be=&quot;Gene&quot;, source=&quot;EntrezGene&quot;, organism=&quot;human&quot;,
     restricted = TRUE
 )
 dim(beids)</code></pre>
-<pre><code>## [1] 61126     5</code></pre>
+<pre><code>## [1] 61529     5</code></pre>
 <p>The same code as above can be used to identify remaining redundancies.</p>
 <pre class="r"><code>sort(table(table(beids$Gene)), decreasing = TRUE)</code></pre>
 <pre><code>## 
-##     1     2     3     5     6     8     4    12 
-## 60460   276    20     2     2     2     1     1</code></pre>
+##     1     2     3     4     5     7     8    10 
+## 61021   216    14     1     1     1     1     1</code></pre>
 <p>In the example above we can see that allmost all Gene BE are identified by only one EntrezGene ID. However some of them are identified by two or more ID. This result comes from how the BED database is constructed according to the ID mapping provided by the different source databases. The graph below shows how the mapping was done for such a BE with redundant EntrezGene IDs.</p>
 <div style="border:solid;overflow:hidden;">
 <pre class="r"><code>eid &lt;- beids$id[which(beids$Gene==names(which(table(beids$Gene)&gt;=8)))][1]</code></pre>
 <pre><code>## Warning in beids$Gene == names(which(table(beids$Gene) &gt;= 8)): longer
 ## object length is not a multiple of shorter object length</code></pre>
 <pre class="r"><code>print(eid)</code></pre>
-<pre><code>## [1] &quot;2576&quot;</code></pre>
+<pre><code>## [1] &quot;729428&quot;</code></pre>
 <pre class="r"><code>exploreBe(id=eid, source=&quot;EntrezGene&quot;, be=&quot;Gene&quot;) %&gt;%
    visPhysics(solver=&quot;repulsion&quot;)</code></pre>
-<div id="htmlwidget-6e8d3057672b6cd17ce7" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-6e8d3057672b6cd17ce7">{"x":{"nodes":{"id":["4780012","236094","236056","4779460","4779912","235880","285447","27687","170748","503578","170754","236096","27685","4801254","7564717","285445","4735137","236060","4735135","236092","4562656","236054","236058","4735143","4668746","13386","29771","4792346","4805337","4801253","270035","7578999","4668262","4806598","270034","7583524","4668265","270032","7583063","170958","285452","270033","7561183","500194","496763","492704","497095","497048","496873","497121","285451","170992","270049","7573111","270047","4855941","7577200","4668261","270048","4844976","4963655","7581452","481666","481322","482189","481105","481208","481495","501622"],"type":["GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID"],"label":["OTTHUMG00000024147","100008586","645073","OTTHUMG00000024148","OTTHUMG00000067394","729428","GAGE12B","ENSG00000236737","26779","ENSG00000268524","31960","26749","ENSG00000275113","Hs.632812","-36815928","GAGE2E","4101","2576","31958","2574","4105","26748","2579","4104","GAGE12I","ENSG00000236362","ENSG00000215269","Hs.460641","Hs.695912","Hs.632808","300637","-1389681248","GAGE4","Hs.722100","300597","673458260","GAGE7","300601","1478854267","31907","GAGE12G","300731","-2112716684","ENSG00000271467","ENSG00000268311","ENSG00000268468","ENSG00000268617","ENSG00000269451","ENSG00000269465","ENSG00000269209","GAGE12F","31906","300730","-853399846","300736","645021","2086886689","GAGE2C","300595","100101627","389855","-1188079818","ENSG00000217977","ENSG00000215275","ENSG00000215253","ENSG00000215276","ENSG00000068990","ENSG00000198716","ENSG00000270928"],"database":["Vega_gene","EntrezGene","EntrezGene","Vega_gene","Vega_gene","EntrezGene","","Ens_gene","HGNC","Ens_gene","HGNC","EntrezGene","Ens_gene","UniGene","MetaBase_gene","","HGNC","EntrezGene","HGNC","EntrezGene","HGNC","EntrezGene","EntrezGene","HGNC","","Ens_gene","Ens_gene","UniGene","UniGene","UniGene","MIM_GENE","MetaBase_gene","","UniGene","MIM_GENE","MetaBase_gene","","MIM_GENE","MetaBase_gene","HGNC","","MIM_GENE","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","","HGNC","MIM_GENE","MetaBase_gene","MIM_GENE","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","EntrezGene","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene"],"preferred":["FALSE","TRUE","TRUE","FALSE","FALSE","TRUE","","TRUE","FALSE","FALSE","FALSE","FALSE","TRUE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","","TRUE","TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE"],"platform":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"url":["http://vega.sanger.ac.uk/id/OTTHUMG00000024147","https://www.ncbi.nlm.nih.gov/gene/100008586","https://www.ncbi.nlm.nih.gov/gene/645073","http://vega.sanger.ac.uk/id/OTTHUMG00000024148","http://vega.sanger.ac.uk/id/OTTHUMG00000067394","https://www.ncbi.nlm.nih.gov/gene/729428",null,"http://www.ensembl.org/id/ENSG00000236737","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=26779","http://www.ensembl.org/id/ENSG00000268524","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31960","https://www.ncbi.nlm.nih.gov/gene/26749","http://www.ensembl.org/id/ENSG00000275113","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632812","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-36815928",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4101","https://www.ncbi.nlm.nih.gov/gene/2576","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31958","https://www.ncbi.nlm.nih.gov/gene/2574","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4105","https://www.ncbi.nlm.nih.gov/gene/26748","https://www.ncbi.nlm.nih.gov/gene/2579","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4104",null,"http://www.ensembl.org/id/ENSG00000236362","http://www.ensembl.org/id/ENSG00000215269","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.460641","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.695912","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632808","http://www.omim.org/entry/300637","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1389681248",null,"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.722100","http://www.omim.org/entry/300597","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=673458260",null,"http://www.omim.org/entry/300601","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=1478854267","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31907",null,"http://www.omim.org/entry/300731","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-2112716684","http://www.ensembl.org/id/ENSG00000271467","http://www.ensembl.org/id/ENSG00000268311","http://www.ensembl.org/id/ENSG00000268468","http://www.ensembl.org/id/ENSG00000268617","http://www.ensembl.org/id/ENSG00000269451","http://www.ensembl.org/id/ENSG00000269465","http://www.ensembl.org/id/ENSG00000269209",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31906","http://www.omim.org/entry/300730","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-853399846","http://www.omim.org/entry/300736","https://www.ncbi.nlm.nih.gov/gene/645021","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=2086886689",null,"http://www.omim.org/entry/300595","https://www.ncbi.nlm.nih.gov/gene/100101627","https://www.ncbi.nlm.nih.gov/gene/389855","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1188079818","http://www.ensembl.org/id/ENSG00000217977","http://www.ensembl.org/id/ENSG00000215275","http://www.ensembl.org/id/ENSG00000215253","http://www.ensembl.org/id/ENSG00000215276","http://www.ensembl.org/id/ENSG00000068990","http://www.ensembl.org/id/ENSG00000198716","http://www.ensembl.org/id/ENSG00000270928"],"source":["Vega_gene","EntrezGene","EntrezGene","Vega_gene","Vega_gene","EntrezGene","","Ens_gene","HGNC","Ens_gene","HGNC","EntrezGene","Ens_gene","UniGene","MetaBase_gene","","HGNC","EntrezGene","HGNC","EntrezGene","HGNC","EntrezGene","EntrezGene","HGNC","","Ens_gene","Ens_gene","UniGene","UniGene","UniGene","MIM_GENE","MetaBase_gene","","UniGene","MIM_GENE","MetaBase_gene","","MIM_GENE","MetaBase_gene","HGNC","","MIM_GENE","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","","HGNC","MIM_GENE","MetaBase_gene","MIM_GENE","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","EntrezGene","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene"],"title":["<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000024147\" target=\"_blank\">OTTHUMG00000024147<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/100008586\" target=\"_blank\">100008586<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/645073\" target=\"_blank\">645073<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000024148\" target=\"_blank\">OTTHUMG00000024148<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000067394\" target=\"_blank\">OTTHUMG00000067394<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/729428\" target=\"_blank\">729428<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>BESymbol<\/strong><br>GAGE12B<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000236737\" target=\"_blank\">ENSG00000236737<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=26779\" target=\"_blank\">26779<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268524\" target=\"_blank\">ENSG00000268524<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31960\" target=\"_blank\">31960<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/26749\" target=\"_blank\">26749<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000275113\" target=\"_blank\">ENSG00000275113<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632812\" target=\"_blank\">Hs.632812<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-36815928\" target=\"_blank\">-36815928<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE2E<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4101\" target=\"_blank\">4101<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2576\" target=\"_blank\">2576<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31958\" target=\"_blank\">31958<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2574\" target=\"_blank\">2574<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4105\" target=\"_blank\">4105<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/26748\" target=\"_blank\">26748<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2579\" target=\"_blank\">2579<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4104\" target=\"_blank\">4104<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12I<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000236362\" target=\"_blank\">ENSG00000236362<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215269\" target=\"_blank\">ENSG00000215269<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.460641\" target=\"_blank\">Hs.460641<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.695912\" target=\"_blank\">Hs.695912<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632808\" target=\"_blank\">Hs.632808<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300637\" target=\"_blank\">300637<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1389681248\" target=\"_blank\">-1389681248<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE4<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.722100\" target=\"_blank\">Hs.722100<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300597\" target=\"_blank\">300597<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=673458260\" target=\"_blank\">673458260<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE7<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300601\" target=\"_blank\">300601<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=1478854267\" target=\"_blank\">1478854267<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31907\" target=\"_blank\">31907<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12G<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300731\" target=\"_blank\">300731<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-2112716684\" target=\"_blank\">-2112716684<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000271467\" target=\"_blank\">ENSG00000271467<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268311\" target=\"_blank\">ENSG00000268311<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268468\" target=\"_blank\">ENSG00000268468<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268617\" target=\"_blank\">ENSG00000268617<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269451\" target=\"_blank\">ENSG00000269451<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269465\" target=\"_blank\">ENSG00000269465<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269209\" target=\"_blank\">ENSG00000269209<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12F<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31906\" target=\"_blank\">31906<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300730\" target=\"_blank\">300730<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-853399846\" target=\"_blank\">-853399846<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300736\" target=\"_blank\">300736<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/645021\" target=\"_blank\">645021<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=2086886689\" target=\"_blank\">2086886689<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE2C<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300595\" target=\"_blank\">300595<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/100101627\" target=\"_blank\">100101627<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/389855\" target=\"_blank\">389855<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1188079818\" target=\"_blank\">-1188079818<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000217977\" target=\"_blank\">ENSG00000217977<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215275\" target=\"_blank\">ENSG00000215275<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215253\" target=\"_blank\">ENSG00000215253<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215276\" target=\"_blank\">ENSG00000215276<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000068990\" target=\"_blank\">ENSG00000068990<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000198716\" target=\"_blank\">ENSG00000198716<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000270928\" target=\"_blank\">ENSG00000270928<\/a><br><emph>Ens_gene<\/emph><\/p>"],"shape":["dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","box","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"color.background":["#67E781","#E2DBE6","#E2DBE6","#67E781","#67E781","#E2DBE6","#E4AC77","#B694E4","#B4E5BC","#B694E4","#B4E5BC","#E2DBE6","#B694E4","#7299E1","#E56E40","#E4AC77","#B4E5BC","#E2DBE6","#B4E5BC","#E2DBE6","#B4E5BC","#E2DBE6","#E2DBE6","#B4E5BC","#E4AC77","#B694E4","#B694E4","#7299E1","#7299E1","#7299E1","#62B0DB","#E56E40","#E4AC77","#7299E1","#62B0DB","#E56E40","#E4AC77","#62B0DB","#E56E40","#B4E5BC","#E4AC77","#62B0DB","#E56E40","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#E4AC77","#B4E5BC","#62B0DB","#E56E40","#62B0DB","#E2DBE6","#E56E40","#E4AC77","#62B0DB","#E2DBE6","#E2DBE6","#E56E40","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4"],"borderWidth":[1,4,4,1,1,4,1,4,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"borderWidthSelected":[2,4,4,2,2,4,2,4,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,4,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"color.border":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"]},"edges":{"id":["9288225","9287948","9288175","508976","321709","769828","9171826","321712","9188566","8996108","433613","9329154","16861455","16889167","508974","9163758","9163757","9171825","9163761","8977794","433732","433710","9319774","9333465","9329152","9348819","16903443","16880199","8969636","433733","433713","9319768","9334841","9333458","9341504","16867317","16907974","8969639","433734","433712","9319770","9333459","9329149","9341507","16907513","16862156","9187081","321822","8994362","433711","9319773","9333464","9329151","9355979","16885633","16878830","508981","488645","488644","488646","488643","771981","769607","769765","769890","770632","770657","770395","8996527","9188877","433730","9319772","9333462","9329150","9356199","16883153","16897555","8977795","433731","9333466","9348820","9532750","16864208","16901644","8969635","433729","9319767","9341503","9537747","9531142","16880918","16905902","321839","508980","488660","488661","488662","488663","488658","488659","764276","764143","764134","764150","757582","760365","771650","769605","769763","769888","770655","770630","770393"],"title":["corresponds_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","is_replaced_by","corresponds_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_known_as","is_known_as","corresponds_to","corresponds_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","is_known_as","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_replaced_by","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_associated_to","is_known_as","corresponds_to","is_known_as","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by"],"from":["4780012","4779460","4779912","27687","170748","503578","170754","170754","170748","235880","235880","4801254","7564717","7564717","27685","4735137","4735135","4562656","4735143","236054","236054","236054","4792346","4805337","4801253","270035","7578999","7578999","236060","236060","236060","4792346","4806598","4805337","270034","7583524","7583524","236058","236058","236058","4792346","4805337","4801253","270032","7583063","7583063","170958","170958","236056","236056","4792346","4805337","4801253","270033","7561183","7561183","29771","270034","270033","270035","270032","500194","496763","492704","497095","497048","496873","497121","236094","170992","236094","4792346","4805337","4801253","270049","7573111","7573111","236096","236096","4805337","270047","4855941","7577200","7577200","236092","236092","4792346","270048","4844976","4963655","7581452","7581452","170992","13386","270035","270034","270032","270049","270047","270048","481666","481322","482189","481105","481208","481495","501622","496763","492704","497095","496873","497048","497121"],"to":["236094","236056","235880","285447","27687","27687","236096","27685","235880","285447","27685","235880","235880","285447","285445","236060","236092","236054","236058","4668746","13386","29771","236054","236054","236054","236054","4668746","236054","4668262","13386","29771","236060","236060","236060","236060","236060","4668262","4668265","13386","29771","236058","236058","236058","236058","4668265","236058","236056","29771","285452","29771","236056","236056","236056","236056","285452","236056","285452","29771","29771","29771","29771","29771","500194","500194","500194","500194","500194","500194","285451","236094","13386","236094","236094","236094","236094","236094","285451","285445","13386","236096","236096","236096","236096","285445","4668261","13386","236092","236092","236092","236092","236092","4668261","13386","285451","13386","13386","13386","13386","13386","13386","13386","13386","13386","13386","13386","13386","13386","501622","501622","501622","501622","501622","501622"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"],"dashes":[false,false,false,false,false,true,false,false,false,false,false,true,true,false,false,false,false,false,false,false,false,false,true,true,true,true,false,true,false,false,false,true,true,true,true,true,false,false,false,false,true,true,true,true,false,true,false,false,false,false,true,true,true,true,false,true,false,true,true,true,true,true,true,true,true,true,true,true,false,false,false,true,true,true,true,true,false,false,false,true,true,true,true,false,false,false,true,true,true,true,true,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true},"physics":{"solver":"repulsion"}},"groups":null,"width":null,"height":null,"idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id","selected":"236060"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":2,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"BESymbol","shape":"box","color":"#E4AC77"},{"label":"Vega_gene","shape":"dot","color":"#67E781"},{"label":"EntrezGene","shape":"dot","color":"#E2DBE6"},{"label":"Ens_gene","shape":"dot","color":"#B694E4"},{"label":"HGNC","shape":"dot","color":"#B4E5BC"},{"label":"UniGene","shape":"dot","color":"#7299E1"},{"label":"MetaBase_gene","shape":"dot","color":"#E56E40"},{"label":"MIM_GENE","shape":"dot","color":"#62B0DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-81d4a367a7d18006ca77" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-81d4a367a7d18006ca77">{"x":{"nodes":{"id":["234629","4806630","4806108","234597","234427","4806534","170897","234635","27679","283446","170891","4828152","7494183","27681","501849","283444","4762235","234599","234601","4763012","234633","4762227","234631","4765021","4762233","234593","234595","4762229","4693709","29765","13347","4819244","4828151","4832235","268025","7512529","4693708","268023","7501326","171101","283451","268024","268022","268021","498465","495367","495393","495145","495320","490956","495035","7490649","4362775","7508475","4693706","4833499","7512990","268039","4882825","7506676","4693705","268037","4990512","4871833","7510918","4696696","268040","4871834","7502255","283450","171135","268038","7502587","499893","479726","479439","479897","479553","479336","480420"],"type":["GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID"],"label":["100008586","OTTHUMG00000024147","OTTHUMG00000024148","645073","729428","OTTHUMG00000067394","31960","26749","ENSG00000275113","GAGE12B","26779","Hs.632812","-36815928","ENSG00000236737","ENSG00000268524","GAGE2E","4104","2579","26748","4105","2574","31958","729408","31959","4103","2578","2576","4101","GAGE7","ENSG00000215269","ENSG00000236362","Hs.460641","Hs.632808","Hs.695912","300601","1478854267","GAGE6","300599","368842402","31907","GAGE12G","300637","300597","300731","ENSG00000271467","ENSG00000268617","ENSG00000269209","ENSG00000269465","ENSG00000269451","ENSG00000268468","ENSG00000268311","-2112716684","GAGE12I","-1389681248","GAGE4","Hs.722100","673458260","300736","645021","2086886689","GAGE2C","300595","389855","100101627","-1188079818","GAGE2D","300735","100101628","-1546667946","GAGE12F","31906","300730","-853399846","ENSG00000270928","ENSG00000198716","ENSG00000068990","ENSG00000217977","ENSG00000215275","ENSG00000215276","ENSG00000215253"],"database":["EntrezGene","Vega_gene","Vega_gene","EntrezGene","EntrezGene","Vega_gene","HGNC","EntrezGene","Ens_gene","","HGNC","UniGene","MetaBase_gene","Ens_gene","Ens_gene","","HGNC","EntrezGene","EntrezGene","HGNC","EntrezGene","HGNC","EntrezGene","HGNC","HGNC","EntrezGene","EntrezGene","HGNC","","Ens_gene","Ens_gene","UniGene","UniGene","UniGene","MIM_GENE","MetaBase_gene","","MIM_GENE","MetaBase_gene","HGNC","","MIM_GENE","MIM_GENE","MIM_GENE","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","MetaBase_gene","","MetaBase_gene","","UniGene","MetaBase_gene","MIM_GENE","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","MetaBase_gene","","HGNC","MIM_GENE","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene"],"preferred":["TRUE","FALSE","FALSE","TRUE","TRUE","FALSE","FALSE","FALSE","TRUE","","FALSE","FALSE","FALSE","TRUE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","","TRUE","TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE"],"platform":["","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","","",""],"url":["https://www.ncbi.nlm.nih.gov/gene/100008586","http://vega.sanger.ac.uk/id/OTTHUMG00000024147","http://vega.sanger.ac.uk/id/OTTHUMG00000024148","https://www.ncbi.nlm.nih.gov/gene/645073","https://www.ncbi.nlm.nih.gov/gene/729428","http://vega.sanger.ac.uk/id/OTTHUMG00000067394","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31960","https://www.ncbi.nlm.nih.gov/gene/26749","http://www.ensembl.org/id/ENSG00000275113",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=26779","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632812","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-36815928","http://www.ensembl.org/id/ENSG00000236737","http://www.ensembl.org/id/ENSG00000268524",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4104","https://www.ncbi.nlm.nih.gov/gene/2579","https://www.ncbi.nlm.nih.gov/gene/26748","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4105","https://www.ncbi.nlm.nih.gov/gene/2574","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31958","https://www.ncbi.nlm.nih.gov/gene/729408","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31959","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4103","https://www.ncbi.nlm.nih.gov/gene/2578","https://www.ncbi.nlm.nih.gov/gene/2576","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4101",null,"http://www.ensembl.org/id/ENSG00000215269","http://www.ensembl.org/id/ENSG00000236362","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.460641","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632808","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.695912","http://www.omim.org/entry/300601","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=1478854267",null,"http://www.omim.org/entry/300599","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=368842402","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31907",null,"http://www.omim.org/entry/300637","http://www.omim.org/entry/300597","http://www.omim.org/entry/300731","http://www.ensembl.org/id/ENSG00000271467","http://www.ensembl.org/id/ENSG00000268617","http://www.ensembl.org/id/ENSG00000269209","http://www.ensembl.org/id/ENSG00000269465","http://www.ensembl.org/id/ENSG00000269451","http://www.ensembl.org/id/ENSG00000268468","http://www.ensembl.org/id/ENSG00000268311","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-2112716684",null,"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1389681248",null,"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.722100","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=673458260","http://www.omim.org/entry/300736","https://www.ncbi.nlm.nih.gov/gene/645021","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=2086886689",null,"http://www.omim.org/entry/300595","https://www.ncbi.nlm.nih.gov/gene/389855","https://www.ncbi.nlm.nih.gov/gene/100101627","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1188079818",null,"http://www.omim.org/entry/300735","https://www.ncbi.nlm.nih.gov/gene/100101628","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1546667946",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31906","http://www.omim.org/entry/300730","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-853399846","http://www.ensembl.org/id/ENSG00000270928","http://www.ensembl.org/id/ENSG00000198716","http://www.ensembl.org/id/ENSG00000068990","http://www.ensembl.org/id/ENSG00000217977","http://www.ensembl.org/id/ENSG00000215275","http://www.ensembl.org/id/ENSG00000215276","http://www.ensembl.org/id/ENSG00000215253"],"source":["EntrezGene","Vega_gene","Vega_gene","EntrezGene","EntrezGene","Vega_gene","HGNC","EntrezGene","Ens_gene","","HGNC","UniGene","MetaBase_gene","Ens_gene","Ens_gene","","HGNC","EntrezGene","EntrezGene","HGNC","EntrezGene","HGNC","EntrezGene","HGNC","HGNC","EntrezGene","EntrezGene","HGNC","","Ens_gene","Ens_gene","UniGene","UniGene","UniGene","MIM_GENE","MetaBase_gene","","MIM_GENE","MetaBase_gene","HGNC","","MIM_GENE","MIM_GENE","MIM_GENE","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","MetaBase_gene","","MetaBase_gene","","UniGene","MetaBase_gene","MIM_GENE","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","EntrezGene","MetaBase_gene","","MIM_GENE","EntrezGene","MetaBase_gene","","HGNC","MIM_GENE","MetaBase_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene","Ens_gene"],"title":["<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/100008586\" target=\"_blank\">100008586<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000024147\" target=\"_blank\">OTTHUMG00000024147<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000024148\" target=\"_blank\">OTTHUMG00000024148<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/645073\" target=\"_blank\">645073<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/729428\" target=\"_blank\">729428<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000067394\" target=\"_blank\">OTTHUMG00000067394<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31960\" target=\"_blank\">31960<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/26749\" target=\"_blank\">26749<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000275113\" target=\"_blank\">ENSG00000275113<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>BESymbol<\/strong><br>GAGE12B<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=26779\" target=\"_blank\">26779<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632812\" target=\"_blank\">Hs.632812<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-36815928\" target=\"_blank\">-36815928<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000236737\" target=\"_blank\">ENSG00000236737<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268524\" target=\"_blank\">ENSG00000268524<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE2E<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4104\" target=\"_blank\">4104<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2579\" target=\"_blank\">2579<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/26748\" target=\"_blank\">26748<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4105\" target=\"_blank\">4105<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2574\" target=\"_blank\">2574<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31958\" target=\"_blank\">31958<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/729408\" target=\"_blank\">729408<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31959\" target=\"_blank\">31959<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4103\" target=\"_blank\">4103<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2578\" target=\"_blank\">2578<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/2576\" target=\"_blank\">2576<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=4101\" target=\"_blank\">4101<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE7<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215269\" target=\"_blank\">ENSG00000215269<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000236362\" target=\"_blank\">ENSG00000236362<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.460641\" target=\"_blank\">Hs.460641<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.632808\" target=\"_blank\">Hs.632808<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.695912\" target=\"_blank\">Hs.695912<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300601\" target=\"_blank\">300601<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=1478854267\" target=\"_blank\">1478854267<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE6<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300599\" target=\"_blank\">300599<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=368842402\" target=\"_blank\">368842402<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31907\" target=\"_blank\">31907<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12G<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300637\" target=\"_blank\">300637<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300597\" target=\"_blank\">300597<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300731\" target=\"_blank\">300731<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000271467\" target=\"_blank\">ENSG00000271467<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268617\" target=\"_blank\">ENSG00000268617<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269209\" target=\"_blank\">ENSG00000269209<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269465\" target=\"_blank\">ENSG00000269465<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000269451\" target=\"_blank\">ENSG00000269451<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268468\" target=\"_blank\">ENSG00000268468<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000268311\" target=\"_blank\">ENSG00000268311<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-2112716684\" target=\"_blank\">-2112716684<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12I<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1389681248\" target=\"_blank\">-1389681248<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE4<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.722100\" target=\"_blank\">Hs.722100<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=673458260\" target=\"_blank\">673458260<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300736\" target=\"_blank\">300736<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/645021\" target=\"_blank\">645021<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=2086886689\" target=\"_blank\">2086886689<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE2C<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300595\" target=\"_blank\">300595<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/389855\" target=\"_blank\">389855<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/100101627\" target=\"_blank\">100101627<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1188079818\" target=\"_blank\">-1188079818<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE2D<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300735\" target=\"_blank\">300735<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/100101628\" target=\"_blank\">100101628<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-1546667946\" target=\"_blank\">-1546667946<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>GAGE12F<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=31906\" target=\"_blank\">31906<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/300730\" target=\"_blank\">300730<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=-853399846\" target=\"_blank\">-853399846<\/a><br><emph>MetaBase_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000270928\" target=\"_blank\">ENSG00000270928<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000198716\" target=\"_blank\">ENSG00000198716<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000068990\" target=\"_blank\">ENSG00000068990<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000217977\" target=\"_blank\">ENSG00000217977<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215275\" target=\"_blank\">ENSG00000215275<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215276\" target=\"_blank\">ENSG00000215276<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000215253\" target=\"_blank\">ENSG00000215253<\/a><br><emph>Ens_gene<\/emph><\/p>"],"shape":["dot","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","box","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","box","dot","box","dot","dot","dot","dot","dot","box","dot","dot","dot","dot","box","dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"color.background":["#67E781","#E2DBE6","#E2DBE6","#67E781","#67E781","#E2DBE6","#7E58DB","#67E781","#B694E4","#E4AC77","#7E58DB","#7299E1","#E56E40","#B694E4","#B694E4","#E4AC77","#7E58DB","#67E781","#67E781","#7E58DB","#67E781","#7E58DB","#67E781","#7E58DB","#7E58DB","#67E781","#67E781","#7E58DB","#E4AC77","#B694E4","#B694E4","#7299E1","#7299E1","#7299E1","#62B0DB","#E56E40","#E4AC77","#62B0DB","#E56E40","#7E58DB","#E4AC77","#62B0DB","#62B0DB","#62B0DB","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#E56E40","#E4AC77","#E56E40","#E4AC77","#7299E1","#E56E40","#62B0DB","#67E781","#E56E40","#E4AC77","#62B0DB","#67E781","#67E781","#E56E40","#E4AC77","#62B0DB","#67E781","#E56E40","#E4AC77","#7E58DB","#62B0DB","#E56E40","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4","#B694E4"],"borderWidth":[4,1,1,4,4,1,1,1,4,1,1,1,1,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,4,4,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],"borderWidthSelected":[4,2,2,4,4,2,2,2,4,2,2,2,2,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,4,4,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2],"color.border":["black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black","black"]},"edges":{"id":["9358485","9358224","9358437","9236053","321950","9059195","9252818","431745","9399433","16802049","16829762","321947","505701","766969","505699","9228006","9236052","9228002","9252811","9228005","9228003","9032727","431839","431854","9390047","9399428","9403738","9411774","16848108","16802750","9032726","431836","431859","9399427","9411773","16836893","16805615","9251330","322060","505706","431837","431838","431840","485314","485315","485312","485313","485311","769122","767031","767536","767798","767773","766906","766748","9057449","9390050","9399430","9403742","9426295","16826228","16819416","9040889","431857","9390051","9399431","9403744","9419099","16820785","16844042","9032724","431855","9390045","9403737","9405123","9411771","16807911","16848569","9040890","431861","9403745","9419100","9603094","16804802","16842243","9032723","431860","9390044","9411770","9601486","9608092","16821504","16846497","9059188","431858","9403740","9426436","9608093","16802046","16837822","9059613","9253129","431856","9390049","9399429","9403741","9426515","16823747","16838154","322077","505705","485327","485331","485330","485329","485328","485334","485333","485332","768791","767029","767534","767796","767771","766904","766746","757506","754723","761417","761284","761291","761275"],"title":["corresponds_to","corresponds_to","corresponds_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_known_as","corresponds_to","is_known_as","is_replaced_by","is_known_as","corresponds_to","corresponds_to","corresponds_to","corresponds_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_known_as","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_associated_to","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_replaced_by","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_associated_to","is_known_as","is_known_as","corresponds_to","is_associated_to","is_associated_to","is_replaced_by","is_associated_to","is_known_as","is_known_as","corresponds_to","corresponds_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_known_as","corresponds_to","is_known_as","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_associated_to","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by"],"from":["4806630","4806108","4806534","170897","170897","234427","170891","234427","4828152","7494183","7494183","170891","27681","501849","27679","4762235","4763012","4762227","4765021","4762233","4762229","234599","234599","234599","4819244","4828151","4832235","268025","7512529","7512529","234593","234593","234593","4828151","268023","7501326","7501326","171101","171101","29765","234595","234597","234601","268024","268025","268022","268023","268021","498465","495367","495393","495145","495320","490956","495035","234597","4819244","4828151","4832235","268021","7490649","7490649","234601","234601","4819244","4828151","4832235","268024","7508475","7508475","234595","234595","4819244","4832235","4833499","268022","7512990","7512990","234635","234635","4832235","268039","4882825","7506676","7506676","234633","234633","4819244","268037","4990512","4871833","7510918","7510918","234631","234631","4832235","268040","4871834","7502255","7502255","234629","171135","234629","4819244","4828151","4832235","268038","7502587","7502587","171135","13347","268024","268022","268025","268023","268037","268040","268039","268038","499893","495367","495393","495145","495320","490956","495035","479726","479439","479897","479553","479336","480420"],"to":["234629","234597","234427","234635","27679","283446","234427","27679","234427","234427","283446","27681","283446","27681","283444","234599","234601","234633","234631","234593","234595","4693709","29765","13347","234599","234599","234599","234599","4693709","234599","4693708","29765","13347","234593","234593","4693708","234593","234597","29765","283451","29765","29765","29765","29765","29765","29765","29765","29765","29765","498465","498465","498465","498465","498465","498465","283451","234597","234597","234597","234597","283451","234597","4362775","13347","234601","234601","234601","234601","234601","4362775","4693706","13347","234595","234595","234595","234595","234595","4693706","283444","13347","234635","234635","234635","234635","283444","4693705","13347","234633","234633","234633","234633","234633","4693705","4696696","13347","234631","234631","234631","234631","4696696","283450","234629","13347","234629","234629","234629","234629","234629","283450","13347","283450","13347","13347","13347","13347","13347","13347","13347","13347","13347","499893","499893","499893","499893","499893","499893","13347","13347","13347","13347","13347","13347"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"],"dashes":[false,false,false,false,false,false,false,false,true,true,false,false,false,true,false,false,false,false,false,false,false,false,false,false,true,true,true,true,false,true,false,false,false,true,true,false,true,false,false,false,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,false,true,true,true,true,false,true,false,false,true,true,true,true,true,false,false,false,true,true,true,true,true,false,false,false,true,true,true,true,false,false,false,true,true,true,true,true,false,false,false,true,true,true,true,false,false,false,false,true,true,true,true,true,false,false,false,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true,true]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true},"physics":{"solver":"repulsion"}},"groups":null,"width":null,"height":null,"idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id","selected":"234427"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":2,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"BESymbol","shape":"box","color":"#E4AC77"},{"label":"EntrezGene","shape":"dot","color":"#67E781"},{"label":"Vega_gene","shape":"dot","color":"#E2DBE6"},{"label":"HGNC","shape":"dot","color":"#7E58DB"},{"label":"Ens_gene","shape":"dot","color":"#B694E4"},{"label":"UniGene","shape":"dot","color":"#7299E1"},{"label":"MetaBase_gene","shape":"dot","color":"#E56E40"},{"label":"MIM_GENE","shape":"dot","color":"#62B0DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
 </div>
 <p><br></p>
 <p>The way the ID correspondances are reported in the different source databases leads to this mapping ambiguity which has to be taken into account when comparing identifiers from different databases.</p>
@@ -478,8 +534,8 @@ exploreBe(
    source=&quot;Ens_gene&quot;,
    be=&quot;Gene&quot;
 )</code></pre>
-<div id="htmlwidget-787c4e7607a5b548f64e" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-787c4e7607a5b548f64e">{"x":{"nodes":{"id":["4748030","212940","41617","292458","140708","262903","55123","58007","4963734","4968793","4973834","4904017","4782993","7574154"],"type":["GeneID","GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID"],"label":["OTTHUMG00000168833","4137","ENSG00000277956","MAPT","6893","157140","ENSG00000276155","ENSG00000186868","1651","4138","8152","147077","Hs.101174","150263327"],"database":["Vega_gene","EntrezGene","Ens_gene","","HGNC","MIM_GENE","Ens_gene","Ens_gene","EntrezGene","EntrezGene","EntrezGene","EntrezGene","UniGene","MetaBase_gene"],"preferred":["FALSE","TRUE","FALSE","","FALSE","FALSE","FALSE","TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE"],"platform":["","","","","","","","","","","","","",""],"url":["http://vega.sanger.ac.uk/id/OTTHUMG00000168833","https://www.ncbi.nlm.nih.gov/gene/4137","http://www.ensembl.org/id/ENSG00000277956",null,"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=6893","http://www.omim.org/entry/157140","http://www.ensembl.org/id/ENSG00000276155","http://www.ensembl.org/id/ENSG00000186868","https://www.ncbi.nlm.nih.gov/gene/1651","https://www.ncbi.nlm.nih.gov/gene/4138","https://www.ncbi.nlm.nih.gov/gene/8152","https://www.ncbi.nlm.nih.gov/gene/147077","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.101174","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=150263327"],"source":["Vega_gene","EntrezGene","Ens_gene","","HGNC","MIM_GENE","Ens_gene","Ens_gene","EntrezGene","EntrezGene","EntrezGene","EntrezGene","UniGene","MetaBase_gene"],"title":["<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000168833\" target=\"_blank\">OTTHUMG00000168833<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/4137\" target=\"_blank\">4137<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000277956\" target=\"_blank\">ENSG00000277956<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>MAPT<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=6893\" target=\"_blank\">6893<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/157140\" target=\"_blank\">157140<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000276155\" target=\"_blank\">ENSG00000276155<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000186868\" target=\"_blank\">ENSG00000186868<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/1651\" target=\"_blank\">1651<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/4138\" target=\"_blank\">4138<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/8152\" target=\"_blank\">8152<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/147077\" target=\"_blank\">147077<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.101174\" target=\"_blank\">Hs.101174<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=150263327\" target=\"_blank\">150263327<\/a><br><emph>MetaBase_gene<\/emph><\/p>"],"shape":["dot","dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"color.background":["#67E781","#E2DBE6","#7E58DB","#E4AC77","#B4E5BC","#7299E1","#7E58DB","#7E58DB","#E2DBE6","#E2DBE6","#E2DBE6","#E2DBE6","#E56E40","#62B0DB"],"borderWidth":[1,4,1,1,1,1,1,4,1,1,1,1,1,1],"borderWidthSelected":[2,4,2,2,2,2,2,4,2,2,2,2,2,2],"color.border":["black","black","black","black","black","black","black","black","black","black","black","black","black","black"]},"edges":{"id":["9272228","517658","429672","316705","486098","421013","517660","305532","480835","517659","420745","305148","480686","9165022","8970904","9520172","9520524","9521161","9528007","9342662","9310026","16898598","16866734"],"title":["corresponds_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","corresponds_to","is_known_as","corresponds_to","is_associated_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","corresponds_to","is_known_as","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_associated_to","is_associated_to","is_known_as","is_associated_to"],"from":["4748030","41617","212940","140708","262903","212940","55123","140708","262903","58007","212940","140708","262903","140708","212940","4963734","4968793","4973834","4904017","262903","4782993","7574154","7574154"],"to":["212940","292458","41617","41617","41617","55123","292458","55123","55123","292458","58007","58007","58007","212940","292458","212940","212940","212940","212940","212940","212940","292458","212940"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"],"dashes":[false,false,false,false,true,false,false,false,true,false,false,false,true,false,false,true,true,true,true,true,true,false,true]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id","selected":"58007"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":2,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"BESymbol","shape":"box","color":"#E4AC77"},{"label":"Vega_gene","shape":"dot","color":"#67E781"},{"label":"EntrezGene","shape":"dot","color":"#E2DBE6"},{"label":"Ens_gene","shape":"dot","color":"#7E58DB"},{"label":"HGNC","shape":"dot","color":"#B4E5BC"},{"label":"MIM_GENE","shape":"dot","color":"#7299E1"},{"label":"UniGene","shape":"dot","color":"#E56E40"},{"label":"MetaBase_gene","shape":"dot","color":"#62B0DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-bd76ead45ae7e37eb79a" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-bd76ead45ae7e37eb79a">{"x":{"nodes":{"id":["212599","4775222","290486","41611","140783","260866","57968","55084","4930874","4990591","5000718","4995650","4809896","7503630"],"type":["GeneID","GeneID","BESymbol","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID","GeneID"],"label":["4137","OTTHUMG00000168833","MAPT","ENSG00000277956","6893","157140","ENSG00000186868","ENSG00000276155","147077","1651","8152","4138","Hs.101174","150263327"],"database":["EntrezGene","Vega_gene","","Ens_gene","HGNC","MIM_GENE","Ens_gene","Ens_gene","EntrezGene","EntrezGene","EntrezGene","EntrezGene","UniGene","MetaBase_gene"],"preferred":["TRUE","FALSE","","FALSE","FALSE","FALSE","TRUE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE","FALSE"],"platform":["","","","","","","","","","","","","",""],"url":["https://www.ncbi.nlm.nih.gov/gene/4137","http://vega.sanger.ac.uk/id/OTTHUMG00000168833",null,"http://www.ensembl.org/id/ENSG00000277956","http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=6893","http://www.omim.org/entry/157140","http://www.ensembl.org/id/ENSG00000186868","http://www.ensembl.org/id/ENSG00000276155","https://www.ncbi.nlm.nih.gov/gene/147077","https://www.ncbi.nlm.nih.gov/gene/1651","https://www.ncbi.nlm.nih.gov/gene/8152","https://www.ncbi.nlm.nih.gov/gene/4138","https://www.ncbi.nlm.nih.gov/unigene?term=Hs.101174","https://portal.genego.com/cgi/entity_page.cgi?term=20&id=150263327"],"source":["EntrezGene","Vega_gene","","Ens_gene","HGNC","MIM_GENE","Ens_gene","Ens_gene","EntrezGene","EntrezGene","EntrezGene","EntrezGene","UniGene","MetaBase_gene"],"title":["<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/4137\" target=\"_blank\">4137<\/a><br><emph>EntrezGene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://vega.sanger.ac.uk/id/OTTHUMG00000168833\" target=\"_blank\">OTTHUMG00000168833<\/a><br><emph>Vega_gene<\/emph><\/p>","<p><strong>BESymbol<\/strong><br>MAPT<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000277956\" target=\"_blank\">ENSG00000277956<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=6893\" target=\"_blank\">6893<\/a><br><emph>HGNC<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.omim.org/entry/157140\" target=\"_blank\">157140<\/a><br><emph>MIM_GENE<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000186868\" target=\"_blank\">ENSG00000186868<\/a><br><emph>Ens_gene<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"http://www.ensembl.org/id/ENSG00000276155\" target=\"_blank\">ENSG00000276155<\/a><br><emph>Ens_gene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/147077\" target=\"_blank\">147077<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/1651\" target=\"_blank\">1651<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/8152\" target=\"_blank\">8152<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/4138\" target=\"_blank\">4138<\/a><br><emph>EntrezGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/unigene?term=Hs.101174\" target=\"_blank\">Hs.101174<\/a><br><emph>UniGene<\/emph><\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://portal.genego.com/cgi/entity_page.cgi?term=20&id=150263327\" target=\"_blank\">150263327<\/a><br><emph>MetaBase_gene<\/emph><\/p>"],"shape":["dot","dot","box","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot","dot"],"color.background":["#67E781","#E2DBE6","#E4AC77","#B694E4","#B4E5BC","#7299E1","#B694E4","#B694E4","#67E781","#67E781","#67E781","#67E781","#E56E40","#62B0DB"],"borderWidth":[4,1,1,1,1,1,4,1,1,1,1,1,1,1],"borderWidthSelected":[4,2,2,2,2,2,4,2,2,2,2,2,2,2],"color.border":["black","black","black","black","black","black","black","black","black","black","black","black","black","black"]},"edges":{"id":["9342792","428034","514457","316937","482754","514459","419624","305346","477330","9229267","305731","514458","419880","477480","9033992","9598351","9590516","9591505","9590868","9412929","9380311","16807328","16839197"],"title":["corresponds_to","corresponds_to","is_known_as","corresponds_to","is_associated_to","is_known_as","corresponds_to","corresponds_to","is_associated_to","corresponds_to","corresponds_to","is_known_as","corresponds_to","is_associated_to","is_known_as","is_replaced_by","is_replaced_by","is_replaced_by","is_replaced_by","is_associated_to","is_associated_to","is_associated_to","is_known_as"],"from":["4775222","212599","41611","140783","260866","57968","212599","140783","260866","140783","140783","55084","212599","260866","212599","4930874","4990591","5000718","4995650","260866","4809896","7503630","7503630"],"to":["212599","41611","290486","41611","41611","290486","57968","57968","57968","212599","55084","290486","55084","55084","290486","212599","212599","212599","212599","212599","212599","212599","290486"],"arrows":["to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to","to"],"dashes":[false,false,false,false,true,false,false,false,true,false,false,false,false,true,false,true,true,true,true,true,true,true,false]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":true,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id","selected":"57968"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.2,"useGroups":false,"position":"left","ncol":2,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"BESymbol","shape":"box","color":"#E4AC77"},{"label":"EntrezGene","shape":"dot","color":"#67E781"},{"label":"Vega_gene","shape":"dot","color":"#E2DBE6"},{"label":"Ens_gene","shape":"dot","color":"#B694E4"},{"label":"HGNC","shape":"dot","color":"#B4E5BC"},{"label":"MIM_GENE","shape":"dot","color":"#7299E1"},{"label":"UniGene","shape":"dot","color":"#E56E40"},{"label":"MetaBase_gene","shape":"dot","color":"#62B0DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
 <pre class="r"><code>getBeIds(
    be=&quot;Gene&quot;, source=&quot;Ens_gene&quot;, organism=&quot;human&quot;,
    restricted=TRUE,
@@ -487,9 +543,9 @@ exploreBe(
    filter=mapt$to
 )</code></pre>
 <pre><code>##                id preferred   Gene db.version db.deprecated
-## 1 ENSG00000186868      TRUE 107304         94         FALSE
-## 2 ENSG00000276155     FALSE 107304         94         FALSE
-## 3 ENSG00000277956     FALSE 107304         94         FALSE
+## 1 ENSG00000186868      TRUE 107323         95         FALSE
+## 2 ENSG00000276155     FALSE 107323         95         FALSE
+## 3 ENSG00000277956     FALSE 107323         95         FALSE
 ##                             seq_region
 ## 1                 GRCh38 chromosome 17
 ## 2 GRCh38 chromosome CHR_HSCHR17_1_CTG5
@@ -556,7 +612,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Mgrn1</td>
 <td align="left">mahogunin, ring finger 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -564,7 +620,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Cmc4</td>
 <td align="left">C-x(9)-C motif containing 4</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -572,7 +628,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Lhpp</td>
 <td align="left">phospholysine phosphohistidine inorganic pyrophosphate phosphatase</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -580,7 +636,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Trim44</td>
 <td align="left">tripartite motif-containing 44</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -588,7 +644,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Leprot</td>
 <td align="left">leptin receptor overlapping transcript</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -596,7 +652,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Pyurf</td>
 <td align="left">Pigy upstream reading frame</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -604,7 +660,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Chrac1</td>
 <td align="left">chromatin accessibility complex 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -612,7 +668,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Fgfbp3</td>
 <td align="left">fibroblast growth factor binding protein 3</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -620,7 +676,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Sema4b</td>
 <td align="left">sema domain, immunoglobulin domain (Ig), transmembrane domain (TM) and short cytoplasmic domain, (semaphorin) 4B</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -628,7 +684,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Dffa</td>
 <td align="left">DNA fragmentation factor, alpha subunit</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -636,7 +692,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Gm16149</td>
 <td align="left">predicted gene 16149</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -644,7 +700,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Rpl10-ps3</td>
 <td align="left">ribosomal protein L10, pseudogene 3</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -652,7 +708,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Cbfb</td>
 <td align="left">core binding factor beta</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -660,7 +716,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Nrm</td>
 <td align="left">nurim (nuclear envelope membrane protein)</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -668,7 +724,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Inpp5k</td>
 <td align="left">inositol polyphosphate 5-phosphatase K</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -676,7 +732,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Gprasp2</td>
 <td align="left">G protein-coupled receptor associated sorting protein 2</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -684,7 +740,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Osbpl5</td>
 <td align="left">oxysterol binding protein-like 5</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -692,7 +748,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Lif</td>
 <td align="left">leukemia inhibitory factor</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -700,7 +756,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Ipo8</td>
 <td align="left">importin 8</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -708,7 +764,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Atpaf1</td>
 <td align="left">ATP synthase mitochondrial F1 complex assembly factor 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -716,7 +772,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Rsrc1</td>
 <td align="left">arginine/serine-rich coiled-coil 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -724,7 +780,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Hspbp1</td>
 <td align="left">HSPA (heat shock 70kDa) binding protein, cytoplasmic cochaperone 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -732,7 +788,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Mien1</td>
 <td align="left">migration and invasion enhancer 1</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="even">
@@ -740,7 +796,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">Sp8</td>
 <td align="left">trans-acting transcription factor 8</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 <tr class="odd">
@@ -748,7 +804,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">P2ry14</td>
 <td align="left">purinergic receptor P2Y, G-protein coupled, 14</td>
 <td align="left">TRUE</td>
-<td align="left">20181007</td>
+<td align="left">20190130</td>
 <td align="left">FALSE</td>
 </tr>
 </tbody>
@@ -760,12 +816,12 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 )
 head(res)</code></pre>
 <pre><code>##      id   symbol canonical direct preferred  entity
-## 1 12400 AI893578     FALSE   TRUE      TRUE 2429909
-## 2 12400     PEA2     FALSE   TRUE      TRUE 2429909
-## 3 12400   PEBP2b     FALSE   TRUE      TRUE 2429909
-## 4 12400    Pebp2     FALSE   TRUE      TRUE 2429909
-## 5 12400   Pebpb2     FALSE   TRUE      TRUE 2429909
-## 6 12400     Cbfb      TRUE   TRUE      TRUE 2429909</code></pre>
+## 1 12400   PEBP2b     FALSE   TRUE      TRUE 2422016
+## 2 12400    Pebp2     FALSE   TRUE      TRUE 2422016
+## 3 12400 AI893578     FALSE   TRUE      TRUE 2422016
+## 4 12400     PEA2     FALSE   TRUE      TRUE 2422016
+## 5 12400   Pebpb2     FALSE   TRUE      TRUE 2422016
+## 6 12400     Cbfb      TRUE   TRUE      TRUE 2422016</code></pre>
 <pre class="r"><code>res &lt;- getBeIdNames(
     ids=oriId, be=&quot;Gene&quot;, source=&quot;EntrezGene&quot;, organism=&quot;mouse&quot;,
     restricted=FALSE
@@ -786,12 +842,12 @@ head(res)</code></pre>
 ## 13                                         leukemia inhibitory factor
 ## 16                                                         importin 8
 ##    direct preferred  entity
-## 1    TRUE      TRUE 2429909
-## 4    TRUE      TRUE 2414203
-## 7    TRUE      TRUE 2416895
-## 10   TRUE      TRUE 2413010
-## 13   TRUE      TRUE 2417230
-## 16   TRUE      TRUE 2384657</code></pre>
+## 1    TRUE      TRUE 2422016
+## 4    TRUE      TRUE 2409047
+## 7    TRUE      TRUE 2416872
+## 10   TRUE      TRUE 2411281
+## 13   TRUE      TRUE 2430811
+## 16   TRUE      TRUE 2401835</code></pre>
 <p>Also probes and some biological entities do not have directly associated symbols or names. These elements can also be annotated according to information related to relevant genes.</p>
 <pre class="r"><code>someProbes &lt;- c(
     &quot;238834_at&quot;, &quot;1569297_at&quot;, &quot;213021_at&quot;, &quot;225480_at&quot;,
@@ -851,7 +907,7 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <td align="left">217969_at</td>
 <td align="left">738</td>
 <td align="left">VPS51 (738)</td>
-<td align="left">VPS51, GARP complex subunit (738)</td>
+<td align="left">VPS51 subunit of GARP complex (738)</td>
 </tr>
 <tr class="even">
 <td align="left">211359_s_at</td>
@@ -875,17 +931,17 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 <pre class="r"><code>getDirectProduct(&quot;ENSG00000145335&quot;, process=&quot;is_expressed_as&quot;)</code></pre>
 <pre><code>##             origin  osource         product        psource canonical
 ## 1  ENSG00000145335 Ens_gene ENST00000611107 Ens_transcript     FALSE
-## 2  ENSG00000145335 Ens_gene ENST00000420646 Ens_transcript     FALSE
-## 3  ENSG00000145335 Ens_gene ENST00000618500 Ens_transcript     FALSE
-## 4  ENSG00000145335 Ens_gene ENST00000394991 Ens_transcript     FALSE
-## 5  ENSG00000145335 Ens_gene ENST00000502987 Ens_transcript     FALSE
-## 6  ENSG00000145335 Ens_gene ENST00000505199 Ens_transcript     FALSE
-## 7  ENSG00000145335 Ens_gene ENST00000394986 Ens_transcript     FALSE
-## 8  ENSG00000145335 Ens_gene ENST00000394989 Ens_transcript     FALSE
-## 9  ENSG00000145335 Ens_gene ENST00000345009 Ens_transcript     FALSE
-## 10 ENSG00000145335 Ens_gene ENST00000506691 Ens_transcript     FALSE
+## 2  ENSG00000145335 Ens_gene ENST00000394986 Ens_transcript     FALSE
+## 3  ENSG00000145335 Ens_gene ENST00000506691 Ens_transcript     FALSE
+## 4  ENSG00000145335 Ens_gene ENST00000345009 Ens_transcript     FALSE
+## 5  ENSG00000145335 Ens_gene ENST00000394991 Ens_transcript     FALSE
+## 6  ENSG00000145335 Ens_gene ENST00000618500 Ens_transcript     FALSE
+## 7  ENSG00000145335 Ens_gene ENST00000505199 Ens_transcript     FALSE
+## 8  ENSG00000145335 Ens_gene ENST00000502987 Ens_transcript     FALSE
+## 9  ENSG00000145335 Ens_gene ENST00000420646 Ens_transcript     FALSE
+## 10 ENSG00000145335 Ens_gene ENST00000506244 Ens_transcript     FALSE
 ## 11 ENSG00000145335 Ens_gene ENST00000508895 Ens_transcript     FALSE
-## 12 ENSG00000145335 Ens_gene ENST00000506244 Ens_transcript     FALSE
+## 12 ENSG00000145335 Ens_gene ENST00000394989 Ens_transcript     FALSE
 ## 13 ENSG00000145335 Ens_gene ENST00000336904 Ens_transcript      TRUE</code></pre>
 <pre class="r"><code>getDirectProduct(&quot;ENST00000336904&quot;, process=&quot;is_translated_in&quot;)</code></pre>
 <pre><code>##            origin        osource         product         psource canonical
@@ -912,12 +968,12 @@ kable(toShow, escape=FALSE, row.names=FALSE)</code></pre>
 )
 head(res)</code></pre>
 <pre><code>##      from                 to to.preferred to.entity
-## 6  320727 ENSMUSG00000040029         TRUE   2384657
-## 20  19062 ENSMUSG00000006127         TRUE   2387198
-## 19 103742 ENSMUSG00000002580         TRUE   2387423
-## 12  79196 ENSMUSG00000037606         TRUE   2389558
-## 21 106582 ENSMUSG00000059791         TRUE   2394455
-## 13  76429 ENSMUSG00000030946         TRUE   2397620</code></pre>
+## 23  20352 ENSMUSG00000030539         TRUE   2401436
+## 6  320727 ENSMUSG00000040029         TRUE   2401835
+## 11  17237 ENSMUSG00000022517         TRUE   2402411
+## 21 106582 ENSMUSG00000059791         TRUE   2402704
+## 9  230649 ENSMUSG00000028710         TRUE   2405106
+## 2   80985 ENSMUSG00000027189         TRUE   2409047</code></pre>
 </div>
 <div id="same-organism-from-one-entity-to-another" class="section level2">
 <h2><span class="header-section-number">4.2</span> Same organism: from one entity to another</h2>
@@ -933,12 +989,12 @@ head(res)</code></pre>
 )
 head(res)</code></pre>
 <pre><code>##       from                 to to.preferred to.entity
-## 128 106582 ENSMUSP00000073873         TRUE   3491291
-## 127 106582 ENSMUSP00000133355         TRUE   3491299
-## 126 106582 ENSMUSP00000134569         TRUE   3491300
-## 95   76429 ENSMUSP00000147404         TRUE   3498871
-## 90   76429 ENSMUSP00000033241         TRUE   3498892
-## 91   76429 ENSMUSP00000147970         TRUE   3498892</code></pre>
+## 2    12400 ENSMUSP00000059382         TRUE   3510666
+## 1    12400 ENSMUSP00000105019         TRUE   3510666
+## 3    12400 ENSMUSP00000105021         TRUE   3510666
+## 4    12400 ENSMUSP00000105022         TRUE   3510666
+## 102 320145 ENSMUSP00000065746         TRUE   3513014
+## 101 320145 ENSMUSP00000152523         TRUE   3513018</code></pre>
 </div>
 <div id="from-one-organism-to-another" class="section level2">
 <h2><span class="header-section-number">4.3</span> From one organism to another</h2>
@@ -955,12 +1011,12 @@ head(res)</code></pre>
 )
 head(res)</code></pre>
 <pre><code>##       from              to to.preferred to.entity
-## 123  13347 ENSP00000366235         TRUE   1736647
-## 122  13347 ENSP00000366237         TRUE   1736647
-## 121  13347 ENSP00000468395         TRUE   1736650
-## 110 103742 ENSP00000377778         TRUE   1739255
-## 111 103742 ENSP00000462998         TRUE   1739255
-## 58   19062 ENSP00000254712         TRUE   1740525</code></pre>
+## 123  13347 ENSP00000366235         TRUE   1741280
+## 122  13347 ENSP00000366237         TRUE   1741280
+## 121  13347 ENSP00000468395         TRUE   1741283
+## 110 103742 ENSP00000377778         TRUE   1743888
+## 111 103742 ENSP00000462998         TRUE   1743888
+## 61   19062 ENSP00000254712         TRUE   1745158</code></pre>
 </div>
 <div id="converting-lists-of-identifiers" class="section level2">
 <h2><span class="header-section-number">4.4</span> Converting lists of identifiers</h2>
@@ -982,7 +1038,7 @@ unlist(lapply(humanEnsPeptides, length))</code></pre>
 <pre class="r"><code>lapply(humanEnsPeptides, head)</code></pre>
 <pre><code>## $a
 ## [1] &quot;ENSP00000299413&quot; &quot;ENSP00000358491&quot; &quot;ENSP00000358496&quot; &quot;ENSP00000468171&quot;
-## [5] &quot;ENSP00000467414&quot; &quot;ENSP00000262370&quot;
+## [5] &quot;ENSP00000443810&quot; &quot;ENSP00000467414&quot;
 ## 
 ## $b
 ## [1] &quot;ENSP00000366235&quot; &quot;ENSP00000366237&quot; &quot;ENSP00000468395&quot; &quot;ENSP00000377778&quot;
@@ -1004,12 +1060,12 @@ res &lt;- convDfBeIds(
 )
 head(res)</code></pre>
 <pre><code>##    a         b conv.from            conv.to
-## 1 12 0.4850906 100043346 ENSMUSG00000058443
-## 2 11 0.4694804 100462961 ENSMUSG00000082123
-## 3 23 0.8939657    103742 ENSMUSG00000002580
-## 4  2 0.5546824 105886298 ENSMUSG00000090110
-## 5 14 0.4636952    106582 ENSMUSG00000059791
-## 6 13 0.3058963     12400 ENSMUSG00000031885</code></pre>
+## 1 12 0.4639350 100043346 ENSMUSG00000058443
+## 2 11 0.7403431 100462961 ENSMUSG00000082123
+## 3 23 0.1803883    103742 ENSMUSG00000002580
+## 4  2 0.8290145 105886298 ENSMUSG00000090110
+## 5 14 0.8311265    106582 ENSMUSG00000059791
+## 6 13 0.9140932     12400 ENSMUSG00000031885</code></pre>
 </div>
 <div id="explore-convertion-shortest-path-between-two-identifiers" class="section level2">
 <h2><span class="header-section-number">4.6</span> Explore convertion shortest path between two identifiers</h2>
@@ -1022,13 +1078,13 @@ res &lt;- convBeIds(
 )
 res</code></pre>
 <pre><code>##           from     to to.preferred to.entity
-## 1 ILMN_1220595 Q16552         TRUE   1806901</code></pre>
+## 1 ILMN_1220595 Q16552         TRUE   1811534</code></pre>
 <pre class="r"><code>exploreConvPath(
    from.id=from.id, from=&quot;Probe&quot;, from.source=&quot;GPL6885&quot;,
    to.id=res$to[1], to=&quot;Peptide&quot;, to.source=&quot;Uniprot&quot;
 )</code></pre>
-<div id="htmlwidget-8f93e4e41eadda84219e" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
-<script type="application/json" data-for="htmlwidget-8f93e4e41eadda84219e">{"x":{"nodes":{"id":["1040799","2558630","246836","2179366","8074818","3074631","1906480"],"type":["TranscriptID","GeneID","GeneID","PeptideID","ProbeID","TranscriptID","PeptideID"],"label":["NM_002190","16171","3605","Q16552","ILMN_1220595","NM_010552","NP_002181"],"database":["RefSeq","EntrezGene","EntrezGene","Uniprot","","RefSeq","RefSeq_peptide"],"preferred":["TRUE","TRUE","TRUE","TRUE","","TRUE","TRUE"],"platform":["","","","","GPL6885","",""],"url":["https://www.ncbi.nlm.nih.gov/nuccore/NM_002190","https://www.ncbi.nlm.nih.gov/gene/16171","https://www.ncbi.nlm.nih.gov/gene/3605","http://www.uniprot.org/uniprot/Q16552",null,"https://www.ncbi.nlm.nih.gov/nuccore/NM_010552","https://www.ncbi.nlm.nih.gov/protein/NP_002181"],"symbol":["","Il17a","IL17A","IL17_HUMAN","","",""],"source":["RefSeq","EntrezGene","EntrezGene","Uniprot","GPL6885","RefSeq","RefSeq_peptide"],"title":["<p><strong>TranscriptID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/nuccore/NM_002190\" target=\"_blank\">NM_002190<\/a><br><emph>RefSeq<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/16171\" target=\"_blank\">16171<\/a><br><emph>EntrezGene<\/emph><br>Preferred<br>Il17a<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/3605\" target=\"_blank\">3605<\/a><br><emph>EntrezGene<\/emph><br>Preferred<br>IL17A<\/p>","<p><strong>PeptideID<\/strong><br><a href=\"http://www.uniprot.org/uniprot/Q16552\" target=\"_blank\">Q16552<\/a><br><emph>Uniprot<\/emph><br>Preferred<br>IL17_HUMAN<\/p>","<p><strong>ProbeID<\/strong><br>ILMN_1220595<br><emph>GPL6885<\/emph><\/p>","<p><strong>TranscriptID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/nuccore/NM_010552\" target=\"_blank\">NM_010552<\/a><br><emph>RefSeq<\/emph><br>Preferred<\/p>","<p><strong>PeptideID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/protein/NP_002181\" target=\"_blank\">NP_002181<\/a><br><emph>RefSeq_peptide<\/emph><br>Preferred<\/p>"],"shape":["diamond","dot","dot","square","triangle","diamond","square"],"color.background":["#E2B845","#E4AC77","#E4AC77","#67E781","#E2DBE6","#E2B845","#7E58DB"],"borderWidth":[4,4,4,4,1,4,4],"borderWidthSelected":[4,4,4,4,2,4,4],"color.border":["black","black","black","black","black","black","black"]},"edges":{"id":["9959430","14866448","18411006","12074703","17641066","10550527"],"title":["is_expressed_as","corresponds_to","targets","is_expressed_as","is_homolog_of","is_translated_in"],"from":["246836","1906480","8074818","2558630","246836","1040799"],"to":["1040799","2179366","3074631","3074631","2558630","1906480"],"arrows":["","","","","",""],"dashes":[false,false,false,false,false,false],"color":["black","black","black","black","red","black"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.3,"useGroups":false,"position":"left","ncol":3,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"TranscriptID","shape":"diamond","color":null},{"label":"PeptideID","shape":"square","color":null},{"label":"ProbeID","shape":"triangle","color":null},{"label":"RefSeq","shape":"dot","color":"#E2B845"},{"label":"EntrezGene","shape":"dot","color":"#E4AC77"},{"label":"Uniprot","shape":"dot","color":"#67E781"},{"label":"GPL6885","shape":"dot","color":"#E2DBE6"},{"label":"RefSeq_peptide","shape":"dot","color":"#7E58DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
+<div id="htmlwidget-c9e82e4b29d6f4d2c071" style="width:672px;height:480px;" class="visNetwork html-widget"></div>
+<script type="application/json" data-for="htmlwidget-c9e82e4b29d6f4d2c071">{"x":{"nodes":{"id":["2558100","8004671","3068392","244837","1048153","1917050","2195193"],"type":["GeneID","ProbeID","TranscriptID","GeneID","TranscriptID","PeptideID","PeptideID"],"label":["16171","ILMN_1220595","NM_010552","3605","NM_002190","NP_002181","Q16552"],"database":["EntrezGene","","RefSeq","EntrezGene","RefSeq","RefSeq_peptide","Uniprot"],"preferred":["TRUE","","TRUE","TRUE","TRUE","TRUE","TRUE"],"platform":["","GPL6885","","","","",""],"url":["https://www.ncbi.nlm.nih.gov/gene/16171",null,"https://www.ncbi.nlm.nih.gov/nuccore/NM_010552","https://www.ncbi.nlm.nih.gov/gene/3605","https://www.ncbi.nlm.nih.gov/nuccore/NM_002190","https://www.ncbi.nlm.nih.gov/protein/NP_002181","http://www.uniprot.org/uniprot/Q16552"],"symbol":["Il17a","","","IL17A","","","IL17_HUMAN"],"source":["EntrezGene","GPL6885","RefSeq","EntrezGene","RefSeq","RefSeq_peptide","Uniprot"],"title":["<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/16171\" target=\"_blank\">16171<\/a><br><emph>EntrezGene<\/emph><br>Preferred<br>Il17a<\/p>","<p><strong>ProbeID<\/strong><br>ILMN_1220595<br><emph>GPL6885<\/emph><\/p>","<p><strong>TranscriptID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/nuccore/NM_010552\" target=\"_blank\">NM_010552<\/a><br><emph>RefSeq<\/emph><br>Preferred<\/p>","<p><strong>GeneID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/gene/3605\" target=\"_blank\">3605<\/a><br><emph>EntrezGene<\/emph><br>Preferred<br>IL17A<\/p>","<p><strong>TranscriptID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/nuccore/NM_002190\" target=\"_blank\">NM_002190<\/a><br><emph>RefSeq<\/emph><br>Preferred<\/p>","<p><strong>PeptideID<\/strong><br><a href=\"https://www.ncbi.nlm.nih.gov/protein/NP_002181\" target=\"_blank\">NP_002181<\/a><br><emph>RefSeq_peptide<\/emph><br>Preferred<\/p>","<p><strong>PeptideID<\/strong><br><a href=\"http://www.uniprot.org/uniprot/Q16552\" target=\"_blank\">Q16552<\/a><br><emph>Uniprot<\/emph><br>Preferred<br>IL17_HUMAN<\/p>"],"shape":["dot","triangle","diamond","dot","diamond","square","square"],"color.background":["#E2B845","#E4AC77","#67E781","#E2B845","#67E781","#E2DBE6","#7E58DB"],"borderWidth":[4,1,4,4,4,4,4],"borderWidthSelected":[4,2,4,4,4,4,4],"color.border":["black","black","black","black","black","black","black"]},"edges":{"id":["12064456","10554307","10018301","17587508","14834699","18357442"],"title":["is_expressed_as","is_translated_in","is_expressed_as","is_homolog_of","corresponds_to","targets"],"from":["2558100","1048153","244837","244837","1917050","8004671"],"to":["3068392","1917050","1048153","2558100","2195193","3068392"],"arrows":["","","","","",""],"dashes":[false,false,false,false,false,false],"color":["black","black","black","red","black","black"]},"nodesToDataframe":true,"edgesToDataframe":true,"options":{"width":"100%","height":"100%","nodes":{"shape":"dot"},"manipulation":{"enabled":false},"interaction":{"selectable":true}},"groups":null,"width":null,"height":null,"idselection":{"enabled":false,"style":"width: 150px; height: 26px","useLabels":true,"main":"Select by id"},"byselection":{"enabled":false,"style":"width: 150px; height: 26px","multiple":false,"hideColor":"rgba(200,200,200,0.5)"},"main":null,"submain":null,"footer":null,"background":"rgba(0, 0, 0, 0)","tooltipStay":300,"tooltipStyle":"position: fixed;visibility:hidden;padding: 5px;white-space: nowrap;font-family: verdana;font-size:14px;font-color:#000000;background-color: #f5f4ed;-moz-border-radius: 3px;-webkit-border-radius: 3px;border-radius: 3px;border: 1px solid #808074;box-shadow: 3px 3px 10px rgba(0, 0, 0, 0.2);","highlight":{"enabled":true,"hoverNearest":false,"degree":1,"algorithm":"all","hideColor":"rgba(200,200,200,0.5)","labelOnly":true},"collapse":{"enabled":false,"fit":false,"resetHighlight":true,"clusterOptions":null},"legend":{"width":0.3,"useGroups":false,"position":"left","ncol":3,"stepX":100,"stepY":100,"zoom":true,"nodes":[{"label":"GeneID","shape":"dot","color":null},{"label":"TranscriptID","shape":"diamond","color":null},{"label":"PeptideID","shape":"square","color":null},{"label":"ProbeID","shape":"triangle","color":null},{"label":"EntrezGene","shape":"dot","color":"#E2B845"},{"label":"GPL6885","shape":"dot","color":"#E4AC77"},{"label":"RefSeq","shape":"dot","color":"#67E781"},{"label":"RefSeq_peptide","shape":"dot","color":"#E2DBE6"},{"label":"Uniprot","shape":"dot","color":"#7E58DB"}],"nodesToDataframe":false}},"evals":[],"jsHooks":[]}</script>
 <p>The figure above shows how the ILMN_1220595 ProbeID, targeting the mouse NM_010552 transcript, can be associated to the Q16552 human protein ID in Uniprot.</p>
 </div>
 <div id="notes-about-converting-from-and-to-gene-symbols" class="section level2">
@@ -1040,29 +1096,29 @@ res</code></pre>
    restricted=FALSE
 )
 dim(compMap)</code></pre>
-<pre><code>## [1] 95662     6</code></pre>
+<pre><code>## [1] 97622     6</code></pre>
 <pre class="r"><code>head(compMap)</code></pre>
-<pre><code>##                    id       symbol canonical direct preferred  entity
-## 1  ENSRNOG00000053848 LOC102552344      TRUE   TRUE      TRUE 5914284
-## 3  ENSRNOG00000057304 LOC102552398      TRUE   TRUE      TRUE 5914314
-## 5  ENSRNOG00000059372 LOC102552617      TRUE   TRUE      TRUE 5914421
-## 7  ENSRNOG00000049238 LOC102552659      TRUE   TRUE      TRUE 5914446
-## 9  ENSRNOG00000048358 LOC102553010      TRUE   TRUE      TRUE 5914636
-## 11 ENSRNOG00000052879 LOC102552829      TRUE   TRUE      TRUE 5914537</code></pre>
+<pre><code>##                     id       symbol canonical direct preferred  entity
+## 1   ENSRNOG00000049342 LOC100359587     FALSE   TRUE      TRUE 5881624
+## 93  ENSRNOG00000049342 LOC103693854      TRUE   TRUE      TRUE 5881624
+## 231 ENSRNOG00000046646 LOC100359587     FALSE   TRUE      TRUE 5881624
+## 323 ENSRNOG00000046646 LOC103693854      TRUE   TRUE      TRUE 5881624
+## 461 ENSRNOG00000057343 LOC103692680      TRUE   TRUE      TRUE 5880504
+## 463 ENSRNOG00000061320 LOC100362211     FALSE   TRUE      TRUE 5880646</code></pre>
 <p>The canonical field indicates if the symbol is canonical for the identifier. The direct field indicates if the symbol is directly associated to the identifier or indirectly through a relationship with another identifier.</p>
 <p>As an example, let’s consider the “Snca” symbol in rat. As shown below, this symbol is associated to 2 genes; it is canonical for one gene and not for another. These 2 genes are also associated to other symbols.</p>
 <pre class="r"><code>sncaEid &lt;- compMap[which(compMap$symbol==&quot;Snca&quot;),]
 sncaEid</code></pre>
 <pre><code>##                        id symbol canonical direct preferred  entity
-## 45352  ENSRNOG00000008656   Snca      TRUE   TRUE      TRUE 3916002
-## 229586 ENSRNOG00000029408   Snca     FALSE   TRUE      TRUE 3942655</code></pre>
+## 8733   ENSRNOG00000008656   Snca      TRUE   TRUE      TRUE 3936078
+## 262764 ENSRNOG00000029408   Snca     FALSE   TRUE      TRUE 3962731</code></pre>
 <pre class="r"><code>compMap[which(compMap$id %in% sncaEid$id),]</code></pre>
 <pre><code>##                        id    symbol canonical direct preferred  entity
-## 45351  ENSRNOG00000008656 MGC105443     FALSE   TRUE      TRUE 3916002
-## 45352  ENSRNOG00000008656      Snca      TRUE   TRUE      TRUE 3916002
-## 229586 ENSRNOG00000029408      Snca     FALSE   TRUE      TRUE 3942655
-## 229587 ENSRNOG00000029408 LOC317274     FALSE   TRUE      TRUE 3942655
-## 229588 ENSRNOG00000029408   Mageb16      TRUE   TRUE      TRUE 3942655</code></pre>
+## 8732   ENSRNOG00000008656 MGC105443     FALSE   TRUE      TRUE 3936078
+## 8733   ENSRNOG00000008656      Snca      TRUE   TRUE      TRUE 3936078
+## 262764 ENSRNOG00000029408      Snca     FALSE   TRUE      TRUE 3962731
+## 262765 ENSRNOG00000029408 LOC317274     FALSE   TRUE      TRUE 3962731
+## 262766 ENSRNOG00000029408   Mageb16      TRUE   TRUE      TRUE 3962731</code></pre>
 <p>The <code>getBeIdDescription</code> function described before, reports only one symbol for each identifier. Canonical and direct symbols are prioritized.</p>
 <pre class="r"><code>getBeIdDescription(
    sncaEid$id,
@@ -1072,8 +1128,8 @@ sncaEid</code></pre>
 ## ENSRNOG00000008656 ENSRNOG00000008656    Snca        synuclein alpha
 ## ENSRNOG00000029408 ENSRNOG00000029408 Mageb16 MAGE family member B16
 ##                    preferred db.version db.deprecated
-## ENSRNOG00000008656      TRUE         94         FALSE
-## ENSRNOG00000029408      TRUE         94         FALSE</code></pre>
+## ENSRNOG00000008656      TRUE         95         FALSE
+## ENSRNOG00000029408      TRUE         95         FALSE</code></pre>
 <p>The <code>convBeIds</code> works differently in order to provide a mapping as exhaustive as possible. If a symbol is associated to several input identifiers, non-canonical associations with this symbol are removed if a canonical association exists for any other identifier. This can lead to inconsistent results, depending on the user input, as show below.</p>
 <pre class="r"><code>convBeIds(
    sncaEid$id[1],
@@ -1081,27 +1137,27 @@ sncaEid</code></pre>
    to.source=&quot;Symbol&quot;
 )</code></pre>
 <pre><code>##                 from        to to.preferred to.entity
-## 3 ENSRNOG00000008656 MGC105443           NA   3916002
-## 1 ENSRNOG00000008656      Snca           NA   3916002</code></pre>
+## 3 ENSRNOG00000008656 MGC105443           NA   3936078
+## 1 ENSRNOG00000008656      Snca           NA   3936078</code></pre>
 <pre class="r"><code>convBeIds(
    sncaEid$id[2],
    from=&quot;Gene&quot;, from.source=&quot;Ens_gene&quot;, from.org=&quot;rat&quot;,
    to.source=&quot;Symbol&quot;
 )</code></pre>
 <pre><code>##                 from        to to.preferred to.entity
-## 6 ENSRNOG00000029408 LOC317274           NA   3942655
-## 2 ENSRNOG00000029408   Mageb16           NA   3942655
-## 1 ENSRNOG00000029408      Snca           NA   3942655</code></pre>
+## 6 ENSRNOG00000029408 LOC317274           NA   3962731
+## 2 ENSRNOG00000029408   Mageb16           NA   3962731
+## 1 ENSRNOG00000029408      Snca           NA   3962731</code></pre>
 <pre class="r"><code>convBeIds(
    sncaEid$id,
    from=&quot;Gene&quot;, from.source=&quot;Ens_gene&quot;, from.org=&quot;rat&quot;,
    to.source=&quot;Symbol&quot;
 )</code></pre>
 <pre><code>##                  from        to to.preferred to.entity
-## 3  ENSRNOG00000008656 MGC105443           NA   3916002
-## 1  ENSRNOG00000008656      Snca           NA   3916002
-## 10 ENSRNOG00000029408 LOC317274           NA   3942655
-## 6  ENSRNOG00000029408   Mageb16           NA   3942655</code></pre>
+## 3  ENSRNOG00000008656 MGC105443           NA   3936078
+## 1  ENSRNOG00000008656      Snca           NA   3936078
+## 10 ENSRNOG00000029408 LOC317274           NA   3962731
+## 6  ENSRNOG00000029408   Mageb16           NA   3962731</code></pre>
 <p>In the example above, when the query is run for each identifier independently, the association to the “Snca” symbol is reported for both. However, when running the same query with the 2 identifiers at the same time, the “Snca” symbol is reported only for one gene corresponding to the canonical association. Finally, as show below, when running the query the other way, “Snca” is only associated to the gene for which it is the canonical symbol.</p>
 <pre class="r"><code>convBeIds(
    &quot;Snca&quot;,
@@ -1109,7 +1165,7 @@ sncaEid</code></pre>
    to.source=&quot;Ens_gene&quot;
 )</code></pre>
 <pre><code>##   from                 to to.preferred to.entity
-## 1 Snca ENSRNOG00000008656         TRUE   3916002</code></pre>
+## 1 Snca ENSRNOG00000008656         TRUE   3936078</code></pre>
 <p><strong> Therefore, the user should chose the function to use with care when needing to convert from or to gene symbol. </strong></p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -1154,28 +1210,28 @@ relIds &lt;- getRelevantIds(
 ## 
 ## other attached packages:
 ## [1] bindrcpp_0.2.2   BED_1.1.5        visNetwork_2.0.4 neo2R_1.1.1     
-## [5] knitr_1.20      
+## [5] knitr_1.21      
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_0.2.5  remotes_2.0.2     purrr_0.2.5      
-##  [4] testthat_2.0.1    miniUI_0.1.1.1    usethis_1.4.0    
-##  [7] htmltools_0.3.6   yaml_2.2.0        base64enc_0.1-3  
-## [10] rlang_0.3.0.1     pkgbuild_1.0.2    pillar_1.3.0     
-## [13] later_0.7.5       glue_1.3.0        withr_2.1.2      
-## [16] sessioninfo_1.1.1 bindr_0.1.1       stringr_1.3.1    
-## [19] devtools_2.0.1    htmlwidgets_1.3   evaluate_0.12    
-## [22] memoise_1.1.0     callr_3.0.0       httpuv_1.4.5     
-## [25] ps_1.2.1          highr_0.7         Rcpp_1.0.0       
-## [28] xtable_1.8-3      backports_1.1.2   promises_1.0.1   
-## [31] DT_0.5            desc_1.2.0        pkgload_1.0.2    
-## [34] debugme_1.1.0     jsonlite_1.5      mime_0.6         
+##  [1] tidyselect_0.2.5  xfun_0.4          remotes_2.0.2    
+##  [4] purrr_0.2.5       testthat_2.0.1    miniUI_0.1.1.1   
+##  [7] usethis_1.4.0     htmltools_0.3.6   yaml_2.2.0       
+## [10] base64enc_0.1-3   rlang_0.3.1       pkgbuild_1.0.2   
+## [13] pillar_1.3.1      later_0.7.5       glue_1.3.0       
+## [16] withr_2.1.2       sessioninfo_1.1.1 bindr_0.1.1      
+## [19] stringr_1.3.1     devtools_2.0.1    htmlwidgets_1.3  
+## [22] evaluate_0.12     memoise_1.1.0     callr_3.1.1      
+## [25] httpuv_1.4.5      ps_1.3.0          highr_0.7        
+## [28] Rcpp_1.0.0        xtable_1.8-3      backports_1.1.3  
+## [31] promises_1.0.1    DT_0.5            desc_1.2.0       
+## [34] pkgload_1.0.2     jsonlite_1.6      mime_0.6         
 ## [37] fs_1.2.6          digest_0.6.18     stringi_1.2.4    
-## [40] processx_3.2.0    dplyr_0.7.8       shiny_1.2.0      
+## [40] processx_3.2.1    dplyr_0.7.8       shiny_1.2.0      
 ## [43] rprojroot_1.3-2   cli_1.0.1         tools_3.5.1      
 ## [46] bitops_1.0-6      magrittr_1.5      RCurl_1.95-4.11  
-## [49] tibble_1.4.2      crayon_1.3.4      pkgconfig_2.0.2  
-## [52] prettyunits_1.0.2 assertthat_0.2.0  rmarkdown_1.10   
-## [55] rstudioapi_0.8    R6_2.3.0          compiler_3.5.1</code></pre>
+## [49] tibble_2.0.1      crayon_1.3.4      pkgconfig_2.0.2  
+## [52] prettyunits_1.0.2 assertthat_0.2.0  rmarkdown_1.11   
+## [55] rstudioapi_0.9.0  R6_2.3.0          compiler_3.5.1</code></pre>
 </div>
 
 
