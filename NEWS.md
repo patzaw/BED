@@ -1,7 +1,14 @@
 <!----------------------------------------------------------------------------->
-## Version 1.1.5 - notes
+## Version 1.1.5 - Release notes - 2019-01-30
+   
+### Methodological changes
 
    - Improving case insentive conversion from and to symbols
+
+### Rebuild-BED.Rmd
+   
+   - Based on neo4j-community-3.4.12
+   - Ensembl 95
 
 <!----------------------------------------------------------------------------->
 ## Version 1.1.4 - notes
