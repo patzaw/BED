@@ -1133,11 +1133,15 @@ BED:::loadProbes(
 platName <- "GPL6885"
 gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
+d <- Table(gds)
+# e <- getBeIds(
+#    be="Gene", source="EntrezGene", organism="mouse", restricted=FALSE
+# )
+# sum(d$Entrez_Gene_ID %in% e$id) < sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
 be <- "Transcript"
 ##
 BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
-d <- Table(gds)
 toImport <- d[,c("RefSeq_ID", "ID")]
 toImport[,1] <- as.character(toImport[,1])
 toImport[,1] <- sub("[.].*$", "", toImport[,1])
@@ -1145,6 +1149,42 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "RefSeq"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL6887: Illumina MouseWG-6 v2.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL6887, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6887"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+d <- Table(gds)
+# e <- getBeIds(
+#    be="Gene", source="EntrezGene", organism="mouse", restricted=FALSE
+# )
+# sum(d$Entrez_Gene_ID %in% e$id) > sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+toImport <- d[,c("Entrez_Gene_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+# toImport[,1] <- sub("[.].*$", "", toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "EntrezGene"
 ##
 BED:::loadProbes(
     d=toImport,
