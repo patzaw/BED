@@ -1,4 +1,18 @@
 <!----------------------------------------------------------------------------->
+## Version 1.1.6 - Release notes - 2019-04-18
+
+### Implementaiton changes
+
+   - Add Sus scrofa support in the dumpUniprotDb function
+
+### Rebuild-BED.Rmd
+   
+   - Based on neo4j-community-3.5.4
+   - Ensembl 96
+   - Add GPL6887 platform
+   - Add Sus scrofa (pig) support
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.5 - Release notes - 2019-01-30
    
 ### Methodological changes

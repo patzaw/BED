@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "95"
+ensembl_release <- "96"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -148,6 +148,37 @@ ensembl_Rnorvegicus <- list(
     ),
     canChromosomes=c(1:20, "X", "Y", "MT")
 )
+ensembl_Sscrofa <- list(
+    release=ensembl_release,
+    organism="Sus scrofa",
+    gv="111",                         # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "EntrezGene"="EntrezGene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Rn_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Rn_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Rn_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:18, "X", "Y", "MT")
+)
 ## General config
 reDumpThr <- as.difftime(2, units="days")
 curDate <- Sys.Date()
@@ -216,7 +247,10 @@ according to the `reDumpThr` object.
 ```{r ncbiTax, message=FALSE}
 BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
-    orgOfInt=c("Homo sapiens", "Rattus norvegicus", "Mus musculus"),
+    orgOfInt=c(
+       "Homo sapiens", "Rattus norvegicus", "Mus musculus",
+       "Sus scrofa"
+      ),
     curDate=curDate
 )
 ```
@@ -440,6 +474,65 @@ gc()
 
 **End**: `r Sys.time()`
 
+## Sus scrofa
+
+```{r ensSs_conf, message=FALSE}
+ensembl <- ensembl_Sscrofa
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -538,6 +631,23 @@ gc()
 
 **End**: `r Sys.time()`
 
+## Sus scrofa data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiSsData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Sus scrofa", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Sus scrofa", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -598,6 +708,19 @@ gc()
 ```{r uniprotRnData, message=FALSE}
 BED:::getUniprot(
     organism="Rattus norvegicus", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Sus scrofa data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotSsData, message=FALSE}
+BED:::getUniprot(
+    organism="Sus scrofa", release=avRel
 )
 gc()
 ```
@@ -744,10 +867,37 @@ loadBmHomologs(
 gc()
 ```
 
+```{r homolog_biomart_HsSs, message=FALSE}
+loadBmHomologs(
+    org1="hsapiens",
+    org2="sscrofa",
+    version=ensembl_release
+)
+gc()
+```
+
 ```{r homolog_biomart_MmRn, message=FALSE}
 loadBmHomologs(
     org1="mmusculus",
     org2="rnorvegicus",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_MmSs, message=FALSE}
+loadBmHomologs(
+    org1="mmusculus",
+    org2="sscrofa",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_RnSs, message=FALSE}
+loadBmHomologs(
+    org1="rnorvegicus",
+    org2="sscrofa",
     version=ensembl_release
 )
 gc()
@@ -763,7 +913,10 @@ gc()
 #####################################
 gdbname <- "EntrezGene"
 taxOfInt <- unlist(lapply(
-    c("Homo sapiens", "Mus musculus", "Rattus norvegicus"),
+    c(
+       "Homo sapiens", "Mus musculus", "Rattus norvegicus",
+       "Sus scrofa"
+    ),
     getTaxId
 ))
 for(i in 1:length(taxOfInt)){

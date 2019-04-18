@@ -9,7 +9,7 @@ export BED_IMPORT=`pwd`/working/neo4jImport
 mkdir -p $BED_IMPORT
 export BED_DATA=`pwd`/working/neo4jData
 if test -e $BED_DATA; then
-   echo "$file directory exists ==> abort - Remove it before proceeding" >&2
+   echo "$BED_DATA directory exists ==> abort - Remove it before proceeding" >&2
    exit
 fi
 mkdir $BED_DATA
@@ -20,9 +20,8 @@ docker run -d \
 	--name $CONTAINER \
 	--publish=$BED_HTTP_PORT:7474 \
 	--publish=$BED_BOLT_PORT:7687 \
-	--env=NEO4J_dbms_memory_heap_initial__size=4G \
-	--env=NEO4J_dbms_memory_heap_max__size=4G \
-	--env=NEO4J_dbms_memory_pagecache_size=4G \
+	--env=NEO4J_dbms_memory_heap_initial__size=16G \
+	--env=NEO4J_dbms_memory_heap_max__size=16G \
 	--env=NEO4J_dbms_query__cache__size=0 \
 	--env=NEO4J_AUTH=none \
 	--env=NEO4J_dbms_directories_import=import \
