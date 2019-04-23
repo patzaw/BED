@@ -26,16 +26,13 @@ loadIsTranslatedIn <- function(d, tdb, pdb){
          'MATCH (tid:TranscriptID {value:row.tid, database:"%s"})',
          tdb
       ),
-      '-[:is_replaced_by|is_associated_to*0..]->()',
-      '-[:identifies]->(t:Transcript)',
+      'USING INDEX tid:TranscriptID(value)',
       sprintf(
          'MATCH (pid:PeptideID {value:row.pid, database:"%s"})',
          pdb
       ),
-      '-[:is_replaced_by|is_associated_to*0..]->()',
-      '-[:identifies]->(p:Peptide)',
-      "MERGE (tid)-[r:is_translated_in]->(pid)",
-      "MERGE (t)-[r2:is_translated_in]->(p)"
+      'USING INDEX pid:PeptideID(value)',
+      "MERGE (tid)-[r:is_translated_in]->(pid)"
    )
    if("canonical" %in% colnames(d)){
       canStr <- '(case row.canonical when "TRUE" then true else false end)'
@@ -46,32 +43,33 @@ loadIsTranslatedIn <- function(d, tdb, pdb){
             canStr
          )
       )
-      # cql <- c(
-      #     cql,
-      #     sprintf(
-      #         'ON CREATE SET r2.canonical=%s',
-      #         canStr
-      #     ),
-      #     sprintf(
-      #         ', r.canonical=%s',
-      #         canStr
-      #     ),
-      #     sprintf(
-      #         'ON MATCH SET r2.canonical=%s',
-      #         '(case row.canonical when "TRUE" then true else r2.canonical end)'
-      #     ),
-      #     sprintf(
-      #         ', r.canonical=%s',
-      #         canStr
-      #     )
-      # )
    }else{
       cql <- c(
          cql,
          'ON CREATE SET r.canonical=false'
-         # 'ON CREATE SET r2.canonical=false'
       )
    }
+   ##
+   bedImport(cql, d)
+
+   ################################################
+   cql <- c(
+      sprintf(
+         'MATCH (tid:TranscriptID {value:row.tid, database:"%s"})',
+         tdb
+      ),
+      'USING INDEX tid:TranscriptID(value)',
+      'MATCH (tid)-[:is_associated_to*0..]->()',
+      '-[:identifies]->(t:Transcript)',
+      sprintf(
+         'MATCH (pid:PeptideID {value:row.pid, database:"%s"})',
+         pdb
+      ),
+      'USING INDEX pid:PeptideID(value)',
+      'MATCH (pid)-[:is_associated_to*0..]->()',
+      '-[:identifies]->(p:Peptide)',
+      "MERGE (t)-[r2:is_translated_in]->(p)"
+   )
    ##
    bedImport(cql, d)
 

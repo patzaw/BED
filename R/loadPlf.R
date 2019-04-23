@@ -21,7 +21,7 @@ loadPlf <- function(name, description, be){
             'SET plf.description="%s"',
             description
         ),
-        'CREATE UNIQUE (plf)-[:is_focused_on]->(bet)'
+        'MERGE (plf)-[:is_focused_on]->(bet)'
     )
     bedCall(f=cypher, prepCql(cql))
 

@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export NJ_VERSION=3.4.12
+export NJ_VERSION=3.5.4
 
 export BED_HTTP_PORT=5410
 export BED_BOLT_PORT=5610
@@ -22,9 +22,14 @@ docker run -d \
 	--publish=$BED_BOLT_PORT:7687 \
 	--env=NEO4J_dbms_memory_heap_initial__size=16G \
 	--env=NEO4J_dbms_memory_heap_max__size=16G \
+	--env=NEO4J_dbms_memory_pagecache_size=8G \
 	--env=NEO4J_dbms_query__cache__size=0 \
+   --env=NEO4J_cypher_min__replan__interval=100000000ms \
+   --env=NEO4J_cypher_statistics__divergence__threshold=1 \
 	--env=NEO4J_AUTH=none \
 	--env=NEO4J_dbms_directories_import=import \
 	--volume $BED_IMPORT:/var/lib/neo4j/import \
 	--volume $BED_DATA/data:/data \
 	neo4j:$NJ_VERSION
+
+

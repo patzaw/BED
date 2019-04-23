@@ -334,9 +334,30 @@ getEnsemblGeneIds <- function(
       c("new_stable_id", "old_stable_id")
       ]
    ##
-   toImport <- gvmap
-   colnames(toImport) <- c("new", "old")
-   loadHistory(d=toImport, dbname=dbname, be="Gene")
+   gvmap <- gvmap[which(!gvmap$old_stable_id %in% gene$stable_id),]
+   toTake <- which(gvmap$new_stable_id %in% gene$stable_id)
+   if(length(toTake) > 0){
+      toImport <- gvmap[toTake,]
+      colnames(toImport) <- c("new", "old")
+      loadHistory(d=toImport, dbname=dbname, be="Gene")
+      gvmap <- gvmap[-toTake,]
+   }
+   for(v in sort(unique(beidToAdd$version), decreasing = TRUE)){
+      gvmap <- gvmap[
+         which(
+            !gvmap$old_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+         ),
+         ]
+      toTake <- which(
+         gvmap$new_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+      )
+      if(length(toTake) > 0){
+         toImport <- gvmap[toTake,]
+         colnames(toImport) <- c("new", "old")
+         loadHistory(d=toImport, dbname=dbname, be="Gene")
+         gvmap <- gvmap[-toTake,]
+      }
+   }
 
 }
 

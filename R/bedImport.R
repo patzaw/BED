@@ -16,7 +16,9 @@
 #' @importFrom neo2R cypher
 #' @importFrom utils write.table
 #'
-bedImport <- function(cql, toImport, periodicCommit=10000){
+bedImport <- function(
+   cql, toImport, periodicCommit=10000, ...
+){
    if(!inherits(toImport, "data.frame")){
       stop("toImport must be a data.frame")
    }
@@ -32,14 +34,6 @@ bedImport <- function(cql, toImport, periodicCommit=10000){
    for(cn in colnames(toImport)){
       toImport[,cn] <- as.character(toImport[,cn])
    }
-   write.table(
-      toImport,
-      file=tf,
-      sep="\t",
-      quote=T,
-      row.names=F, col.names=T
-   )
-   on.exit(file.remove(tf))
    pc <- c()
    if(is.numeric(periodicCommit) && length(periodicCommit)==1){
       pc <- sprintf("USING PERIODIC COMMIT %s", periodicCommit)
@@ -53,11 +47,39 @@ bedImport <- function(cql, toImport, periodicCommit=10000){
             file.path("", basename(tf)),
             tf
          ),
-         '" AS row FIELDTERMINATOR "\\t"'
+         '" AS row '# FIELDTERMINATOR "\\t"'
       ),
       cql
    ))
-   toRet <- bedCall(cypher, query=cql)
-   ##
-   invisible(toRet)
+   if(nrow(toImport)<=100){
+      write.table(
+         toImport,
+         file=tf,
+         sep=",", #"\t",
+         quote=T,
+         row.names=F, col.names=T
+      )
+      on.exit(file.remove(tf))
+      toRet <- bedCall(cypher, query=cql, ...)
+      invisible(toRet)
+   }else{
+      write.table(
+         toImport[c(1:100), , drop=FALSE],
+         file=tf,
+         sep=",", #"\t",
+         quote=T,
+         row.names=F, col.names=T
+      )
+      on.exit(file.remove(tf))
+      toRet <- bedCall(cypher, query=cql, ...)
+      write.table(
+         toImport[-c(1:100), , drop=FALSE],
+         file=tf,
+         sep=",", #"\t",
+         quote=T,
+         row.names=F, col.names=T
+      )
+      toRet <- c(toRet, bedCall(cypher, query=cql, ...))
+      invisible(toRet)
+   }
 }

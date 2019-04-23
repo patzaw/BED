@@ -47,26 +47,49 @@ loadBEVersion <- function(
 
     if(prefInfo){
        prefStr <- '(case row.preferred when "TRUE" then true else false end)'
-       cql <- sprintf(
-          'MERGE (beid:BEID:%s {value: row.id, database: "%s"}) SET beid.preferred=%s',
-          beid, dbname, prefStr
+       cql <- c(
+          sprintf(
+             'MERGE (beid:%s:BEID {value: row.id, database: "%s"})',
+             beid, dbname
+          ),
+          sprintf(
+             'ON CREATE SET beid.preferred=%s',
+             prefStr
+          ),
+          sprintf(
+             'ON MATCH SET beid.preferred=%s',
+             prefStr
+          )
        )
     }else{
-       cql <- sprintf(
-          'MERGE (beid:BEID:%s {value: row.id, database: "%s"}) ON CREATE SET beid.preferred=false',
-          beid, dbname
+       cql <- c(
+          sprintf(
+             'MERGE (beid:%s:BEID {value: row.id, database: "%s"})',
+             beid, dbname
+          ),
+          'ON CREATE SET beid.preferred=false'
        )
     }
-    withStr <- 'WITH row.version as rversion, row.deprecated as rdepr, beid'
+    ##
+    bedImport(cql, toImport)
+
     if(!onlyId){
-        cql <- c(
-            cql,
-            sprintf(
-                '-[:identifies]->(be:%s)',
-                be
-            )
-        )
-        withStr <- paste0(withStr, ', be')
+       cql <- c(
+          sprintf(
+             'MATCH (beid:%s {value: row.id, database: "%s"})',
+             beid, dbname
+          ),
+          sprintf(
+             'USING INDEX beid:%s(value)',
+             beid
+          ),
+          sprintf(
+             'MERGE (beid)-[:identifies]->(be:%s)',
+             be
+          )
+       )
+       ##
+       bedImport(cql, toImport)
     }
 
     #########################
@@ -75,23 +98,54 @@ loadBEVersion <- function(
         '(db:BEDB{name: "%s"})',
         dbname
     )
+    cql <- c('MERGE', dbcql)
+    ##
+    bedCall(cypher, prepCql(cql))
+
     cql <- c(
-        cql, withStr,
-        'MERGE', dbcql,
-        'CREATE UNIQUE (beid)',
-        '-[:is_recorded_in {version:rversion, deprecated:rdepr}]->',
-        '(db)'
+       sprintf(
+          'MATCH (beid:%s {value: row.id, database: "%s"})',
+          beid, dbname
+       ),
+       sprintf(
+          'USING INDEX beid:%s(value)',
+          beid
+       ),
+       'MATCH', dbcql,
+       'MERGE (beid)',
+       '-[:is_recorded_in {version:row.version, deprecated:row.deprecated}]->',
+       '(db)'
     )
+    ##
+    bedImport(cql, toImport)
+
     if(!is.na(taxId)){
-        orgcql <- sprintf(
-            '(o:TaxID {value:"%s"})',
-            taxId
-        )
-        cql <- c(
-            cql, withStr,
-            'MERGE', orgcql,
-            'CREATE UNIQUE (be)-[:belongs_to]->(o)'
-        )
+       orgcql <- sprintf(
+          '(o:TaxID {value:"%s"})',
+          taxId
+       )
+       cql <- c('MERGE', orgcql)
+       ##
+       bedCall(cypher, prepCql(cql))
+
+       if(be=="Gene"){
+          cql <- c(
+             sprintf(
+                'MATCH (beid:%s {value: row.id, database: "%s"})',
+                beid, dbname
+             ),
+             sprintf(
+                'USING INDEX beid:%s(value)',
+                beid
+             ),
+             'MATCH (beid)-[:identifies]->(be)',
+             'MATCH', orgcql,
+             'MERGE (be)-[:belongs_to]->(o)'
+          )
+       }
+       ##
+       bedImport(cql, toImport)
+
     }
 
     #########################

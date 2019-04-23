@@ -49,6 +49,7 @@ loadIsAssociatedTo <- function(
             ),
             beid, db1
         ),
+        sprintf('USING INDEX beid1:%s(value)', beid),
         sprintf(
             paste(
                 'MATCH',
@@ -57,7 +58,8 @@ loadIsAssociatedTo <- function(
             ),
             beid, db2
         ),
-        "CREATE UNIQUE (beid1)-[:is_associated_to]->(beid2)"
+        sprintf('USING INDEX beid2:%s(value)', beid),
+        "MERGE (beid1)-[:is_associated_to]->(beid2)"
     )
     bedImport(cql, d)
 

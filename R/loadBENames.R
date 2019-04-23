@@ -22,12 +22,18 @@ loadBENames <- function(d, be="Gene", dbname){
 
     ################################################
     cql <- c(
-        sprintf(
-            'MATCH (beid:%s {value:row.id, database:"%s"})',
-            beid, dbname
-        ),
-        'MERGE (n:BEName {value:row.name, value_up:upper(row.name)})',
-        'CREATE UNIQUE (beid)-[:is_named]->(n)'
+        'MERGE (n:BEName {value:row.name, value_up:upper(row.name)})'
+    )
+    bedImport(cql, unique(d[,"name", drop=FALSE]))
+
+    ################################################
+    cql <- c(
+       sprintf(
+          'MATCH (beid:%s {value:row.id, database:"%s"}) USING INDEX beid:%s(value)',
+          beid, dbname, beid
+       ),
+       'MATCH (n:BEName {value:row.name})',
+       'MERGE (beid)-[:is_named]->(n)'
     )
     bedImport(cql, d)
 

@@ -37,8 +37,21 @@ loadProbes <- function(
         sprintf(
             'MERGE (pid:ProbeID {value:row.probeID, platform: "%s"})',
             platform
-        ),
-        'CREATE UNIQUE (pid)-[:is_in]->(pl)'
+        )
+    )
+    bedImport(cql, toLoad)
+
+    cql <- c(
+       sprintf(
+          'MATCH (pl:Platform {name:"%s"})',
+          platform
+       ),
+       sprintf(
+          'MATCH (pid:ProbeID {value:row.probeID, platform: "%s"})',
+          platform
+       ),
+       'USING INDEX pid:ProbeID(value)',
+       'MERGE (pid)-[:is_in]->(pl)'
     )
     bedImport(cql, toLoad)
 
@@ -48,11 +61,13 @@ loadProbes <- function(
             'MATCH (pid:ProbeID {value:row.probeID, platform: "%s"})',
             platform
         ),
+        'USING INDEX pid:ProbeID(value)',
         sprintf(
             'MATCH (beid:%s {value:row.id, database: "%s"})',
             beid, dbname
         ),
-        'CREATE UNIQUE (pid)-[:targets]->(beid)'
+        sprintf('USING INDEX beid:%s(value)', beid),
+        'MERGE (pid)-[:targets]->(beid)'
     )
     bedImport(cql, d)
 

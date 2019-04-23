@@ -19,7 +19,7 @@ loadOrganisms <- function(d){
     cql <- c(
         'MERGE (o:TaxID {value: row.tax_id})',
         'MERGE (on:OrganismName {value: row.name_txt, value_up:upper(row.name_txt)})',
-        'CREATE UNIQUE (o)-[:is_named {nameClass: row.name_class}]->(on)'
+        'MERGE (o)-[:is_named {nameClass: row.name_class}]->(on)'
     )
     bedImport(cql, toImport)
 }

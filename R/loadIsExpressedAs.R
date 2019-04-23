@@ -26,52 +26,50 @@ loadIsExpressedAs <- function(d, gdb, tdb){
          'MATCH (gid:GeneID {value:row.gid, database:"%s"})',
          gdb
       ),
-      '-[:is_replaced_by|is_associated_to*0..]->()',
-      '-[:identifies]->(g:Gene)',
+      'USING INDEX gid:GeneID(value)',
       sprintf(
          'MATCH (tid:TranscriptID {value:row.tid, database:"%s"})',
          tdb
       ),
-      '-[:is_replaced_by|is_associated_to*0..]->()',
-      '-[:identifies]->(t:Transcript)',
-      "MERGE (gid)-[r:is_expressed_as]->(tid)",
-      "MERGE (g)-[r2:is_expressed_as]->(t)"
+      'USING INDEX tid:TranscriptID(value)',
+      "MERGE (gid)-[r:is_expressed_as]->(tid)"
    )
    if("canonical" %in% colnames(d)){
       canStr <- '(case row.canonical when "TRUE" then true else false end)'
       cql <- c(
          cql,
          sprintf(
-            'SET r.canonical=%s',
+            'ON CREATE SET r.canonical=%s',
             canStr
          )
       )
-      # cql <- c(
-      #    cql,
-      #    sprintf(
-      #       'ON CREATE SET r.canonical=%s',
-      #       canStr
-      #    ),
-      #    # sprintf(
-      #    #     ', r2.canonical=%s',
-      #    #     canStr
-      #    # ),
-      #    sprintf(
-      #       'ON MATCH SET r.canonical=%s',
-      #       canStr
-      #    )
-      #    # sprintf(
-      #    #     ', r2.canonical=%s',
-      #    #     '(case row.canonical when "TRUE" then true else r2.canonical end)'
-      #    # )
-      # )
    }else{
       cql <- c(
          cql,
          'ON CREATE SET r.canonical=false'
-         # 'ON CREATE SET r2.canonical=false'
       )
    }
+   ##
+   bedImport(cql, d)
+
+   ################################################
+   cql <- c(
+      sprintf(
+         'MATCH (gid:GeneID {value:row.gid, database:"%s"})',
+         gdb
+      ),
+      'USING INDEX gid:GeneID(value)',
+      'MATCH (gid)-[:is_associated_to*0..]->()',
+      '-[:identifies]->(g:Gene)',
+      sprintf(
+         'MATCH (tid:TranscriptID {value:row.tid, database:"%s"})',
+         tdb
+      ),
+      'USING INDEX tid:TranscriptID(value)',
+      'MATCH (tid)-[:is_associated_to*0..]->()',
+      '-[:identifies]->(t:Transcript)',
+      "MERGE (g)-[r2:is_expressed_as]->(t)"
+   )
    ##
    bedImport(cql, d)
 

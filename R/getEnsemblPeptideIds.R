@@ -265,9 +265,30 @@ getEnsemblPeptideIds <- function(
       c("new_stable_id", "old_stable_id")
       ]
    ##
-   toImport <- pvmap
-   colnames(toImport) <- c("new", "old")
-   loadHistory(d=toImport, dbname=pdbname, be="Peptide")
+   pvmap <- pvmap[which(!pvmap$old_stable_id %in% translation$stable_id),]
+   toTake <- which(pvmap$new_stable_id %in% translation$stable_id)
+   if(length(toTake) > 0){
+      toImport <- pvmap[toTake,]
+      colnames(toImport) <- c("new", "old")
+      loadHistory(d=toImport, dbname=pdbname, be="Peptide")
+      pvmap <- pvmap[-toTake,]
+   }
+   for(v in sort(unique(beidToAdd$version), decreasing = TRUE)){
+      pvmap <- pvmap[
+         which(
+            !pvmap$old_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+         ),
+         ]
+      toTake <- which(
+         pvmap$new_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+      )
+      if(length(toTake) > 0){
+         toImport <- pvmap[toTake,]
+         colnames(toImport) <- c("new", "old")
+         loadHistory(d=toImport, dbname=pdbname, be="Peptide")
+         pvmap <- pvmap[-toTake,]
+      }
+   }
 
 }
 

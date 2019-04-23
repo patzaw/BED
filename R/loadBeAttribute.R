@@ -41,7 +41,7 @@ loadBeAttribute <- function(
          'MERGE (at:Attribute {name: "%s"})',
          attribute
       ),
-      'CREATE UNIQUE (db)-[:provides]->(at)'
+      'MERGE (db)-[:provides]->(at)'
    )
    bedCall(cypher, query=prepCql(cql))
 
@@ -54,10 +54,14 @@ loadBeAttribute <- function(
          beid, dbname
       ),
       sprintf(
+         'USING INDEX beid:%s(value)',
+         beid
+      ),
+      sprintf(
          'MATCH (at:Attribute {name: "%s"})',
          attribute
       ),
-      'CREATE UNIQUE (beid)-[:has {value:row.value}]->(at)'
+      'MERGE (beid)-[:has {value:row.value}]->(at)'
    )
    bedImport(cql, toImport)
 

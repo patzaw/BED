@@ -1,9 +1,14 @@
 <!----------------------------------------------------------------------------->
-## Version 1.1.6 - Release notes - 2019-04-18
+## Version 1.1.6 - Release notes - 2019-04-23
 
-### Implementaiton changes
+### Implementation changes
 
+   - Split the toImport file in the bedImport function before loading csv
+   in neo4j ==> improve robustness and efficiency of the load
+   - Separate import of nodes and import of edges to avoid neo4j eager issues
    - Add Sus scrofa support in the dumpUniprotDb function
+   - Ensembl history has been adapted to avoid loop (found for some pig
+   transcripts)
 
 ### Rebuild-BED.Rmd
    
@@ -11,6 +16,10 @@
    - Ensembl 96
    - Add GPL6887 platform
    - Add Sus scrofa (pig) support
+   - Set the following cypher parameters during the building to avoid query
+   replanning (https://neo4j.com/blog/cypher-write-fast-furious/):
+      + --env=NEO4J_cypher_min__replan__interval=100000000ms \
+      + --env=NEO4J_cypher_statistics__divergence__threshold=1 \
 
 <!----------------------------------------------------------------------------->
 ## Version 1.1.5 - Release notes - 2019-01-30

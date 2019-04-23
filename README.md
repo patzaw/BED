@@ -68,7 +68,7 @@ get a running container with a BED database instance.
 ```
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2019.01.30
+export BED_VERSION=2019.04.23
 
 docker run -d \
 	--name bed \

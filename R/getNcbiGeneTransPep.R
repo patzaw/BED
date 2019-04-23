@@ -111,7 +111,7 @@ getNcbiGeneTransPep <- function(
    gSyn <- stack(gSyn)
    gSyn$ind <- as.character(gSyn$ind)
    gSyn <- gSyn[,c("ind", "values")]
-   gSyn$canonical <- "FALSE"
+   gSyn$canonical <- rep("FALSE", nrow(gSyn))
    colnames(gSyn) <- c("id", "symbol", "canonical")
    gSyn <- gSyn[which(gSyn$symbol != "-"),]
    otherSyn <- gene_info[
@@ -121,7 +121,7 @@ getNcbiGeneTransPep <- function(
       ),
       c("GeneID", "Symbol_from_nomenclature_authority")
       ]
-   otherSyn$canonical <- FALSE
+   otherSyn$canonical <- rep(FALSE, nrow(otherSyn))
    colnames(otherSyn) <- c("id", "symbol", "canonical")
    toImport <- rbind(gSymb, gSyn, otherSyn)
    loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
