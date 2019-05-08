@@ -1,4 +1,15 @@
 <!----------------------------------------------------------------------------->
+## Version 1.1.7 - Release notes - 2019-05-08
+
+### Implementation changes
+
+   - When associating one id to another, the BE identified by the first id
+   is deleted after that its production edges have been transferred.
+   After this operation all id "corresponding_to" the first id do not
+   directly identify any BE as they should be supposed to do. Thus,
+   it's not recommended to associate such ID to others.
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.6 - Release notes - 2019-04-23
 
 ### Implementation changes
