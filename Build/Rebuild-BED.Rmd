@@ -648,6 +648,50 @@ gc()
 
 **End**: `r Sys.time()`
 
+## Direct cross-references with Uniprot
+
+**Start**: `r Sys.time()`
+
+```{r}
+message("Direct cross-references with Uniprot")
+BED:::dumpNcbiDb(
+  taxOfInt="",
+  reDumpThr=Inf,
+  toLoad="gene_refseq_uniprotkb_collab",
+  curDate=Sys.Date()
+)
+for(org in listOrganisms()){
+  message("   ", org)
+  curRS <- getBeIds(
+    be="Peptide", source="RefSeq_peptide", organism=org,
+    restricted=TRUE
+  )
+  toAdd <- gene_refseq_uniprotkb_collab[
+    which(gene_refseq_uniprotkb_collab$NCBI_protein_accession %in% curRS$id),
+  ]
+  ## External DB IDs
+  toImport <- unique(toAdd[, "UniProtKB_protein_accession", drop=F])
+  colnames(toImport) <- "id"
+  BED:::loadBE(
+      d=toImport, be="Peptide",
+      dbname="Uniprot",
+      taxId=NA
+  )
+  ## The cross references
+  toImport <- toAdd
+  colnames(toImport) <- c("id1", "id2")
+  BED:::loadCorrespondsTo(
+      d=toImport,
+      db1="RefSeq_peptide",
+      db2="Uniprot",
+      be="Peptide"
+  )
+}
+```
+
+**End**: `r Sys.time()`
+
+
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -723,6 +767,84 @@ BED:::getUniprot(
     organism="Sus scrofa", release=avRel
 )
 gc()
+```
+
+**End**: `r Sys.time()`
+
+## Indirect cross-references with EntrezGene
+
+**Start**: `r Sys.time()`
+
+```{r}
+message("Indirect cross-references with Uniprot")
+dumpDir <- "NCBI-gene-DATA"
+f <- "gene2accession.gz"
+if(file.exists(dumpDir)){
+  load(file.path(dumpDir, "dumpDate.rda"))
+  message("Last download: ", dumpDate)
+  if(curDate - dumpDate > reDumpThr | !file.exists(file.path(dumpDir, f))){
+    toDownload <- TRUE
+  }else{
+    toDownload <- FALSE
+  }
+}else{
+  message("Not downloaded yet")
+  toDownload <- TRUE
+}
+if(toDownload){
+  ftp <- "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/"
+  dlok <- try(download.file(
+    url=paste0(ftp, f),
+    destfile=file.path(dumpDir, f),
+    method="wget",
+    quiet=T
+  ), silent=T)
+}else{
+  message("Existing data are going to be used")
+}
+cn <- readLines(file.path(dumpDir, f), n=1)
+cn <- sub("^#", "", cn)
+cn <- unlist(strsplit(cn, split="[ \t]"))
+for(org in listOrganisms()){
+  message("   ", org)
+  tid <- getTaxId(org)
+  toAdd <- read.table(
+    text=system(
+      sprintf("zgrep ^%s %s", tid, file.path(dumpDir, f)),
+      intern=TRUE
+    ),
+    sep="\t",
+    header=F,
+    stringsAsFactors=F,
+    quote="", comment.char=""
+  )
+  colnames(toAdd) <- cn
+  toAdd <- toAdd[
+    which(toAdd$tax_id==tid),
+    c("tax_id", "GeneID", "protein_accession.version")
+  ]
+  toAdd$pacc <- sub("[.].*$", "", toAdd$protein_accession.version)
+  curUP <- getBeIdConvTable(
+    from="Gene", from.source="BEDTech_gene", organism=org,
+    to="Peptide", to.source="Uniprot",
+    restricted=TRUE
+  )
+  toAdd <- merge(
+    toAdd[,c("GeneID", "pacc")],
+    curUP[,c("from", "to")],
+    by.x="pacc", by.y="to",
+    all=FALSE
+  )
+  toAdd <- toAdd[,c("from", "GeneID")]
+  toAdd$from <- as.character(toAdd$from)
+  toAdd$GeneID <- as.character(toAdd$GeneID)
+  colnames(toAdd) <- c("id1", "id2")
+  BED:::loadIsAssociatedTo(
+    d=toAdd,
+    db1="BEDTech_gene", db2="EntrezGene",
+    be="Gene"
+  )
+}
 ```
 
 **End**: `r Sys.time()`

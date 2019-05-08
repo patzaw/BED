@@ -63,4 +63,94 @@ loadIsAssociatedTo <- function(
     )
     bedImport(cql, d)
 
+    ################################################
+    ## Record the is_associated_to edges
+    cqlId <- c(
+        sprintf(
+            paste(
+                'MATCH',
+                '(beid1:%s',
+                '{value: row.id1, database:"%s"}',
+                ')',
+                '-[:identifies]->(be1:%s)'
+            ),
+            beid, db1, be
+        ),
+        sprintf(
+            'USING INDEX beid1:%s(value)',
+            beid
+        ),
+        sprintf(
+            paste(
+                'MATCH',
+                '(beid2:%s',
+                '{value: row.id2, database:"%s"})',
+                '-[:identifies]->(be2:%s)'
+            ),
+            beid, db2, be
+        ),
+        sprintf(
+            'USING INDEX beid2:%s(value)',
+            beid
+        ),
+        'WITH be1, be2 WHERE be1<>be2'
+    )
+    ##
+    if(be=="Gene"){
+        cql <- c(
+            cqlId,
+            'MATCH (be1)-[:belongs_to]->(tid:TaxID)',
+            'MERGE (be2)-[:belongs_to]->(tid)'
+        )
+        bedImport(cql, d)
+        cql <- c(
+            cqlId,
+            'MATCH (be1)-[:is_expressed_as]->(bet:Transcript)',
+            'MERGE (be2)-[:is_expressed_as]->(bet)'
+        )
+        bedImport(cql, d)
+        cql <- c(
+            cqlId,
+            'MATCH (be1)-[:codes_for]->(beo:Object)',
+            'MERGE (be2)-[:codes_for]->(beo)'
+        )
+        bedImport(cql, d)
+    }else if(be=="Object"){
+        cql <- c(
+            cqlId,
+            'MATCH (beg:Gene)-[:codes_for]->(be1)',
+            'MERGE (beg)-[:codes_for]->(be2)'
+        )
+        bedImport(cql, d)
+    }else if(be=="Transcript"){
+        cql <- c(
+            cqlId,
+            'MATCH (beg:Gene)-[:is_expressed_as]->(be1)',
+            'MERGE (beg)-[:is_expressed_as]->(be2)'
+        )
+        bedImport(cql, d)
+        cql <- c(
+            cqlId,
+            'MATCH (be1)-[:is_translated_in]->(bep:Peptide)',
+            'MERGE (be2)-[:is_translated_in]->(bep)'
+        )
+        bedImport(cql, d)
+    }else if(be=="Peptide"){
+        cql <- c(
+            cqlId,
+            'MATCH (bet:Transcript)-[:is_translated_in]->(be1)',
+            'MERGE (bet)-[:is_translated_in]->(be2)'
+        )
+        bedImport(cql, d)
+    }else{
+        stop("Check the loadCorresponds function for the BE: ", be)
+    }
+    ##
+    cql <- c(
+        cqlId,
+        'MATCH (be1)-[rtodel]-()',
+        'DELETE rtodel, be1'
+    )
+    bedImport(cql, d)
+
 }
