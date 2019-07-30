@@ -1,4 +1,19 @@
 <!----------------------------------------------------------------------------->
+## Version 1.1.8 - Release notes - 2019-07-29
+
+### Implementation changes
+
+   - Correction of how Ensembl data files are pre-processed because of
+   the apparition of "carriage return" (\r\n) characters.
+   - Give write rights on the neo4j database before copying it in the docker
+   image. 
+
+### Rebuild-BED.Rmd
+   
+   - Based on neo4j-community-3.5.7
+   - Ensembl 97
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.7 - Release notes - 2019-05-08
 
 ### Implementation changes
