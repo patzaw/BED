@@ -1,7 +1,7 @@
 #/bin/bash
 
-export BED_VERSION=2019.05.08
-export NJ_VERSION=3.5.5
+export BED_VERSION=2019.07.29
+export NJ_VERSION=3.5.7
 export BED_DATA=`pwd`/working/neo4jData
 
 # Stop container
@@ -38,6 +38,7 @@ else
       exit
 	fi
 fi
+sudo chmod -R a+rwx $BED_DATA
 
 # Create and save the image
 echo "FROM neo4j:$NJ_VERSION" > $BED_DATA/Dockerfile

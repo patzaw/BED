@@ -9,6 +9,7 @@
 #' @param env the R environment in which to load the tables when downloaded
 #'
 #' @importFrom utils download.file read.table
+#' @importFrom readr read_file
 #'
 dumpEnsCore <- function(
     organism,
@@ -78,7 +79,10 @@ dumpEnsCore <- function(
         }
         df <- file.path(dumpDir, paste0(td, ".rda"))
         if(!file.exists(df)){
-            tmp <- readLines(lf, encoding="UTF-8")
+            # tmp <- readLines(lf, encoding="UTF-8")
+            tmp <- read_file(lf)
+            tmp <- gsub("\r\n", " ", tmp)
+            tmp <- strsplit(tmp, split="\n")[[1]]
             toRm <- which(tmp=="\\")
             if(length(toRm)>0){
                 toRm <- c(toRm, toRm+1)

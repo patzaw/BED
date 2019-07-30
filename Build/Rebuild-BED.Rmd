@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "96"
+ensembl_release <- "97"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -167,7 +167,7 @@ ensembl_Sscrofa <- list(
         "RefSeq_mRNA_predicted"="RefSeq",
         "RefSeq_ncRNA_predicted"="RefSeq",
         "Vega_transcript"="Vega_transcript",
-        "Ens_Rn_transcript"="Ens_transcript"
+        "Ens_Ss_transcript"="Ens_transcript"
     ),
     pdbCref=c(                      # Peptide cross-references DBs
         "RefSeq_peptide"="RefSeq_peptide",
@@ -175,7 +175,7 @@ ensembl_Sscrofa <- list(
         "Uniprot/SPTREMBL"="Uniprot",
         "Uniprot/SWISSPROT"="Uniprot",
         "Vega_translation"="Vega_translation",
-        "Ens_Rn_translation"="Ens_translation"
+        "Ens_Ss_translation"="Ens_translation"
     ),
     canChromosomes=c(1:18, "X", "Y", "MT")
 )
