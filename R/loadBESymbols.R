@@ -23,26 +23,32 @@ loadBESymbols <- function(d, be="Gene", dbname){
 
     ################################################
     cql <- c(
-        sprintf(
-            'MATCH (beid:%s {value:row.id, database:"%s"})',
-            beid, dbname
-        ),
-        'MERGE (s:BESymbol {value:row.symbol, value_up:upper(row.symbol)})',
-        'MERGE (beid)-[r:is_known_as]->(s)'
+        'MERGE (s:BESymbol {value:row.symbol, value_up:upper(row.symbol)})'
+    )
+    bedImport(cql, unique(d[,"symbol", drop=FALSE]))
+
+    ################################################
+    cql <- c(
+       sprintf(
+          'MATCH (beid:%s {value:row.id, database:"%s"}) USING INDEX beid:%s(value)',
+          beid, dbname, beid
+       ),
+       'MATCH (s:BESymbol {value:row.symbol})',
+       'MERGE (beid)-[r:is_known_as]->(s)'
     )
     if("canonical" %in% colnames(d)){
-        cql <- c(
-            cql,
-            sprintf(
-                'SET r.canonical=%s',
-                '(case row.canonical when "TRUE" then true else false end)'
-            )
-        )
+       cql <- c(
+          cql,
+          sprintf(
+             'SET r.canonical=%s',
+             '(case row.canonical when "TRUE" then true else false end)'
+          )
+       )
     }else{
-        cql <- c(
-            cql,
-            'ON CREATE SET r.canonical=false'
-        )
+       cql <- c(
+          cql,
+          'ON CREATE SET r.canonical=false'
+       )
     }
     bedImport(cql, d)
 

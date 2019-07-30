@@ -25,7 +25,7 @@ loadHistory <- function(d, dbname, be="Gene"){
         sprintf(
             paste(
                 'MERGE',
-                '(old:BEID:%s',
+                '(old:%s:BEID',
                 '{value: row.old, database:"%s"}',
                 ')'
             ),
@@ -34,12 +34,36 @@ loadHistory <- function(d, dbname, be="Gene"){
         sprintf(
             paste(
                 'MERGE',
-                '(new:BEID:%s',
+                '(new:%s:BEID',
                 '{value: row.new, database:"%s"})'
             ),
             beid, dbname
-        ),
-        "CREATE UNIQUE (old)-[:is_replaced_by]->(new)"
+        )
+    )
+    bedImport(cql, d)
+
+    ################################################
+    cql <- c(
+       sprintf(
+          paste(
+             'MATCH',
+             '(old:%s',
+             '{value: row.old, database:"%s"}',
+             ')'
+          ),
+          beid, dbname
+       ),
+       sprintf('USING INDEX old:%s(value)', beid),
+       sprintf(
+          paste(
+             'MATCH',
+             '(new:%s',
+             '{value: row.new, database:"%s"})'
+          ),
+          beid, dbname
+       ),
+       sprintf('USING INDEX new:%s(value)', beid),
+       "MERGE (old)-[:is_replaced_by]->(new)"
     )
     bedImport(cql, d)
 

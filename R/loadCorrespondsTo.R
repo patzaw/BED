@@ -49,6 +49,10 @@ loadCorrespondsTo <- function(
             beid, db1
         ),
         sprintf(
+           'USING INDEX beid1:%s(value)',
+           beid
+        ),
+        sprintf(
             paste(
                 'MATCH',
                 '(beid2:%s',
@@ -56,7 +60,11 @@ loadCorrespondsTo <- function(
             ),
             beid, db2
         ),
-        "CREATE UNIQUE (beid2)-[:corresponds_to]-(beid1)"
+        sprintf(
+           'USING INDEX beid2:%s(value)',
+           beid
+        ),
+        "MERGE (beid2)-[:corresponds_to]-(beid1)"
     )
     bedImport(cql, d)
 
@@ -236,6 +244,10 @@ loadCorrespondsTo <- function(
                 beid, db1, be
             ),
             sprintf(
+               'USING INDEX beid1:%s(value)',
+               beid
+            ),
+            sprintf(
                 paste(
                     'MATCH',
                     '(beid2:%s',
@@ -243,6 +255,10 @@ loadCorrespondsTo <- function(
                     '-[:identifies]->(be2:%s)'
                 ),
                 beid, db2, be
+            ),
+            sprintf(
+               'USING INDEX beid2:%s(value)',
+               beid
             ),
             'WITH be1, be2 WHERE be1<>be2'
         )
@@ -253,7 +269,7 @@ loadCorrespondsTo <- function(
                 'MATCH (obeid1:%s)-[:identifies]->(be1)',
                 beid
             ),
-            'CREATE UNIQUE (obeid1)-[:identifies]->(be2)'
+            'MERGE (obeid1)-[:identifies]->(be2)'
         )
         bedImport(cql, toI)
         ##
@@ -261,46 +277,46 @@ loadCorrespondsTo <- function(
             cql <- c(
                 cqlId,
                 'MATCH (be1)-[:belongs_to]->(tid:TaxID)',
-                'CREATE UNIQUE (be2)-[:belongs_to]->(tid)'
+                'MERGE (be2)-[:belongs_to]->(tid)'
             )
             bedImport(cql, toI)
             cql <- c(
                 cqlId,
                 'MATCH (be1)-[:is_expressed_as]->(bet:Transcript)',
-                'CREATE UNIQUE (be2)-[:is_expressed_as]->(bet)'
+                'MERGE (be2)-[:is_expressed_as]->(bet)'
             )
             bedImport(cql, toI)
             cql <- c(
                 cqlId,
                 'MATCH (be1)-[:codes_for]->(beo:Object)',
-                'CREATE UNIQUE (be2)-[:codes_for]->(beo)'
+                'MERGE (be2)-[:codes_for]->(beo)'
             )
             bedImport(cql, toI)
         }else if(be=="Object"){
             cql <- c(
                 cqlId,
                 'MATCH (beg:Gene)-[:codes_for]->(be1)',
-                'CREATE UNIQUE (beg)-[:codes_for]->(be2)'
+                'MERGE (beg)-[:codes_for]->(be2)'
             )
             bedImport(cql, toI)
         }else if(be=="Transcript"){
             cql <- c(
                 cqlId,
                 'MATCH (beg:Gene)-[:is_expressed_as]->(be1)',
-                'CREATE UNIQUE (beg)-[:is_expressed_as]->(be2)'
+                'MERGE (beg)-[:is_expressed_as]->(be2)'
             )
             bedImport(cql, toI)
             cql <- c(
                 cqlId,
                 'MATCH (be1)-[:is_translated_in]->(bep:Peptide)',
-                'CREATE UNIQUE (be2)-[:is_translated_in]->(bep)'
+                'MERGE (be2)-[:is_translated_in]->(bep)'
             )
             bedImport(cql, toI)
         }else if(be=="Peptide"){
             cql <- c(
                 cqlId,
                 'MATCH (bet:Transcript)-[:is_translated_in]->(be1)',
-                'CREATE UNIQUE (bet)-[:is_translated_in]->(be2)'
+                'MERGE (bet)-[:is_translated_in]->(be2)'
             )
             bedImport(cql, toI)
         }else{

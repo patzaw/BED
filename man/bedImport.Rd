@@ -4,7 +4,7 @@
 \alias{bedImport}
 \title{Feeding BED: Imports a data.frame in the BED graph database}
 \usage{
-bedImport(cql, toImport, periodicCommit = 10000)
+bedImport(cql, toImport, periodicCommit = 10000, ...)
 }
 \arguments{
 \item{cql}{the CQL query to be applied on each row of toImport}

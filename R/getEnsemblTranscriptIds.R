@@ -285,9 +285,30 @@ getEnsemblTranscriptIds <- function(
         c("new_stable_id", "old_stable_id")
     ]
     ##
-    toImport <- tvmap
-    colnames(toImport) <- c("new", "old")
-    loadHistory(d=toImport, dbname=tdbname, be="Transcript")
+    tvmap <- tvmap[which(!tvmap$old_stable_id %in% transcript$stable_id),]
+    toTake <- which(tvmap$new_stable_id %in% transcript$stable_id)
+    if(length(toTake) > 0){
+       toImport <- tvmap[toTake,]
+       colnames(toImport) <- c("new", "old")
+       loadHistory(d=toImport, dbname=tdbname, be="Transcript")
+       tvmap <- tvmap[-toTake,]
+    }
+    for(v in sort(unique(beidToAdd$version), decreasing = TRUE)){
+       tvmap <- tvmap[
+          which(
+             !tvmap$old_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+          ),
+       ]
+       toTake <- which(
+          tvmap$new_stable_id %in% beidToAdd$id[which(beidToAdd$version==v)]
+       )
+       if(length(toTake) > 0){
+          toImport <- tvmap[toTake,]
+          colnames(toImport) <- c("new", "old")
+          loadHistory(d=toImport, dbname=tdbname, be="Transcript")
+          tvmap <- tvmap[-toTake,]
+       }
+    }
 
 }
 

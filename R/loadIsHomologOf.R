@@ -48,6 +48,7 @@ loadIsHomologOf <- function(
             ),
             beid, db1
         ),
+        sprintf('USING INDEX beid1:%s(value)', beid),
         sprintf(
             paste(
                 'MATCH',
@@ -56,15 +57,45 @@ loadIsHomologOf <- function(
             ),
             beid, db2
         ),
-        sprintf(
-            'MERGE (beid1)-[:is_member_of]->(:%s)',
-            befam
-        ),
-        sprintf(
-            'MERGE (beid2)-[:is_member_of]->(:%s)',
-            befam
-        ),
-        'CREATE UNIQUE (beid2)-[:is_homolog_of]-(beid1)'
+        sprintf('USING INDEX beid2:%s(value)', beid),
+        'MERGE (beid2)-[:is_homolog_of]-(beid1)'
+    )
+    bedImport(cql, d)
+
+    ##
+    cql <- c(
+       sprintf(
+          paste(
+             'MATCH',
+             '(beid1:%s',
+             '{value: row.id1, database:"%s"}',
+             ')'
+          ),
+          beid, db1
+       ),
+       sprintf('USING INDEX beid1:%s(value)', beid),
+       sprintf(
+          'MERGE (beid1)-[:is_member_of]->(:%s)',
+          befam
+       )
+    )
+    bedImport(cql, d)
+
+    ##
+    cql <- c(
+       sprintf(
+          paste(
+             'MATCH',
+             '(beid2:%s',
+             '{value: row.id2, database:"%s"})'
+          ),
+          beid, db2
+       ),
+       sprintf('USING INDEX beid2:%s(value)', beid),
+       sprintf(
+          'MERGE (beid2)-[:is_member_of]->(:%s)',
+          befam
+       )
     )
     bedImport(cql, d)
 
@@ -212,6 +243,7 @@ loadIsHomologOf <- function(
                 ),
                 beid, db1, befam
             ),
+            sprintf('USING INDEX beid1:%s(value)', beid),
             sprintf(
                 paste(
                     'MATCH',
@@ -221,6 +253,7 @@ loadIsHomologOf <- function(
                 ),
                 beid, db2, befam
             ),
+            sprintf('USING INDEX beid2:%s(value)', beid),
             'WITH bef1, bef2 WHERE bef1<>bef2'
         )
         ##
@@ -230,7 +263,7 @@ loadIsHomologOf <- function(
                 'MATCH (obeid1:%s)-[:is_member_of]->(bef1)',
                 beid
             ),
-            'CREATE UNIQUE (obeid1)-[:is_member_of]->(bef2)'
+            'MERGE (obeid1)-[:is_member_of]->(bef2)'
         )
         bedImport(cql, toI)
         ##

@@ -1,11 +1,11 @@
 #/bin/bash
 
-export BED_VERSION=2019.01.30
-export NJ_VERSION=3.4.12
-export CONTAINER=new_bed
+export BED_VERSION=2019.07.29
+export NJ_VERSION=3.5.7
 export BED_DATA=`pwd`/working/neo4jData
 
 # Stop container
+export CONTAINER=new_bed
 docker stop $CONTAINER
 
 # Remove neostore.transaction.db. ?
@@ -38,6 +38,7 @@ else
       exit
 	fi
 fi
+sudo chmod -R a+rwx $BED_DATA
 
 # Create and save the image
 echo "FROM neo4j:$NJ_VERSION" > $BED_DATA/Dockerfile

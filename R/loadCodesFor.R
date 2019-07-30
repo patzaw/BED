@@ -26,16 +26,34 @@ loadCodesFor <- function(
             'MATCH (gid:GeneID {value:row.gid, database:"%s"})',
             gdb
         ),
-        '-[:is_replaced_by|is_associated_to*0..]->()',
-        '-[:identifies]->(g:Gene)',
+        'USING INDEX gid:GeneID(value)',
         sprintf(
             'MATCH (oid:ObjectID {value:row.oid, database:"%s"})',
             odb
         ),
-        '-[:is_replaced_by|is_associated_to*0..]->()',
-        '-[:identifies]->(o:Object)',
-        "MERGE (gid)-[r:codes_for]->(oid)",
-        "MERGE (g)-[r2:codes_for]->(o)"
+        'USING INDEX oid:ObjectID(value)',
+        "MERGE (gid)-[r:codes_for]->(oid)"
+    )
+    ##
+    bedImport(cql, d)
+
+    ################################################
+    cql <- c(
+       sprintf(
+          'MATCH (gid:GeneID {value:row.gid, database:"%s"})',
+          gdb
+       ),
+       'USING INDEX gid:GeneID(value)',
+       'MATCH (gid)-[:is_associated_to*0..]->()',
+       '-[:identifies]->(g:Gene)',
+       sprintf(
+          'MATCH (oid:ObjectID {value:row.oid, database:"%s"})',
+          odb
+       ),
+       'USING INDEX oid:ObjectID(value)',
+       'MATCH (oid)-[:is_associated_to*0..]->()',
+       '-[:identifies]->(o:Object)',
+       "MERGE (g)-[r2:codes_for]->(o)"
     )
     ##
     bedImport(cql, d)

@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "95"
+ensembl_release <- "97"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -148,6 +148,37 @@ ensembl_Rnorvegicus <- list(
     ),
     canChromosomes=c(1:20, "X", "Y", "MT")
 )
+ensembl_Sscrofa <- list(
+    release=ensembl_release,
+    organism="Sus scrofa",
+    gv="111",                         # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "EntrezGene"="EntrezGene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Rn_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Ss_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Ss_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:18, "X", "Y", "MT")
+)
 ## General config
 reDumpThr <- as.difftime(2, units="days")
 curDate <- Sys.Date()
@@ -216,7 +247,10 @@ according to the `reDumpThr` object.
 ```{r ncbiTax, message=FALSE}
 BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
-    orgOfInt=c("Homo sapiens", "Rattus norvegicus", "Mus musculus"),
+    orgOfInt=c(
+       "Homo sapiens", "Rattus norvegicus", "Mus musculus",
+       "Sus scrofa"
+      ),
     curDate=curDate
 )
 ```
@@ -440,6 +474,65 @@ gc()
 
 **End**: `r Sys.time()`
 
+## Sus scrofa
+
+```{r ensSs_conf, message=FALSE}
+ensembl <- ensembl_Sscrofa
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensSs_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -538,6 +631,67 @@ gc()
 
 **End**: `r Sys.time()`
 
+## Sus scrofa data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiSsData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Sus scrofa", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Sus scrofa", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Direct cross-references with Uniprot
+
+**Start**: `r Sys.time()`
+
+```{r}
+message("Direct cross-references with Uniprot")
+BED:::dumpNcbiDb(
+  taxOfInt="",
+  reDumpThr=Inf,
+  toLoad="gene_refseq_uniprotkb_collab",
+  curDate=Sys.Date()
+)
+for(org in listOrganisms()){
+  message("   ", org)
+  curRS <- getBeIds(
+    be="Peptide", source="RefSeq_peptide", organism=org,
+    restricted=TRUE
+  )
+  toAdd <- gene_refseq_uniprotkb_collab[
+    which(gene_refseq_uniprotkb_collab$NCBI_protein_accession %in% curRS$id),
+  ]
+  ## External DB IDs
+  toImport <- unique(toAdd[, "UniProtKB_protein_accession", drop=F])
+  colnames(toImport) <- "id"
+  BED:::loadBE(
+      d=toImport, be="Peptide",
+      dbname="Uniprot",
+      taxId=NA
+  )
+  ## The cross references
+  toImport <- toAdd
+  colnames(toImport) <- c("id1", "id2")
+  BED:::loadCorrespondsTo(
+      d=toImport,
+      db1="RefSeq_peptide",
+      db2="Uniprot",
+      be="Peptide"
+  )
+}
+```
+
+**End**: `r Sys.time()`
+
+
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -600,6 +754,97 @@ BED:::getUniprot(
     organism="Rattus norvegicus", release=avRel
 )
 gc()
+```
+
+**End**: `r Sys.time()`
+
+## Sus scrofa data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotSsData, message=FALSE}
+BED:::getUniprot(
+    organism="Sus scrofa", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Indirect cross-references with EntrezGene
+
+**Start**: `r Sys.time()`
+
+```{r}
+message("Indirect cross-references with Uniprot")
+dumpDir <- "NCBI-gene-DATA"
+f <- "gene2accession.gz"
+if(file.exists(dumpDir)){
+  load(file.path(dumpDir, "dumpDate.rda"))
+  message("Last download: ", dumpDate)
+  if(curDate - dumpDate > reDumpThr | !file.exists(file.path(dumpDir, f))){
+    toDownload <- TRUE
+  }else{
+    toDownload <- FALSE
+  }
+}else{
+  message("Not downloaded yet")
+  toDownload <- TRUE
+}
+if(toDownload){
+  ftp <- "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/"
+  dlok <- try(download.file(
+    url=paste0(ftp, f),
+    destfile=file.path(dumpDir, f),
+    method="wget",
+    quiet=T
+  ), silent=T)
+}else{
+  message("Existing data are going to be used")
+}
+cn <- readLines(file.path(dumpDir, f), n=1)
+cn <- sub("^#", "", cn)
+cn <- unlist(strsplit(cn, split="[ \t]"))
+for(org in listOrganisms()){
+  message("   ", org)
+  tid <- getTaxId(org)
+  toAdd <- read.table(
+    text=system(
+      sprintf("zgrep ^%s %s", tid, file.path(dumpDir, f)),
+      intern=TRUE
+    ),
+    sep="\t",
+    header=F,
+    stringsAsFactors=F,
+    quote="", comment.char=""
+  )
+  colnames(toAdd) <- cn
+  toAdd <- toAdd[
+    which(toAdd$tax_id==tid),
+    c("tax_id", "GeneID", "protein_accession.version")
+  ]
+  toAdd$pacc <- sub("[.].*$", "", toAdd$protein_accession.version)
+  curUP <- getBeIdConvTable(
+    from="Gene", from.source="BEDTech_gene", organism=org,
+    to="Peptide", to.source="Uniprot",
+    restricted=TRUE
+  )
+  toAdd <- merge(
+    toAdd[,c("GeneID", "pacc")],
+    curUP[,c("from", "to")],
+    by.x="pacc", by.y="to",
+    all=FALSE
+  )
+  toAdd <- toAdd[,c("from", "GeneID")]
+  toAdd$from <- as.character(toAdd$from)
+  toAdd$GeneID <- as.character(toAdd$GeneID)
+  colnames(toAdd) <- c("id1", "id2")
+  BED:::loadIsAssociatedTo(
+    d=toAdd,
+    db1="BEDTech_gene", db2="EntrezGene",
+    be="Gene"
+  )
+}
 ```
 
 **End**: `r Sys.time()`
@@ -744,10 +989,37 @@ loadBmHomologs(
 gc()
 ```
 
+```{r homolog_biomart_HsSs, message=FALSE}
+loadBmHomologs(
+    org1="hsapiens",
+    org2="sscrofa",
+    version=ensembl_release
+)
+gc()
+```
+
 ```{r homolog_biomart_MmRn, message=FALSE}
 loadBmHomologs(
     org1="mmusculus",
     org2="rnorvegicus",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_MmSs, message=FALSE}
+loadBmHomologs(
+    org1="mmusculus",
+    org2="sscrofa",
+    version=ensembl_release
+)
+gc()
+```
+
+```{r homolog_biomart_RnSs, message=FALSE}
+loadBmHomologs(
+    org1="rnorvegicus",
+    org2="sscrofa",
     version=ensembl_release
 )
 gc()
@@ -763,7 +1035,10 @@ gc()
 #####################################
 gdbname <- "EntrezGene"
 taxOfInt <- unlist(lapply(
-    c("Homo sapiens", "Mus musculus", "Rattus norvegicus"),
+    c(
+       "Homo sapiens", "Mus musculus", "Rattus norvegicus",
+       "Sus scrofa"
+    ),
     getTaxId
 ))
 for(i in 1:length(taxOfInt)){
@@ -1133,11 +1408,15 @@ BED:::loadProbes(
 platName <- "GPL6885"
 gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
+d <- Table(gds)
+# e <- getBeIds(
+#    be="Gene", source="EntrezGene", organism="mouse", restricted=FALSE
+# )
+# sum(d$Entrez_Gene_ID %in% e$id) < sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
 be <- "Transcript"
 ##
 BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
-d <- Table(gds)
 toImport <- d[,c("RefSeq_ID", "ID")]
 toImport[,1] <- as.character(toImport[,1])
 toImport[,1] <- sub("[.].*$", "", toImport[,1])
@@ -1145,6 +1424,42 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "RefSeq"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+```
+
+**End**: `r Sys.time()`
+
+### GPL6887: Illumina MouseWG-6 v2.0 expression beadchip
+
+**Start**: `r Sys.time()`
+
+```{r GPL6887, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL6887"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+d <- Table(gds)
+# e <- getBeIds(
+#    be="Gene", source="EntrezGene", organism="mouse", restricted=FALSE
+# )
+# sum(d$Entrez_Gene_ID %in% e$id) > sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping
+toImport <- d[,c("Entrez_Gene_ID", "ID")]
+toImport[,1] <- as.character(toImport[,1])
+# toImport[,1] <- sub("[.].*$", "", toImport[,1])
+toImport[,2] <- as.character(toImport[,2])
+colnames(toImport) <- c("id", "probeID")
+toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
+dbname <- "EntrezGene"
 ##
 BED:::loadProbes(
     d=toImport,

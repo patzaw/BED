@@ -51,27 +51,51 @@ loadBE <- function(
    ################################################
    ## Add IDs
    if(prefInfo){
+      cql <- sprintf(
+         'MERGE (beid:%s:BEID {value: row.id, database:$db})',
+         beid
+      )
       prefStr <- '(case row.preferred when "TRUE" then true else false end)'
-      cql <- sprintf(
-         'MERGE (beid:BEID:%s {value: row.id, database: "%s"}) SET beid.preferred=%s',
-         beid, dbname, prefStr
-      )
-   }else{
-      cql <- sprintf(
-         'MERGE (beid:BEID:%s {value: row.id, database: "%s"}) ON CREATE SET beid.preferred=false',
-         beid, dbname
-      )
-   }
-   withStr <- 'WITH beid'
-   if(!onlyId){
       cql <- c(
          cql,
+         sprintf(
+            'ON CREATE SET beid.preferred=%s',
+            prefStr
+         ),
+         sprintf(
+            'ON MATCH SET beid.preferred=%s',
+            prefStr
+         )
+      )
+   }else{
+      cql <- c(
+         sprintf(
+            'MERGE (beid:%s:BEID {value: row.id, database:$db})',
+            beid
+         ),
+         'ON CREATE SET beid.preferred=false'
+      )
+   }
+   ##
+   bedImport(cql, toImport, parameters=list(db=dbname))
+
+   if(!onlyId){
+      cql <- c(
+         sprintf(
+            'MATCH (beid:%s {value: row.id, database:$db})',
+            beid
+         ),
+         sprintf(
+            'USING INDEX beid:%s(value)',
+            beid
+         ),
          sprintf(
             'MERGE (beid)-[:identifies]->(be:%s)',
             be
          )
       )
-      withStr <- paste0(withStr, ', be')
+      ##
+      bedImport(cql, toImport, parameters=list(db=dbname))
    }
 
    #########################
@@ -85,33 +109,58 @@ loadBE <- function(
          depStr <- "false"
       }
    }
-   dbcql <- sprintf(
-      '(db:BEDB{name: "%s"})',
-      dbname
-   )
+   dbcql <- '(db:BEDB{name:$db})'
    if(!is.na(version)){
+      cql <- c('MERGE', dbcql)
+      ##
+      bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+
       cql <- c(
-         cql, withStr,
-         'MERGE', dbcql,
-         'CREATE UNIQUE (beid)',
+         sprintf(
+            'MATCH (beid:%s {value: row.id, database:$db})',
+            beid
+         ),
+         sprintf(
+            'USING INDEX beid:%s(value)',
+            beid
+         ),
+         'MATCH', dbcql,
+         'MERGE (beid)',
          sprintf(
             '-[:is_recorded_in {version:"%s", deprecated:%s}]->',
             version, depStr
          ),
          '(db)'
       )
+      ##
+      bedImport(cql, toImport, parameters=list(db=dbname))
+
    }else{
       if(!is.na(deprecated)){
+         cql <- c('MERGE', dbcql)
+         ##
+         bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+
          cql <- c(
-            cql, withStr,
-            'MERGE', dbcql,
-            'CREATE UNIQUE (beid)',
+            sprintf(
+               'MATCH (beid:%s {value: row.id, database:$db})',
+               beid
+            ),
+            sprintf(
+               'USING INDEX beid:%s(value)',
+               beid
+            ),
+            'MATCH', dbcql,
+            'MERGE (beid)',
             sprintf(
                '-[:is_recorded_in {deprecated:%s}]->',
                depStr
             ),
             '(db)'
          )
+         ##
+         bedImport(cql, toImport, parameters=list(db=dbname))
+
       }
    }
    if(!is.na(taxId)){
@@ -119,19 +168,28 @@ loadBE <- function(
          '(o:TaxID {value:"%s"})',
          taxId
       )
-      cql <- c(
-         cql, withStr,
-         'MERGE', orgcql
-      )
+      cql <- c('MERGE', orgcql)
+      ##
+      bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+
       if(be=="Gene"){
          cql <- c(
-            cql,
-            'CREATE UNIQUE (be)-[:belongs_to]->(o)'
+            sprintf(
+               'MATCH (beid:%s {value: row.id, database:$db})',
+               beid
+            ),
+            sprintf(
+               'USING INDEX beid:%s(value)',
+               beid
+            ),
+            'MATCH (beid)-[:identifies]->(be)',
+            'MATCH', orgcql,
+            'MERGE (be)-[:belongs_to]->(o)'
          )
       }
-   }
+      ##
+      bedImport(cql, toImport, parameters=list(db=dbname))
 
-   #########################
-   bedImport(cql, toImport)
+   }
 
 }
