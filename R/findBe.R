@@ -705,7 +705,7 @@ findBe <- function(
                scrollY=230,
                scrollX= TRUE,
                scroller = TRUE,
-               dom=c("fti")
+               dom=c("ti")
             )
          )
          if("Relevant ID" %in% colnames(toShow)){

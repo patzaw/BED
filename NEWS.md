@@ -1,4 +1,15 @@
 <!----------------------------------------------------------------------------->
+## Version 1.1.9 - Release notes - 2019-?????
+
+### Implementation changes
+
+   - Correction of findBe() result display
+
+### Rebuild-BED.Rmd
+   
+   - Ensembl 98
+
+<!----------------------------------------------------------------------------->
 ## Version 1.1.8 - Release notes - 2019-07-29
 
 ### Implementation changes
