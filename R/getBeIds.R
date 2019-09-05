@@ -274,8 +274,8 @@ getBeIds <- function(
       if(!entity){
          toRet <- unique(toRet[, setdiff(colnames(toRet), c(be, "preferred"))])
       }
+      attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    }
    ##
-   attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    return(toRet)
 }

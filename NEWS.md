@@ -4,6 +4,7 @@
 ### Implementation changes
 
    - Correction of findBe() result display
+   - Correction of bug in getBeIds() and getRelevantIds()
 
 ### Rebuild-BED.Rmd
    

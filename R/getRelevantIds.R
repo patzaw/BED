@@ -216,7 +216,7 @@ getRelevantIds <- function(
          toRet <- toRet[order(toRet$organism==organism, decreasing=TRUE),]
          toRet <- toRet[!duplicated(toRet[,ncol(toRet)]),]
       }
+      attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    }
-   attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    return(toRet)
 }
