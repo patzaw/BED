@@ -5,6 +5,7 @@
 
    - Correction of findBe() result display
    - Correction of bug in getBeIds() and getRelevantIds()
+   - Implement BEIDList class
 
 ### Rebuild-BED.Rmd
    
