@@ -82,6 +82,7 @@ dumpEnsCore <- function(
             # tmp <- readLines(lf, encoding="UTF-8")
             tmp <- read_file(lf)
             tmp <- gsub("\r\n", " ", tmp)
+            tmp <- gsub("\r\\\\n", "", tmp)
             tmp <- strsplit(tmp, split="\n")[[1]]
             toRm <- which(tmp=="\\")
             if(length(toRm)>0){

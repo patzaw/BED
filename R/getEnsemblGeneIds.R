@@ -112,6 +112,11 @@ getEnsemblGeneIds <- function(
                ]
          }
          if(nrow(cref) > 0){
+            cref <- unique(cref)
+            ## NCBI cross-references
+            if(db=="EntrezGene"){
+               cref <- cleanDubiousXRef(cref)
+            }
             ## External DB IDs
             toImport <- unique(cref[, "dbprimary_acc", drop=F])
             colnames(toImport) <- "id"
@@ -122,7 +127,7 @@ getEnsemblGeneIds <- function(
                taxId=NA
             )
             ## The cross references
-            toImport <- unique(cref)
+            toImport <- cref
             colnames(toImport) <- c("id1", "id2")
             toImport$id1 <- sub("HGNC[:]", "", sub("MGI[:]", "", toImport$id1))
             loadCorrespondsTo(

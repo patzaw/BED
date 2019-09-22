@@ -279,7 +279,7 @@ redundant EntrezGene IDs.
 
 <div style="border:solid;overflow:hidden;">
 ```{r}
-eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=8)))][1]
+eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=4)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
    visPhysics(solver="repulsion")

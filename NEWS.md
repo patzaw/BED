@@ -1,15 +1,24 @@
 <!----------------------------------------------------------------------------->
-## Version 1.1.9 - Release notes - 2019-?????
+## Version 1.2.0
+
+### Implementation changes
+
+   - cleanDubiousXRef() function applied to NCBI gene cross-references
+   from Ensembl
+
+### Rebuild-BED.Rmd
+   
+   - Based on neo4j-community-3.5.9
+   - Add Danio rerio (zebrafish) support
+
+<!----------------------------------------------------------------------------->
+## Version 1.1.9
 
 ### Implementation changes
 
    - Correction of findBe() result display
    - Correction of bug in getBeIds() and getRelevantIds()
    - Implement BEIDList class
-
-### Rebuild-BED.Rmd
-   
-   - Ensembl 98
 
 <!----------------------------------------------------------------------------->
 ## Version 1.1.8 - Release notes - 2019-07-29
