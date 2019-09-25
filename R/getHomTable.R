@@ -76,7 +76,7 @@ getHomTable <- function(
     ## From
     fqs <- paste0(
         sprintf(
-            '(f:GeneID {database:"%s"})',
+            'MATCH (f:GeneID {database:"%s"})',
             from.source
         ),
         '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
@@ -89,7 +89,7 @@ getHomTable <- function(
     ## To
     tqs <- paste0(
         sprintf(
-            '(t:GeneID {database:"%s"})',
+            'MATCH (t:GeneID {database:"%s"})',
             to.source
         ),
         # '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
@@ -107,12 +107,12 @@ getHomTable <- function(
 
     ## From fromBE to toBE
     ftqs <- paste0(
-        '(fbe)<-[:identifies]-(:GeneID)-[:is_member_of]->(:GeneIDFamily)',
+        'MATCH (fbe)<-[:identifies]-(:GeneID)-[:is_member_of]->(:GeneIDFamily)',
         '<-[:is_member_of]-(:GeneID)-[:identifies]->(tbe)'
     )
 
     ##
-    cql <- paste('MATCH', setdiff(c(fqs, tqs, ftqs), ""))
+    cql <- setdiff(c(fqs, tqs, ftqs), "")
 
     ## Filter
     if(length(filter)>0){
@@ -135,6 +135,7 @@ getHomTable <- function(
                 match.call()[[1]],
                 fromTaxId, from.source,
                 toTaxId, to.source,
+                ifelse(restricted, "restricted", "full"),
                 sep="_"
             )
         )
