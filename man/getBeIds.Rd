@@ -6,7 +6,8 @@
 \usage{
 getBeIds(be = c(listBe(), "Probe"), source, organism = NA, restricted,
   entity = TRUE, attributes = NULL, verbose = FALSE,
-  recache = FALSE, filter = NULL, limForCache = 4000)
+  recache = FALSE, filter = NULL, caseSensitive = FALSE,
+  limForCache = 100, bef = NULL)
 }
 \arguments{
 \item{be}{one BE or "Probe"}
@@ -33,9 +34,16 @@ the table is already in cache}
 \item{filter}{character vector on which to filter id. If NULL (default),
 the result is not filtered: all IDs are taken into account.}
 
+\item{caseSensitive}{if TRUE the case of provided symbols
+is taken into account.
+This option will only affect "Symbol" source
+(default: caseSensitive=FALSE).}
+
 \item{limForCache}{if there are more filter than limForCache results are
 collected for all IDs (beyond provided ids) and cached for futur queries.
 If not, results are collected only for provided ids and not cached.}
+
+\item{bef}{For internal use only}
 }
 \value{
 a data.frame mapping BE IDs with the

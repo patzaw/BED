@@ -2,7 +2,7 @@
 #'
 #' @param f the function to call
 #' @param ... params for f
-#' @param bedCheck check if a connection to BED exists.
+#' @param bedCheck check if a connection to BED exists (default: FALSE).
 #'
 #' @return The output of the called function.
 #'
@@ -22,7 +22,7 @@
 #'
 #' @export
 #'
-bedCall <- function(f, ..., bedCheck=TRUE){
+bedCall <- function(f, ..., bedCheck=FALSE){
     if(bedCheck) if(!checkBedConn()){
         stop("No connection")
     }

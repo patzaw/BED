@@ -6,7 +6,8 @@
 \usage{
 getBeIdConvTable(from, to = from, from.source, to.source, organism,
   caseSensitive = FALSE, restricted = TRUE, entity = TRUE,
-  verbose = FALSE, recache = FALSE, filter = NULL)
+  verbose = FALSE, recache = FALSE, filter = NULL,
+  limForCache = 100)
 }
 \arguments{
 \item{from}{one BE or "Probe"}
@@ -44,6 +45,10 @@ the table is already in cache}
 \item{filter}{character vector on which to filter from IDs.
 If NULL (default), the result is not filtered:
 all from IDs are taken into account.}
+
+\item{limForCache}{if there are more filter than limForCache results are
+collected for all IDs (beyond provided ids) and cached for futur queries.
+If not, results are collected only for provided ids and not cached.}
 }
 \value{
 a data.frame mapping BE IDs with the

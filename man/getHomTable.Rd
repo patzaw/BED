@@ -6,7 +6,7 @@
 \usage{
 getHomTable(from.org, to.org, from.source = "Ens_gene",
   to.source = from.source, restricted = TRUE, verbose = FALSE,
-  recache = FALSE, filter = NULL)
+  recache = FALSE, filter = NULL, limForCache = 100)
 }
 \arguments{
 \item{from.org}{organism name}
@@ -30,6 +30,10 @@ the table is already in cache}
 \item{filter}{character vector on which to filter from IDs.
 If NULL (default), the result is not filtered:
 all from IDs are taken into account.}
+
+\item{limForCache}{if there are more filter than limForCache results are
+collected for all IDs (beyond provided ids) and cached for futur queries.
+If not, results are collected only for provided ids and not cached.}
 }
 \value{
 a data.frame mapping gene IDs with the

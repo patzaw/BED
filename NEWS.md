@@ -1,9 +1,17 @@
 <!----------------------------------------------------------------------------->
-## Version 1.2.1
+## Version 1.2.2
 
 ### Rebuild-BED.Rmd
    
    - Ensembl 98
+   
+<!----------------------------------------------------------------------------->
+## Version 1.2.1
+
+### Implementation changes
+
+   - Improving mapping function for supporting difficult history
+   of Zebrafish Ensembl identifiers
 
 <!----------------------------------------------------------------------------->
 ## Version 1.2.0

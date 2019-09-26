@@ -66,16 +66,40 @@ listBeIdSources <- function(
     if(length(rel)!=1){
        stop("rel should be a character vector of length 1")
     }
+    ## Organism
+    taxId <- getTaxId(name=organism)
+    if(length(taxId)==0){
+        stop("organism not found")
+    }
+    if(length(taxId)>1){
+        print(getOrgNames(taxId))
+        stop("Multiple TaxIDs match organism")
+    }
+    if(be=="Gene"){
+        subqs <- ""
+    }else{
+        subqs <- paste0(
+            genBePath(from=be, to="Gene"),
+            '(:Gene)'
+        )
+    }
+    cql <- c(
+        paste0(
+            sprintf('MATCH (be:%s)', be),
+            subqs,
+            '-[:belongs_to]->',
+            '(:TaxID {value:$taxId}) WITH DISTINCT be'
+        )
+    )
+    parameters <- list(taxId=taxId)
     ##
     beid <- paste0(be, "ID")
     if(!is.na(rel)){
-       cql <- sprintf('MATCH (beid)-[:%s]->()', rel)
-    }else{
-       cql <- c()
+       cql <- c(cql, sprintf('MATCH (beid)-[:%s]->()', rel))
     }
     if(direct){
         cql <- c(cql, sprintf(
-            'MATCH (beid:%s)-[:identifies]->(be:%s)',
+            'MATCH (beid:%s)-[:identifies]->(be)',
             beid, be
         ))
     }else{
@@ -87,43 +111,11 @@ listBeIdSources <- function(
                     '-[:is_associated_to*0..]->',
                     '-[:is_replaced_by|is_associated_to*0..]->'
                 ),
-                '(:%s)-[:identifies]->(be:%s)'
+                '(:%s)-[:identifies]->(be)'
             ),
             beid, beid, be
         ))
     }
-    # parameters=NULL
-    # if(!is.na(organism)){
-        ## Organism
-        taxId <- getTaxId(name=organism)
-        if(length(taxId)==0){
-            stop("organism not found")
-        }
-        if(length(taxId)>1){
-            print(getOrgNames(taxId))
-            stop("Multiple TaxIDs match organism")
-        }
-        if(be=="Gene"){
-            subqs <- ""
-        }else{
-            subqs <- paste0(
-                genBePath(from=be, to="Gene"),
-                '(:Gene)'
-            )
-        }
-        cql <- c(
-            cql,
-            paste0(
-                'MATCH (be)',
-                subqs,
-                '-[:belongs_to]->',
-                '(:TaxID {value:$taxId})'
-            )
-        )
-        parameters <- list(taxId=taxId)
-    # }else{
-    #     taxId <- NA
-    # }
     cql <- c(
         cql,
         'WITH DISTINCT beid, be',

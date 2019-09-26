@@ -15,9 +15,14 @@
 #' the table is already in cache
 #' @param filter character vector on which to filter id. If NULL (default),
 #' the result is not filtered: all IDs are taken into account.
+#' @param caseSensitive if TRUE the case of provided symbols
+#' is taken into account.
+#' This option will only affect "Symbol" source
+#' (default: caseSensitive=FALSE).
 #' @param limForCache if there are more filter than limForCache results are
 #' collected for all IDs (beyond provided ids) and cached for futur queries.
 #' If not, results are collected only for provided ids and not cached.
+#' @param bef For internal use only
 #'
 #' @return a data.frame mapping BE IDs with the
 #' following fields:
@@ -42,6 +47,7 @@
 #' @seealso \code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
 #'
 #' @importFrom neo2R prepCql cypher
+#' @importFrom dplyr arrange filter select distinct
 #' @export
 #'
 getBeIds <- function(
@@ -54,7 +60,9 @@ getBeIds <- function(
    verbose=FALSE,
    recache=FALSE,
    filter=NULL,
-   limForCache=4000
+   caseSensitive=FALSE,
+   limForCache=100,
+   bef=NULL
 ){
 
    ## Other verifications
@@ -64,7 +72,7 @@ getBeIds <- function(
       listPlatforms()$name,
       "Symbol"
    )
-   source <- match.arg(source, bedSources)
+   # source <- match.arg(source, bedSources)
    if(!is.atomic(source) || length(source)!=1){
       stop("source should be a character vector of length one")
    }
@@ -86,10 +94,31 @@ getBeIds <- function(
       attributes <- intersect(attributes, listDBAttributes(source))
    }
 
-   if(length(filter)>0 & length(filter)<=limForCache){
-      noCache <- TRUE
-   }else{
-      noCache <- FALSE
+
+
+   ## Filter
+   noCache <- FALSE
+   if(length(filter)>0){
+      if(length(bef)>0){
+         stop("Cannot set filter and bef together")
+      }
+      if(!inherits(filter, "character")){
+         stop("filter should be a character vector")
+      }
+      if(source=="Symbol" & !caseSensitive){
+         filter <- toupper(filter)
+      }
+      FILT <- "beid"
+      if(length(filter)<=limForCache){
+         noCache <- TRUE
+      }
+   }
+   ## Filter
+   if(length(bef)>0){
+      FILT <- "be"
+      if(length(bef)<=limForCache){
+         noCache <- TRUE
+      }
    }
 
    ## Organism
@@ -99,10 +128,10 @@ getBeIds <- function(
    # if(is.na(organism) && bentity!="Probe"){
    #     stop("organism should be given for non 'Probe' entities")
    # }
-   if(!is.na(organism) && bentity=="Probe"){
-      warning("organism won't be taken into account to retrieve probes")
-      organism <- NA
-   }
+   # if(!is.na(organism) && bentity=="Probe"){
+   #    warning("organism won't be taken into account to retrieve probes")
+   #    organism <- NA
+   # }
    if(is.na(organism)){
       taxId <- NA
    }else{
@@ -117,9 +146,15 @@ getBeIds <- function(
    }
    parameters <- list(
       taxId=taxId,
-      beSource=source,
-      filter=as.list(as.character(filter))
+      beSource=source
    )
+   if(noCache){
+      if(FILT=="beid"){
+         parameters$filter <- as.list(as.character(filter))
+      }else{
+         parameters$filter <- as.list(bef)
+      }
+   }
 
    if(bentity != "Probe"){
       be <- bentity
@@ -165,18 +200,34 @@ getBeIds <- function(
             ''
          )
       ),
+      # ifelse(
+      #    bentity!="Probe",
+      #    ifelse(
+      #       !is.na(organism),
+      #       '-[:belongs_to]->(:TaxID {value:$taxId})',
+      #       ''
+      #    ),
+      #    '-[:belongs_to]->()-[:is_named {nameClass:"scientific name"}]->(o)'
+      # ),
       ifelse(
-         bentity!="Probe",
-         ifelse(
-            !is.na(organism),
-            '-[:belongs_to]->(:TaxID {value:$taxId})',
-            ''
-         ),
-         '-[:belongs_to]->()-[:is_named {nameClass:"scientific name"}]->(o)'
+         !is.na(organism),
+         '-[:belongs_to]->(:TaxID {value:$taxId})',
+         ''
       ),
       ifelse(
          noCache,
-         'WHERE n.value IN $filter',
+         ifelse(
+            FILT=="beid",
+            sprintf(
+               'WHERE n.%s IN $filter',
+               ifelse(
+                  source=="Symbol" & !caseSensitive,
+                  "value_up",
+                  "value"
+               )
+            ),
+            'WHERE id(be) IN $filter'
+         ),
          ""
       ),
       ifelse(
@@ -198,7 +249,7 @@ getBeIds <- function(
    ##
    cql <- c(
       cql,
-      'RETURN n.value as id, n.preferred as preferred',
+      'RETURN DISTINCT n.value as id, n.preferred as preferred',
       sprintf(
          ', id(be) as %s',
          be
@@ -207,13 +258,13 @@ getBeIds <- function(
          bentity!="Probe" && source!="Symbol",
          ', db.version, db.deprecated',
          ''
-      ),
-      ifelse(
-         bentity=="Probe",
-         # is.na(organism),
-         ', o.value as organism',
-         ''
-      )
+      )#,
+      # ifelse(
+      #    bentity=="Probe",
+      #    # is.na(organism),
+      #    ', o.value as organism',
+      #    ''
+      # )
    )
    if(source=="Symbol"){
       cql <- c(
@@ -264,15 +315,28 @@ getBeIds <- function(
    }
    toRet <- unique(toRet)
    if(length(filter)>0 & !is.null(toRet)){
-      toRet <- toRet[which(toRet$id %in% filter),]
+      if(source=="Symbol" & !caseSensitive){
+         toRet <- filter(
+            toRet,
+            toupper(id) %in% filter
+         )
+      }else{
+         toRet <- filter(
+            toRet,
+            id %in% filter
+         )
+      }
+   }
+   if(length(bef)>0 & !is.null(toRet)){
+      toRet <- filter(toRet, get(!!be) %in% bef)
    }
    ##
    if(!is.null(toRet)){
       toRet$preferred <- as.logical(toRet$preferred)
-      toRet <- toRet[order(toRet[,be]),]
+      toRet <- arrange(toRet, get(!!be))
       ##
       if(!entity){
-         toRet <- unique(toRet[, setdiff(colnames(toRet), c(be, "preferred"))])
+         toRet <- distinct(select(toRet, -!!be, -preferred))
       }
       attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    }
