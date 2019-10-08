@@ -70,6 +70,8 @@
 #' @seealso \code{\link{getBeIdConvTable}}, \code{\link{convBeIdLists}},
 #' \code{\link{convDfBeIds}}
 #'
+#' @importFrom dplyr rename
+#'
 #' @export
 #'
 convBeIds <- function(
@@ -161,7 +163,7 @@ convBeIds <- function(
             filter=filter
          )
          if(!is.null(ct1) && ncol(ct1)>0){
-            colnames(ct1) <- c("from", "gfrom")
+            ct1 <- rename(ct1, "gfrom"="to")
             stopConv <- FALSE
          }else{
             stopConv <- TRUE
@@ -186,7 +188,7 @@ convBeIds <- function(
                filter=filter
             )
             if(!is.null(ht) && ncol(ht)>0){
-               colnames(ht) <- c("gfrom", "gto")
+               ht <- rename(ht, "gfrom"="from", "gto"="to")
             }else{
                stopConv <- TRUE
             }
@@ -209,7 +211,7 @@ convBeIds <- function(
                   filter=filter
                )
                if(!is.null(ct2) && ncol(ct2)>0){
-                  colnames(ct2) <- c("gto", "to", "preferred", "entity")
+                  ct2 <- rename(ct2, "gto"="from")
                }else{
                   stopConv <- TRUE
                }
@@ -270,7 +272,7 @@ convBeIds <- function(
       toRet <- rbind(toRet, notFound)
    }
    ##
-   colnames(toRet) <- c("from", "to", "to.preferred", "to.entity")
+   toRet <- rename(toRet, "to.preferred"="preferred","to.entity"="entity")
    attr(toRet, "scope") <- list(
       be=to, source=to.source, organism=to.org
    )
