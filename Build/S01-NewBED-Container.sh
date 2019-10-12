@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export NJ_VERSION=3.5.9
+export NJ_VERSION=3.5.11
 
 export BED_HTTP_PORT=5410
 export BED_BOLT_PORT=5610

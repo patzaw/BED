@@ -4,10 +4,13 @@
 \alias{cleanDubiousXRef}
 \title{Identify and remove dubious cross-references}
 \usage{
-cleanDubiousXRef(d)
+cleanDubiousXRef(d, strict = TRUE)
 }
 \arguments{
 \item{d}{a cross-reference data.frame with 2 columns.}
+
+\item{strict}{if TRUE (default), the function returns only unambiguous
+mappings}
 }
 \value{
 This function returns d without dubious cross-references.

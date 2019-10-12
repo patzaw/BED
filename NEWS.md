@@ -4,6 +4,15 @@
 ### Rebuild-BED.Rmd
    
    - Ensembl 98
+   - Based on neo4j-community-3.5.11
+   - Because of a few (a very small number but quite annoying) dubious mapping
+   with EntrezGene identifier, only unambigous mapping from Ensembl have been
+   conserved. Relevant ambigous mapping be rescued by mapping from the NCBI
+   and to other reference database such as HGNC, MGI or RGD.
+   The cleanDubiousXRef() has been updated to this end
+   Examples:
+      + https://www.ensembl.org/Homo_sapiens/Gene/Matches?g=ENSG00000120088
+      
    
 <!----------------------------------------------------------------------------->
 ## Version 1.2.1

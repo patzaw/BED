@@ -204,7 +204,11 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
    toRet <- visOptions(
       graph=toRet,
       highlightNearest = TRUE,
-      nodesIdSelection=list(selected=tpNodes$id[which(tpNodes$label==id)])
+      nodesIdSelection=list(
+         selected=tpNodes$id[which(
+            tpNodes$label==id & tpNodes$database==source
+         )]
+      )
    )
    toRet <-  visLegend(
       graph=toRet,

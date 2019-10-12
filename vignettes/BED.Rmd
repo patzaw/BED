@@ -277,9 +277,16 @@ the ID mapping provided by the different source databases.
 The graph below shows how the mapping was done for such a BE with
 redundant EntrezGene IDs.
 
+<strong>
+This issue has been mainly solved by not taking into account ambigous mappings
+between NCBI Entrez gene identifiers and Ensembl gene identifier provided
+by Ensembl. It has been achieved using the `cleanDubiousXRef()` function
+from the 2019.10.11 version of the BED-UCB-Human database.
+</strong>
+
 <div style="border:solid;overflow:hidden;">
 ```{r}
-eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=4)))][1]
+eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
    visPhysics(solver="repulsion")
@@ -319,6 +326,7 @@ a BE.
 The example below shows the case of the MAPT gene annotated on different
 version of human chromosome 17.
 
+<div style="border:solid;overflow:hidden;">
 ```{r}
 mapt <- convBeIds(
    "MAPT", from="Gene", from.source="Symbol", from.org="human",
@@ -336,6 +344,7 @@ getBeIds(
    filter=mapt$to
 )
 ```
+</div>
 
 ## Checking identifiers
 
@@ -549,6 +558,7 @@ it might be useful to explore the path between two identifiers
 which have been mapped. This can be achieved by the `exploreConvPath`
 function.
 
+<div style="border:solid;overflow:hidden;">
 ```{r}
 from.id <- "ILMN_1220595"
 res <- convBeIds(
@@ -562,6 +572,7 @@ exploreConvPath(
    to.id=res$to[1], to="Peptide", to.source="Uniprot"
 )
 ```
+</div>
 
 The figure above shows how the `r from.id` ProbeID, targeting
 the mouse NM_010552 transcript, can be associated
