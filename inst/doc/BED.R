@@ -80,7 +80,7 @@ dim(beids)
 sort(table(table(beids$Gene)), decreasing = TRUE)
 
 ## ------------------------------------------------------------------------
-eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=8)))][1]
+eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
    visPhysics(solver="repulsion")

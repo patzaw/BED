@@ -91,7 +91,7 @@ exploreConvPath <- function(
    )
 
    ## Final query
-   qs <- prepCql(c(fqs, tqs, pqs, "RETURN p"))
+   qs <- prepCql(c(fqs, tqs, pqs, "RETURN DISTINCT p"))
    if(verbose) cat(qs, fill=T)
    net <- bedCall(
       cypher,
@@ -143,7 +143,7 @@ exploreConvPath <- function(
                   'MATCH (n:%s {value:"%s", database:"%s"})-[r:is_known_as]->(s)',
                   nodes[i, "label"], nodes[i, "value"], nodes[i, "database"]
                ),
-               'RETURN s.value as symbol, r.canonical as can'
+               'RETURN DISTINCT s.value as symbol, r.canonical as can'
             ))
          )
          if(!is.null(qr) && nrow(qr)>0){

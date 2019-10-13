@@ -20,7 +20,8 @@ dumpUniprotDb <- function(
         "9606"="human",
         "10090"="rodents",
         "10116"="rodents",
-        "9823"="mammals"
+        "9823"="mammals",
+        "7955"="vertebrates"
     )
     taxOfInt <- match.arg(taxOfInt, names(taxDiv))
     divOfInt <- taxDiv[taxOfInt]

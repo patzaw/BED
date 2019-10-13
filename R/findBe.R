@@ -325,7 +325,7 @@ findBe <- function(
             d=searchRes,
             selected=nsel,
             be=ibe, source=isrc, organism=iorg,
-            restricted=TRUE
+            restricted=restricted
          ), silent=T)
          curSel$selRes <- sel
          req(!inherits(results, "try-error"))
@@ -342,7 +342,7 @@ findBe <- function(
          #                     d=searchRes,
          #                     selected=nsel,
          #                     be=ibe, source=isrc, organism=iorg,
-         #                     restricted=TRUE
+         #                     restricted=restricted
          #                 )
          #                 setProgress(max(sel)/nrow(searchRes))
          #             }
@@ -441,7 +441,7 @@ findBe <- function(
             d=searchRes,
             selected=nsel,
             be=ibe, source=isrc, organism=iorg,
-            restricted=TRUE
+            restricted=restricted
          ), silent=TRUE)
          curSel$selRes <- sel
          req(!inherits(results, "try-error"))
@@ -458,7 +458,7 @@ findBe <- function(
          #                     d=searchRes,
          #                     selected=nsel,
          #                     be=ibe, source=isrc, organism=iorg,
-         #                     restricted=TRUE
+         #                     restricted=restricted
          #                 )
          #                 setProgress(max(sel)/nrow(searchRes))
          #             }
@@ -552,7 +552,7 @@ findBe <- function(
             d=searchRes,
             selected=nsel,
             be=ibe, source=isrc, organism=iorg,
-            restricted=TRUE
+            restricted=restricted
          ), silent=TRUE)
          curSel$selRes <- sel
          req(!inherits(toAdd, "try-error"))
@@ -705,7 +705,7 @@ findBe <- function(
                scrollY=230,
                scrollX= TRUE,
                scroller = TRUE,
-               dom=c("fti")
+               dom=c("ti")
             )
          )
          if("Relevant ID" %in% colnames(toShow)){

@@ -27,7 +27,7 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
       query=prepCql(
          sprintf('MATCH (s:%s {value:$id, database:$db})', paste0(be, "ID")),
          '-[:is_replaced_by|is_associated_to*0..]->()-[:identifies]->(be)',
-         'WITH be',
+         'WITH DISTINCT be',
          'MATCH (be)<-[ir:identifies]-(di)',
          'OPTIONAL MATCH (di)<-[iir:is_replaced_by|is_associated_to*0..]-(ii)',
          'OPTIONAL MATCH (di)-[cr:corresponds_to]-()',
@@ -35,7 +35,7 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
          'OPTIONAL MATCH (ii)-[ikr:is_known_as {canonical:$can}]->(iis:BESymbol)',
          'OPTIONAL MATCH (di)<-[dtr:targets]-(dip:ProbeID)',
          'OPTIONAL MATCH (ii)<-[itr:targets]-(iip:ProbeID)',
-         'RETURN be, di, ii, dis, iis, dip, iip, ir, iir, cr, dkr, ikr, dtr, itr'
+         'RETURN DISTINCT be, di, ii, dis, iis, dip, iip, ir, iir, cr, dkr, ikr, dtr, itr'
       ),
       result="graph",
       parameters=list(id=id, db=source, can=TRUE)
@@ -204,7 +204,11 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
    toRet <- visOptions(
       graph=toRet,
       highlightNearest = TRUE,
-      nodesIdSelection=list(selected=tpNodes$id[which(tpNodes$label==id)])
+      nodesIdSelection=list(
+         selected=tpNodes$id[which(
+            tpNodes$label==id & tpNodes$database==source
+         )]
+      )
    )
    toRet <-  visLegend(
       graph=toRet,

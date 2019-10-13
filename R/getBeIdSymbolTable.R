@@ -35,6 +35,7 @@
 #' \code{\link{getBeIdNameTable}}
 #'
 #' @importFrom neo2R prepCql cypher
+#' @importFrom dplyr arrange select filter distinct
 #' @export
 #'
 getBeIdSymbolTable <- function(
@@ -67,7 +68,7 @@ getBeIdSymbolTable <- function(
     match.arg(be, echoices)
     match.arg(source, listBeIdSources(be, organism)$database)
 
-    ## Entity symbol
+    ## Entity
     qs <- c(
         sprintf(
             paste0(
@@ -76,9 +77,7 @@ getBeIdSymbolTable <- function(
                 '-[:identifies]->(be:%s)'
             ),
             paste0(be, "ID"), source, be
-        ),
-        'MATCH (bes:BESymbol)<-[c:is_known_as]-(sid)',
-        '-[:is_associated_to*0..]->()-[:identifies]->(be)'
+        )
     )
 
     ## Organism
@@ -112,11 +111,19 @@ getBeIdSymbolTable <- function(
         qs <- c(qs, 'WHERE id.value IN $filter')
     }
 
+    ## Symbols
+    qs <- c(
+        qs,
+        'WITH DISTINCT id, be',
+        'MATCH (bes:BESymbol)<-[c:is_known_as]-(sid)',
+        '-[:is_associated_to*0..]->()-[:identifies]->(be)'
+    )
+
     ##
     cql <- c(
         qs,
         paste(
-            'RETURN id.value as id, bes.value as symbol',
+            'RETURN DISTINCT id.value as id, bes.value as symbol',
             ', c.canonical as canonical, id(id)=id(sid) as direct',
             ', sid.preferred as preferred',
             ', id(be) as entity'
@@ -154,14 +161,17 @@ getBeIdSymbolTable <- function(
     if(!is.null(toRet)){
         toRet$canonical <- as.logical(toRet$canonical)
         toRet$direct <- as.logical(toRet$direct)
-        toRet <- toRet[order(toRet$direct, decreasing=T),]
-        toRet <- toRet[which(!duplicated(toRet[,c("id", "symbol")])),]
+        # toRet <- toRet[order(toRet$direct, decreasing=T),]
+        toRet <- arrange(toRet, desc(direct))
+        toRet <- distinct(toRet, id, symbol, .keep_all=TRUE)
+        # toRet <- toRet[which(!duplicated(toRet[,c("id", "symbol")])),]
         ##
         if(!entity){
-            toRet <- toRet[, setdiff(colnames(toRet), c("entity"))]
+            toRet <- unique(toRet[, setdiff(colnames(toRet), c("entity"))])
         }
         if(restricted){
-            toRet <- toRet[which(toRet$direct),]
+            toRet <- filter(toRet, direct)
+            # toRet <- toRet[which(toRet$direct),]
         }
     }
     ##

@@ -25,6 +25,9 @@
 #' @param filter character vector on which to filter from IDs.
 #' If NULL (default), the result is not filtered:
 #' all from IDs are taken into account.
+#' @param limForCache if there are more filter than limForCache results are
+#' collected for all IDs (beyond provided ids) and cached for futur queries.
+#' If not, results are collected only for provided ids and not cached.
 #'
 #' @return a data.frame mapping BE IDs with the
 #' following fields:
@@ -46,6 +49,7 @@
 #' \code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
 #'
 #' @importFrom neo2R prepCql cypher
+#' @importFrom dplyr select rename inner_join
 #' @export
 #'
 getBeIdConvTable <- function(
@@ -59,306 +63,160 @@ getBeIdConvTable <- function(
     entity=TRUE,
     verbose=FALSE,
     recache=FALSE,
-    filter=NULL
+    filter=NULL,
+    limForCache=100
 ){
-    ## Organism
-    taxId <- getTaxId(name=organism)
-    if(length(taxId)==0){
-        stop("organism not found")
-    }
-    if(length(taxId)>1){
-        print(getOrgNames(taxId))
-        stop("Multiple TaxIDs match organism")
-    }
 
-    ## Filter
-    if(length(filter)>0 && !inherits(filter, "character")){
-        stop("filter should be a character vector")
-    }
-    if(from.source=="Symbol" & !caseSensitive){
-       filter <- toupper(filter)
-    }
+    ## Null results ----
+    nullRes <- data.frame(
+        from=character(),
+        to=character(),
+        preferred=logical(),
+        entity=character(),
+        # fika=logical(),
+        # tika=logical(),
+        stringsAsFactors=FALSE
+    )
 
-    ## Other verifications
-    echoices <- c("Probe", listBe())
-    match.arg(from, echoices)
-    match.arg(to, echoices)
 
-    ## From
+    ## BE ----
     if(from=="Probe"){
-        fqs <- genProbePath(platform=from.source)
-        fromBE <- attr(fqs, "be")
-        fqs <- paste0(
-            sprintf(
-                '(f:ProbeID {platform:"%s"})',
-                from.source
-            ),
-            fqs,
-            sprintf(
-                '(fbe:%s)',
-                fromBE
-            )
-        )
+        fromBE <- attr(genProbePath(platform=from.source), "be")
     }else{
         fromBE <- from
-        if(from.source=="Symbol"){
-            fqs <- paste0(
-                '(f:BESymbol)<-[fika:is_known_as]-',
-                sprintf(
-                    '(fid:%s)',
-                    paste0(from, "ID")
-                ),
-                '-[:is_replaced_by|is_associated_to*0..]->()',
-                '-[:identifies]->',
-                sprintf(
-                    '(fbe:%s)',
-                    from
-                )
-            )
-        }else{
-            fqs <- paste0(
-                sprintf(
-                    '(f:%s {database:"%s"})',
-                    paste0(from, "ID"), from.source
-                ),
-                # ifelse(
-                #     restricted,
-                #     '-[:is_associated_to*0..]->',
-                #     '-[:is_replaced_by|is_associated_to*0..]->'
-                # ),
-                '-[:is_replaced_by|is_associated_to*0..]->',
-                sprintf(
-                    '(:%s)',
-                    paste0(from, "ID")
-                ),
-                '-[:identifies]->',
-                sprintf(
-                    '(fbe:%s)',
-                    from
-                )
-            )
-        }
     }
-
-    ## To
     if(to=="Probe"){
-        tqs <- genProbePath(platform=to.source)
-        toBE <- attr(tqs, "be")
-        tqs <- paste0(
-            sprintf(
-                '(t:ProbeID {platform:"%s"})',
-                to.source
-            ),
-            tqs,
-            sprintf(
-                '(%s%s)',
-                ifelse(toBE==fromBE, "fbe", "tbe"),
-                ifelse(toBE==fromBE, "", paste0(":", toBE))
-            )
-        )
+        toBE <- attr(genProbePath(platform=to.source), "be")
     }else{
         toBE <- to
-        if(to.source=="Symbol"){
-            tqs <- paste0(
-                '(t:BESymbol)<-[tika:is_known_as]-',
-                sprintf(
-                    '(tid:%s)',
-                    paste0(to, "ID")
-                ),
-                '-[:is_replaced_by|is_associated_to*0..]->()',
-                '-[:identifies]->',
-                sprintf(
-                    '(%s%s)',
-                    ifelse(toBE==fromBE, "fbe", "tbe"),
-                    ifelse(toBE==fromBE, "", paste0(":", toBE))
-                )
-            )
-        }else{
-            tqs <- paste0(
-                sprintf(
-                    '(t:%s {database:"%s"})',
-                    paste0(to, "ID"), to.source
-                ),
-                ifelse(
-                    restricted,
-                    '-[:is_associated_to*0..]->',
-                    '-[:is_replaced_by|is_associated_to*0..]->'
-                ),
-                sprintf(
-                    '(:%s)',
-                    paste0(to, "ID")
-                ),
-                '-[:identifies]->',
-                sprintf(
-                    '(%s%s)',
-                    ifelse(toBE==fromBE, "fbe", "tbe"),
-                    ifelse(toBE==fromBE, "", paste0(":", toBE))
-                )
-            )
-        }
     }
 
-    ## From fromBE to toBE
-    if(fromBE==toBE){
-        ftqs <- ""
-    }else{
+    ## From ----
+    fbeid <- getBeIds(
+        be=from,
+        source=from.source,
+        organism=organism,
+        caseSensitive=caseSensitive,
+        restricted=FALSE,
+        entity=TRUE,
+        verbose=verbose,
+        recache=recache,
+        filter=filter,
+        limForCache=limForCache
+    )
+    if(is.null(fbeid) || nrow(fbeid)==0){
+        return(nullRes)
+    }
+    if(!"canonical" %in% colnames(fbeid)){
+        fbeid$canonical <- NA
+    }
+    fbeid <- rename(
+        fbeid,
+        "from"="id",
+        # "fpref"="preferred",
+        "entity"=fromBE,
+        "fika"="canonical"
+    )
+    fbeid <- select(fbeid, from, fika, entity)
+
+    ## From fromBE to  ----
+    bef <- unique(fbeid$entity)
+    if(fromBE!=toBE){
+        if(length(bef)>0 && length(bef)<=limForCache){
+            noCache <- TRUE
+            parameters <- list(filter=as.list(bef))
+        }else{
+            noCache <- FALSE
+        }
         ftqs <- genBePath(from=fromBE, to=toBE)
-        ftqs <- paste0(
-            '(fbe)',
+        ftqs <- c(
+            'MATCH',
+            sprintf('(fbe:%s)', fromBE),
             ftqs,
-            '(tbe)'
+            sprintf('(tbe:%s)', toBE),
+            ifelse(
+                noCache,
+                'WHERE id(fbe) IN $filter',
+                ''
+            ),
+            'RETURN id(fbe) as fent, id(tbe) as tent'
         )
-    }
-
-    ## Organism
-    oqs <- paste0(
-        '(og:Gene)-[:belongs_to]->',
-        sprintf(
-            '(:TaxID {value:"%s"})',
-            taxId
-        )
-    )
-    ## From Organism
-    if(fromBE=="Gene"){
-        foqs <- '(fbe)-[*0]-(og)'
-    }else{
-        foqs <- paste0(
-            '(fbe)',
-            genBePath(from=fromBE, to="Gene"),
-            '(og)'
-        )
-    }
-    ## To Organism
-    if(fromBE==toBE){
-        toqs <- ""
-    }else{
-        if(toBE=="Gene"){
-            toqs <- '(tbe)-[*0]-(og)'
+        if(noCache){
+            toRet <- bedCall(
+                cypher,
+                prepCql(ftqs),
+                parameters=parameters
+            )
         }else{
-            toqs <- paste0(
-                '(tbe)',
-                genBePath(from=toBE, to="Gene"),
-                '(og)'
-            )
-        }
-    }
-
-    ##
-    cql <- paste('MATCH', setdiff(c(fqs, tqs, oqs), ""))
-    toRep <- '[(][:]Gene[)]'
-    if(length(grep(toRep, ftqs))==1){
-        ftqs <- sub(toRep, "(og)", ftqs)
-        cql <- c(cql, paste('MATCH', ftqs))
-    }else{
-        cql <- c(
-            cql,
-            ifelse(ftqs=="", "", paste('MATCH', ftqs)),
-            paste(
-                'MATCH',
-                ifelse(nchar(toqs)<nchar(foqs) & nchar(toqs)>0, toqs, foqs)
-            )
-        )
-    }
-
-    ## Filter
-    if(length(filter)>0){
-        cql <- c(
-            cql,
-            sprintf(
-                'WHERE f.%s IN $filter',
-                ifelse(
-                    from.source=="Symbol" & !caseSensitive,
-                    "value_up",
-                    "value"
+            tn <- gsub(
+                "[^[:alnum:]]", "_",
+                paste(
+                    match.call()[[1]],
+                    fromBE, toBE,
+                    sep="_"
                 )
             )
+            toRet <- cacheBedCall(
+                f=cypher,
+                query=prepCql(ftqs),
+                tn=tn,
+                recache=recache
+            )
+        }
+        if(is.null(toRet) || nrow(toRet)==0){
+            return(nullRes)
+        }
+        toRet <- inner_join(
+            toRet, fbeid, by=c("fent"="entity")
         )
+        toRet <- select(toRet, -fent)
+        bef <- unique(toRet$tent)
     }
 
-    ## RETURN
-    cql <- c(
-        cql,
-        paste(
-            'RETURN f.value as from',
-            ', t.value as to, t.preferred as preferred',
-            sprintf(
-                ifelse(
-                    fromBE==toBE,
-                    ', id(fbe) as %s',
-                    ', id(tbe) as %s'
-                ),
-                "entity"
-            )
-        )
+    ## To ----
+    tbeid <- getBeIds(
+        be=to,
+        source=to.source,
+        organism=organism,
+        caseSensitive=caseSensitive,
+        restricted=restricted,
+        entity=TRUE,
+        verbose=verbose,
+        recache=recache,
+        bef=bef,
+        limForCache=limForCache
     )
+    if(is.null(tbeid) || nrow(tbeid)==0){
+        return(nullRes)
+    }
+    if(!"canonical" %in% colnames(tbeid)){
+        tbeid$canonical <- NA
+    }
+    tbeid <- rename(
+        tbeid,
+        "to"="id",
+        # "tpref"="preferred",
+        "entity"=toBE,
+        "tika"="canonical"
+    )
+    tbeid <- select(tbeid, to, preferred, tika, entity)
 
-    if(from.source=="Symbol"){
-        cql <- c(
-            cql,
-            ', CASE WHEN fika.canonical THEN 1 ELSE 0 END as fika'
+    ## Joining ----
+    if(fromBE==toBE){
+        toRet <- inner_join(
+            fbeid, tbeid, by="entity"
         )
+        if(is.null(toRet) || nrow(toRet)==0){
+            return(nullRes)
+        }
     }else{
-        cql <- c(
-            cql,
-            ', 0 as fika'
-        )
-    }
-    if(to.source=="Symbol"){
-        cql <- c(
-            cql,
-            ', CASE WHEN tika.canonical THEN 1 ELSE 0 END as tika'
-        )
-    }else{
-        cql <- c(
-            cql,
-            ', 0 as tika'
+        toRet <- inner_join(
+            tbeid, toRet, by=c("entity"="tent")
         )
     }
 
-    if(verbose){
-        message(prepCql(cql))
-    }
-    ##
-    if(length(filter)==0){
-        tn <- gsub(
-            "[^[:alnum:]]", "_",
-            paste(
-                match.call()[[1]],
-                from, from.source,
-                to, to.source,
-                taxId,
-                ifelse(restricted, "restricted", "full"),
-                sep="_"
-            )
-        )
-        toRet <- cacheBedCall(
-            f=cypher,
-            query=prepCql(cql),
-            tn=tn,
-            recache=recache
-        )
-    }else{
-        toRet <- bedCall(
-            f=cypher,
-            query=prepCql(cql),
-            parameters=list(filter=as.list(
-               filter
-               # unique(c(filter, tolower(filter), toupper(filter)))
-            ))
-        )
-    }
-    toRet <- unique(toRet)
-    if(is.null(toRet)){
-       toRet <- data.frame(
-          from=character(),
-          to=character(),
-          preferred=logical(),
-          entity=character(),
-          fika=numeric(),
-          tika=numeric(),
-          stringsAsFactors=FALSE
-       )
-    }
+    ## Post-processing ----
+
     toRet <- toRet[order(toRet$fika+toRet$tika, decreasing=TRUE),]
     toRet$preferred <- as.logical(toRet$preferred)
     ##

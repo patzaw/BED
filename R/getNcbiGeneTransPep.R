@@ -54,6 +54,7 @@ getNcbiGeneTransPep <- function(
       "HGNC"="HGNC",
       "MGI"="MGI",
       "RGD"="RGD",
+      "ZFIN"="ZFIN_gene",
       "Ensembl"="Ens_gene",
       "Vega"="Vega_gene"
    )

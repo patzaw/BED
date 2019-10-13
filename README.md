@@ -68,7 +68,7 @@ get a running container with a BED database instance.
 ```
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2019.07.29
+export BED_VERSION=2019.10.11
 
 docker run -d \
 	--name bed \
@@ -90,22 +90,27 @@ Building and feeding a BED database instance is achieved using scripts
 available in the "Build" folder.
 
 ## Run a neo4j docker images
+<!------------------------->
 
 Using the S01-NewBED-Container.sh script.
 
 ## Build and feed BED
+<!------------------>
 
 Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd document.
 
 ## Create a docker image with BED database
+<!--------------------------------------->
 
 Using the S03-NewBED-image.sh script
 
 ## Push the image on docker hub
+<!---------------------------->
 
 Using the S04-Push-on-docker-hub.sh script
 
 ## Run the new image
+<!------------------>
 
 Using the S05-BED-Container.sh script
 
@@ -114,6 +119,7 @@ Using the S05-BED-Container.sh script
 # Notes about Docker
 
 ## Start docker
+<!------------>
 
 ```
 sudo systemctl start docker
@@ -121,11 +127,13 @@ sudo systemctl enable docker
 ```
 
 ## Building a Docker image
+<!----------------------->
 
 - https://docs.docker.com/get-started/
 - https://docs.docker.com/develop/develop-images/dockerfile_best-practices/
 
 ## Saving and loading an image archive
+<!----------------------------------->
 
 You can save the created image:
 
@@ -140,14 +148,17 @@ cat docker-bed-ucb-human-$BED_VERSION.tar | docker load
 ```
 
 ## Push a Docker image on docker hub
+<!--------------------------------->
 
 - https://docs.docker.com/docker-cloud/builds/push-images/
 
 ## Run a docker image
+<!------------------>
 
 - https://docs.docker.com/engine/reference/commandline/run/
 
 ## Managing containers/images/volumes
+<!---------------------------------->
 
 ### List created containers
 

@@ -1,7 +1,7 @@
 #/bin/bash
 
-export BED_VERSION=2019.07.29
-export NJ_VERSION=3.5.7
+export BED_VERSION=2019.10.11
+export NJ_VERSION=3.5.11
 export BED_DATA=`pwd`/working/neo4jData
 
 # Stop container

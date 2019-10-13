@@ -38,11 +38,13 @@ guessIdOrigin <- function(ids, tcLim=100){
     beids <- bedCall(
         f=cypher,
         query=prepCql(
-            'MATCH (n:BEID)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+            'MATCH (n:BEID) WHERE n.value IN $ids',
+            'MATCH (n)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
+            'MATCH (ni)-[:identifies]->(e)',
+            'WITH DISTINCT n, ni, e',
+            'MATCH (e)<-[cr*0..10]-(g:Gene)',
             'MATCH (g)-[:belongs_to]->(t:TaxID)',
             'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
-            'WHERE n.value IN $ids',
             # 'AND NOT "identifies" IN extract(r IN cr |type(r))',
             # Line above not necessary thanks to the data model.
             'RETURN labels(e) as be, n.database as source',
@@ -69,7 +71,9 @@ guessIdOrigin <- function(ids, tcLim=100){
             ##
             'MATCH (n)<-[:is_known_as]-(nii:BEID)',
             'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+            'MATCH (ni)-[:identifies]->(e)',
+            'WITH DISTINCT n, nii, ni, e',
+            'MATCH (e)<-[cr*0..10]-(g:Gene)',
             'MATCH (g)-[:belongs_to]->(t:TaxID)',
             'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
             'RETURN labels(e) as be, "Symbol" as source',
@@ -84,10 +88,12 @@ guessIdOrigin <- function(ids, tcLim=100){
         query=prepCql(
             'MATCH (n:ProbeID)',
             'WHERE n.value IN $ids',
-            'WITH n',
+            'WITH DISTINCT n',
             'MATCH (n)-[:targets]->(nii:BEID)',
             'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
-            'MATCH (ni)-[:identifies]->(e)<-[cr*0..10]-(g:Gene)',
+            'MATCH (ni)-[:identifies]->(e)',
+            'WITH DISTINCT n, nii, ni, e',
+            'MATCH (e)<-[cr*0..10]-(g:Gene)',
             'MATCH (g)-[:belongs_to]->(t:TaxID)',
             'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
             'RETURN "Probe" as be, n.platform as source',

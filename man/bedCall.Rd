@@ -4,14 +4,14 @@
 \alias{bedCall}
 \title{Call a function on the BED graph}
 \usage{
-bedCall(f, ..., bedCheck = TRUE)
+bedCall(f, ..., bedCheck = FALSE)
 }
 \arguments{
 \item{f}{the function to call}
 
 \item{...}{params for f}
 
-\item{bedCheck}{check if a connection to BED exists.}
+\item{bedCheck}{check if a connection to BED exists (default: FALSE).}
 }
 \value{
 The output of the called function.

@@ -14,6 +14,9 @@
 #' @param filter character vector on which to filter from IDs.
 #' If NULL (default), the result is not filtered:
 #' all from IDs are taken into account.
+#' @param limForCache if there are more filter than limForCache results are
+#' collected for all IDs (beyond provided ids) and cached for futur queries.
+#' If not, results are collected only for provided ids and not cached.
 #'
 #' @return a data.frame mapping gene IDs with the
 #' following fields:
@@ -32,6 +35,7 @@
 #' @seealso \code{\link{getBeIdConvTable}}
 #'
 #' @importFrom neo2R prepCql cypher
+#' @importFrom dplyr select rename inner_join
 #' @export
 #'
 getHomTable <- function(
@@ -42,7 +46,8 @@ getHomTable <- function(
     restricted=TRUE,
     verbose=FALSE,
     recache=FALSE,
-    filter=NULL
+    filter=NULL,
+    limForCache=100
 ){
     to.source <- to.source
     ## Organisms
@@ -68,91 +73,189 @@ getHomTable <- function(
         stop("Identical organisms. Use 'getBeIdConvTable' to convert DB IDs.")
     }
 
-    ## Filter
-    if(length(filter)>0 && !inherits(filter, "character")){
-        stop("filter should be a character vector")
+    ## From ----
+    fr <- getBeIds(
+        be="Gene", source=from.source, organism=from.org,
+        restricted=FALSE, filter=filter, recache=recache, verbose=verbose,
+        limForCache=limForCache
+    )
+    if(is.null(fr) || nrow(fr)==0){
+        return(NULL)
     }
+    fr <- select(fr, id, Gene)
+    fr <- rename(fr, "from"="id")
+    bef <- unique(fr$Gene)
 
-    ## From
-    fqs <- paste0(
-        sprintf(
-            '(f:GeneID {database:"%s"})',
-            from.source
-        ),
-        '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
-        '-[:identifies]->(fbe:Gene)',
-        sprintf(
-            '-[:belongs_to]->(:TaxID {value:"%s"})',
-            fromTaxId
-        )
-    )
-    ## To
-    tqs <- paste0(
-        sprintf(
-            '(t:GeneID {database:"%s"})',
-            to.source
-        ),
-        # '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
-        ifelse(
-           restricted,
-           '-[:is_associated_to*0..]->(:GeneID)',
-           '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)'
-        ),
-        '-[:identifies]->(tbe:Gene)',
-        sprintf(
-            '-[:belongs_to]->(:TaxID {value:"%s"})',
-            toTaxId
-        )
-    )
-
-    ## From fromBE to toBE
-    ftqs <- paste0(
-        '(fbe)<-[:identifies]-(:GeneID)-[:is_member_of]->(:GeneIDFamily)',
-        '<-[:is_member_of]-(:GeneID)-[:identifies]->(tbe)'
-    )
-
-    ##
-    cql <- paste('MATCH', setdiff(c(fqs, tqs, ftqs), ""))
-
-    ## Filter
-    if(length(filter)>0){
-        cql <- c(cql, 'WHERE f.value IN $filter')
+    ## Conv ----
+    if(length(bef)>0 && length(bef)<=limForCache){
+        noCache <- TRUE
+        parameters <- list(filter=as.list(bef))
+    }else{
+        noCache <- FALSE
     }
-
-    ## RETURN
     cql <- c(
-        cql,
-        'RETURN f.value as from, t.value as to'
+        sprintf(
+            'MATCH (fbe:Gene)-[:belongs_to]->(:TaxID {value:"%s"})',
+            fromTaxId
+        ),
+        ifelse(
+            noCache,
+            'WHERE id(fbe) IN $filter',
+            ''
+        ),
+        sprintf(
+            'MATCH (tbe:Gene)-[:belongs_to]->(:TaxID {value:"%s"})',
+            toTaxId
+        ),
+        'MATCH (fbe)<-[:identifies]-(:GeneID)-[:is_member_of]->(:GeneIDFamily)',
+        '<-[:is_member_of]-(:GeneID)-[:identifies]->(tbe:Gene)',
+        'RETURN DISTINCT id(fbe) as fromb, id(tbe) as tob'
     )
-    if(verbose){
-        message(prepCql(cql))
-    }
-    ##
-    if(length(filter)==0){
+    if(noCache){
+        cr <- bedCall(
+            cypher,
+            prepCql(cql),
+            parameters=parameters
+        )
+    }else{
         tn <- gsub(
             "[^[:alnum:]]", "_",
             paste(
                 match.call()[[1]],
-                fromTaxId, from.source,
-                toTaxId, to.source,
+                fromTaxId,
+                toTaxId,
                 sep="_"
             )
         )
-        toRet <- cacheBedCall(
+        cr <- cacheBedCall(
             f=cypher,
             query=prepCql(cql),
             tn=tn,
             recache=recache
         )
-    }else{
-        toRet <- bedCall(
-            f=cypher,
-            query=prepCql(cql),
-            parameters=list(filter=as.list(filter))
-        )
     }
-    toRet <- unique(toRet)
+    if(is.null(cr) || nrow(cr)==0){
+        return(NULL)
+    }
+    bef <- unique(cr$tob)
+
+    ## To ----
+    tr <- getBeIds(
+        be="Gene", source=to.source, organism=to.org,
+        restricted=restricted, recache=recache, verbose=verbose,
+        bef=bef,
+        limForCache=limForCache
+    )
+    if(is.null(tr) || nrow(tr)==0){
+        return(NULL)
+    }
+    tr <- select(tr, id, Gene)
+    tr <- rename(tr, "to"="id")
+
+    ## Results
+    toRet <- inner_join(
+        cr, fr, by=c("fromb"="Gene")
+    )
+    if(is.null(toRet) || nrow(toRet)==0){
+        return(NULL)
+    }
+    toRet <- unique(select(toRet, from, tob))
+    toRet <- inner_join(
+        toRet, tr, by=c("tob"="Gene")
+    )
+    if(is.null(toRet) || nrow(toRet)==0){
+        return(NULL)
+    }
+    toRet <- unique(select(toRet, from, to))
+
+    # ## Filter
+    # if(length(filter)>0 && !inherits(filter, "character")){
+    #     stop("filter should be a character vector")
+    # }
+    #
+    # ## From
+    # fqs <- paste0(
+    #     sprintf(
+    #         'MATCH (f:GeneID {database:"%s"})',
+    #         from.source
+    #     ),
+    #     '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
+    #     '-[:identifies]->(fbe)'
+    # )
+    # ## To
+    # tqs <- paste0(
+    #     sprintf(
+    #         'MATCH (t:GeneID {database:"%s"})',
+    #         to.source
+    #     ),
+    #     # '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)',
+    #     ifelse(
+    #        restricted,
+    #        '-[:is_associated_to*0..]->(:GeneID)',
+    #        '-[:is_replaced_by|is_associated_to*0..]->(:GeneID)'
+    #     ),
+    #     '-[:identifies]->(tbe)'
+    # )
+    #
+    # ## From fromBE to toBE
+    # ftqs <- c(
+    #     sprintf(
+    #         'MATCH (fbe:Gene)-[:belongs_to]->(:TaxID {value:"%s"})',
+    #         fromTaxId
+    #     ),
+    #     sprintf(
+    #         'MATCH (tbe:Gene)-[:belongs_to]->(:TaxID {value:"%s"})',
+    #         toTaxId
+    #     ),
+    #     'MATCH (fbe)<-[:identifies]-(:GeneID)-[:is_member_of]->(:GeneIDFamily)',
+    #     '<-[:is_member_of]-(:GeneID)-[:identifies]->(tbe:Gene)',
+    #     'WITH DISTINCT fbe, tbe'
+    # )
+    #
+    # ##
+    # cql <- setdiff(c(ftqs, fqs, tqs), "")
+    #
+    # ## Filter
+    # if(length(filter)>0){
+    #     cql <- c(cql, 'WHERE f.value IN $filter')
+    # }
+    #
+    # ## RETURN
+    # cql <- c(
+    #     cql,
+    #     'RETURN DISTINCT f.value as from, t.value as to'
+    # )
+    # if(verbose){
+    #     message(prepCql(cql))
+    # }
+    # ##
+    # if(length(filter)==0){
+    #     tn <- gsub(
+    #         "[^[:alnum:]]", "_",
+    #         paste(
+    #             match.call()[[1]],
+    #             fromTaxId, from.source,
+    #             toTaxId, to.source,
+    #             ifelse(restricted, "restricted", "full"),
+    #             sep="_"
+    #         )
+    #     )
+    #     toRet <- cacheBedCall(
+    #         f=cypher,
+    #         query=prepCql(cql),
+    #         tn=tn,
+    #         recache=recache
+    #     )
+    # }else{
+    #     toRet <- bedCall(
+    #         f=cypher,
+    #         query=prepCql(cql),
+    #         parameters=list(filter=as.list(filter))
+    #     )
+    # }
+    # toRet <- unique(toRet)
     ##
+
     return(toRet)
 
 }

@@ -34,6 +34,7 @@
 #' \code{\link{getBeIdSymbolTable}}
 #'
 #' @importFrom neo2R prepCql cypher
+#' @importFrom dplyr arrange select filter distinct
 #' @export
 #'
 getBeIdNameTable <- function(
@@ -66,7 +67,7 @@ getBeIdNameTable <- function(
     match.arg(be, echoices)
     match.arg(source, listBeIdSources(be, organism)$database)
 
-    ## Entity name
+    ## Entity
     qs <- c(
         sprintf(
             paste0(
@@ -75,9 +76,7 @@ getBeIdNameTable <- function(
                 '-[:identifies]->(be:%s)'
             ),
             paste0(be, "ID"), source, be
-        ),
-        'MATCH (bes:BEName)<-[c:is_named]-(sid)',
-        '-[:is_associated_to*0..]->()-[:identifies]->(be)'
+        )
     )
 
     ## Organism
@@ -111,11 +110,19 @@ getBeIdNameTable <- function(
         qs <- c(qs, 'WHERE id.value IN $filter')
     }
 
+    ## Names
+    qs <- c(
+        qs,
+        'WITH DISTINCT id, be',
+        'MATCH (bes:BEName)<-[c:is_named]-(sid)',
+        '-[:is_associated_to*0..]->()-[:identifies]->(be)'
+    )
+
     ##
     cql <- c(
         qs,
         paste(
-            'RETURN id.value as id, bes.value as name',
+            'RETURN DISTINCT id.value as id, bes.value as name',
             ', id(id)=id(sid) as direct',
             ', sid.preferred as preferred',
             ', id(be) as entity'
@@ -152,8 +159,10 @@ getBeIdNameTable <- function(
     ##
     if(!is.null(toRet)){
         toRet$direct <- as.logical(toRet$direct)
-        toRet <- toRet[order(toRet$direct, decreasing=T),]
-        toRet <- toRet[which(!duplicated(toRet[,c("id", "name")])),]
+        # toRet <- toRet[order(toRet$direct, decreasing=T),]
+        toRet <- arrange(toRet, desc(direct))
+        toRet <- distinct(toRet, id, name, .keep_all=TRUE)
+        # toRet <- toRet[which(!duplicated(toRet[,c("id", "name")])),]
         ##
         if(!entity){
             toRet <- unique(toRet[
@@ -162,7 +171,8 @@ getBeIdNameTable <- function(
             ])
         }
         if(restricted){
-            toRet <- toRet[which(toRet$direct),]
+            toRet <- filter(toRet, direct)
+            # toRet <- toRet[which(toRet$direct),]
         }
     }
     ##

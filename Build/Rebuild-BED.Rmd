@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "97"
+ensembl_release <- "98"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -155,7 +155,7 @@ ensembl_Sscrofa <- list(
     gdbCref=c(                      # Gene cross-references DBs
         "EntrezGene"="EntrezGene",
         "Vega_gene"="Vega_gene",
-        "Ens_Rn_gene"="Ens_gene"
+        "Ens_Ss_gene"="Ens_gene"
     ),
     gdbAss=c(                       # Gene associated IDs (DB)
         "miRBase"="miRBase",
@@ -178,6 +178,38 @@ ensembl_Sscrofa <- list(
         "Ens_Ss_translation"="Ens_translation"
     ),
     canChromosomes=c(1:18, "X", "Y", "MT")
+)
+ensembl_Drerio <- list(
+    release=ensembl_release,
+    organism="Danio rerio",
+    gv="11",                         # genome version
+    gdbCref=c(                      # Gene cross-references DBs
+        "EntrezGene"="EntrezGene",
+        "ZFIN_ID"="ZFIN_gene",
+        "Vega_gene"="Vega_gene",
+        "Ens_Dr_gene"="Ens_gene"
+    ),
+    gdbAss=c(                       # Gene associated IDs (DB)
+        "miRBase"="miRBase",
+        "UniGene"="UniGene"
+    ),
+    tdbCref=c(                      # Transcript cross-references DBs
+        "RefSeq_mRNA"="RefSeq",
+        "RefSeq_ncRNA"="RefSeq",
+        "RefSeq_mRNA_predicted"="RefSeq",
+        "RefSeq_ncRNA_predicted"="RefSeq",
+        "Vega_transcript"="Vega_transcript",
+        "Ens_Dr_transcript"="Ens_transcript"
+    ),
+    pdbCref=c(                      # Peptide cross-references DBs
+        "RefSeq_peptide"="RefSeq_peptide",
+        "RefSeq_peptide_predicted"="RefSeq_peptide",
+        "Uniprot/SPTREMBL"="Uniprot",
+        "Uniprot/SWISSPROT"="Uniprot",
+        "Vega_translation"="Vega_translation",
+        "Ens_Dr_translation"="Ens_translation"
+    ),
+    canChromosomes=c(1:25, "MT")
 )
 ## General config
 reDumpThr <- as.difftime(2, units="days")
@@ -249,7 +281,7 @@ BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
     orgOfInt=c(
        "Homo sapiens", "Rattus norvegicus", "Mus musculus",
-       "Sus scrofa"
+       "Sus scrofa", "Danio rerio"
       ),
     curDate=curDate
 )
@@ -296,6 +328,65 @@ BED:::registerBEDB(
     idURL='http://www.ensembl.org/id/%s'
 )
 ```
+
+## Danio rerio
+
+```{r ensDr_conf, message=FALSE}
+ensembl <- ensembl_Drerio
+print(ensembl)
+```
+
+### Genes
+
+**Start**: `r Sys.time()`
+
+```{r ensDr_genes, message=FALSE}
+BED:::getEnsemblGeneIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$gdbCref,
+    dbAss=ensembl$gdbAss,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Transcripts
+
+**Start**: `r Sys.time()`
+
+```{r ensDr_transcripts, message=FALSE}
+BED:::getEnsemblTranscriptIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$tdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+### Peptides
+
+**Start**: `r Sys.time()`
+
+```{r ensDr_peptides, message=FALSE}
+BED:::getEnsemblPeptideIds(
+    organism=ensembl$organism,
+    release=ensembl$release,
+    gv=ensembl$gv,
+    dbCref=ensembl$pdbCref,
+    canChromosomes=ensembl$canChromosomes
+)
+gc()
+```
+
+**End**: `r Sys.time()`
 
 ## Homo sapiens
 
@@ -580,6 +671,23 @@ BED:::registerBEDB(
 )
 ```
 
+## Danio rerio data
+
+**Start**: `r Sys.time()`
+
+```{r ncbiDrData, message=FALSE}
+BED:::getNcbiGeneTransPep(
+    organism="Danio rerio", curDate=curDate
+)
+gc()
+BED:::loadNCBIEntrezGOFunctions(
+    organism="Danio rerio", curDate=curDate
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
 ## Homo sapiens data
 
 **Start**: `r Sys.time()`
@@ -718,6 +826,19 @@ BED:::registerBEDB(
     idURL='http://www.uniprot.org/uniprot/%s'
 )
 ```
+
+## Danio rerio data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotDrData, message=FALSE}
+BED:::getUniprot(
+    organism="Danio rerio", release=avRel
+)
+gc()
+```
+
+**End**: `r Sys.time()`
 
 ## Homo sapiens data
 
@@ -928,7 +1049,7 @@ gc()
 
 **Start**: `r Sys.time()`
 
-```{r homolog_biomart_HsMm, message=FALSE}
+```{r homolog_biomart, message=FALSE}
 library(biomaRt)
 loadBmHomologs <- function(org1, org2, version){
 
@@ -972,57 +1093,16 @@ loadBmHomologs <- function(org1, org2, version){
 }
 
 #########################################
-loadBmHomologs(
-    org1="hsapiens",
-    org2="mmusculus",
-    version=ensembl_release
-)
-gc()
-```
-
-```{r homolog_biomart_HsRn, message=FALSE}
-loadBmHomologs(
-    org1="hsapiens",
-    org2="rnorvegicus",
-    version=ensembl_release
-)
-gc()
-```
-
-```{r homolog_biomart_HsSs, message=FALSE}
-loadBmHomologs(
-    org1="hsapiens",
-    org2="sscrofa",
-    version=ensembl_release
-)
-gc()
-```
-
-```{r homolog_biomart_MmRn, message=FALSE}
-loadBmHomologs(
-    org1="mmusculus",
-    org2="rnorvegicus",
-    version=ensembl_release
-)
-gc()
-```
-
-```{r homolog_biomart_MmSs, message=FALSE}
-loadBmHomologs(
-    org1="mmusculus",
-    org2="sscrofa",
-    version=ensembl_release
-)
-gc()
-```
-
-```{r homolog_biomart_RnSs, message=FALSE}
-loadBmHomologs(
-    org1="rnorvegicus",
-    org2="sscrofa",
-    version=ensembl_release
-)
-gc()
+orgOfInt <- c("hsapiens", "mmusculus", "rnorvegicus", "sscrofa", "drerio")
+for(i in 1:(length(orgOfInt)-1)){
+  for(j in (i+1):length(orgOfInt)){
+    loadBmHomologs(
+      org1=orgOfInt[i],
+      org2=orgOfInt[j],
+      version=ensembl_release
+    )
+  }
+}
 ```
 
 **End**: `r Sys.time()`
@@ -1037,7 +1117,7 @@ gdbname <- "EntrezGene"
 taxOfInt <- unlist(lapply(
     c(
        "Homo sapiens", "Mus musculus", "Rattus norvegicus",
-       "Sus scrofa"
+       "Sus scrofa", "Danio rerio"
     ),
     getTaxId
 ))
@@ -1644,6 +1724,7 @@ otherIdURL <- list(
     "Vega_translation"='http://vega.sanger.ac.uk/id/%s',
     "RGD"='https://rgd.mcw.edu/rgdweb/report/gene/main.html?id=%s',
     "MIM_GENE"='http://www.omim.org/entry/%s',
+    "ZFIN_gene"='http://zfin.org/%s',
     "GO_function"='http://amigo.geneontology.org/amigo/term/%s'
 )
 for(db in names(otherIdURL)){
