@@ -52,7 +52,8 @@ image available here:
 https://hub.docker.com/r/patzaw/bed-ucb-human/
 
 This instance
-is focused on *Homo sapiens*, *Mus musculus* and *Rattus norvegicus* organisms
+is focused on *Homo sapiens*, *Mus musculus*, *Rattus norvegicus*,
+*Sus scrofa* and *Danio rerio* organisms
 and it has been built from the following resources:
 
    - Ensembl
