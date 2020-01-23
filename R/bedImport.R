@@ -72,6 +72,7 @@ bedImport <- function(
       )
       on.exit(file.remove(tf))
       toRet <- bedCall(cypher, query=cql, ...)
+      bedCall(cypher, query='CALL db.resampleOutdatedIndexes();')
       write.table(
          toImport[-c(1:100), , drop=FALSE],
          file=tf,
