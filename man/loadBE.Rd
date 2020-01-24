@@ -4,8 +4,15 @@
 \alias{loadBE}
 \title{Feeding BED: Load biological entities in BED}
 \usage{
-loadBE(d, be = "Gene", dbname, version = NA, deprecated = NA,
-  taxId = NA, onlyId = FALSE)
+loadBE(
+  d,
+  be = "Gene",
+  dbname,
+  version = NA,
+  deprecated = NA,
+  taxId = NA,
+  onlyId = FALSE
+)
 }
 \arguments{
 \item{d}{a data.frame with information about the entities to be loaded.

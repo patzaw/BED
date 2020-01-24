@@ -4,10 +4,20 @@
 \alias{convBeIds}
 \title{Converts BE IDs}
 \usage{
-convBeIds(ids, from, from.source, from.org, to = from,
-  to.source = from.source, to.org = from.org, caseSensitive = FALSE,
-  prefFilter = FALSE, restricted = TRUE, recache = FALSE,
-  limForCache = 2000)
+convBeIds(
+  ids,
+  from,
+  from.source,
+  from.org,
+  to = from,
+  to.source = from.source,
+  to.org = from.org,
+  caseSensitive = FALSE,
+  prefFilter = FALSE,
+  restricted = TRUE,
+  recache = FALSE,
+  limForCache = 2000
+)
 }
 \arguments{
 \item{ids}{list of identifiers}

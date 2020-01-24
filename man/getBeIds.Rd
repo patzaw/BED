@@ -4,10 +4,20 @@
 \alias{getBeIds}
 \title{Get biological entities identifiers}
 \usage{
-getBeIds(be = c(listBe(), "Probe"), source, organism = NA, restricted,
-  entity = TRUE, attributes = NULL, verbose = FALSE,
-  recache = FALSE, filter = NULL, caseSensitive = FALSE,
-  limForCache = 100, bef = NULL)
+getBeIds(
+  be = c(listBe(), "Probe"),
+  source,
+  organism = NA,
+  restricted,
+  entity = TRUE,
+  attributes = NULL,
+  verbose = FALSE,
+  recache = FALSE,
+  filter = NULL,
+  caseSensitive = FALSE,
+  limForCache = 100,
+  bef = NULL
+)
 }
 \arguments{
 \item{be}{one BE or "Probe"}

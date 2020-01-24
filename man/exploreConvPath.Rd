@@ -4,8 +4,16 @@
 \alias{exploreConvPath}
 \title{Explore the shortest convertion path between two identifiers}
 \usage{
-exploreConvPath(from.id, from, from.source, to.id, to = from,
-  to.source = from.source, edgeDirection = FALSE, verbose = FALSE)
+exploreConvPath(
+  from.id,
+  from,
+  from.source,
+  to.id,
+  to = from,
+  to.source = from.source,
+  edgeDirection = FALSE,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{from.id}{the first identifier}

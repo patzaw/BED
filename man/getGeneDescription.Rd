@@ -4,9 +4,15 @@
 \alias{getGeneDescription}
 \title{Get description of genes corresponding to Biological Entity identifiers}
 \usage{
-getGeneDescription(ids, be = c(listBe(), "Probe"), source, organism,
-  gsource = largestBeSource(be = "Gene", organism = organism, rel =
-  "is_known_as", restricted = TRUE), limForCache = 2000)
+getGeneDescription(
+  ids,
+  be = c(listBe(), "Probe"),
+  source,
+  organism,
+  gsource = largestBeSource(be = "Gene", organism = organism, rel = "is_known_as",
+    restricted = TRUE),
+  limForCache = 2000
+)
 }
 \arguments{
 \item{ids}{list of identifiers}

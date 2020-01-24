@@ -4,8 +4,16 @@
 \alias{getBeIdNameTable}
 \title{Get a table of biological entity (BE) identifiers and names}
 \usage{
-getBeIdNameTable(be, source, organism, restricted, entity = TRUE,
-  verbose = FALSE, recache = FALSE, filter = NULL)
+getBeIdNameTable(
+  be,
+  source,
+  organism,
+  restricted,
+  entity = TRUE,
+  verbose = FALSE,
+  recache = FALSE,
+  filter = NULL
+)
 }
 \arguments{
 \item{be}{one BE}

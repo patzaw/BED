@@ -5,9 +5,16 @@
 \title{Lists all the databases taken into account in the BED database
 for a biological entity (BE)}
 \usage{
-listBeIdSources(be = listBe(), organism, direct = FALSE, rel = NA,
-  restricted = FALSE, recache = FALSE, verbose = FALSE,
-  exclude = c())
+listBeIdSources(
+  be = listBe(),
+  organism,
+  direct = FALSE,
+  rel = NA,
+  restricted = FALSE,
+  recache = FALSE,
+  verbose = FALSE,
+  exclude = c()
+)
 }
 \arguments{
 \item{be}{the BE on which to focus}

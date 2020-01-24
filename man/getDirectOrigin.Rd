@@ -4,8 +4,11 @@
 \alias{getDirectOrigin}
 \title{Get the direct origin of BE identifiers}
 \usage{
-getDirectOrigin(ids, sources = NULL, process = c("is_expressed_as",
-  "is_translated_in", "codes_for"))
+getDirectOrigin(
+  ids,
+  sources = NULL,
+  process = c("is_expressed_as", "is_translated_in", "codes_for")
+)
 }
 \arguments{
 \item{ids}{list of product identifiers}

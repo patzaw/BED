@@ -4,8 +4,12 @@
 \alias{getDirectProduct}
 \title{Get the direct product of BE identifiers}
 \usage{
-getDirectProduct(ids, sources = NULL, process = c("is_expressed_as",
-  "is_translated_in", "codes_for"), canonical = NA)
+getDirectProduct(
+  ids,
+  sources = NULL,
+  process = c("is_expressed_as", "is_translated_in", "codes_for"),
+  canonical = NA
+)
 }
 \arguments{
 \item{ids}{list of origin identifiers}
