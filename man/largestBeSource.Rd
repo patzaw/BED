@@ -4,8 +4,13 @@
 \alias{largestBeSource}
 \title{Autoselect source of biological entity identifiers}
 \usage{
-largestBeSource(be, organism, rel = NA, restricted = TRUE,
-  exclude = c("BEDTech_gene", "BEDTech_transcript"))
+largestBeSource(
+  be,
+  organism,
+  rel = NA,
+  restricted = TRUE,
+  exclude = c("BEDTech_gene", "BEDTech_transcript")
+)
 }
 \arguments{
 \item{be}{the biological entity under focus}

@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "98"
+ensembl_release <- "99"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1162,6 +1162,52 @@ library(GEOquery)
 dir.create("geo", showWarnings=FALSE)
 ```
 
+### GPL1708: 	Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)
+
+**Start**: `r Sys.time()`
+
+```{r GPL1708, warning=FALSE, message=FALSE}
+## Import plateform
+platName <- "GPL1708"
+gds <- getGEO(platName, destdir="geo")
+platDesc <- Meta(gds)$title
+be <- "Gene"
+##
+BED:::loadPlf(name=platName, description=platDesc, be=be)
+## Import mapping with Entrez
+d <- Table(gds)
+toImport <- d[which(!is.na(d$SPOT_ID)), c("SPOT_ID", "GENE")]
+colnames(toImport) <- c("probeID", "id")
+toImport$probeID <- as.character(toImport$probeID)
+toImport$id <- as.character(toImport$id)
+toImport <- toImport[which(!is.na(toImport$id)),]
+toImport <- unique(toImport)
+dbname <- "EntrezGene"
+##
+BED:::loadProbes(
+    d=toImport,
+    be=be,
+    platform=platName,
+    dbname=dbname
+)
+# ## Import mapping with UniGene
+# toImport <- d[which(!is.na(d$SPOT_ID)), c("SPOT_ID", "UNIGENE_ID")]
+# colnames(toImport) <- c("probeID", "id")
+# toImport$probeID <- as.character(toImport$probeID)
+# toImport$id <- as.character(toImport$id)
+# toImport <- toImport[which(!is.na(toImport$id) & toImport$id!=""),]
+# dbname <- "UniGene"
+# ##
+# BED:::loadProbes(
+#     d=toImport,
+#     be=be,
+#     platform=platName,
+#     dbname=dbname
+# )
+```
+
+**End**: `r Sys.time()`
+
 ### GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)
 
 **Start**: `r Sys.time()`
@@ -1189,20 +1235,20 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )
-## Import mapping with UniGene
-toImport <- d[which(!is.na(d$ID)), c("ID", "UNIGENE_ID")]
-colnames(toImport) <- c("probeID", "id")
-toImport$probeID <- as.character(toImport$probeID)
-toImport$id <- as.character(toImport$id)
-toImport <- toImport[which(!is.na(toImport$id)),]
-dbname <- "UniGene"
-##
-BED:::loadProbes(
-    d=toImport,
-    be=be,
-    platform=platName,
-    dbname=dbname
-)
+# ## Import mapping with UniGene
+# toImport <- d[which(!is.na(d$ID)), c("ID", "UNIGENE_ID")]
+# colnames(toImport) <- c("probeID", "id")
+# toImport$probeID <- as.character(toImport$probeID)
+# toImport$id <- as.character(toImport$id)
+# toImport <- toImport[which(!is.na(toImport$id)),]
+# dbname <- "UniGene"
+# ##
+# BED:::loadProbes(
+#     d=toImport,
+#     be=be,
+#     platform=platName,
+#     dbname=dbname
+# )
 ```
 
 **End**: `r Sys.time()`

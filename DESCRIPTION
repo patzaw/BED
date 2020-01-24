@@ -1,7 +1,7 @@
 Package: BED
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 1.2.2
+Version: 1.2.3
 Author: Patrice Godard
 Maintainer: Patrice Godard <patrice.godard@gmail.com>
 Description: This package provides an interface for neo4j database providing
@@ -30,4 +30,4 @@ Suggests:
     GEOquery
 Encoding: UTF-8
 VignetteBuilder: knitr
-RoxygenNote: 6.1.1
+RoxygenNote: 7.0.2

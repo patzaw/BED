@@ -4,8 +4,16 @@
 \alias{getBeIdSymbolTable}
 \title{Get a table of biological entity (BE) identifiers and symbols}
 \usage{
-getBeIdSymbolTable(be, source, organism, restricted, entity = TRUE,
-  verbose = FALSE, recache = FALSE, filter = NULL)
+getBeIdSymbolTable(
+  be,
+  source,
+  organism,
+  restricted,
+  entity = TRUE,
+  verbose = FALSE,
+  recache = FALSE,
+  filter = NULL
+)
 }
 \arguments{
 \item{be}{one BE}

@@ -4,8 +4,16 @@
 \alias{focusOnScope.BEIDList}
 \title{Convert a BEIDList object in a specific identifier (BEID) scope}
 \usage{
-\method{focusOnScope}{BEIDList}(x, be, source, organism, force = FALSE,
-  restricted = TRUE, prefFilter = TRUE, ...)
+\method{focusOnScope}{BEIDList}(
+  x,
+  be,
+  source,
+  organism,
+  force = FALSE,
+  restricted = TRUE,
+  prefFilter = TRUE,
+  ...
+)
 }
 \arguments{
 \item{x}{the BEIDList to be converted}

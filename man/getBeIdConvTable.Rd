@@ -4,10 +4,20 @@
 \alias{getBeIdConvTable}
 \title{Get a conversion table between biological entity (BE) identifiers}
 \usage{
-getBeIdConvTable(from, to = from, from.source, to.source, organism,
-  caseSensitive = FALSE, restricted = TRUE, entity = TRUE,
-  verbose = FALSE, recache = FALSE, filter = NULL,
-  limForCache = 100)
+getBeIdConvTable(
+  from,
+  to = from,
+  from.source,
+  to.source,
+  organism,
+  caseSensitive = FALSE,
+  restricted = TRUE,
+  entity = TRUE,
+  verbose = FALSE,
+  recache = FALSE,
+  filter = NULL,
+  limForCache = 100
+)
 }
 \arguments{
 \item{from}{one BE or "Probe"}

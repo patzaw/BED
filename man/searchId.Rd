@@ -4,8 +4,14 @@
 \alias{searchId}
 \title{Search identifier, symbol or name information}
 \usage{
-searchId(searched, be = NULL, organism = NULL, ncharSymb = 4,
-  ncharName = 8, verbose = FALSE)
+searchId(
+  searched,
+  be = NULL,
+  organism = NULL,
+  ncharSymb = 4,
+  ncharName = 8,
+  verbose = FALSE
+)
 }
 \arguments{
 \item{searched}{the searched term. Identifiers are searched by exact match.

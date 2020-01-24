@@ -4,8 +4,7 @@
 \alias{clearBedCache}
 \title{Clear the BED cache SQLite database}
 \usage{
-clearBedCache(queries = NULL, force = FALSE, hard = FALSE,
-  verbose = FALSE)
+clearBedCache(queries = NULL, force = FALSE, hard = FALSE, verbose = FALSE)
 }
 \arguments{
 \item{queries}{a character vector of the names of queries to remove.

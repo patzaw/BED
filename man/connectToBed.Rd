@@ -4,8 +4,14 @@
 \alias{connectToBed}
 \title{Connect to a neo4j BED database}
 \usage{
-connectToBed(url = NULL, username = NULL, password = NULL,
-  connection = 1, remember = TRUE, importPath = NULL)
+connectToBed(
+  url = NULL,
+  username = NULL,
+  password = NULL,
+  connection = 1,
+  remember = TRUE,
+  importPath = NULL
+)
 }
 \arguments{
 \item{url}{a character string. The host and the port are sufficient

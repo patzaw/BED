@@ -4,8 +4,12 @@
 \alias{dumpNcbiTax}
 \title{Feeding BED: Dump tables with taxonomic information from NCBI}
 \usage{
-dumpNcbiTax(reDumpThr, toDump = c("names.dmp"), env = parent.frame(n =
-  1), curDate)
+dumpNcbiTax(
+  reDumpThr,
+  toDump = c("names.dmp"),
+  env = parent.frame(n = 1),
+  curDate
+)
 }
 \arguments{
 \item{reDumpThr}{time difference threshold between 2 downloads}

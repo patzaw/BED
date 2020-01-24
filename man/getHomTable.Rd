@@ -4,9 +4,17 @@
 \alias{getHomTable}
 \title{Get gene homologs between 2 organisms}
 \usage{
-getHomTable(from.org, to.org, from.source = "Ens_gene",
-  to.source = from.source, restricted = TRUE, verbose = FALSE,
-  recache = FALSE, filter = NULL, limForCache = 100)
+getHomTable(
+  from.org,
+  to.org,
+  from.source = "Ens_gene",
+  to.source = from.source,
+  restricted = TRUE,
+  verbose = FALSE,
+  recache = FALSE,
+  filter = NULL,
+  limForCache = 100
+)
 }
 \arguments{
 \item{from.org}{organism name}

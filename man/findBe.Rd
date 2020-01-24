@@ -4,9 +4,15 @@
 \alias{findBe}
 \title{Find Biological Entity}
 \usage{
-findBe(be = NULL, organism = NULL, ncharSymb = 4, ncharName = 8,
-  restricted = TRUE, by = 20, exclude = c("BEDTech_gene",
-  "BEDTech_transcript"))
+findBe(
+  be = NULL,
+  organism = NULL,
+  ncharSymb = 4,
+  ncharName = 8,
+  restricted = TRUE,
+  by = 20,
+  exclude = c("BEDTech_gene", "BEDTech_transcript")
+)
 }
 \arguments{
 \item{be}{optional. If provided the search is focused on provided BEs.}

@@ -4,8 +4,7 @@
 \alias{exploreBe}
 \title{Explore BE identifiers}
 \usage{
-exploreBe(id, source, be = listBe(), showBE = FALSE,
-  showProbes = FALSE)
+exploreBe(id, source, be = listBe(), showBE = FALSE, showProbes = FALSE)
 }
 \arguments{
 \item{id}{one ID for the BE}
