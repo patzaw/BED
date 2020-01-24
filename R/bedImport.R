@@ -51,7 +51,7 @@ bedImport <- function(
       ),
       cql
    ))
-   if(nrow(toImport)<=100){
+   if(nrow(toImport)<=1000){
       write.table(
          toImport,
          file=tf,
@@ -64,7 +64,7 @@ bedImport <- function(
       invisible(toRet)
    }else{
       write.table(
-         toImport[c(1:100), , drop=FALSE],
+         toImport[c(1:1000), , drop=FALSE],
          file=tf,
          sep=",", #"\t",
          quote=T,
@@ -74,7 +74,7 @@ bedImport <- function(
       toRet <- bedCall(cypher, query=cql, ...)
       bedCall(cypher, query='CALL db.resampleOutdatedIndexes();')
       write.table(
-         toImport[-c(1:100), , drop=FALSE],
+         toImport[-c(1:1000), , drop=FALSE],
          file=tf,
          sep=",", #"\t",
          quote=T,

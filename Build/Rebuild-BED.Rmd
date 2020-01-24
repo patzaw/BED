@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "98"
+ensembl_release <- "99"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1190,20 +1190,20 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )
-## Import mapping with UniGene
-toImport <- d[which(!is.na(d$SPOT_ID)), c("SPOT_ID", "UNIGENE_ID")]
-colnames(toImport) <- c("probeID", "id")
-toImport$probeID <- as.character(toImport$probeID)
-toImport$id <- as.character(toImport$id)
-toImport <- toImport[which(!is.na(toImport$id) & toImport$id!=""),]
-dbname <- "UniGene"
-##
-BED:::loadProbes(
-    d=toImport,
-    be=be,
-    platform=platName,
-    dbname=dbname
-)
+# ## Import mapping with UniGene
+# toImport <- d[which(!is.na(d$SPOT_ID)), c("SPOT_ID", "UNIGENE_ID")]
+# colnames(toImport) <- c("probeID", "id")
+# toImport$probeID <- as.character(toImport$probeID)
+# toImport$id <- as.character(toImport$id)
+# toImport <- toImport[which(!is.na(toImport$id) & toImport$id!=""),]
+# dbname <- "UniGene"
+# ##
+# BED:::loadProbes(
+#     d=toImport,
+#     be=be,
+#     platform=platName,
+#     dbname=dbname
+# )
 ```
 
 **End**: `r Sys.time()`
@@ -1235,20 +1235,20 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )
-## Import mapping with UniGene
-toImport <- d[which(!is.na(d$ID)), c("ID", "UNIGENE_ID")]
-colnames(toImport) <- c("probeID", "id")
-toImport$probeID <- as.character(toImport$probeID)
-toImport$id <- as.character(toImport$id)
-toImport <- toImport[which(!is.na(toImport$id)),]
-dbname <- "UniGene"
-##
-BED:::loadProbes(
-    d=toImport,
-    be=be,
-    platform=platName,
-    dbname=dbname
-)
+# ## Import mapping with UniGene
+# toImport <- d[which(!is.na(d$ID)), c("ID", "UNIGENE_ID")]
+# colnames(toImport) <- c("probeID", "id")
+# toImport$probeID <- as.character(toImport$probeID)
+# toImport$id <- as.character(toImport$id)
+# toImport <- toImport[which(!is.na(toImport$id)),]
+# dbname <- "UniGene"
+# ##
+# BED:::loadProbes(
+#     d=toImport,
+#     be=be,
+#     platform=platName,
+#     dbname=dbname
+# )
 ```
 
 **End**: `r Sys.time()`

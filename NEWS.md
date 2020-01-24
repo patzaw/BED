@@ -1,4 +1,20 @@
 <!----------------------------------------------------------------------------->
+## Version 1.2.3
+
+### Rebuild-BED.Rmd
+   
+   - Ensembl 99
+   - Based on neo4j-community-3.5.14
+   - NCBI does not support mapping to unigene and vega anymore.
+   Unigene and Vega identifiers are not available anymore in BED as well.
+
+### Implementation changes
+
+   - Prepopulate nodes with a subset and
+   use 'CALL db.resampleOutdatedIndexes();'
+   to speed up the feeding process.
+
+<!----------------------------------------------------------------------------->
 ## Version 1.2.2
 
 ### Rebuild-BED.Rmd
