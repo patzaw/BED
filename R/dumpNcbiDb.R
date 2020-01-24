@@ -15,7 +15,7 @@ dumpNcbiDb <- function(
     reDumpThr,
     toLoad=c(
         "gene_info", "gene2ensembl",
-        "gene2unigene", "gene2vega",
+        # "gene2unigene", "gene2vega",
         "gene_group", "gene_orthologs",
         "gene_history", "gene2refseq"
     ),

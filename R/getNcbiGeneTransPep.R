@@ -23,7 +23,7 @@ getNcbiGeneTransPep <- function(
    ################################################
    ## Dump ----
    dumpDate <- gene_info <- gene2ensembl <-
-      gene2unigene <- gene2vega <-
+      # gene2unigene <- gene2vega <-
       gene_group <- gene_orthologs <-
       gene_history <- gene2refseq <-
       NULL
@@ -32,7 +32,7 @@ getNcbiGeneTransPep <- function(
       reDumpThr=reDumpThr,
       toLoad=c(
          "gene_info", "gene2ensembl",
-         "gene2unigene", "gene2vega",
+         # "gene2unigene", "gene2vega",
          "gene_group", "gene_orthologs",
          "gene_history", "gene2refseq"
       ),
@@ -222,59 +222,60 @@ getNcbiGeneTransPep <- function(
          be="Gene"
       )
    }
-   ## Cross references from gene2vega file
-   db <- "Vega_gene"
-   message(Sys.time(), " --> ", db)
-   cref <- unique(gene2vega[,c("Vega_gene_identifier", "GeneID")])
-   colnames(cref) <- c("xref", "GeneID")
-   cref <- cref[which(cref$xref != "-" & cref$GeneID != "-"),]
-   if(nrow(cref)>0){
-      ## External DB IDs
-      toImport <- unique(cref[, "xref", drop=F])
-      colnames(toImport) <- "id"
-      loadBE(
-         d=toImport, be="Gene",
-         dbname=db,
-         taxId=NA
-      )
-      ## The cross references
-      toImport <- unique(cref)
-      colnames(toImport) <- c("id1", "id2")
-      loadCorrespondsTo(
-         d=toImport,
-         db1=db,
-         db2=gdbname,
-         be="Gene"
-      )
-   }
 
-   ## Associations from gene2unigene file
-   db <- "UniGene"
-   message(Sys.time(), " --> ", db)
-   cref <- unique(gene2unigene[,c("UniGene_cluster", "GeneID")])
-   colnames(cref) <- c("xref", "GeneID")
-   cref <- cref[which(cref$xref != "-" & cref$GeneID != "-"),]
-   cref <- cref[which(cref$GeneID %in% gene_info$GeneID),]
-   if(nrow(cref)>0){
-       ## External DB IDs
-       toImport <- unique(cref[, "xref", drop=F])
-       colnames(toImport) <- "id"
-       loadBE(
-           d=toImport, be="Gene",
-           dbname=db,
-           taxId=NA,
-           onlyId=TRUE
-       )
-       ## The cross references
-       toImport <- unique(cref)
-       colnames(toImport) <- c("id1", "id2")
-       loadIsAssociatedTo(
-           d=toImport,
-           db1=db,
-           db2=gdbname,
-           be="Gene"
-       )
-   }
+   # ## Cross references from gene2vega file
+   # db <- "Vega_gene"
+   # message(Sys.time(), " --> ", db)
+   # cref <- unique(gene2vega[,c("Vega_gene_identifier", "GeneID")])
+   # colnames(cref) <- c("xref", "GeneID")
+   # cref <- cref[which(cref$xref != "-" & cref$GeneID != "-"),]
+   # if(nrow(cref)>0){
+   #    ## External DB IDs
+   #    toImport <- unique(cref[, "xref", drop=F])
+   #    colnames(toImport) <- "id"
+   #    loadBE(
+   #       d=toImport, be="Gene",
+   #       dbname=db,
+   #       taxId=NA
+   #    )
+   #    ## The cross references
+   #    toImport <- unique(cref)
+   #    colnames(toImport) <- c("id1", "id2")
+   #    loadCorrespondsTo(
+   #       d=toImport,
+   #       db1=db,
+   #       db2=gdbname,
+   #       be="Gene"
+   #    )
+   # }
+   #
+   # ## Associations from gene2unigene file
+   # db <- "UniGene"
+   # message(Sys.time(), " --> ", db)
+   # cref <- unique(gene2unigene[,c("UniGene_cluster", "GeneID")])
+   # colnames(cref) <- c("xref", "GeneID")
+   # cref <- cref[which(cref$xref != "-" & cref$GeneID != "-"),]
+   # cref <- cref[which(cref$GeneID %in% gene_info$GeneID),]
+   # if(nrow(cref)>0){
+   #     ## External DB IDs
+   #     toImport <- unique(cref[, "xref", drop=F])
+   #     colnames(toImport) <- "id"
+   #     loadBE(
+   #         d=toImport, be="Gene",
+   #         dbname=db,
+   #         taxId=NA,
+   #         onlyId=TRUE
+   #     )
+   #     ## The cross references
+   #     toImport <- unique(cref)
+   #     colnames(toImport) <- c("id1", "id2")
+   #     loadIsAssociatedTo(
+   #         d=toImport,
+   #         db1=db,
+   #         db2=gdbname,
+   #         be="Gene"
+   #     )
+   # }
 
    ## Associations ----
    gdbAss <- gdbAss[intersect(names(gdbAss), names(xrefByDb))]
@@ -427,34 +428,35 @@ getNcbiGeneTransPep <- function(
          be="Transcript"
       )
    }
-   ## Cross references from gene2vega file
-   db <- "Vega_transcript"
-   message(Sys.time(), " --> ", db)
-   cref <- unique(gene2vega[,c(
-      "Vega_rna_identifier", "RNA_nucleotide_accession.version"
-   )])
-   colnames(cref) <- c("xref", "TranscriptID")
-   cref <- cref[which(cref$xref != "-" & cref$TranscriptID != "-"),]
-   cref$TranscriptID <- sub("[.].*$", "", cref$TranscriptID)
-   if(nrow(cref)>0){
-      ## External DB IDs
-      toImport <- unique(cref[, "xref", drop=F])
-      colnames(toImport) <- "id"
-      loadBE(
-         d=toImport, be="Transcript",
-         dbname=db,
-         taxId=NA
-      )
-      ## The cross references
-      toImport <- unique(cref)
-      colnames(toImport) <- c("id1", "id2")
-      loadCorrespondsTo(
-         d=toImport,
-         db1=db,
-         db2=tdbname,
-         be="Transcript"
-      )
-   }
+
+   # ## Cross references from gene2vega file
+   # db <- "Vega_transcript"
+   # message(Sys.time(), " --> ", db)
+   # cref <- unique(gene2vega[,c(
+   #    "Vega_rna_identifier", "RNA_nucleotide_accession.version"
+   # )])
+   # colnames(cref) <- c("xref", "TranscriptID")
+   # cref <- cref[which(cref$xref != "-" & cref$TranscriptID != "-"),]
+   # cref$TranscriptID <- sub("[.].*$", "", cref$TranscriptID)
+   # if(nrow(cref)>0){
+   #    ## External DB IDs
+   #    toImport <- unique(cref[, "xref", drop=F])
+   #    colnames(toImport) <- "id"
+   #    loadBE(
+   #       d=toImport, be="Transcript",
+   #       dbname=db,
+   #       taxId=NA
+   #    )
+   #    ## The cross references
+   #    toImport <- unique(cref)
+   #    colnames(toImport) <- c("id1", "id2")
+   #    loadCorrespondsTo(
+   #       d=toImport,
+   #       db1=db,
+   #       db2=tdbname,
+   #       be="Transcript"
+   #    )
+   # }
 
    ################################################
    ## Translation events ----
@@ -534,33 +536,34 @@ getNcbiGeneTransPep <- function(
          be="Peptide"
       )
    }
-   ## Cross references from gene2vega file
-   db <- "Vega_translation"
-   message(Sys.time(), " --> ", db)
-   cref <- unique(gene2vega[,c(
-      "Vega_protein_identifier", "protein_accession.version"
-   )])
-   colnames(cref) <- c("xref", "PeptideID")
-   cref <- cref[which(cref$xref != "-" & cref$PeptideID != "-"),]
-   cref$PeptideID <- sub("[.].*$", "", cref$PeptideID)
-   if(nrow(cref)>0){
-      ## External DB IDs
-      toImport <- unique(cref[, "xref", drop=F])
-      colnames(toImport) <- "id"
-      loadBE(
-         d=toImport, be="Peptide",
-         dbname=db,
-         taxId=NA
-      )
-      ## The cross references
-      toImport <- unique(cref)
-      colnames(toImport) <- c("id1", "id2")
-      loadCorrespondsTo(
-         d=toImport,
-         db1=db,
-         db2=pdbname,
-         be="Peptide"
-      )
-   }
+
+   # ## Cross references from gene2vega file
+   # db <- "Vega_translation"
+   # message(Sys.time(), " --> ", db)
+   # cref <- unique(gene2vega[,c(
+   #    "Vega_protein_identifier", "protein_accession.version"
+   # )])
+   # colnames(cref) <- c("xref", "PeptideID")
+   # cref <- cref[which(cref$xref != "-" & cref$PeptideID != "-"),]
+   # cref$PeptideID <- sub("[.].*$", "", cref$PeptideID)
+   # if(nrow(cref)>0){
+   #    ## External DB IDs
+   #    toImport <- unique(cref[, "xref", drop=F])
+   #    colnames(toImport) <- "id"
+   #    loadBE(
+   #       d=toImport, be="Peptide",
+   #       dbname=db,
+   #       taxId=NA
+   #    )
+   #    ## The cross references
+   #    toImport <- unique(cref)
+   #    colnames(toImport) <- c("id1", "id2")
+   #    loadCorrespondsTo(
+   #       d=toImport,
+   #       db1=db,
+   #       db2=pdbname,
+   #       be="Peptide"
+   #    )
+   # }
 
 }
