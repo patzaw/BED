@@ -65,8 +65,7 @@ searchId <- function(
        'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
        ifelse(
           !is.null(be),
-          # 'AND labels(e) IN $be',
-          'AND SIZE(FILTER(x in labels(e) WHERE x IN $be)) > 0',
+          'WHERE SIZE(FILTER(x in labels(e) WHERE x IN $be)) > 0',
           ''
        ),
        ifelse(
