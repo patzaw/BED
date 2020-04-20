@@ -60,7 +60,7 @@ connectToBed <- function(
       )
    }
    ## The graph DB
-   assign(
+   try(assign(
       "graph",
       startGraph(
          url=url,
@@ -68,7 +68,7 @@ connectToBed <- function(
          password=password
       ),
       bedEnv
-   )
+   ))
    corrConn <- checkBedConn(verbose=TRUE)
    if(!corrConn){
       rm("graph", envir=bedEnv)

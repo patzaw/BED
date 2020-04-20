@@ -1,4 +1,13 @@
 <!----------------------------------------------------------------------------->
+## Version 1.2.4
+
+### Implementation changes
+
+   - Correct a bug when chosing a be in searchId
+   - Avoid the application to crash when there is no running neo4j instance
+   (This bug appeared with version 2 of neo2R)
+
+<!----------------------------------------------------------------------------->
 ## Version 1.2.3
 
 ### Rebuild-BED.Rmd
