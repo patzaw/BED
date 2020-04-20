@@ -39,7 +39,7 @@ devtools::install_github("patzaw/BED")
 <!----------------------------------------------------------------------------->
 # R package in normal use
 
-It's described in the [BED](inst/doc/BED.html) vignette.
+It's described in the [BED](https://patzaw.github.io/BED/BED.html) vignette.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
