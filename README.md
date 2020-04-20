@@ -7,6 +7,9 @@ and explore mapping between identifiers of biological entities (BE).
 This package provides a way to connect to a BED Neo4j database in which the
 relationships between the identifiers from different sources are recorded.
 
+This package and the underlying research has been published in
+this peer reviewed [article](https://f1000research.com/articles/7-195/v3).
+
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # Installation
