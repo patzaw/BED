@@ -46,6 +46,12 @@ It's described in the [BED](https://patzaw.github.io/BED/BED.html) vignette.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+# Citing BED
+
+Godard P and van Eyll J. BED: a Biological Entity Dictionary based on a graph data model [version 3; peer review: 2 approved]. F1000Research 2018, 7:195 (https://doi.org/10.12688/f1000research.13925.3)
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
 # BED database instance available as a docker image
 
 An instance of the BED database (UCB-Human)
