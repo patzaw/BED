@@ -196,7 +196,7 @@ getBeIds <- function(
          '',
          ifelse(
             !is.na(organism) || bentity=="Probe",
-            '<-[cr*1..10]-(g:Gene)',
+            '<-[cr:codes_for|is_expressed_as|is_translated_in*1..2]-(g:Gene)',
             ''
          )
       ),

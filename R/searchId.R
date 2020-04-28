@@ -60,7 +60,7 @@ searchId <- function(
        'WHERE n.value = $searched',
        'MATCH (ni)-[:identifies]->(e)',
        'WITH DISTINCT n, ni, e',
-       'MATCH (e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (e)<-[cr:codes_for|is_expressed_as|is_translated_in*0..2]-(g:Gene)',
        'MATCH (g)-[:belongs_to]->(t:TaxID)',
        'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
        ifelse(
@@ -98,7 +98,7 @@ searchId <- function(
        'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
        'MATCH (ni)-[:identifies]->(e)',
        'WITH DISTINCT n, ik, nii, ni, e',
-       'MATCH (e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (e)<-[cr:codes_for|is_expressed_as|is_translated_in*0..2]-(g:Gene)',
        ifelse(
           !is.null(be),
           # 'WHERE labels(e) IN $be',
@@ -138,7 +138,7 @@ searchId <- function(
        'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
        'MATCH (ni)-[:identifies]->(e)',
        'WITH DISTINCT n, nii, ni, e',
-       'MATCH (e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (e)<-[cr:codes_for|is_expressed_as|is_translated_in*0..2]-(g:Gene)',
        ifelse(
           !is.null(be),
           # 'WHERE labels(e) IN $be',
@@ -174,7 +174,7 @@ searchId <- function(
        'MATCH (nii)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
        'MATCH (ni)-[:identifies]->(e)',
        'WITH DISTINCT n, nii, ni, e',
-       'MATCH (e)<-[cr*0..10]-(g:Gene)',
+       'MATCH (e)<-[cr:codes_for|is_expressed_as|is_translated_in*0..2]-(g:Gene)',
        'MATCH (g)-[:belongs_to]->(t:TaxID)',
        'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
        'RETURN DISTINCT n.value as found',
