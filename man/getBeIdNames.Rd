@@ -19,10 +19,10 @@ If not, results are collected only for provided ids and not cached.}
 a data.frame mapping BE IDs and names with the
 following fields:
 \describe{
- \item{id}{the BE ID}
- \item{name}{the corresponding name}
- \item{direct}{true if the name is directly related to the BE ID}
- \item{entity}{(optional) the technical ID of to BE}
+\item{id}{the BE ID}
+\item{name}{the corresponding name}
+\item{direct}{true if the name is directly related to the BE ID}
+\item{entity}{(optional) the technical ID of to BE}
 }
 }
 \description{

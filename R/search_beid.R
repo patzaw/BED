@@ -1,0 +1,135 @@
+#' Search a BEID
+#'
+#' @param x a character value to search
+#'
+#' @return NULL if there is not any match or
+#' a tibble with the following columns:
+#' - **Value**: the matching term
+#' - **From**: the type of the matched term (e.g. BESymbol, GeneID...)
+#' - **BE**: the matching biological entity (BE)
+#' - **BEID**: the BE identifier
+#' - **Database**: the BEID reference database
+#' - **Preferred**: TRUE if the BEID is considered as a preferred identifier
+#' - **Symbol**: BEID canonical symbol
+#' - **Name**: BEID name
+#' - **Entity**: technical BE identifier
+#' - **GeneID**: Corresponding gene identifier
+#' - **Gene_DB**: Gene ID database
+#' - **Preferred_gene**: TRUE if the GeneID is considered as a preferred identifier
+#' - **Gene_symbol**: Gene symbol
+#' - **Gene_name**: Gene name
+#' - **Gene_entity**: technical gene identifier
+#' - **Organism**: gene organism (scientific name)
+#'
+#'
+#' @export
+#'
+search_beid <- function(x){
+   stopifnot(
+      is.character(x),
+      length(x)==1,
+      !is.na(x)
+   )
+   clean_search_name <- function(x){
+      if(nchar(stringr::str_remove_all(x, '[^"]')) %% 2 != 0){
+         x <- stringr::str_remove_all(x, '"')
+      }
+      x <- stringr::str_replace_all(x, '"', '\\\\"') %>%
+         stringr::str_replace_all("'", "\\\\'") %>%
+         stringr::str_replace_all(stringr::fixed('^'), '\\\\^') %>%
+         stringr::str_remove_all('~') %>%
+         stringr::str_remove(' *$') %>%
+         stringr::str_replace_all(' +', '~ ')
+      while(
+         substr(x, nchar(x), nchar(x)) %in%
+         c("+", "-",  "&", "|",  "!", "(" , ")", "{", "}", "[", "]", "?", ":", "/")
+      ){
+         x <- substr(x, 1, nchar(x)-1)
+      }
+      if(nchar(x)>0){
+         x <- paste0(x, "~")
+      }
+      return(x)
+   }
+   clean_search_id <- function(x){
+      x <- stringr::str_remove_all(x, '"') %>%
+         stringr::str_replace_all("'", "\\\\'") %>%
+         stringr::str_replace_all(stringr::fixed('^'), '\\\\^') %>%
+         stringr::str_remove_all('~') %>%
+         stringr::str_remove(' *$')
+      if(nchar(x)>0){
+         x <- sprintf('\\"%s\\"', x)
+      }
+      return(x)
+   }
+   vi <- clean_search_id(x)
+   vn <- clean_search_name(x)
+   if(nchar(vi)==0 || nchar(vn)==0){
+      return(NULL)
+   }
+
+   # 'CALL db.index.fulltext.queryNodes("beid", "%s")',
+   # 'YIELD node WITH collect(node) as l1',
+   # 'CALL db.index.fulltext.queryNodes("bename", "%s")',
+   # 'YIELD node WITH collect(node) as l2, l1',
+   # 'UNWIND l1+l2 as mn WITH distinct mn limit 50',
+   # 'MATCH (mn)-[r:targets|is_named|:is_known_as*0..1]-(beid:BEID)',
+
+   queries <- c(
+      id=sprintf(
+         paste(
+            'CALL db.index.fulltext.queryNodes("beid", "%s")',
+            'YIELD node WITH distinct node as mn limit 5',
+            'MATCH (mn)-[r:targets*0..1]-(beid:BEID)'
+         ),
+         vi
+      ),
+      name=sprintf(
+         paste(
+            'CALL db.index.fulltext.queryNodes("bename", "%s")',
+            'YIELD node WITH distinct node as mn limit 50',
+            'MATCH (mn)-[r:is_named|:is_known_as]-(beid:BEID)'
+         ),
+         vn
+      )
+   )
+   queries <- paste(
+      queries,
+      paste(
+         '-[:is_associated_to|is_replaced_by*0..]->()-[:identifies]->(be)',
+         'MATCH (be)<-[:is_expressed_as|is_translated_in|codes_for*0..2]-(g:Gene)',
+         'MATCH (gid:GeneID)-[:identifies]->(g)',
+         '-[:belongs_to]->(:TaxID)',
+         '-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
+         'OPTIONAL MATCH (beid)-[:is_known_as {canonical:true}]->(bes:BESymbol)',
+         'OPTIONAL MATCH (beid)-[:is_named]->(ben:BEName)',
+         'OPTIONAL MATCH (gid)-[:is_known_as {canonical:true}]->(ges:BESymbol)',
+         'OPTIONAL MATCH (gid)-[:is_named]->(gen:BEName)',
+         'RETURN DISTINCT',
+         'mn.value as Value,',
+         'labels(mn) as From,',
+         'labels(be) as BE,',
+         'beid.value as BEID, beid.database as Database, beid.preferred as Preferred,',
+         'bes.value as Symbol, ben.value as Name,',
+         'id(be) as Entity,',
+         'gid.value as GeneID, gid.database as Gene_DB, gid.preferred as Preferred_gene,',
+         'ges.value as Gene_symbol, gen.value as Gene_name,',
+         'id(g) as Gene_entity, o.value as Organism'
+      )
+   )
+   values <- bedCall(
+      multicypher,
+      queries=queries
+   ) %>% do.call(rbind, .)
+
+   if(is.null(values) || nrow(values)==0){
+      return(NULL)
+   }
+   values <- values %>%
+      dplyr::as_tibble() %>%
+      mutate(
+         From=stringr::str_remove(From, "BEID [|][|] "),
+         BE=stringr::str_remove(BE, "BEID [|][|] ")
+      )
+   return(values)
+}

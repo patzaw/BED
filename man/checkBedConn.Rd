@@ -12,10 +12,10 @@ checkBedConn(verbose = FALSE)
 }
 \value{
 \itemize{
- \item{TRUE if the connection can be established}
- \item{Or FALSE if the connection cannot be established or the "System" node
- does not exist or does not have "BED" as name or any version recorded.
- }
+\item{TRUE if the connection can be established}
+\item{Or FALSE if the connection cannot be established or the "System" node
+does not exist or does not have "BED" as name or any version recorded.
+}
 }
 }
 \description{

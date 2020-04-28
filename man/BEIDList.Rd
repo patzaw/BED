@@ -10,7 +10,7 @@ BEIDList(l, metadata, scope)
 \item{l}{a named list of BEID vectors}
 
 \item{metadata}{a data.frame with rownames or
-a column "**.lname**" all in names of l}
+a column "\strong{.lname}" all in names of l}
 
 \item{scope}{a list with 3 character vectors of length one named "be",
 "source" and "organism"}
@@ -18,9 +18,11 @@ a column "**.lname**" all in names of l}
 \value{
 A BEIDList object which is a list of BEID vectors with 2 additional
 attributes:
-- **metadata**: a tibble with metadata about list elements.
-The "**.lname**" column correspond to the names of the BEIDList.
-- **scope**: the BEID scope ("be", "source" and "organism")
+\itemize{
+\item \strong{metadata}: a tibble with metadata about list elements.
+The "\strong{.lname}" column correspond to the names of the BEIDList.
+\item \strong{scope}: the BEID scope ("be", "source" and "organism")
+}
 }
 \description{
 Create a BEIDList

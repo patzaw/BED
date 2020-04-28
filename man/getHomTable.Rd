@@ -47,8 +47,8 @@ If not, results are collected only for provided ids and not cached.}
 a data.frame mapping gene IDs with the
 following fields:
 \describe{
- \item{from}{the from gene ID}
- \item{to}{the to gene ID}
+\item{from}{the from gene ID}
+\item{to}{the to gene ID}
 }
 }
 \description{

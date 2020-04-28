@@ -19,11 +19,11 @@ If not, results are collected only for provided ids and not cached.}
 a data.frame with the
 following fields:
 \describe{
- \item{id}{the from BE ID}
- \item{symbol}{the BE symbol}
- \item{canonical}{true if the symbol is canonical for the direct BE ID}
- \item{direct}{false if the symbol is not directly associated to the BE ID}
- \item{entity}{(optional) the technical ID of to BE}
+\item{id}{the from BE ID}
+\item{symbol}{the BE symbol}
+\item{canonical}{true if the symbol is canonical for the direct BE ID}
+\item{direct}{false if the symbol is not directly associated to the BE ID}
+\item{entity}{(optional) the technical ID of to BE}
 }
 }
 \description{

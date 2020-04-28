@@ -8,11 +8,13 @@ BEIDs(x, ...)
 }
 \value{
 A tibble with at least 4 columns:
-- value
-- be
-- source
-- organism
-- ...
+\itemize{
+\item value
+\item be
+\item source
+\item organism
+\item ...
+}
 }
 \description{
 Get the BEIDs from an object

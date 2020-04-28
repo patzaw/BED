@@ -59,14 +59,14 @@ If not, results are collected only for provided ids and not cached.}
 a data.frame mapping BE IDs with the
 following fields:
 \describe{
- \item{id}{the BE ID}
- \item{BE}{IF entity is TRUE the technical ID of BE}
- \item{db.version}{IF be is not "Probe" and source not "Symbol"
- the version of the DB}
- \item{db.deprecated}{IF be is not "Probe" and source not "Symbol"
- a value if the BE ID is deprecated or FALSE if it's not}
- \item{canonical}{IF source is "Symbol" TRUE if the symbol is canonical}
- \item{organism}{IF be is "Probe" the organism of the targeted BE}
+\item{id}{the BE ID}
+\item{BE}{IF entity is TRUE the technical ID of BE}
+\item{db.version}{IF be is not "Probe" and source not "Symbol"
+the version of the DB}
+\item{db.deprecated}{IF be is not "Probe" and source not "Symbol"
+a value if the BE ID is deprecated or FALSE if it's not}
+\item{canonical}{IF source is "Symbol" TRUE if the symbol is canonical}
+\item{organism}{IF be is "Probe" the organism of the targeted BE}
 }
 If attributes are part of the query, additional columns for each of them.
 Scope ("be", "source" and "organism") is provided as a named list

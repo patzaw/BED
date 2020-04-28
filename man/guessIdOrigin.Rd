@@ -15,9 +15,9 @@ Inf ==> no limit.}
 }
 \value{
 a list: \itemize{
- \item{be: a character vector of length 1 providing the best BE guess}
- \item{source: a character vector of length 1 providing the best source guess}
- \item{organism: a character vector of length 1 providing the best organism guess}
+\item{be: a character vector of length 1 providing the best BE guess}
+\item{source: a character vector of length 1 providing the best source guess}
+\item{organism: a character vector of length 1 providing the best organism guess}
 }
 "details" attribute (\code{attr(x, "details")}) is a data frame providing numbers
 supporting the guess

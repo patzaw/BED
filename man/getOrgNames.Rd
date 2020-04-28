@@ -14,9 +14,9 @@ all taxonomy IDs available in the DB.}
 A data.frame mapping taxonomy IDs to organism names with the
 following fields:
 \describe{
- \item{taxID}{the taxonomy ID}
- \item{name}{the organism name}
- \item{nameClass}{the class of the name}
+\item{taxID}{the taxonomy ID}
+\item{name}{the organism name}
+\item{nameClass}{the class of the name}
 }
 }
 \description{

@@ -40,10 +40,10 @@ the result is not filtered: all IDs are taken into account.}
 a data.frame with the
 following fields:
 \describe{
- \item{id}{the from BE ID}
- \item{name}{the BE name}
- \item{direct}{false if the symbol is not directly associated to the BE ID}
- \item{entity}{(optional) the technical ID of to BE}
+\item{id}{the from BE ID}
+\item{name}{the BE name}
+\item{direct}{false if the symbol is not directly associated to the BE ID}
+\item{entity}{(optional) the technical ID of to BE}
 }
 }
 \description{

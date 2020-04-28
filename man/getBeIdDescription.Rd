@@ -22,9 +22,9 @@ getBeIdDescription(ids, be, source, organism, ...)
 a data.frame providing for each BE IDs
 (row.names are provided BE IDs):
 \describe{
- \item{id}{the BE ID}
- \item{symbol}{the BE symbol}
- \item{name}{the corresponding name}
+\item{id}{the BE ID}
+\item{symbol}{the BE symbol}
+\item{name}{the corresponding name}
 }
 }
 \description{

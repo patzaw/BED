@@ -13,9 +13,9 @@ if NA (default) all the BE are considered.}
 \value{
 A data.frame mapping platforms to BE with the following fields:
 \describe{
- \item{name}{the platform nam}
- \item{description}{platform description}
- \item{focus}{Targeted BE}
+\item{name}{the platform nam}
+\item{description}{platform description}
+\item{focus}{Targeted BE}
 }
 }
 \description{

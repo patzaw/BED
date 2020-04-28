@@ -64,9 +64,9 @@ If not, results are collected only for provided ids and not cached.}
 a data.frame mapping BE IDs with the
 following fields:
 \describe{
- \item{from}{the from BE ID}
- \item{to}{the to BE ID}
- \item{entity}{(optional) the technical ID of to BE}
+\item{from}{the from BE ID}
+\item{to}{the to BE ID}
+\item{entity}{(optional) the technical ID of to BE}
 }
 }
 \description{

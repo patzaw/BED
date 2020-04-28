@@ -13,7 +13,7 @@ registerBEDB(name, description = NA, currentVersion = NA, idURL = NA)
 
 \item{currentVersion}{the version taken into account in BED (e.g. 83)}
 
-\item{idURL}{the URL template to use to retrieve id information. A '%s'
+\item{idURL}{the URL template to use to retrieve id information. A '\%s'
 corresponding to the ID should be present in this character vector of
 length one.}
 }

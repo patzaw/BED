@@ -47,10 +47,10 @@ taken from sources)}
 A data.frame indicating the number of ID in each available database
 with the following fields:
 \describe{
- \item{database}{the database name}
- \item{nbBe}{number of distinct entities}
- \item{nbId}{number of identifiers}
- \item{be}{the BE under focus}
+\item{database}{the database name}
+\item{nbBe}{number of distinct entities}
+\item{nbId}{number of identifiers}
+\item{be}{the BE under focus}
 }
 }
 \description{

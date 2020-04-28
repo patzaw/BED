@@ -60,11 +60,11 @@ If not, results are collected only for provided ids and not cached.}
 }
 \value{
 a data.frame with 3 columns: \itemize{
- \item from: the input IDs
- \item to: the corresponding IDs in \code{to.source}
- \item to.preferred: boolean indicating if the to ID is a preferred
- ID for the corresponding entity.
- \item to.entity: the entity technical ID of the \code{to} IDs
+\item from: the input IDs
+\item to: the corresponding IDs in \code{to.source}
+\item to.preferred: boolean indicating if the to ID is a preferred
+ID for the corresponding entity.
+\item to.entity: the entity technical ID of the \code{to} IDs
 }
 This data.frame can be filtered in order to remove duplicated
 from/to.entity associations which can lead information bias.

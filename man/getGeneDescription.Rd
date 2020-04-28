@@ -33,11 +33,11 @@ is gathered for all be IDs and cached for  futur queries.}
 a data.frame providing for each BE IDs
 (row.names are provided BE IDs):
 \describe{
- \item{id}{the BE ID}
- \item{gsource}{the Gene ID the column name provides the source of the
- used identifier}
- \item{symbol}{the associated gene symbols}
- \item{name}{the associated gene names}
+\item{id}{the BE ID}
+\item{gsource}{the Gene ID the column name provides the source of the
+used identifier}
+\item{symbol}{the associated gene symbols}
+\item{name}{the associated gene names}
 }
 }
 \description{

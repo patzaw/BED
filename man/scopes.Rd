@@ -8,10 +8,12 @@ scopes(x, ...)
 }
 \value{
 A tibble with 4 columns:
-- be
-- source
-- organism
-- Freq
+\itemize{
+\item be
+\item source
+\item organism
+\item Freq
+}
 }
 \description{
 Get the BEID scopes of an object
