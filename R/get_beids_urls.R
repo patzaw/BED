@@ -23,6 +23,9 @@ get_beids_urls <- function(ids, databases){
       query=prepCql("MATCH (db:BEDB) RETURN db.name, db.idURL")
    )
    baseUrls <- dbs[match(databases, dbs$db.name), ]$"db.idURL"
+   if(length(databases)==1){
+      baseUrls <- rep(baseUrls, length(ids))
+   }
    ifelse(
       !is.na(baseUrls),
       sprintf(baseUrls, ids),
