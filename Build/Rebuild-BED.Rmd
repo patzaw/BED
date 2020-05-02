@@ -50,7 +50,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "99"
+ensembl_release <- "100"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -680,10 +680,6 @@ BED:::getNcbiGeneTransPep(
     organism="Danio rerio", curDate=curDate
 )
 gc()
-BED:::loadNCBIEntrezGOFunctions(
-    organism="Danio rerio", curDate=curDate
-)
-gc()
 ```
 
 **End**: `r Sys.time()`
@@ -694,10 +690,6 @@ gc()
 
 ```{r ncbiHsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Homo sapiens", curDate=curDate
-)
-gc()
-BED:::loadNCBIEntrezGOFunctions(
     organism="Homo sapiens", curDate=curDate
 )
 gc()
@@ -714,10 +706,6 @@ BED:::getNcbiGeneTransPep(
     organism="Mus musculus", curDate=curDate
 )
 gc()
-BED:::loadNCBIEntrezGOFunctions(
-    organism="Mus musculus", curDate=curDate
-)
-gc()
 ```
 
 **End**: `r Sys.time()`
@@ -731,10 +719,6 @@ BED:::getNcbiGeneTransPep(
     organism="Rattus norvegicus", curDate=curDate
 )
 gc()
-BED:::loadNCBIEntrezGOFunctions(
-    organism="Rattus norvegicus", curDate=curDate
-)
-gc()
 ```
 
 **End**: `r Sys.time()`
@@ -745,10 +729,6 @@ gc()
 
 ```{r ncbiSsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Sus scrofa", curDate=curDate
-)
-gc()
-BED:::loadNCBIEntrezGOFunctions(
     organism="Sus scrofa", curDate=curDate
 )
 gc()
@@ -1770,8 +1750,7 @@ otherIdURL <- list(
     "Vega_translation"='http://vega.sanger.ac.uk/id/%s',
     "RGD"='https://rgd.mcw.edu/rgdweb/report/gene/main.html?id=%s',
     "MIM_GENE"='http://www.omim.org/entry/%s',
-    "ZFIN_gene"='http://zfin.org/%s',
-    "GO_function"='http://amigo.geneontology.org/amigo/term/%s'
+    "ZFIN_gene"='http://zfin.org/%s'
 )
 for(db in names(otherIdURL)){
     BED:::registerBEDB(

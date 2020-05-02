@@ -1,13 +1,13 @@
 #!/bin/sh
 
-export NJ_VERSION=3.5.14
+export NJ_VERSION=3.5.17
 
 export BED_HTTP_PORT=5410
 export BED_BOLT_PORT=5610
 
-export BED_IMPORT=`pwd`/working/neo4jImport
+export BED_IMPORT=`pwd`/../../working/neo4jImport
 mkdir -p $BED_IMPORT
-export BED_DATA=`pwd`/working/neo4jData
+export BED_DATA=`pwd`/../../working/neo4jData
 if test -e $BED_DATA; then
    echo "$BED_DATA directory exists ==> abort - Remove it before proceeding" >&2
    exit

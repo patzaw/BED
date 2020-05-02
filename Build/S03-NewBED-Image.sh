@@ -1,8 +1,9 @@
 #/bin/bash
 
-export BED_VERSION=2020.01.24
-export NJ_VERSION=3.5.14
-export BED_DATA=`pwd`/working/neo4jData
+export BED_VERSION=2020.05.03
+export NJ_VERSION=3.5.17
+export BED_DATA=`pwd`/../../working/neo4jData
+export BED_IMAGES=`pwd`/../../BED-images
 
 # Stop container
 export CONTAINER=new_bed
@@ -46,5 +47,5 @@ echo "COPY data /data" >> $BED_DATA/Dockerfile
 cd $BED_DATA
 docker build -t bed-ucb-human:$BED_VERSION .
 cd -
-mkdir -p BED-images
-docker save bed-ucb-human:$BED_VERSION > BED-images/docker-bed-ucb-human-$BED_VERSION.tar
+mkdir -p $BED_IMAGES
+docker save bed-ucb-human:$BED_VERSION > $BED_IMAGES/docker-bed-ucb-human-$BED_VERSION.tar
