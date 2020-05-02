@@ -1,0 +1,20 @@
+citEntry(
+   entry="Article",
+   title="BED: a Biological Entity Dictionary based on a graph data model",
+   author=personList(
+      as.person("Patrice Godard"),
+      as.person("Jonathan van Eyll")
+   ),
+   journal="F1000Research",
+   year=2018,
+   volume=7,
+   pages=195,
+   doi="10.12688/f1000research.13925.3",
+   url="https://doi.org/10.12688/f1000research.13925.3",
+   textVersion=paste(
+      "Patrice Godard and Jonathan van Eyll (2018).",
+      "BED: a Biological Entity Dictionary based on a graph data model",
+      "[version 3; peer review: 2 approved].",
+      "F1000Research, 7:195."
+      )
+)
