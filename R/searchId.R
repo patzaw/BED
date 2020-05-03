@@ -1,6 +1,6 @@
 #' Search identifier, symbol or name information
 #'
-#' **DEPRECATED: use [search_beid()] and [geneIDs_to_all_scopes()] instead.**
+#' **DEPRECATED: use [searchBeid()] and [geneIDsToAllScopes()] instead.**
 #' This function is meant to be used with [getRelevantIds] in order
 #' to implement a dictonary of identifiers of interest. First
 #' the [searchId] function is used to search a term.

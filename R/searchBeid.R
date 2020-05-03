@@ -3,7 +3,7 @@
 #' @param x a character value to search
 #'
 #' @return NULL if there is not any match or
-#' a tibble with the following columns:
+#' a data.frame with the following columns:
 #' - **Value**: the matching term
 #' - **From**: the type of the matched term (e.g. BESymbol, GeneID...)
 #' - **BE**: the matching biological entity (BE)
@@ -21,10 +21,11 @@
 #' - **Gene_entity**: technical gene identifier
 #' - **Organism**: gene organism (scientific name)
 #'
-#'
+#' @importFrom dplyr as_tibble mutate select filter rename distinct
+#' @importFrom stringr str_remove str_remove_all str_replace_all fixed
 #' @export
 #'
-search_beid <- function(x){
+searchBeid <- function(x){
    stopifnot(
       is.character(x),
       length(x)==1,
@@ -34,15 +35,18 @@ search_beid <- function(x){
       if(nchar(stringr::str_remove_all(x, '[^"]')) %% 2 != 0){
          x <- stringr::str_remove_all(x, '"')
       }
-      x <- stringr::str_replace_all(x, '"', '\\\\"') %>%
-         stringr::str_replace_all("'", "\\\\'") %>%
-         stringr::str_replace_all(stringr::fixed('^'), '\\\\^') %>%
-         stringr::str_remove_all('~') %>%
-         stringr::str_remove(' *$') %>%
-         stringr::str_replace_all(' +', '~ ')
+      x <- stringr::str_replace_all(x, '"', '\\\\"')
+      x <- stringr::str_replace_all(x, "'", "\\\\'")
+      x <- stringr::str_replace_all(x, stringr::fixed('^'), '\\\\^')
+      x <- stringr::str_remove_all(x, '~')
+      x <- stringr::str_remove(x, ' *$')
+      x <- stringr::str_replace_all(x, ' +', '~ ')
       while(
          substr(x, nchar(x), nchar(x)) %in%
-         c("+", "-",  "&", "|",  "!", "(" , ")", "{", "}", "[", "]", "?", ":", "/")
+         c(
+            "+", "-",  "&", "|",  "!", "(" , ")",
+            "{", "}", "[", "]", "?", ":", "/"
+         )
       ){
          x <- substr(x, 1, nchar(x)-1)
       }
@@ -52,11 +56,11 @@ search_beid <- function(x){
       return(x)
    }
    clean_search_id <- function(x){
-      x <- stringr::str_remove_all(x, '"') %>%
-         stringr::str_replace_all("'", "\\\\'") %>%
-         stringr::str_replace_all(stringr::fixed('^'), '\\\\^') %>%
-         stringr::str_remove_all('~') %>%
-         stringr::str_remove(' *$')
+      x <- stringr::str_remove_all(x, '"')
+      x <- stringr::str_replace_all(x, "'", "\\\\'")
+      x <- stringr::str_replace_all(x, stringr::fixed('^'), '\\\\^')
+      x <- stringr::str_remove_all(x, '~')
+      x <- stringr::str_remove(x, ' *$')
       if(nchar(x)>0){
          x <- sprintf('\\"%s\\"', x)
       }
@@ -120,16 +124,17 @@ search_beid <- function(x){
    values <- bedCall(
       multicypher,
       queries=queries
-   ) %>% do.call(rbind, .)
+   )
+   values <- do.call(rbind, values)
 
    if(is.null(values) || nrow(values)==0){
       return(NULL)
    }
-   values <- values %>%
-      dplyr::as_tibble() %>%
-      mutate(
-         From=stringr::str_remove(From, "BEID [|][|] "),
-         BE=stringr::str_remove(BE, "BEID [|][|] ")
-      )
-   return(values)
+   values <- dplyr::as_tibble(values)
+   values <- mutate(
+      values,
+      From=stringr::str_remove(From, "BEID [|][|] "),
+      BE=stringr::str_remove(BE, "BEID [|][|] ")
+   )
+   return(as.data.frame(values))
 }

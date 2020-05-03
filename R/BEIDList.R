@@ -9,10 +9,12 @@
 #'
 #' @return A BEIDList object which is a list of BEID vectors with 2 additional
 #' attributes:
-#' - **metadata**: a tibble with metadata about list elements.
+#' - **metadata**: a data.frame with metadata about list elements.
 #' The "**.lname**" column correspond to the names of the BEIDList.
 #' - **scope**: the BEID scope ("be", "source" and "organism")
 #'
+#' @importFrom rlang !!
+#' @importFrom dplyr mutate
 #' @export
 #'
 BEIDList <- function(
@@ -24,9 +26,8 @@ BEIDList <- function(
    ## Checks ----
    stopifnot(is.data.frame(metadata))
    if(!".lname" %in% colnames(metadata)){
-      metadata <- metadata %>% mutate(.lname=rownames(!!metadata))
+      metadata <- dplyr::mutate(metadata, .lname=rownames(!!metadata))
    }
-   metadata <- as_tibble(metadata)
    stopifnot(
       is.list(l),
       all(names(l) %in% metadata$.lname),
@@ -40,7 +41,10 @@ BEIDList <- function(
 
    ## BEIDList object ----
    toRet <- l
-   attr(toRet, "metadata") <- metadata[match(names(l), metadata$.lname),]
+   attr(toRet, "metadata") <- metadata[
+      match(names(l), metadata$.lname),,
+      drop=FALSE
+   ]
    attr(toRet, "scope") <- scope
    class(toRet) <- c("BEIDList", class(toRet))
    return(toRet)
@@ -124,7 +128,10 @@ print.BEIDList <- function(x, ...) cat(format(x, ...), "\n")
    class(l) <- "list"
    l <- l[i]
    metadata <- metadata(x)
-   metadata <- metadata[match(names(l), metadata$.lname),]
+   metadata <- metadata[
+      match(names(l), metadata$.lname),,
+      drop=FALSE
+   ]
    return(BEIDList(
       l=l,
       metadata=metadata,
@@ -155,7 +162,7 @@ print.BEIDList <- function(x, ...) cat(format(x, ...), "\n")
    l <- x
    class(l) <- "list"
    names(l) <- value
-   metadata <- metadata(x) %>% mutate(.lname=!!value)
+   metadata <- dplyr::mutate(metadata, .lname=!!value)
    scope <- scope(x)
    return(BEIDList(
       l=l,
@@ -165,12 +172,13 @@ print.BEIDList <- function(x, ...) cat(format(x, ...), "\n")
 }
 
 ###############################################################################@
+#' @importFrom dplyr bind_rows
 #' @export
 #'
 c.BEIDList <- function(...){
    inputs <- list(...)
    il <- lapply(inputs, function(x){class(x) <- "list"; return(x)})
-   imd <- do.call(bind_rows, lapply(inputs, attr, which="metadata"))
+   imd <- do.call(dplyr::bind_rows, lapply(inputs, attr, which="metadata"))
    l <- do.call(c, il)
    stopifnot(
       all(unlist(lapply(inputs, is.BEIDList))),
@@ -180,7 +188,10 @@ c.BEIDList <- function(...){
 
    return(BEIDList(
       l=l,
-      metadata=imd[match(names(l), imd$.lname),],
+      metadata=imd[
+         match(names(l), imd$.lname),,
+         drop=FALSE
+      ],
       scope=scope(inputs[[1]])
    ))
 }
@@ -264,7 +275,10 @@ filterByBEID.BEIDList <- function(
    )
    l <- l[which(unlist(lapply(l, length))>0)]
    metadata <- metadata(x)
-   metadata <- metadata[match(names(l), metadata$.lname),]
+   metadata <- metadata[
+      match(names(l), metadata$.lname),,
+      drop=FALSE
+   ]
    return(BEIDList(
       l=l,
       metadata=metadata,

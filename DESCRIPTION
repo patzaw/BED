@@ -11,10 +11,10 @@ LazyData: TRUE
 Depends:
     R (>= 3.4),
     neo2R,
-    magrittr,
-    dplyr,
     visNetwork
 Imports:
+    rlang,
+    dplyr,
     readr,
     stringr,
     htmltools,
@@ -24,7 +24,6 @@ Imports:
     miniUI (>= 0.1.1),
     rstudioapi (>= 0.5)
 Suggests:
-    BiocStyle,
     knitr,
     rmarkdown,
     metabaser,

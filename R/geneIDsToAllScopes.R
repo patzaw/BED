@@ -11,17 +11,17 @@
 #' the entities argument is used. Set this argument to FALSE to avoid this
 #' warning.
 #'
-#' @return A tibble with the following fields:
+#' @return A data.frame with the following fields:
 #' - **value**: the identifier
 #' - **be**: the type of BE
 #' - **organism**: the BE organism
 #' - **source**: the source of the identifier
 #'
-#' @importFrom magrittr `%>%`
 #' @importFrom dplyr as_tibble mutate select filter rename distinct bind_rows
+#' @importFrom stringr str_remove
 #' @export
 #'
-geneIDs_to_all_scopes <- function(
+geneIDsToAllScopes <- function(
    geneids, source, organism, entities=NULL, canonical_symbols=TRUE,
    entity_warning=TRUE
 ){
@@ -66,21 +66,22 @@ geneIDs_to_all_scopes <- function(
    )
    toRet <- bedCall(cypher, query=query, parameters=list(ids=as.list(ids)))
    if(!is.null(toRet)){
-      toRet <- toRet %>% dplyr::as_tibble() %>%
-         dplyr::mutate(
-            "be"=stringr::str_remove(.data$be, "BEID [|][|] ") %>%
-               stringr::str_remove("ID$"),
-            "source"=ifelse(is.na(.data$db), .data$pl, .data$db)
-         ) %>%
-         select(-"db", -"pl")
-      toRet1 <- toRet %>% dplyr::select(-"bes") %>% dplyr::distinct()
-      toRet2 <- toRet %>%
-         dplyr::select(-"value") %>%
-         dplyr::filter(!is.na(.data$bes)) %>%
-         dplyr::rename("value"="bes") %>%
-         dplyr::mutate(source="Symbol") %>%
-         dplyr::distinct()
+      toRet <- dplyr::as_tibble(toRet)
+      toRet <- dplyr::mutate(
+         toRet,
+         "be"=stringr::str_remove(
+            stringr::str_remove(toRet$be, "BEID [|][|] "),
+            "ID$"),
+         "source"=ifelse(is.na(toRet$db), toRet$pl, toRet$db)
+      )
+      toRet <- dplyr::select(toRet, -"db", -"pl")
+      toRet1 <- dplyr::distinct(dplyr::select(toRet, -"bes"))
+      toRet2 <- dplyr::select(toRet, -"value")
+      toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
+      toRet2 <- dplyr::rename(toRet2, "value"="bes")
+      toRet2 <- dplyr::mutate(toRet2, source="Symbol")
+      toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)
    }
-   return(toRet)
+   return(as.data.frame(toRet))
 }
