@@ -4,6 +4,7 @@
 #'
 #' @return NULL if there is not any match or
 #' a data.frame with the following columns:
+#'
 #' - **Value**: the matching term
 #' - **From**: the type of the matched term (e.g. BESymbol, GeneID...)
 #' - **BE**: the matching biological entity (BE)

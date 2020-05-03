@@ -3,14 +3,13 @@
 #' @param verbose if TRUE print information about the BED connection
 #' (default: FALSE).
 #'
-#' @return \itemize{
-#'  \item{TRUE if the connection can be established}
-#'  \item{Or FALSE if the connection cannot be established or the "System" node
-#'  does not exist or does not have "BED" as name or any version recorded.
-#'  }
-#' }
+#' @return
 #'
-#' @seealso \code{\link{connectToBed}}
+#'  - TRUE if the connection can be established
+#'  - Or FALSE if the connection cannot be established or the "System" node
+#'  does not exist or does not have "BED" as name or any version recorded.
+#'
+#' @seealso [connectToBed]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @export
@@ -22,8 +21,8 @@ checkBedConn <- function(verbose=FALSE){
    }
    if(verbose) message(get("graph", bedEnv)$url)
    dbVersion <- try(bedCall(
-      f=cypher,
-      query=prepCql(c(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(c(
          'MATCH (n:System) RETURN',
          'n.name as name, n.instance as instance, n.version as version'
       )),
@@ -34,7 +33,7 @@ checkBedConn <- function(verbose=FALSE){
    }
    if(is.null(dbVersion)){
       dbSize <- bedCall(
-         f=cypher,
+         f=neo2R::cypher,
          query='MATCH (n) WITH n LIMIT 1 RETURN count(n);',
          bedCheck=FALSE
       )[,1]

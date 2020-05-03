@@ -19,25 +19,26 @@
 #' of a BE, all non-preferred BEID are kept.
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
-#' \strong{Depending on history it can take a very long time to return
-#' a very large result!}
+#' **Depending on history it can take a very long time to return**
+#' **a very large result!**
 #' @param recache a logical value indicating if the results should be taken from
 #' cache or recomputed
 #' @param limForCache if there are more ids than limForCache. Results are
 #' collected for all IDs (beyond provided ids) and cached for futur queries.
 #' If not, results are collected only for provided ids and not cached.
 #'
-#' @return a data.frame with 3 columns: \itemize{
-#'  \item from: the input IDs
-#'  \item to: the corresponding IDs in \code{to.source}
-#'  \item to.preferred: boolean indicating if the to ID is a preferred
+#' @return a data.frame with the following columns:
+#'
+#'  - **from**: the input IDs
+#'  - **to**: the corresponding IDs in `to.source`
+#'  - **to.preferred**: boolean indicating if the to ID is a preferred
 #'  ID for the corresponding entity.
-#'  \item to.entity: the entity technical ID of the \code{to} IDs
-#' }
+#'  - **to.entity**: the entity technical ID of the `to` IDs
+#'
 #' This data.frame can be filtered in order to remove duplicated
 #' from/to.entity associations which can lead information bias.
 #' Scope ("be", "source" and "organism") is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}
+#' in the "scope" attributes: `attr(x, "scope")`
 #'
 #' @examples \dontrun{
 #' oriId <- c("10", "100")
@@ -67,8 +68,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdConvTable}}, \code{\link{convBeIdLists}},
-#' \code{\link{convDfBeIds}}
+#' @seealso [getBeIdConvTable], [convBeIdLists], [convDfBeIds]
 #'
 #' @importFrom dplyr rename
 #'
@@ -163,7 +163,7 @@ convBeIds <- function(
             filter=filter
          )
          if(!is.null(ct1) && ncol(ct1)>0){
-            ct1 <- rename(ct1, "gfrom"="to")
+            ct1 <- dplyr::rename(ct1, "gfrom"="to")
             stopConv <- FALSE
          }else{
             stopConv <- TRUE
@@ -188,7 +188,7 @@ convBeIds <- function(
                filter=filter
             )
             if(!is.null(ht) && ncol(ht)>0){
-               ht <- rename(ht, "gfrom"="from", "gto"="to")
+               ht <- dplyr::rename(ht, "gfrom"="from", "gto"="to")
             }else{
                stopConv <- TRUE
             }
@@ -211,7 +211,7 @@ convBeIds <- function(
                   filter=filter
                )
                if(!is.null(ct2) && ncol(ct2)>0){
-                  ct2 <- rename(ct2, "gto"="from")
+                  ct2 <- dplyr::rename(ct2, "gto"="from")
                }else{
                   stopConv <- TRUE
                }
@@ -272,7 +272,9 @@ convBeIds <- function(
       toRet <- rbind(toRet, notFound)
    }
    ##
-   toRet <- rename(toRet, "to.preferred"="preferred","to.entity"="entity")
+   toRet <- dplyr::rename(
+      toRet, "to.preferred"="preferred","to.entity"="entity"
+   )
    attr(toRet, "scope") <- list(
       be=to, source=to.source, organism=to.org
    )

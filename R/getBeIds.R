@@ -26,25 +26,25 @@
 #'
 #' @return a data.frame mapping BE IDs with the
 #' following fields:
-#' \describe{
-#'  \item{id}{the BE ID}
-#'  \item{BE}{IF entity is TRUE the technical ID of BE}
-#'  \item{db.version}{IF be is not "Probe" and source not "Symbol"
-#'  the version of the DB}
-#'  \item{db.deprecated}{IF be is not "Probe" and source not "Symbol"
-#'  a value if the BE ID is deprecated or FALSE if it's not}
-#'  \item{canonical}{IF source is "Symbol" TRUE if the symbol is canonical}
-#'  \item{organism}{IF be is "Probe" the organism of the targeted BE}
-#' }
+#'
+#'  - **id**: the BE ID
+#'  - **BE**: IF entity is TRUE the technical ID of BE
+#'  - **db.version**: IF be is not "Probe" and source not "Symbol"
+#'  the version of the DB
+#'  - **db.deprecated**: IF be is not "Probe" and source not "Symbol"
+#'  a value if the BE ID is deprecated or FALSE if it's not
+#'  - **canonical**: IF source is "Symbol" TRUE if the symbol is canonical
+#'  - **organism**: IF be is "Probe" the organism of the targeted BE
+#'
 #' If attributes are part of the query, additional columns for each of them.
 #' Scope ("be", "source" and "organism") is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}
+#' in the "scope" attributes: `attr(x, "scope")`
 #'
 #' @examples \dontrun{
 #' beids <- getBeIds(be="Gene", source="EntrezGene", organism="human", restricted=TRUE)
 #' }
 #'
-#' @seealso \code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
+#' @seealso [listPlatforms], [listBeIdSources]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom dplyr arrange filter select distinct
@@ -316,27 +316,27 @@ getBeIds <- function(
    toRet <- unique(toRet)
    if(length(filter)>0 & !is.null(toRet)){
       if(source=="Symbol" & !caseSensitive){
-         toRet <- filter(
+         toRet <- dplyr::filter(
             toRet,
             toupper(id) %in% filter
          )
       }else{
-         toRet <- filter(
+         toRet <- dplyr::filter(
             toRet,
             id %in% filter
          )
       }
    }
    if(length(bef)>0 & !is.null(toRet)){
-      toRet <- filter(toRet, get(!!be) %in% bef)
+      toRet <- dplyr::filter(toRet, get(!!be) %in% bef)
    }
    ##
    if(!is.null(toRet)){
       toRet$preferred <- as.logical(toRet$preferred)
-      toRet <- arrange(toRet, get(!!be))
+      toRet <- dplyr::arrange(toRet, get(!!be))
       ##
       if(!entity){
-         toRet <- distinct(select(toRet, -!!be, -preferred))
+         toRet <- dplyr::distinct(dplyr::select(toRet, -!!be, -preferred))
       }
       attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    }

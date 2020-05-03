@@ -6,7 +6,7 @@
 #' @param reDumpThr time difference threshold between 2 downloads
 #' @param toLoad the list of tables to load
 #' @param env the R environment in which to load the tables when downloaded
-#' @param curDate current date as given by \code{\link{Sys.Date}}
+#' @param curDate current date as given by [Sys.Date]
 #'
 #' @importFrom utils download.file read.table
 #'
@@ -65,7 +65,7 @@ dumpNcbiDb <- function(
         dfoi <- file.path(dumpDir, paste0(tdoi, ".rda"))
         if(!file.exists(lf) & !file.exists(lf2)){
             message(Sys.time(), " --> Downloading...", f)
-            dlok <- try(download.file(
+            dlok <- try(utils::download.file(
                 url=paste0(ftp, f),
                 destfile=lf,
                 method="wget",
@@ -76,7 +76,7 @@ dumpNcbiDb <- function(
                 f <- f2
                 lf <- file.path(dumpDir, f)
                 message(Sys.time(), " --> Downloading...", f)
-                dlok <- try(download.file(
+                dlok <- try(utils::download.file(
                     url=paste0(ftp, f),
                     destfile=lf,
                     method="wget",
@@ -99,7 +99,7 @@ dumpNcbiDb <- function(
         cn <- sub("^#", "", cn)
         cn <- unlist(strsplit(cn, split="[ \t]"))
         if(!file.exists(df)){
-            tmp <- read.table(
+            tmp <- utils::read.table(
                 lf,
                 sep="\t",
                 header=F, skip=1,

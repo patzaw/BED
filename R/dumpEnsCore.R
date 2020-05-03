@@ -39,7 +39,7 @@ dumpEnsCore <- function(
     sqlf <- lf <- file.path(dumpDir, f)
     if(!file.exists(lf)){
         message(Sys.time(), " --> Downloading...")
-        download.file(
+        utils::download.file(
             url=paste0(ftp, f),
             destfile=lf,
             method="wget",
@@ -70,7 +70,7 @@ dumpEnsCore <- function(
         lf <- file.path(dumpDir, f)
         if(!file.exists(lf)){
             message(Sys.time(), " --> Downloading...")
-            download.file(
+            utils::download.file(
                 url=paste0(ftp, f),
                 destfile=lf,
                 method="wget",
@@ -80,7 +80,7 @@ dumpEnsCore <- function(
         df <- file.path(dumpDir, paste0(td, ".rda"))
         if(!file.exists(df)){
             # tmp <- readLines(lf, encoding="UTF-8")
-            tmp <- read_file(lf)
+            tmp <- readr::read_file(lf)
             tmp <- gsub("\r\n", " ", tmp)
             tmp <- gsub("\r\\\\n", "", tmp)
             tmp <- strsplit(tmp, split="\n")[[1]]
@@ -94,7 +94,7 @@ dumpEnsCore <- function(
             tmp <- unlist(strsplit(tmp, split="\n"))
             tmpf <- tempfile()
             write(tmp, tmpf, ncolumns=1)
-            data <- read.table(
+            data <- utils::read.table(
                 tmpf,
                 sep="\t", quote="", comment.char="",
                 header=F, stringsAsFactors=F

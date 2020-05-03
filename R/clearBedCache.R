@@ -7,7 +7,7 @@
 #' @param hard if TRUE remove everything in cache without checking file names
 #' @param verbose display some information during the process
 #'
-#' @seealso \code{\link{lsBedCache}}
+#' @seealso [lsBedCache]
 #'
 #' @export
 #'
@@ -65,7 +65,8 @@ clearBedCache <- function(
             stop(paste(
                "Could not remove the following file:",
                file.path(cachedbDir, queries[tn, "file"]),
-               "\nCheck cache files and/or clear the whole cache using force=TRUE"
+               "\nCheck cache files and/or clear the wholeé-",
+               "cache using force=TRUE"
             ))
          }else{
             warning(paste(

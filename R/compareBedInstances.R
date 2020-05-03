@@ -1,7 +1,7 @@
 #' Compare 2 BED database instances
 #'
 #' @param connections a numeric vector of length 1 or 2 providing connections
-#' from \code{\link{lsBedConnections}} to be compared.
+#' from [lsBedConnections] to be compared.
 #'
 #' @return If only one connection is provided, the function returns a list
 #' with information about BEID and platforms available for the connection
@@ -32,7 +32,7 @@ compareBedInstances <- function(connections){
    connectToBed(connection=connections[1])
    be.V1 <- c()
    for(be in listBe()){
-      for(org in BED::listOrganisms()){
+      for(org in listOrganisms()){
          toAdd <- listBeIdSources(
             be=be,
             organism=org,
@@ -61,7 +61,7 @@ compareBedInstances <- function(connections){
    connectToBed(connection=connections[2])
    be.V2 <- c()
    for(be in listBe()){
-      for(org in BED::listOrganisms()){
+      for(org in listOrganisms()){
          toAdd <- listBeIdSources(
             be=be,
             organism=org,

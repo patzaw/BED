@@ -11,6 +11,7 @@
 #'
 #' @importFrom dplyr filter group_by ungroup mutate summarise left_join select bind_rows
 #' @export
+#'
 cleanDubiousXRef <- function(d, strict=TRUE){
 
    ############################################################################@
@@ -59,57 +60,58 @@ cleanDubiousXRef <- function(d, strict=TRUE){
 
    ############################################################################@
    ## Preprocessing ----
-   dup1 <- group_by(d, id1)
-   dup1 <- ungroup(summarise(dup1, l2=length(id2)))
-   dup2 <- group_by(d, id2)
-   dup2 <- ungroup(summarise(dup2, l1=length(id1)))
+   dup1 <- dplyr::group_by(d, .data$id1)
+   dup1 <- dplyr::ungroup(summarise(dup1, l2=length(.data$id2)))
+   dup2 <- dplyr::group_by(d, .data$id2)
+   dup2 <- dplyr::ungroup(summarise(dup2, l1=length(.data$id1)))
    exref <- d
-   exref <- left_join(exref, dup1, by="id1")
-   exref <- left_join(exref, dup2, by="id2")
+   exref <- dplyr::left_join(exref, dup1, by="id1")
+   exref <- dplyr::left_join(exref, dup2, by="id2")
    exref$xrid <- 1:nrow(d)
 
    ############################################################################@
    ## Candidate issues ----
    if(strict){
-      nonIssues <-  filter(exref, l1==1 & l2==1)
-      nonIssues <- as.data.frame(select(nonIssues, id1, id2))
+      nonIssues <-  dplyr::filter(exref, .data$l1==1 & .data$l2==1)
+      nonIssues <- as.data.frame(dplyr::select(nonIssues, "id1", "id2"))
       colnames(nonIssues) <- ocolnames
       toRet <- nonIssues
       return(toRet)
    }else{
-      nonIssues <-  filter(exref, !l1>1 | !l2>1)
-      candidateIssues <- filter(exref, l1>1 & l2>1)
+      nonIssues <- dplyr::filter(exref, !.data$l1>1 | !.data$l2>1)
+      candidateIssues <- dplyr::filter(exref, .data$l1>1 & .data$l2>1)
 
       ## _+ Examining candidate issues ----
-      issues <- filter(
+      issues <- dplyr::filter(
          candidateIssues,
-         id1 %in% nonIssues$id1 | id2 %in% nonIssues$id2
+         .data$id1 %in% nonIssues$id1 | .data$id2 %in% nonIssues$id2
       )
-      undecided <- filter(
+      undecided <- dplyr::filter(
          candidateIssues,
-         !id1 %in% nonIssues$id1 & !id2 %in% nonIssues$id2
+         !.data$id1 %in% nonIssues$id1 & !.data$id2 %in% nonIssues$id2
       )
       exrefTmp <- exref
       while(!identical(exrefTmp, undecided)){
-         exrefTmp <- select(undecided, -l2, -l1)
-         dup1 <- group_by(exrefTmp, id1)
-         dup1 <- ungroup(summarise(dup1, l2=length(id2)))
-         dup2 <- group_by(exrefTmp, id2)
-         dup2 <- ungroup(summarise(dup2, l1=length(id1)))
-         exrefTmp <- left_join(exrefTmp, dup1, by="id1")
-         exrefTmp <- left_join(exrefTmp, dup2, by="id2")
+         exrefTmp <- dplyr::select(undecided, -"l2", -"l1")
+         dup1 <- dplyr::group_by(exrefTmp, .data$id1)
+         dup1 <- dplyr::ungroup(summarise(dup1, l2=length(.data$id2)))
+         dup2 <- dplyr::group_by(exrefTmp, .data$id2)
+         dup2 <- dplyr::ungroup(summarise(dup2, l1=length(.data$id1)))
+         exrefTmp <- dplyr::left_join(exrefTmp, dup1, by="id1")
+         exrefTmp <- dplyr::left_join(exrefTmp, dup2, by="id2")
          ##
-         nonIssueToAdd <-  filter(exrefTmp, !l1>1 | !l2>1)
-         nonIssues <- bind_rows(nonIssues, nonIssueToAdd)
-         candidateIssuesTmp <- filter(exrefTmp, l1>1 & l2>1)
-         issuesToAdd <- filter(
+         nonIssueToAdd <-  dplyr::filter(exrefTmp, !.data$l1>1 | !.data$l2>1)
+         nonIssues <- dplyr::bind_rows(nonIssues, nonIssueToAdd)
+         candidateIssuesTmp <- dplyr::filter(exrefTmp, .data$l1>1 & .data$l2>1)
+         issuesToAdd <- dplyr::filter(
             candidateIssuesTmp,
-            id1 %in% nonIssueToAdd$id1 | id2 %in% nonIssueToAdd$id2
+            .data$id1 %in% nonIssueToAdd$id1 | .data$id2 %in% nonIssueToAdd$id2
          )
-         issues <- bind_rows(issues, issuesToAdd)
-         undecided <- filter(
+         issues <- dplyr::bind_rows(issues, issuesToAdd)
+         undecided <- dplyr::filter(
             candidateIssuesTmp,
-            !id1 %in% nonIssueToAdd$id1 & !id2 %in% nonIssueToAdd$id2
+            !.data$id1 %in% nonIssueToAdd$id1 &
+               !.data$id2 %in% nonIssueToAdd$id2
          )
       }
 
@@ -134,9 +136,9 @@ cleanDubiousXRef <- function(d, strict=TRUE){
       #    warning("Review undecided")
       # }
 
-      nonIssues <- bind_rows(nonIssues, undecided)
-      nonIssues <- as.data.frame(select(nonIssues, id1, id2))
-      issues <- as.data.frame(select(issues, id1, id2))
+      nonIssues <- dplyr::bind_rows(nonIssues, undecided)
+      nonIssues <- as.data.frame(dplyr::select(nonIssues, "id1", "id2"))
+      issues <- as.data.frame(dplyr::select(issues, "id1", "id2"))
       colnames(nonIssues) <- colnames(issues) <- ocolnames
 
       toRet <- nonIssues

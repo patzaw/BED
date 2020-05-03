@@ -8,14 +8,14 @@
 #'
 #' Internal use.
 #'
-#' @param ... params for \code{\link{bedCall}}
+#' @param ... params for [bedCall]
 #' @param tn the name of the cached table
 #' @param recache boolean indicating if the CQL query should be run even if
 #' the table is already in cache
 #'
-#' @return The results of the \code{\link{bedCall}}.
+#' @return The results of the [bedCall].
 #'
-#' @seealso \code{\link{cacheBedResult}}, \code{\link{bedCall}}
+#' @seealso [cacheBedResult], [bedCall]
 #'
 cacheBedCall <- function(
    ...,

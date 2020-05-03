@@ -12,6 +12,7 @@
 #' warning.
 #'
 #' @return A data.frame with the following fields:
+#'
 #' - **value**: the identifier
 #' - **be**: the type of BE
 #' - **organism**: the BE organism

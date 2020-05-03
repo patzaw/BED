@@ -31,11 +31,10 @@
 #'
 #' @return a data.frame mapping BE IDs with the
 #' following fields:
-#' \describe{
-#'  \item{from}{the from BE ID}
-#'  \item{to}{the to BE ID}
-#'  \item{entity}{(optional) the technical ID of to BE}
-#' }
+#'
+#'  - **from**: the from BE ID
+#'  - **to**: the to BE ID
+#'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
 #' getBeIdConvTable(
@@ -45,8 +44,8 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getHomTable}}, \code{\link{listBe}},
-#' \code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
+#' @seealso [getHomTable], [listBe],
+#' [listPlatforms], [listBeIdSources]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom dplyr select rename inner_join
@@ -110,14 +109,14 @@ getBeIdConvTable <- function(
     if(!"canonical" %in% colnames(fbeid)){
         fbeid$canonical <- NA
     }
-    fbeid <- rename(
+    fbeid <- dplyr::rename(
         fbeid,
         "from"="id",
         # "fpref"="preferred",
         "entity"=fromBE,
         "fika"="canonical"
     )
-    fbeid <- select(fbeid, from, fika, entity)
+    fbeid <- dplyr::select(fbeid, from, fika, entity)
 
     ## From fromBE to  ----
     bef <- unique(fbeid$entity)
@@ -166,10 +165,10 @@ getBeIdConvTable <- function(
         if(is.null(toRet) || nrow(toRet)==0){
             return(nullRes)
         }
-        toRet <- inner_join(
+        toRet <- dplyr::inner_join(
             toRet, fbeid, by=c("fent"="entity")
         )
-        toRet <- select(toRet, -fent)
+        toRet <- dplyr::select(toRet, -fent)
         bef <- unique(toRet$tent)
     }
 
@@ -192,25 +191,25 @@ getBeIdConvTable <- function(
     if(!"canonical" %in% colnames(tbeid)){
         tbeid$canonical <- NA
     }
-    tbeid <- rename(
+    tbeid <- dplyr::rename(
         tbeid,
         "to"="id",
         # "tpref"="preferred",
         "entity"=toBE,
         "tika"="canonical"
     )
-    tbeid <- select(tbeid, to, preferred, tika, entity)
+    tbeid <- dplyr::select(tbeid, to, preferred, tika, entity)
 
     ## Joining ----
     if(fromBE==toBE){
-        toRet <- inner_join(
+        toRet <- dplyr::inner_join(
             fbeid, tbeid, by="entity"
         )
         if(is.null(toRet) || nrow(toRet)==0){
             return(nullRes)
         }
     }else{
-        toRet <- inner_join(
+        toRet <- dplyr::inner_join(
             tbeid, toRet, by=c("entity"="tent")
         )
     }

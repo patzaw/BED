@@ -7,12 +7,12 @@
 #' BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
 #' This internal identifier is useful to avoid biases related to identifier
 #' redundancy. See \url{../doc/BED.html#3_managing_identifiers}
-#' @param ... params for the \code{\link{convBeIds}} function
+#' @param ... params for the [convBeIds] function
 #'
 #' @return A data.frame with converted IDs.
 #' Scope ("be", "source", "organism" and "entity" (see Arguments))
 #' is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}.
+#' in the "scope" attributes: `attr(x, "scope")`.
 #'
 #' @examples \dontrun{
 #' toConv <- data.frame(a=1:2, b=3:4)
@@ -26,7 +26,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{convBeIds}}, \code{\link{convBeIdLists}}
+#' @seealso [convBeIds], [convBeIdLists]
 #'
 #' @export
 #'
@@ -48,8 +48,8 @@ convDfBeIds <- function(
          stop("Only one idCol should be provided")
       }
       cols <- setdiff(colnames(df), idCol)
-      ct <- convBeIds(df[, idCol], ...)
-      df$conv.from <- df[, idCol]
+      ct <- convBeIds(df[, idCol, drop=TRUE], ...)
+      df$conv.from <- df[, idCol, drop=TRUE]
       df <- df[, c(cols, "conv.from")]
    }
    scope <- attr(ct, "scope")

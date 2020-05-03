@@ -5,7 +5,7 @@
 #' @param reDumpThr time difference threshold between 2 downloads
 #' @param toDump the list of tables to load
 #' @param env the R environment in which to load the tables when downloaded
-#' @param curDate current date as given by \code{\link{Sys.Date}}
+#' @param curDate current date as given by [Sys.Date]
 #'
 #' @importFrom utils download.file read.table
 #'
@@ -36,7 +36,7 @@ dumpNcbiTax <- function(
             file.rename(dumpDir, dumpDirBck)
         }
         dir.create(dumpDir)
-        download.file(
+        utils::download.file(
             "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz",
             file.path(dumpDir, "taxdump.tar.gz"),
             quiet=TRUE
@@ -56,7 +56,7 @@ dumpNcbiTax <- function(
         lf <- file.path(dumpDir, td)
         df <- file.path(dumpDir, paste0(td, ".rda"))
         if(!file.exists(df)){
-            assign(td, read.table(
+            assign(td, utils::read.table(
                 lf,
                 sep="\t",
                 header=F,

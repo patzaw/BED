@@ -6,24 +6,27 @@
 #' indirectly to any entity then it is considered as not found.
 #'
 #' @param ids a vector of identifiers to be checked
-#' @param be biological entity. See \code{\link{getBeIds}}.
-#' @param source source of the ids. See \code{\link{getBeIds}}.
-#' @param organism the organism of interest. See \code{\link{getBeIds}}.
+#' @param be biological entity. See [getBeIds].
+#' @param source source of the ids. See [getBeIds].
+#' @param organism the organism of interest. See [getBeIds].
 #' @param stopThr proportion of non-recognized IDs above which an error is
 #' thrown. Default: 1 ==> no check
 #' @param caseSensitive if FALSE (default) the case is not taken into account
 #' when checking ids.
 #'
-#' @return invisible(TRUE). Stop if too many (see \code{stopThr}) ids are not
+#' @return invisible(TRUE). Stop if too many (see stopThr parameter) ids are not
 #' found. Warning if any id is not found.
 #'
 #' @examples \dontrun{
-#' checkBeIds(ids=c("10", "100"), be="Gene", source="EntrezGene", organism="human")
-#' checkBeIds(ids=c("10", "100"), be="Gene", source="Ens_gene", organism="human")
+#' checkBeIds(
+#'    ids=c("10", "100"), be="Gene", source="EntrezGene", organism="human"
+#' )
+#' checkBeIds(
+#'    ids=c("10", "100"), be="Gene", source="Ens_gene", organism="human"
+#' )
 #' }
 #'
-#' @seealso \code{\link{getBeIds}}, \code{\link{listBeIdSources}},
-#' \code{\link{getAllBeIdSources}}
+#' @seealso [getBeIds], [listBeIdSources], [getAllBeIdSources]
 #'
 #' @export
 #'

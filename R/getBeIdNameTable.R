@@ -15,12 +15,11 @@
 #'
 #' @return a data.frame with the
 #' following fields:
-#' \describe{
-#'  \item{id}{the from BE ID}
-#'  \item{name}{the BE name}
-#'  \item{direct}{false if the symbol is not directly associated to the BE ID}
-#'  \item{entity}{(optional) the technical ID of to BE}
-#' }
+#'
+#'  - **id**: the from BE ID
+#'  - **name**: the BE name
+#'  - **direct**: false if the symbol is not directly associated to the BE ID
+#'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
 #' getBeIdNameTable(
@@ -30,8 +29,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdNames}},
-#' \code{\link{getBeIdSymbolTable}}
+#' @seealso [getBeIdNames], [getBeIdSymbolTable]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom dplyr arrange select filter distinct
@@ -160,8 +158,8 @@ getBeIdNameTable <- function(
     if(!is.null(toRet)){
         toRet$direct <- as.logical(toRet$direct)
         # toRet <- toRet[order(toRet$direct, decreasing=T),]
-        toRet <- arrange(toRet, desc(direct))
-        toRet <- distinct(toRet, id, name, .keep_all=TRUE)
+        toRet <- dplyr::arrange(toRet, desc(direct))
+        toRet <- dplyr::distinct(toRet, id, name, .keep_all=TRUE)
         # toRet <- toRet[which(!duplicated(toRet[,c("id", "name")])),]
         ##
         if(!entity){
@@ -171,7 +169,7 @@ getBeIdNameTable <- function(
             ])
         }
         if(restricted){
-            toRet <- filter(toRet, direct)
+            toRet <- dplyr::filter(toRet, direct)
             # toRet <- toRet[which(toRet$direct),]
         }
     }

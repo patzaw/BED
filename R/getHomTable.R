@@ -6,8 +6,7 @@
 #' @param to.source the to gene ID database
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
-#' \strong{Depending on history it can take a very long time to return
-#' a very large result!}
+#' **Depending on history it can take a very long time to return a very large result!**
 #' @param verbose boolean indicating if the CQL query should be displayed
 #' @param recache boolean indicating if the CQL query should be run even if
 #' the table is already in cache
@@ -20,10 +19,9 @@
 #'
 #' @return a data.frame mapping gene IDs with the
 #' following fields:
-#' \describe{
-#'  \item{from}{the from gene ID}
-#'  \item{to}{the to gene ID}
-#' }
+#'
+#'  - **from**: the from gene ID
+#'  - **to**: the to gene ID
 #'
 #' @examples \dontrun{
 #' getHomTable(
@@ -32,7 +30,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdConvTable}}
+#' @seealso [getBeIdConvTable]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom dplyr select rename inner_join
@@ -82,8 +80,8 @@ getHomTable <- function(
     if(is.null(fr) || nrow(fr)==0){
         return(NULL)
     }
-    fr <- select(fr, id, Gene)
-    fr <- rename(fr, "from"="id")
+    fr <- dplyr::select(fr, id, Gene)
+    fr <- dplyr::rename(fr, "from"="id")
     bef <- unique(fr$Gene)
 
     ## Conv ----
@@ -149,24 +147,24 @@ getHomTable <- function(
     if(is.null(tr) || nrow(tr)==0){
         return(NULL)
     }
-    tr <- select(tr, id, Gene)
-    tr <- rename(tr, "to"="id")
+    tr <- dplyr::select(tr, id, Gene)
+    tr <- dplyr::rename(tr, "to"="id")
 
     ## Results
-    toRet <- inner_join(
+    toRet <- dplyr::inner_join(
         cr, fr, by=c("fromb"="Gene")
     )
     if(is.null(toRet) || nrow(toRet)==0){
         return(NULL)
     }
-    toRet <- unique(select(toRet, from, tob))
-    toRet <- inner_join(
+    toRet <- unique(dplyr::select(toRet, from, tob))
+    toRet <- dplyr::inner_join(
         toRet, tr, by=c("tob"="Gene")
     )
     if(is.null(toRet) || nrow(toRet)==0){
         return(NULL)
     }
-    toRet <- unique(select(toRet, from, to))
+    toRet <- unique(dplyr::select(toRet, from, to))
 
     # ## Filter
     # if(length(filter)>0 && !inherits(filter, "character")){

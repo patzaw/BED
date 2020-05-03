@@ -11,7 +11,7 @@
 #'
 #' @return the results of the query
 #'
-#' @seealso \code{\link{bedCall}}
+#' @seealso [bedCall]
 #'
 #' @importFrom neo2R cypher
 #' @importFrom utils write.table
@@ -52,7 +52,7 @@ bedImport <- function(
       cql
    ))
    if(nrow(toImport)<=1000){
-      write.table(
+      utils::write.table(
          toImport,
          file=tf,
          sep=",", #"\t",
@@ -60,10 +60,10 @@ bedImport <- function(
          row.names=F, col.names=T
       )
       on.exit(file.remove(tf))
-      toRet <- bedCall(cypher, query=cql, ...)
+      toRet <- bedCall(neo2R::cypher, query=cql, ...)
       invisible(toRet)
    }else{
-      write.table(
+      utils::write.table(
          toImport[c(1:1000), , drop=FALSE],
          file=tf,
          sep=",", #"\t",
@@ -71,16 +71,16 @@ bedImport <- function(
          row.names=F, col.names=T
       )
       on.exit(file.remove(tf))
-      toRet <- bedCall(cypher, query=cql, ...)
-      bedCall(cypher, query='CALL db.resampleOutdatedIndexes();')
-      write.table(
+      toRet <- bedCall(neo2R::cypher, query=cql, ...)
+      bedCall(neo2R::cypher, query='CALL db.resampleOutdatedIndexes();')
+      utils::write.table(
          toImport[-c(1:1000), , drop=FALSE],
          file=tf,
          sep=",", #"\t",
          quote=T,
          row.names=F, col.names=T
       )
-      toRet <- c(toRet, bedCall(cypher, query=cql, ...))
+      toRet <- c(toRet, bedCall(neo2R::cypher, query=cql, ...))
       invisible(toRet)
    }
 }

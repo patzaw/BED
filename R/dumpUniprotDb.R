@@ -63,7 +63,7 @@ dumpUniprotDb <- function(
     for(f in toDl){
         lf <- file.path(dumpDir, f)
         if(!file.exists(lf)){
-            download.file(
+            utils::download.file(
                 url=file.path(ftp, f),
                 destfile=lf,
                 method="wget",
@@ -123,14 +123,18 @@ dumpUniprotDb <- function(
         ))
         names(spluf) <- ids
         ##
-        symbols <- unlist(lapply(spluf, function(x)x[which(x$field=="ID"), "val"]))
+        symbols <- unlist(
+            lapply(spluf, function(x)x[which(x$field=="ID"), "val"])
+        )
         status <-  sub("[;] +.*$", "", sub("^[[:alnum:]_]* +", "", symbols))
         symbols <- sub(" +.*$", "", symbols)
         ##
         tax <- unlist(lapply(
             spluf,
             function(x){
-                ox <- unlist(strsplit(x[which(x$field=="OX"), "val"], split="; *"))
+                ox <- unlist(
+                    strsplit(x[which(x$field=="OX"), "val"], split="; *")
+                )
                 ox <- do.call(rbind, strsplit(ox, split="="))
                 ox[,2] <- sub(" +.*$", "", ox[,2])
                 return(ox[which(ox[,1]=="NCBI_TaxID"), 2])
@@ -162,7 +166,9 @@ dumpUniprotDb <- function(
         deprecated <- stack(lapply(
             spluf,
             function(x){
-                unlist(strsplit(x[which(x$field=="AC"), "val"], split="; *"))[-1]
+                unlist(
+                    strsplit(x[which(x$field=="AC"), "val"], split="; *")
+                )[-1]
             }
         ))
         deprecated$ind <- as.character(deprecated$ind)
@@ -172,7 +178,9 @@ dumpUniprotDb <- function(
         rsCref <- stack(lapply(
             spluf,
             function(x){
-                rsLines <- grep("^RefSeq;", x$val[which(x$field=="DR")], value=TRUE)
+                rsLines <- grep(
+                    "^RefSeq;", x$val[which(x$field=="DR")], value=TRUE
+                )
                 toRet <- sub("^RefSeq; *", "", rsLines)
                 toRet <- sub(";.*$", "", toRet)
                 toRet <- sub("[.].*$", "", toRet)
@@ -186,7 +194,9 @@ dumpUniprotDb <- function(
         ensCref <- stack(lapply(
             spluf,
             function(x){
-                eLines <- grep("^Ensembl;", x$val[which(x$field=="DR")], value=TRUE)
+                eLines <- grep(
+                    "^Ensembl;", x$val[which(x$field=="DR")], value=TRUE
+                )
                 toRet <- strsplit(eLines, split="; ")
                 toRet <- unlist(lapply(toRet, function(l)l[3]))
                 toRet <- sub("[.].*$", "", toRet)

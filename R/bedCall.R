@@ -18,7 +18,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{checkBedConn}}
+#' @seealso [checkBedConn]
 #'
 #' @export
 #'

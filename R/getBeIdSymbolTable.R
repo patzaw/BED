@@ -15,13 +15,12 @@
 #'
 #' @return a data.frame with the
 #' following fields:
-#' \describe{
-#'  \item{id}{the from BE ID}
-#'  \item{symbol}{the BE symbol}
-#'  \item{canonical}{true if the symbol is canonical for the direct BE ID}
-#'  \item{direct}{false if the symbol is not directly associated to the BE ID}
-#'  \item{entity}{(optional) the technical ID of to BE}
-#' }
+#'
+#'  - **id**: the from BE ID
+#'  - **symbol**: the BE symbol
+#'  - **canonical**: true if the symbol is canonical for the direct BE ID
+#'  - **direct**: false if the symbol is not directly associated to the BE ID
+#'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
 #' getBeIdSymbolTable(
@@ -31,8 +30,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdSymbols}},
-#' \code{\link{getBeIdNameTable}}
+#' @seealso [getBeIdSymbols], [getBeIdNameTable]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom dplyr arrange select filter distinct
@@ -162,15 +160,15 @@ getBeIdSymbolTable <- function(
         toRet$canonical <- as.logical(toRet$canonical)
         toRet$direct <- as.logical(toRet$direct)
         # toRet <- toRet[order(toRet$direct, decreasing=T),]
-        toRet <- arrange(toRet, desc(direct))
-        toRet <- distinct(toRet, id, symbol, .keep_all=TRUE)
+        toRet <- dplyr::arrange(toRet, desc(direct))
+        toRet <- dplyr::distinct(toRet, id, symbol, .keep_all=TRUE)
         # toRet <- toRet[which(!duplicated(toRet[,c("id", "symbol")])),]
         ##
         if(!entity){
             toRet <- unique(toRet[, setdiff(colnames(toRet), c("entity"))])
         }
         if(restricted){
-            toRet <- filter(toRet, direct)
+            toRet <- dplyr::filter(toRet, direct)
             # toRet <- toRet[which(toRet$direct),]
         }
     }

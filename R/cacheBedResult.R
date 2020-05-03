@@ -5,7 +5,7 @@
 #' @param value the result to cache
 #' @param name the name of the query
 #'
-#' @seealso \code{\link{cacheBedCall}}, \code{\link{loadBedResult}}
+#' @seealso [cacheBedCall], [loadBedResult]
 #'
 cacheBedResult <- function(
    value,
@@ -34,7 +34,7 @@ cacheBedResult <- function(
 #'
 #' @param name the name of the query
 #'
-#' @seealso \code{\link{cacheBedCall}}, \code{\link{cacheBedResult}}
+#' @seealso [cacheBedCall], [cacheBedResult]
 #'
 loadBedResult <- function(name){
    value <- NULL

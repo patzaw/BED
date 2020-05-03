@@ -9,6 +9,7 @@
 #'
 #' @return A BEIDList object which is a list of BEID vectors with 2 additional
 #' attributes:
+#'
 #' - **metadata**: a data.frame with metadata about list elements.
 #' The "**.lname**" column correspond to the names of the BEIDList.
 #' - **scope**: the BEID scope ("be", "source" and "organism")
@@ -240,7 +241,9 @@ focusOnScope.BEIDList <- function(
       class(l) <- "list"
       md <- metadata(x)
       fscope <- scope(x)
-      fscope$organism <- ifelse(fscope$organism=="any", organism, fscope$organism)
+      fscope$organism <- ifelse(
+         fscope$organism=="any", organism, fscope$organism
+      )
 
       toRet <- convBeIdLists(
          l,

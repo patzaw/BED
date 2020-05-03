@@ -5,12 +5,12 @@
 #' BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
 #' This internal identifier is useful to avoid biases related to identifier
 #' redundancy. See \url{../doc/BED.html#3_managing_identifiers}
-#' @param ... params for the \code{\link{convBeIds}} function
+#' @param ... params for the [convBeIds] function
 #'
-#' @return A list of \code{\link{convBeIds}} ouput ids.
+#' @return A list of [convBeIds] ouput ids.
 #' Scope ("be", "source" "organism" and "entity" (see Arguments))
 #' is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}
+#' in the "scope" attributes: `attr(x, "scope")`
 #'
 #' @examples \dontrun{
 #' convBeIdLists(
@@ -22,7 +22,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{convBeIds}}, \code{\link{convDfBeIds}}
+#' @seealso [convBeIds], [convDfBeIds]
 #'
 #' @export
 #'

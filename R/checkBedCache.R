@@ -7,7 +7,7 @@
 #'
 #' @param newCon if TRUE for the loading of the system information file
 #'
-#' @seealso \code{\link{clearBedCache}}, \code{\link{lsBedCache}}
+#' @seealso [clearBedCache], [lsBedCache]
 #'
 #' @importFrom neo2R prepCql cypher
 #' @importFrom utils packageDescription packageName
@@ -16,19 +16,22 @@ checkBedCache <- function(newCon=FALSE){
    if(!checkBedConn()){
       stop("Not connected to BED")
    }
-   dbSize <- bedCall(cypher, 'MATCH (n) WITH n LIMIT 1 RETURN count(n);')[,1]
+   dbSize <- bedCall(
+      neo2R::cypher,
+      'MATCH (n) WITH n LIMIT 1 RETURN count(n);'
+   )[,1]
    if(dbSize==0){
       warning("Clearing cache")
       cache <- clearBedCache()
    }else{
       dbVersion <- bedCall(
-         cypher,
-         query=prepCql(c(
+         neo2R::cypher,
+         query=neo2R::prepCql(c(
             'MATCH (n:System) RETURN',
             'n.name as name, n.instance as instance, n.version as version'
          ))
       )
-      dbVersion$rbed <- packageDescription(packageName())$Version
+      dbVersion$rbed <- utils::packageDescription(utils::packageName())$Version
       ##
       cachedbFile <- get("cachedbFile", bedEnv)
       cachedbDir <- dirname(cachedbFile)
