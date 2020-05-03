@@ -32,25 +32,28 @@ incomplete name matches.}
 \item{verbose}{boolean indicating if the CQL queries should be displayed}
 }
 \value{
-A data frame with the following fields:\itemize{
-\item{found: the element found in BED corresponding to the searched term}
-\item{be: the type of the element}
-\item{source: the source of the element}
-\item{organism: the related organism}
-\item{entity: the related entity internal ID}
-\item{ebe: the BE of the related entity}
-\item{canonical: if the symbol is canonical}
-\item{gene: list of the related genes BE internal ID}
+A data frame with the following fields:
+\itemize{
+\item found: the element found in BED corresponding to the searched term
+\item be: the type of the element
+\item source: the source of the element
+\item organism: the related organism
+\item entity: the related entity internal ID
+\item ebe: the BE of the related entity
+\item canonical: if the symbol is canonical
+\item gene: list of the related genes BE internal ID
 }
+
 Exact matches are returned first folowed by the shortest elements.
 }
 \description{
-This function is meant to be used with \code{\link{getRelevantIds}} in order
+\strong{DEPRECATED: use \code{\link[=search_beid]{search_beid()}} and \code{\link[=geneIDs_to_all_scopes]{geneIDs_to_all_scopes()}} instead.}
+This function is meant to be used with \link{getRelevantIds} in order
 to implement a dictonary of identifiers of interest. First
-the \code{\link{searchId}} function is used to search a term.
-Then the \code{\link{getRelevantIds}} function
+the \link{searchId} function is used to search a term.
+Then the \link{getRelevantIds} function
 is used to find the corresponding ID in a context of interest.
 }
 \seealso{
-\code{\link{getRelevantIds}}
+\link{getRelevantIds}
 }

@@ -1,8 +1,29 @@
 #' Find all BEID and ProbeID
 #'
+#' @param geneids a character vector of gene identifiers
+#' @param source the source of gene identifiers
+#' @param organism the gene organism
+#' @param entities a numeric vector of gene entity. If NULL (default),
+#' geneids, source and organism arguments are used to identify genes.
+#' Be carefull when using entities as these identifiers are not stable.
+#' @param canonical_symbols return only canonical symbols (default: TRUE).
+#' @param entity_warning by default (TRUE) a warning is shown when
+#' the entities argument is used. Set this argument to FALSE to avoid this
+#' warning.
+#'
+#' @return A tibble with the following fields:
+#' - **value**: the identifier
+#' - **be**: the type of BE
+#' - **organism**: the BE organism
+#' - **source**: the source of the identifier
+#'
+#' @importFrom magrittr `%>%`
+#' @importFrom dplyr as_tibble mutate select filter rename distinct bind_rows
 #' @export
+#'
 geneIDs_to_all_scopes <- function(
-   geneids, source, organism, entities=NULL, canonical_symbols=TRUE
+   geneids, source, organism, entities=NULL, canonical_symbols=TRUE,
+   entity_warning=TRUE
 ){
    if(is.null(entities)){
       query <- sprintf(paste(
@@ -13,6 +34,13 @@ geneIDs_to_all_scopes <- function(
       ), source, toupper(organism))
       ids <- geneids
    }else{
+      if(entity_warning){
+         warning(
+            'Be carefull when using entities as these identifiers are ',
+            'not stable.',
+            '\nYou can disable this warning by setting entity_warning to FALSE.'
+         )
+      }
       query <- paste(
          'MATCH (g:Gene) WHERE id(g) IN $ids'
       )
@@ -40,15 +68,15 @@ geneIDs_to_all_scopes <- function(
    if(!is.null(toRet)){
       toRet <- toRet %>% dplyr::as_tibble() %>%
          dplyr::mutate(
-            be=stringr::str_remove(be, "BEID [|][|] ") %>%
+            "be"=stringr::str_remove(.data$be, "BEID [|][|] ") %>%
                stringr::str_remove("ID$"),
-            source=ifelse(is.na(db), pl, db)
+            "source"=ifelse(is.na(.data$db), .data$pl, .data$db)
          ) %>%
-         select(-db, -pl)
-      toRet1 <- toRet %>% dplyr::select(-bes) %>% dplyr::distinct()
+         select(-"db", -"pl")
+      toRet1 <- toRet %>% dplyr::select(-"bes") %>% dplyr::distinct()
       toRet2 <- toRet %>%
-         dplyr::select(-value) %>%
-         dplyr::filter(!is.na(bes)) %>%
+         dplyr::select(-"value") %>%
+         dplyr::filter(!is.na(.data$bes)) %>%
          dplyr::rename("value"="bes") %>%
          dplyr::mutate(source="Symbol") %>%
          dplyr::distinct()
