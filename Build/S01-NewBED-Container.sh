@@ -32,4 +32,7 @@ docker run -d \
 	--volume $BED_DATA/data:/data \
 	neo4j:$NJ_VERSION
 
+sleep 10
+chmod a+rx $BED_IMPORT
+
 

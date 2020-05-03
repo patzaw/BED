@@ -39,7 +39,7 @@ data sources should not be re-downloaded.
 library(knitr)
 library(BED)
 ##
-workingDirectory <- "working"
+workingDirectory <- "../../working"
 ##
 opts_knit$set(root.dir=workingDirectory)
 opts_chunk$set(
