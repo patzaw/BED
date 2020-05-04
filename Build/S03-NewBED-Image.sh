@@ -48,4 +48,4 @@ cd $BED_DATA
 docker build -t bed-ucb-human:$BED_VERSION .
 cd -
 mkdir -p $BED_IMAGES
-docker save bed-ucb-human:$BED_VERSION > $BED_IMAGES/docker-bed-ucb-human-$BED_VERSION.tar
+docker save bed-ucb-human:$BED_VERSION | gzip > $BED_IMAGES/docker-bed-ucb-human-$BED_VERSION.tar.gz
