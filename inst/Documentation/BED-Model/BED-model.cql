@@ -25,6 +25,3 @@ CREATE INDEX ON :Platform(description);
 CREATE INDEX ON :BESymbol(value_up);
 CREATE INDEX ON :BEName(value_up);
 CREATE INDEX ON :OrganismName(value_up);
-// Lucene indexes
-CALL db.index.fulltext.createNodeIndex("bename",["BESymbol", "BEName"],["value"])
-CALL db.index.fulltext.createNodeIndex("beid",["BEID", "ProbeID"],["value"])

@@ -1760,6 +1760,16 @@ for(db in names(otherIdURL)){
 }
 ```
 
+# Load Lucene Indexes
+
+**Start**: `r Sys.time()`
+
+```{r dataModel, message=FALSE}
+BED:::loadLuceneIndexes()
+```
+
+**End**: `r Sys.time()`
+
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
