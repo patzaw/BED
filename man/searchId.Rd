@@ -47,7 +47,7 @@ A data frame with the following fields:
 Exact matches are returned first folowed by the shortest elements.
 }
 \description{
-\strong{DEPRECATED: use \code{\link[=search_beid]{search_beid()}} and \code{\link[=geneIDs_to_all_scopes]{geneIDs_to_all_scopes()}} instead.}
+\strong{DEPRECATED: use \link{searchBeid} and \link{geneIDsToAllScopes} instead.}
 This function is meant to be used with \link{getRelevantIds} in order
 to implement a dictonary of identifiers of interest. First
 the \link{searchId} function is used to search a term.

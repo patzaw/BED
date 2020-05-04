@@ -58,16 +58,17 @@ If not, results are collected only for provided ids and not cached.}
 \value{
 a data.frame mapping BE IDs with the
 following fields:
-\describe{
-\item{id}{the BE ID}
-\item{BE}{IF entity is TRUE the technical ID of BE}
-\item{db.version}{IF be is not "Probe" and source not "Symbol"
-the version of the DB}
-\item{db.deprecated}{IF be is not "Probe" and source not "Symbol"
-a value if the BE ID is deprecated or FALSE if it's not}
-\item{canonical}{IF source is "Symbol" TRUE if the symbol is canonical}
-\item{organism}{IF be is "Probe" the organism of the targeted BE}
+\itemize{
+\item \strong{id}: the BE ID
+\item \strong{BE}: IF entity is TRUE the technical ID of BE
+\item \strong{db.version}: IF be is not "Probe" and source not "Symbol"
+the version of the DB
+\item \strong{db.deprecated}: IF be is not "Probe" and source not "Symbol"
+a value if the BE ID is deprecated or FALSE if it's not
+\item \strong{canonical}: IF source is "Symbol" TRUE if the symbol is canonical
+\item \strong{organism}: IF be is "Probe" the organism of the targeted BE
 }
+
 If attributes are part of the query, additional columns for each of them.
 Scope ("be", "source" and "organism") is provided as a named list
 in the "scope" attributes: \code{attr(x, "scope")}
@@ -82,5 +83,5 @@ beids <- getBeIds(be="Gene", source="EntrezGene", organism="human", restricted=T
 
 }
 \seealso{
-\code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
+\link{listPlatforms}, \link{listBeIdSources}
 }

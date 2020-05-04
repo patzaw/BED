@@ -13,5 +13,5 @@ loadBedResult(name)
 Internal use
 }
 \seealso{
-\code{\link{cacheBedCall}}, \code{\link{cacheBedResult}}
+\link{cacheBedCall}, \link{cacheBedResult}
 }

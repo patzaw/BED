@@ -48,8 +48,8 @@ of a BE, all non-preferred BEID are kept.}
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
-\strong{Depending on history it can take a very long time to return
-a very large result!}}
+\strong{Depending on history it can take a very long time to return}
+\strong{a very large result!}}
 
 \item{recache}{a logical value indicating if the results should be taken from
 cache or recomputed}
@@ -59,13 +59,15 @@ collected for all IDs (beyond provided ids) and cached for futur queries.
 If not, results are collected only for provided ids and not cached.}
 }
 \value{
-a data.frame with 3 columns: \itemize{
-\item from: the input IDs
-\item to: the corresponding IDs in \code{to.source}
-\item to.preferred: boolean indicating if the to ID is a preferred
+a data.frame with the following columns:
+\itemize{
+\item \strong{from}: the input IDs
+\item \strong{to}: the corresponding IDs in \code{to.source}
+\item \strong{to.preferred}: boolean indicating if the to ID is a preferred
 ID for the corresponding entity.
-\item to.entity: the entity technical ID of the \code{to} IDs
+\item \strong{to.entity}: the entity technical ID of the \code{to} IDs
 }
+
 This data.frame can be filtered in order to remove duplicated
 from/to.entity associations which can lead information bias.
 Scope ("be", "source" and "organism") is provided as a named list
@@ -105,6 +107,5 @@ convBeIds(
 
 }
 \seealso{
-\code{\link{getBeIdConvTable}}, \code{\link{convBeIdLists}},
-\code{\link{convDfBeIds}}
+\link{getBeIdConvTable}, \link{convBeIdLists}, \link{convDfBeIds}
 }

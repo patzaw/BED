@@ -34,5 +34,5 @@ result <- bedCall(
 
 }
 \seealso{
-\code{\link{checkBedConn}}
+\link{checkBedConn}
 }

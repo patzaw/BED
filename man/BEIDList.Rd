@@ -19,7 +19,7 @@ a column "\strong{.lname}" all in names of l}
 A BEIDList object which is a list of BEID vectors with 2 additional
 attributes:
 \itemize{
-\item \strong{metadata}: a tibble with metadata about list elements.
+\item \strong{metadata}: a data.frame with metadata about list elements.
 The "\strong{.lname}" column correspond to the names of the BEIDList.
 \item \strong{scope}: the BEID scope ("be", "source" and "organism")
 }

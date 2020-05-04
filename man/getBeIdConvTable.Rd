@@ -63,10 +63,10 @@ If not, results are collected only for provided ids and not cached.}
 \value{
 a data.frame mapping BE IDs with the
 following fields:
-\describe{
-\item{from}{the from BE ID}
-\item{to}{the to BE ID}
-\item{entity}{(optional) the technical ID of to BE}
+\itemize{
+\item \strong{from}: the from BE ID
+\item \strong{to}: the to BE ID
+\item \strong{entity}: (optional) the technical ID of to BE
 }
 }
 \description{
@@ -83,6 +83,6 @@ getBeIdConvTable(
 
 }
 \seealso{
-\code{\link{getHomTable}}, \code{\link{listBe}},
-\code{\link{listPlatforms}}, \code{\link{listBeIdSources}}
+\link{getHomTable}, \link{listBe},
+\link{listPlatforms}, \link{listBeIdSources}
 }

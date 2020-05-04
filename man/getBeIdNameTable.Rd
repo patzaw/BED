@@ -39,11 +39,11 @@ the result is not filtered: all IDs are taken into account.}
 \value{
 a data.frame with the
 following fields:
-\describe{
-\item{id}{the from BE ID}
-\item{name}{the BE name}
-\item{direct}{false if the symbol is not directly associated to the BE ID}
-\item{entity}{(optional) the technical ID of to BE}
+\itemize{
+\item \strong{id}: the from BE ID
+\item \strong{name}: the BE name
+\item \strong{direct}: false if the symbol is not directly associated to the BE ID
+\item \strong{entity}: (optional) the technical ID of to BE
 }
 }
 \description{
@@ -60,6 +60,5 @@ getBeIdNameTable(
 
 }
 \seealso{
-\code{\link{getBeIdNames}},
-\code{\link{getBeIdSymbolTable}}
+\link{getBeIdNames}, \link{getBeIdSymbolTable}
 }

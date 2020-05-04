@@ -12,15 +12,14 @@ checkBedConn(verbose = FALSE)
 }
 \value{
 \itemize{
-\item{TRUE if the connection can be established}
-\item{Or FALSE if the connection cannot be established or the "System" node
+\item TRUE if the connection can be established
+\item Or FALSE if the connection cannot be established or the "System" node
 does not exist or does not have "BED" as name or any version recorded.
-}
 }
 }
 \description{
 Check if there is a connection to a BED database
 }
 \seealso{
-\code{\link{connectToBed}}
+\link{connectToBed}
 }

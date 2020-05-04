@@ -16,7 +16,7 @@ getRelevantIds(
 )
 }
 \arguments{
-\item{d}{the data.frame returned by \code{\link{searchId}}.}
+\item{d}{the data.frame returned by \link{searchId}.}
 
 \item{selected}{the rows of interest in d}
 
@@ -28,8 +28,8 @@ getRelevantIds(
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
-\strong{Depending on history it can take a very long time to return
-a very large result!}}
+\strong{Depending on history it can take a very long time to return}
+\strong{a very large result!}}
 
 \item{simplify}{if TRUE (default) duplicated IDs are removed from the output}
 
@@ -42,12 +42,13 @@ Scope ("be", "source" and "organism") is provided as a named list
 in the "scope" attributes: \code{attr(x, "scope")}
 }
 \description{
-This function is meant to be used with \code{\link{searchId}} in order
+\strong{DEPRECATED: use \link{searchBeid} and \link{geneIDsToAllScopes} instead.}
+This function is meant to be used with \link{searchId} in order
 to implement a dictonary of identifiers of interest. First
-the \code{\link{searchId}} function is used to search a term.
-Then the \code{\link{getRelevantIds}} function
+the \link{searchId} function is used to search a term.
+Then the \link{getRelevantIds} function
 is used to find the corresponding IDs in a context of interest.
 }
 \seealso{
-\code{\link{searchId}}
+\link{searchId}
 }

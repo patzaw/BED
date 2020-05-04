@@ -9,11 +9,10 @@ Description: This package provides an interface for neo4j database providing
 License: GPL-3
 LazyData: TRUE
 Depends:
-    R (>= 3.4),
-    neo2R,
+    R (>= 3.6),
+    neo2R (>= 2.1.0),
     visNetwork
 Imports:
-    rlang,
     dplyr,
     readr,
     stringr,

@@ -2,25 +2,27 @@
 % Please edit documentation in R/getBeIdURL.R
 \name{getBeIdURL}
 \alias{getBeIdURL}
-\title{Get a reference URL for a BE ID}
+\title{Get reference URLs for BE IDs}
 \usage{
-getBeIdURL(id, database)
+getBeIdURL(ids, databases)
 }
 \arguments{
-\item{id}{the BE ID}
+\item{ids}{the BE ID}
 
-\item{database}{the database from which the ID has been taken}
+\item{databases}{the databases from which each ID has been taken
+(if only one database is provided it is chosen for all ids)}
 }
 \value{
-A character vector of length one corresponding to the relevant URL.
+A character vector of the same length than ids
+corresponding to the relevant URLs.
 NA is returned is there is no URL corresponding to the provided database.
 }
 \description{
-Get a reference URL for a BE ID
+Get reference URLs for BE IDs
 }
 \examples{
 \dontrun{
-getBeIdURL("100", "EntrezGene")
+getBeIdURL(c("100", "ENSG00000145335"), c("EntrezGene", "Ens_gene"))
 }
 
 }

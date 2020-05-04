@@ -17,5 +17,5 @@ and resets it if not relevant.
 Internal use.
 }
 \seealso{
-\code{\link{clearBedCache}}, \code{\link{lsBedCache}}
+\link{clearBedCache}, \link{lsBedCache}
 }

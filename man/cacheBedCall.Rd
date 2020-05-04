@@ -7,7 +7,7 @@
 cacheBedCall(..., tn, recache = FALSE)
 }
 \arguments{
-\item{...}{params for \code{\link{bedCall}}}
+\item{...}{params for \link{bedCall}}
 
 \item{tn}{the name of the cached table}
 
@@ -15,7 +15,7 @@ cacheBedCall(..., tn, recache = FALSE)
 the table is already in cache}
 }
 \value{
-The results of the \code{\link{bedCall}}.
+The results of the \link{bedCall}.
 }
 \description{
 This function calls neo4j DB the first time a query is sent and puts
@@ -28,5 +28,5 @@ Use only with "row" result returned by DB request.
 Internal use.
 }
 \seealso{
-\code{\link{cacheBedResult}}, \code{\link{bedCall}}
+\link{cacheBedResult}, \link{bedCall}
 }

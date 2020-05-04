@@ -21,5 +21,5 @@ file is not found}
 Clear the BED cache SQLite database
 }
 \seealso{
-\code{\link{lsBedCache}}
+\link{lsBedCache}
 }

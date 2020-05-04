@@ -9,11 +9,11 @@ checkBeIds(ids, be, source, organism, stopThr = 1, caseSensitive = FALSE)
 \arguments{
 \item{ids}{a vector of identifiers to be checked}
 
-\item{be}{biological entity. See \code{\link{getBeIds}}.}
+\item{be}{biological entity. See \link{getBeIds}.}
 
-\item{source}{source of the ids. See \code{\link{getBeIds}}.}
+\item{source}{source of the ids. See \link{getBeIds}.}
 
-\item{organism}{the organism of interest. See \code{\link{getBeIds}}.}
+\item{organism}{the organism of interest. See \link{getBeIds}.}
 
 \item{stopThr}{proportion of non-recognized IDs above which an error is
 thrown. Default: 1 ==> no check}
@@ -22,7 +22,7 @@ thrown. Default: 1 ==> no check}
 when checking ids.}
 }
 \value{
-invisible(TRUE). Stop if too many (see \code{stopThr}) ids are not
+invisible(TRUE). Stop if too many (see stopThr parameter) ids are not
 found. Warning if any id is not found.
 }
 \description{
@@ -33,12 +33,15 @@ indirectly to any entity then it is considered as not found.
 }
 \examples{
 \dontrun{
-checkBeIds(ids=c("10", "100"), be="Gene", source="EntrezGene", organism="human")
-checkBeIds(ids=c("10", "100"), be="Gene", source="Ens_gene", organism="human")
+checkBeIds(
+   ids=c("10", "100"), be="Gene", source="EntrezGene", organism="human"
+)
+checkBeIds(
+   ids=c("10", "100"), be="Gene", source="Ens_gene", organism="human"
+)
 }
 
 }
 \seealso{
-\code{\link{getBeIds}}, \code{\link{listBeIdSources}},
-\code{\link{getAllBeIdSources}}
+\link{getBeIds}, \link{listBeIdSources}, \link{getAllBeIdSources}
 }

@@ -17,8 +17,13 @@
 #' - **be**: the type of BE
 #' - **organism**: the BE organism
 #' - **source**: the source of the identifier
+#' - **Gene_entity**: the gene entity input
+#' - **GeneID** (optional): the gene ID input
+#' - **Gene_source** (optional): the gene source input
+#' - **Gene_organism** (optional): the gene organism input
 #'
-#' @importFrom dplyr as_tibble mutate select filter rename distinct bind_rows
+#' @importFrom neo2R cypher
+#' @importFrom dplyr mutate select filter rename distinct bind_rows
 #' @importFrom stringr str_remove
 #' @export
 #'
@@ -27,14 +32,23 @@ geneIDsToAllScopes <- function(
    entity_warning=TRUE
 ){
    if(is.null(entities)){
+      stopifnot(
+         is.character(geneids), all(!is.na(geneids)), length(geneids)>0,
+         is.character(source), length(source)==1, !is.na(source),
+         is.character(organism), length(organism)==1, !is.na(organism)
+      )
       query <- sprintf(paste(
-         'MATCH (gid:GeneID {database:"%s"})-[:identifies]->(g)',
+         'MATCH (gid:GeneID {database:"%s"})',
+         '-[:is_associated_to|is_replaced_by*0..]->()-[:identifies]->(g)',
          '-[:belongs_to]->(:TaxID)',
          '-[:is_named]->(o:OrganismName {value_up:"%s"})',
-         'WHERE gid.value IN $ids',
+         'WHERE gid.value IN $ids'
       ), source, toupper(organism))
       ids <- geneids
    }else{
+      stopifnot(
+         is.numeric(entities), all(!is.na(entities)), length(entities)>0
+      )
       if(entity_warning){
          warning(
             'Be carefull when using entities as these identifiers are ',
@@ -45,7 +59,7 @@ geneIDsToAllScopes <- function(
       query <- paste(
          'MATCH (g:Gene) WHERE id(g) IN $ids'
       )
-      ids <- entities
+      ids <- unique(entities)
    }
    query <- paste(
       query,
@@ -63,11 +77,21 @@ geneIDsToAllScopes <- function(
       'beid.value as value, labels(beid) as be,',
       'beid.database as db, beid.platform as pl,',
       'bes.value as bes,',
-      'beo.value as organism'
+      'beo.value as organism,',
+      'id(g) as Gene_entity'
    )
-   toRet <- bedCall(cypher, query=query, parameters=list(ids=as.list(ids)))
+   if(is.null(entities)){
+      query <- paste(
+         query,
+         ', gid.value as GeneID,',
+         'gid.database as Gene_source,',
+         'o.value as Gene_organism'
+      )
+   }
+   toRet <- bedCall(
+      neo2R::cypher, query=query, parameters=list(ids=as.list(ids))
+   )
    if(!is.null(toRet)){
-      toRet <- dplyr::as_tibble(toRet)
       toRet <- dplyr::mutate(
          toRet,
          "be"=stringr::str_remove(
@@ -83,6 +107,16 @@ geneIDsToAllScopes <- function(
       toRet2 <- dplyr::mutate(toRet2, source="Symbol")
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)
+      if(is.null(entities)){
+         toRet <- dplyr::select(
+            toRet, "value", "be", "source", "organism", "Gene_entity",
+            "GeneID", "Gene_source", "Gene_organism"
+         )
+      }else{
+         toRet <- dplyr::select(
+            toRet, "value", "be", "source", "organism", "Gene_entity"
+         )
+      }
    }
-   return(as.data.frame(toRet))
+   return(toRet)
 }

@@ -159,11 +159,12 @@ print.BEIDList <- function(x, ...) cat(format(x, ...), "\n")
 'names<-.BEIDList' <- function(x, value){
    value <- unique(as.character(value))
    stopifnot(length(x)==length(value))
+   metadata <- metadata(x)
+   scope <- scope(x)
    l <- x
    class(l) <- "list"
    names(l) <- value
    metadata <- dplyr::mutate(metadata, .lname=!!value)
-   scope <- scope(x)
    return(BEIDList(
       l=l,
       metadata=metadata,

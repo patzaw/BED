@@ -40,8 +40,10 @@ between two identifiers (including ProbeID).
 \examples{
 \dontrun{
 exploreConvPath(
-   from.id="ENST00000413465", from="Transcript", from.source="Ens_transcript",
-   to.id="ENSMUST00000108658", to="Transcript", to.source="Ens_transcript"
+   from.id="ENST00000413465",
+   from="Transcript", from.source="Ens_transcript",
+   to.id="ENSMUST00000108658",
+   to="Transcript", to.source="Ens_transcript"
 )
 }
 

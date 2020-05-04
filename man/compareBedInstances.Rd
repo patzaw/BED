@@ -8,7 +8,7 @@ compareBedInstances(connections)
 }
 \arguments{
 \item{connections}{a numeric vector of length 1 or 2 providing connections
-from \code{\link{lsBedConnections}} to be compared.}
+from \link{lsBedConnections} to be compared.}
 }
 \value{
 If only one connection is provided, the function returns a list

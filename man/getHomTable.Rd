@@ -27,8 +27,7 @@ getHomTable(
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
-\strong{Depending on history it can take a very long time to return
-a very large result!}}
+\strong{Depending on history it can take a very long time to return a very large result!}}
 
 \item{verbose}{boolean indicating if the CQL query should be displayed}
 
@@ -46,9 +45,9 @@ If not, results are collected only for provided ids and not cached.}
 \value{
 a data.frame mapping gene IDs with the
 following fields:
-\describe{
-\item{from}{the from gene ID}
-\item{to}{the to gene ID}
+\itemize{
+\item \strong{from}: the from gene ID
+\item \strong{to}: the to gene ID
 }
 }
 \description{
@@ -64,5 +63,5 @@ getHomTable(
 
 }
 \seealso{
-\code{\link{getBeIdConvTable}}
+\link{getBeIdConvTable}
 }

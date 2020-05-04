@@ -22,7 +22,8 @@
 #' - **Gene_entity**: technical gene identifier
 #' - **Organism**: gene organism (scientific name)
 #'
-#' @importFrom dplyr as_tibble mutate select filter rename distinct
+#' @importFrom neo2R multicypher
+#' @importFrom dplyr mutate select filter rename distinct
 #' @importFrom stringr str_remove str_remove_all str_replace_all fixed
 #' @export
 #'
@@ -111,19 +112,21 @@ searchBeid <- function(x){
          'OPTIONAL MATCH (gid)-[:is_known_as {canonical:true}]->(ges:BESymbol)',
          'OPTIONAL MATCH (gid)-[:is_named]->(gen:BEName)',
          'RETURN DISTINCT',
-         'mn.value as Value,',
-         'labels(mn) as From,',
-         'labels(be) as BE,',
-         'beid.value as BEID, beid.database as Database, beid.preferred as Preferred,',
-         'bes.value as Symbol, ben.value as Name,',
-         'id(be) as Entity,',
-         'gid.value as GeneID, gid.database as Gene_DB, gid.preferred as Preferred_gene,',
+         'mn.value as value,',
+         'labels(mn) as from,',
+         'labels(be) as be,',
+         'beid.value as beid, beid.database as source,',
+         'beid.preferred as preferred,',
+         'bes.value as symbol, ben.value as name,',
+         'id(be) as entity,',
+         'gid.value as GeneID, gid.database as Gene_source,',
+         'gid.preferred as preferred_gene,',
          'ges.value as Gene_symbol, gen.value as Gene_name,',
-         'id(g) as Gene_entity, o.value as Organism'
+         'id(g) as Gene_entity, o.value as organism'
       )
    )
    values <- bedCall(
-      multicypher,
+      neo2R::multicypher,
       queries=queries
    )
    values <- do.call(rbind, values)
@@ -131,11 +134,10 @@ searchBeid <- function(x){
    if(is.null(values) || nrow(values)==0){
       return(NULL)
    }
-   values <- dplyr::as_tibble(values)
    values <- mutate(
       values,
-      From=stringr::str_remove(From, "BEID [|][|] "),
-      BE=stringr::str_remove(BE, "BEID [|][|] ")
+      From=stringr::str_remove(from, "BEID [|][|] "),
+      BE=stringr::str_remove(be, "BEID [|][|] ")
    )
-   return(as.data.frame(values))
+   return(values)
 }

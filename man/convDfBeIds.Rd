@@ -17,7 +17,7 @@ BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
 This internal identifier is useful to avoid biases related to identifier
 redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
 
-\item{...}{params for the \code{\link{convBeIds}} function}
+\item{...}{params for the \link{convBeIds} function}
 }
 \value{
 A data.frame with converted IDs.
@@ -43,5 +43,5 @@ convDfBeIds(
 
 }
 \seealso{
-\code{\link{convBeIds}}, \code{\link{convBeIdLists}}
+\link{convBeIds}, \link{convBeIdLists}
 }

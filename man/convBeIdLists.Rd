@@ -14,10 +14,10 @@ BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
 This internal identifier is useful to avoid biases related to identifier
 redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
 
-\item{...}{params for the \code{\link{convBeIds}} function}
+\item{...}{params for the \link{convBeIds} function}
 }
 \value{
-A list of \code{\link{convBeIds}} ouput ids.
+A list of \link{convBeIds} ouput ids.
 Scope ("be", "source" "organism" and "entity" (see Arguments))
 is provided as a named list
 in the "scope" attributes: \code{attr(x, "scope")}
@@ -38,5 +38,5 @@ convBeIdLists(
 
 }
 \seealso{
-\code{\link{convBeIds}}, \code{\link{convDfBeIds}}
+\link{convBeIds}, \link{convDfBeIds}
 }

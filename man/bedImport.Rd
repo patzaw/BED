@@ -23,5 +23,5 @@ the results of the query
 Not exported to avoid unintended modifications of the DB.
 }
 \seealso{
-\code{\link{bedCall}}
+\link{bedCall}
 }
