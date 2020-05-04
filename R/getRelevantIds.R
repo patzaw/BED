@@ -1,31 +1,33 @@
 #' Get relevant IDs for a formerly identified BE in a context of interest
 #'
-#' This function is meant to be used with \code{\link{searchId}} in order
+#' **DEPRECATED: use [searchBeid] and [geneIDsToAllScopes] instead.**
+#' This function is meant to be used with [searchId] in order
 #' to implement a dictonary of identifiers of interest. First
-#' the \code{\link{searchId}} function is used to search a term.
-#' Then the \code{\link{getRelevantIds}} function
+#' the [searchId] function is used to search a term.
+#' Then the [getRelevantIds] function
 #' is used to find the corresponding IDs in a context of interest.
 #'
-#' @param d the data.frame returned by \code{\link{searchId}}.
+#' @param d the data.frame returned by [searchId].
 #' @param selected the rows of interest in d
 #' @param be the BE in the context of interest
 #' @param source the source of the identifier in the context of interest
 #' @param organism the organism in the context of interest
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
-#' \strong{Depending on history it can take a very long time to return
-#' a very large result!}
+#' **Depending on history it can take a very long time to return**
+#' **a very large result!**
 #' @param simplify if TRUE (default) duplicated IDs are removed from the output
 #' @param verbose if TRUE, the CQL query is shown
 #'
 #' @return The d data.frame with a new column providing the relevant ID
 #' in the context of interest and without the gene field.
 #' Scope ("be", "source" and "organism") is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}
+#' in the "scope" attributes: `attr(x, "scope")`
 #'
+#' @seealso [searchId]
+#'
+#' @importFrom neo2R prepCql cypher
 #' @export
-#'
-#' @seealso \code{\link{searchId}}
 #'
 getRelevantIds <- function(
    d, selected=1,
@@ -71,10 +73,10 @@ getRelevantIds <- function(
             'WHERE id(fg) IN $fromGene AND tid.value=$tax',
             'RETURN id(tg) as gene'
          )
-         if(verbose) message(prepCql(hqs))
+         if(verbose) message(neo2R::prepCql(hqs))
          targGene <- unique(bedCall(
-            f=cypher,
-            query=prepCql(hqs),
+            f=neo2R::cypher,
+            query=neo2R::prepCql(hqs),
             parameters=list(fromGene=as.list(from.gene), tax=tax)
          ))[,"gene"]
          if(length(targGene)==0){
@@ -181,10 +183,10 @@ getRelevantIds <- function(
          qs,
          'RETURN t.preferred as preferred, t.value as id'
       )
-      if(verbose) message(prepCql(qs))
+      if(verbose) message(neo2R::prepCql(qs))
       value <- unique(bedCall(
-         f=cypher,
-         query=prepCql(qs),
+         f=neo2R::cypher,
+         query=neo2R::prepCql(qs),
          parameters=list(
             fromGene=as.list(from.gene),
             fromEntity=as.list(from.entity)

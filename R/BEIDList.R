@@ -14,7 +14,6 @@
 #' The "**.lname**" column correspond to the names of the BEIDList.
 #' - **scope**: the BEID scope ("be", "source" and "organism")
 #'
-#' @importFrom rlang !!
 #' @importFrom dplyr mutate
 #' @export
 #'
