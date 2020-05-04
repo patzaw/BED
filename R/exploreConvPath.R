@@ -4,10 +4,10 @@
 #' between two identifiers (including ProbeID).
 #'
 #' @param from.id the first identifier
-#' @param from the type of entity: \code{listBe()} or Probe
+#' @param from the type of entity: `listBe()` or Probe
 #' @param from.source the identifier source: database or platform
 #' @param to.id the first identifier
-#' @param to the type of entity: \code{listBe()} or Probe
+#' @param to the type of entity: `listBe()` or Probe
 #' @param to.source the identifier source: database or platform
 #' @param edgeDirection a logical value indicating if the direction of the
 #' edges should be drawn.
@@ -15,8 +15,10 @@
 #'
 #' @examples \dontrun{
 #' exploreConvPath(
-#'    from.id="ENST00000413465", from="Transcript", from.source="Ens_transcript",
-#'    to.id="ENSMUST00000108658", to="Transcript", to.source="Ens_transcript"
+#'    from.id="ENST00000413465",
+#'    from="Transcript", from.source="Ens_transcript",
+#'    to.id="ENSMUST00000108658",
+#'    to="Transcript", to.source="Ens_transcript"
 #' )
 #' }
 #'
@@ -91,10 +93,10 @@ exploreConvPath <- function(
    )
 
    ## Final query
-   qs <- prepCql(c(fqs, tqs, pqs, "RETURN DISTINCT p"))
+   qs <- neo2R::prepCql(c(fqs, tqs, pqs, "RETURN DISTINCT p"))
    if(verbose) cat(qs, fill=T)
    net <- bedCall(
-      cypher,
+      neo2R::cypher,
       query=qs,
       parameters=list(
          fromId=from.id, fromSource=from.source,
@@ -137,8 +139,8 @@ exploreConvPath <- function(
          nodesSymbol <- c(nodesSymbol, "")
       }else{
          qr <- bedCall(
-            cypher,
-            query=prepCql(c(
+            neo2R::cypher,
+            query=neo2R::prepCql(c(
                sprintf(
                   'MATCH (n:%s {value:"%s", database:"%s"})-[r:is_known_as]->(s)',
                   nodes[i, "label"], nodes[i, "value"], nodes[i, "database"]
@@ -270,17 +272,17 @@ exploreConvPath <- function(
       "red",
       "black"
    )
-   toRet <- visNetwork(
+   toRet <- visNetwork::visNetwork(
       nodes=tpNodes,
       edges=tpEdges
    )
-   toRet <- visInteraction(graph=toRet, selectable=TRUE)
-   toRet <- visOptions(
+   toRet <- visNetwork::visInteraction(graph=toRet, selectable=TRUE)
+   toRet <- visNetwork::visOptions(
       graph=toRet,
       highlightNearest = TRUE
       # nodesIdSelection=list(selected=tpNodes$id[which(tpNodes$label==from.id)])
    )
-   toRet <-  visLegend(
+   toRet <-  visNetwork::visLegend(
       graph=toRet,
       addNodes=c(
          lapply(

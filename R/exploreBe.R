@@ -23,8 +23,8 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
    id <- as.character(id)
    be <- match.arg(be)
    net <- bedCall(
-      f=cypher,
-      query=prepCql(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
          sprintf('MATCH (s:%s {value:$id, database:$db})', paste0(be, "ID")),
          '-[:is_replaced_by|is_associated_to*0..]->()-[:identifies]->(be)',
          'WITH DISTINCT be',
@@ -196,12 +196,12 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
       TRUE,
       FALSE
    )
-   toRet <- visNetwork(
+   toRet <- visNetwork::visNetwork(
       nodes=tpNodes,
       edges=tpEdges
    )
-   toRet <- visInteraction(graph=toRet, selectable=TRUE)
-   toRet <- visOptions(
+   toRet <- visNetwork::visInteraction(graph=toRet, selectable=TRUE)
+   toRet <- visNetwork::visOptions(
       graph=toRet,
       highlightNearest = TRUE,
       nodesIdSelection=list(
@@ -210,7 +210,7 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
          )]
       )
    )
-   toRet <-  visLegend(
+   toRet <-  visNetwork::visLegend(
       graph=toRet,
       addNodes=c(
          lapply(
