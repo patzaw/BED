@@ -1,4 +1,4 @@
--   [BED](#bed)
+-   [Introduction](#introduction)
 -   [Installation](#installation)
     -   [Dependencies](#dependencies)
     -   [Installation from github](#installation-from-github)
@@ -26,8 +26,8 @@
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-BED
-===
+Introduction
+============
 
 The aim of the BED (Biological Entity Dictionary) R package is to get
 and explore mapping between identifiers of biological entities (BE).

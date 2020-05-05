@@ -23,7 +23,7 @@ cranRef <- function(x){
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# BED
+# Introduction
 
 The aim of the BED (Biological Entity Dictionary) R package is to get
 and explore mapping between identifiers of biological entities (BE).
