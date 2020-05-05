@@ -82,12 +82,11 @@ Citing BED
 This package and the underlying research has been published in this peer
 reviewed article:
 
-<p>
-Godard P, van Eyll J (2018). “BED: a Biological Entity Dictionary based
-on a graph data model.” <em>F1000Research</em>, <b>7</b>, 195. doi:
-<a href="https://doi.org/10.12688/f1000research.13925.3">10.12688/f1000research.13925.3</a>,
-<a href="https://doi.org/10.12688/f1000research.13925.3">https://doi.org/10.12688/f1000research.13925.3</a>.
-</p>
+<a href="https://doi.org/10.12688/f1000research.13925.3" target="_blank">
+Patrice Godard and Jonathan van Eyll (2018). BED: a Biological Entity
+Dictionary based on a graph data model \[version 3; peer review: 2
+approved\]. F1000Research, 7:195. </a>
+
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 BED database instance available as a docker image

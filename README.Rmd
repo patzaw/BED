@@ -74,8 +74,9 @@ It's described in the [BED](https://patzaw.github.io/BED/BED.html) vignette.
 This package and the underlying research has been published in
 this peer reviewed article:
 
-`r format(citation("BED"), style="html")`
-
+<a href="`r citation("BED")[1]$url`" target="_blank">
+`r format(citation("BED"), style="textVersion")`
+</a>
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
