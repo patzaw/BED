@@ -1,4 +1,25 @@
 <!----------------------------------------------------------------------------->
+## Version 1.3.0
+
+### New features
+
+   - Use of lucene indexes for fast and flexible searches of BE:
+      - `searchBeid()`
+   - Find all identifiers in all scopes corresponding to genes:
+      - `geneIDsToAllScopes()`
+
+### Implementation changes
+
+   - Simplification of queries for getting gene descriptions
+   
+### Rebuild-BED.Rmd
+   
+   - Ensembl 100
+   - Based on neo4j-community-3.5.17
+   - GO molecular functions are not included anymore
+   (more relevant tools should be used for that purpose)
+
+<!----------------------------------------------------------------------------->
 ## Version 1.2.4
 
 ### Implementation changes
