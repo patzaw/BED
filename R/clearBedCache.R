@@ -65,7 +65,7 @@ clearBedCache <- function(
             stop(paste(
                "Could not remove the following file:",
                file.path(cachedbDir, queries[tn, "file"]),
-               "\nCheck cache files and/or clear the wholeé-",
+               "\nCheck cache files and/or clear the whole-",
                "cache using force=TRUE"
             ))
          }else{

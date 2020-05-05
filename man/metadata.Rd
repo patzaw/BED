@@ -6,6 +6,11 @@
 \usage{
 metadata(x, ...)
 }
+\arguments{
+\item{x}{an object representing a collection of BEID (e.g. BEIDList)}
+
+\item{...}{method specific parameters}
+}
 \description{
 Get object metadata
 }

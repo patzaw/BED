@@ -6,7 +6,8 @@
 #' @param to.source the to gene ID database
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
-#' **Depending on history it can take a very long time to return a very large result!**
+#' **Depending on history it can take a very long time to return a very**
+#' **large result!**
 #' @param verbose boolean indicating if the CQL query should be displayed
 #' @param recache boolean indicating if the CQL query should be run even if
 #' the table is already in cache
@@ -80,7 +81,7 @@ getHomTable <- function(
     if(is.null(fr) || nrow(fr)==0){
         return(NULL)
     }
-    fr <- dplyr::select(fr, id, Gene)
+    fr <- dplyr::select(fr, "id", "Gene")
     fr <- dplyr::rename(fr, "from"="id")
     bef <- unique(fr$Gene)
 
@@ -111,8 +112,8 @@ getHomTable <- function(
     )
     if(noCache){
         cr <- bedCall(
-            cypher,
-            prepCql(cql),
+            neo2R::cypher,
+            neo2R::prepCql(cql),
             parameters=parameters
         )
     }else{
@@ -126,8 +127,8 @@ getHomTable <- function(
             )
         )
         cr <- cacheBedCall(
-            f=cypher,
-            query=prepCql(cql),
+            f=neo2R::cypher,
+            query=neo2R::prepCql(cql),
             tn=tn,
             recache=recache
         )
@@ -147,7 +148,7 @@ getHomTable <- function(
     if(is.null(tr) || nrow(tr)==0){
         return(NULL)
     }
-    tr <- dplyr::select(tr, id, Gene)
+    tr <- dplyr::select(tr, "id", "Gene")
     tr <- dplyr::rename(tr, "to"="id")
 
     ## Results
@@ -157,14 +158,14 @@ getHomTable <- function(
     if(is.null(toRet) || nrow(toRet)==0){
         return(NULL)
     }
-    toRet <- unique(dplyr::select(toRet, from, tob))
+    toRet <- unique(dplyr::select(toRet, "from", "tob"))
     toRet <- dplyr::inner_join(
         toRet, tr, by=c("tob"="Gene")
     )
     if(is.null(toRet) || nrow(toRet)==0){
         return(NULL)
     }
-    toRet <- unique(dplyr::select(toRet, from, to))
+    toRet <- unique(dplyr::select(toRet, "from", "to"))
 
     # ## Filter
     # if(length(filter)>0 && !inherits(filter, "character")){
@@ -224,7 +225,7 @@ getHomTable <- function(
     #     'RETURN DISTINCT f.value as from, t.value as to'
     # )
     # if(verbose){
-    #     message(prepCql(cql))
+    #     message(neo2R::prepCql(cql))
     # }
     # ##
     # if(length(filter)==0){
@@ -239,15 +240,15 @@ getHomTable <- function(
     #         )
     #     )
     #     toRet <- cacheBedCall(
-    #         f=cypher,
-    #         query=prepCql(cql),
+    #         f=neo2R::cypher,
+    #         query=neo2R::prepCql(cql),
     #         tn=tn,
     #         recache=recache
     #     )
     # }else{
     #     toRet <- bedCall(
-    #         f=cypher,
-    #         query=prepCql(cql),
+    #         f=neo2R::cypher,
+    #         query=neo2R::prepCql(cql),
     #         parameters=list(filter=as.list(filter))
     #     )
     # }

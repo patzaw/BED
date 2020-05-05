@@ -7,21 +7,9 @@
 focusOnScope(x, ...)
 }
 \arguments{
-\item{x}{the object to be focused}
+\item{x}{an object representing a collection of BEID (e.g. BEIDList)}
 
-\item{...}{additional parameters to the BEID conversion function}
-
-\item{be}{the type of biological entity to focus on}
-
-\item{source}{the source of BEID to focus on}
-
-\item{organism}{the organism of BEID to focus on}
-
-\item{restricted}{if TRUE (default) the BEID are limited to current version
-of the source}
-
-\item{prefFilter}{if TRUE (default) the BEID are limited to prefered
-identifiers when they exist}
+\item{...}{method specific parameters for BEID conversion}
 }
 \value{
 Depends on the class of x

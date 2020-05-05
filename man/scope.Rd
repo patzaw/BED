@@ -6,6 +6,11 @@
 \usage{
 scope(x, ...)
 }
+\arguments{
+\item{x}{an object representing a collection of BEID (e.g. BEIDList)}
+
+\item{...}{method specific parameters}
+}
 \description{
 Get the BEID scope of an object
 }

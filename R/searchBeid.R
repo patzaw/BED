@@ -134,10 +134,11 @@ searchBeid <- function(x){
    if(is.null(values) || nrow(values)==0){
       return(NULL)
    }
+   .data <- NULL
    values <- mutate(
       values,
-      From=stringr::str_remove(from, "BEID [|][|] "),
-      BE=stringr::str_remove(be, "BEID [|][|] ")
+      From=stringr::str_remove(.data$from, "BEID [|][|] "),
+      BE=stringr::str_remove(.data$be, "BEID [|][|] ")
    )
    return(values)
 }

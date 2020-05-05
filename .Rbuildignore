@@ -1,6 +1,5 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
-^Build$
 ^supp$
 ^docs$
 ^Meta$

@@ -4,7 +4,7 @@ Title: Biological Entity Dictionary (BED)
 Version: 1.3.0
 Author: Patrice Godard
 Maintainer: Patrice Godard <patrice.godard@gmail.com>
-Description: This package provides an interface for neo4j database providing
+Description: An interface for the neo4j database providing
     mapping between different identifiers of biological entities.
 License: GPL-3
 LazyData: TRUE
@@ -25,7 +25,6 @@ Imports:
 Suggests:
     knitr,
     rmarkdown,
-    metabaser,
     biomaRt,
     GEOquery
 Encoding: UTF-8

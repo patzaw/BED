@@ -54,7 +54,7 @@ BEIDList <- function(
 ###############################################################################@
 #' @export
 #'
-scope.BEIDList <- function(x){
+scope.BEIDList <- function(x, ...){
    attr(x, "scope")
 }
 
@@ -62,14 +62,22 @@ scope.BEIDList <- function(x){
 ###############################################################################@
 #' @export
 #'
-metadata.BEIDList <- function(x){
+metadata.BEIDList <- function(x, ...){
    attr(x, "metadata")
 }
 
 ###############################################################################@
+#' Check if the provided object is a [BEIDList]
+#'
+#' @param x the object to check
+#'
+#' @return A logical value
+#'
 #' @export
 #'
-is.BEIDList <- function(x) inherits(x, "BEIDList")
+is.BEIDList <- function(x){
+   inherits(x, "BEIDList")
+}
 
 ###############################################################################@
 #' @export
@@ -83,7 +91,7 @@ length.BEIDList <- function(x){
 ###############################################################################@
 #' @export
 #'
-stack.BEIDList <- function(x){
+stack.BEIDList <- function(x, ...){
    class(x) <- "list"
    return(stack(x))
 }
@@ -91,7 +99,7 @@ stack.BEIDList <- function(x){
 ###############################################################################@
 #' @export
 #'
-format.BEIDList <- function(x){
+format.BEIDList <- function(x, ...){
    toRet <- sprintf(
       'BEIDList of %s elements gathering %s BEIDs in total',
       length(x), length(unique(unlist(x)))
@@ -269,7 +277,8 @@ focusOnScope.BEIDList <- function(
 #'
 filterByBEID.BEIDList <- function(
    x,
-   toKeep
+   toKeep,
+   ...
 ){
    l <- lapply(
       x,

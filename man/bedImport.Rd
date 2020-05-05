@@ -15,6 +15,8 @@ data.frame}
 
 \item{periodicCommit}{use periodic commit when loading the data
 (default: 1000).}
+
+\item{...}{additional parameters for \link{bedCall}}
 }
 \value{
 the results of the query

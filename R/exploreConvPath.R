@@ -124,8 +124,8 @@ exploreConvPath <- function(
                "preferred"=paste(n$properties$preferred, collapse=""),
                "platform"=paste(n$properties$platform, collapse=""),
                "url"=getBeIdURL(
-                  id=paste(n$properties$value, collapse=""),
-                  database=paste(n$properties$database, collapse="")
+                  ids=paste(n$properties$value, collapse=""),
+                  databases=paste(n$properties$database, collapse="")
                ),
                stringsAsFactors=FALSE
             )

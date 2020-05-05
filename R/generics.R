@@ -1,15 +1,8 @@
 ###############################################################################@
 #' Focus a BE related object on a specific identifier (BEID) scope
 #'
-#' @param x the object to be focused
-#' @param be the type of biological entity to focus on
-#' @param source the source of BEID to focus on
-#' @param organism the organism of BEID to focus on
-#' @param restricted if TRUE (default) the BEID are limited to current version
-#' of the source
-#' @param prefFilter if TRUE (default) the BEID are limited to prefered
-#' identifiers when they exist
-#' @param ... additional parameters to the BEID conversion function
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param ... method specific parameters for BEID conversion
 #'
 #' @return Depends on the class of x
 #'
@@ -23,6 +16,9 @@ focusOnScope <- function(x, ...){
 ###############################################################################@
 #' Get the BEID scope of an object
 #'
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param ... method specific parameters
+#'
 #' @export
 #'
 scope <- function(x, ...){
@@ -31,6 +27,9 @@ scope <- function(x, ...){
 
 ###############################################################################@
 #' Get the BEID scopes of an object
+#'
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param ... method specific parameters
 #'
 #' @return A tibble with 4 columns:
 #' - be
@@ -47,6 +46,9 @@ scopes <- function(x, ...){
 ###############################################################################@
 #' Get object metadata
 #'
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param ... method specific parameters
+#'
 #' @export
 #'
 metadata <- function(x, ...){
@@ -55,6 +57,9 @@ metadata <- function(x, ...){
 
 ###############################################################################@
 #' Get the BEIDs from an object
+#'
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param ... method specific parameters
 #'
 #' @return A tibble with at least 4 columns:
 #' - value
@@ -72,7 +77,7 @@ BEIDs <- function(x, ...){
 ###############################################################################@
 #' Filter an object to keep only a set of BEIDs
 #'
-#' @param x the object to filter
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
 #' @param toKeep a vector of elements to keep
 #' @param ... method specific parameters
 #'

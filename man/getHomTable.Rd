@@ -27,7 +27,8 @@ getHomTable(
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
-\strong{Depending on history it can take a very long time to return a very large result!}}
+\strong{Depending on history it can take a very long time to return a very}
+\strong{large result!}}
 
 \item{verbose}{boolean indicating if the CQL query should be displayed}
 

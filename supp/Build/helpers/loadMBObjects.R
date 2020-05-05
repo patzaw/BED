@@ -32,7 +32,7 @@ loadMBObjects <- function(orgOfInt){
     message(Sys.time(), " --> Importing objects")
     toImport <- objects[which(objects$ID %in% geneObj$ID), "ID", drop=F]
     colnames(toImport) <- "id"
-    loadBE(
+    BED:::loadBE(
         d=toImport, be="Object",
         dbname=odbname,
         version=NA,
@@ -53,7 +53,7 @@ loadMBObjects <- function(orgOfInt){
         stop("Verify object symbol for NA or blank values")
     }
     toImport$canonical <- TRUE
-    loadBESymbols(d=toImport, be="Object", dbname=odbname)
+    BED:::loadBESymbols(d=toImport, be="Object", dbname=odbname)
 
     ################################################
     taxOfInt <- unlist(lapply(orgOfInt, getTaxId))
@@ -69,7 +69,7 @@ loadMBObjects <- function(orgOfInt){
             ]
         toImport <- unique(takenGenes[, "GENEID", drop=F])
         colnames(toImport) <- "id"
-        loadBE(
+        BED:::loadBE(
             d=toImport, be="Gene",
             dbname=gdbname,
             version=NA,
@@ -87,7 +87,7 @@ loadMBObjects <- function(orgOfInt){
             drop=F
         ])
         colnames(toImport) <- "id"
-        loadBE(
+        BED:::loadBE(
             d=toImport, be="Gene",
             dbname=db,
             taxId=NA,
@@ -99,7 +99,7 @@ loadMBObjects <- function(orgOfInt){
             drop=F
         ])
         colnames(toImport) <- c("id2", "id1")
-        loadIsAssociatedTo(
+        BED:::loadIsAssociatedTo(
             d=toImport,
             db2=db,
             db1=gdbname,
@@ -129,7 +129,7 @@ loadMBObjects <- function(orgOfInt){
         if(any(table(toImport$symbol)>14)){
             stop("Verify gene symbols for NA or blank values")
         }
-        loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
+        BED:::loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
         ## Add gene names
@@ -139,7 +139,7 @@ loadMBObjects <- function(orgOfInt){
         if(any(table(toImport$name)>22)){
             stop("Verify gene names for NA or blank values")
         }
-        loadBENames(d=toImport, be="Gene", dbname=gdbname)
+        BED:::loadBENames(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
         ## Add "codes_for" edges
@@ -148,7 +148,7 @@ loadMBObjects <- function(orgOfInt){
             c("GENE", "ID")
         ]
         colnames(toImport) <- c("gid", "oid")
-        loadCodesFor(
+        BED:::loadCodesFor(
             d=toImport,
             gdb=gdbname,
             odb=odbname

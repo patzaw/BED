@@ -91,6 +91,7 @@ cleanDubiousXRef <- function(d, strict=TRUE){
          !.data$id1 %in% nonIssues$id1 & !.data$id2 %in% nonIssues$id2
       )
       exrefTmp <- exref
+      .data <- NULL
       while(!identical(exrefTmp, undecided)){
          exrefTmp <- dplyr::select(undecided, -"l2", -"l1")
          dup1 <- dplyr::group_by(exrefTmp, .data$id1)

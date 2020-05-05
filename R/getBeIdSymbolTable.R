@@ -33,7 +33,7 @@
 #' @seealso [getBeIdSymbols], [getBeIdNameTable]
 #'
 #' @importFrom neo2R prepCql cypher
-#' @importFrom dplyr arrange select filter distinct
+#' @importFrom dplyr arrange select filter distinct desc
 #' @export
 #'
 getBeIdSymbolTable <- function(
@@ -128,7 +128,7 @@ getBeIdSymbolTable <- function(
         )
     )
     if(verbose){
-        message(prepCql(cql))
+        message(neo2R::prepCql(cql))
     }
     ##
     if(length(filter)==0){
@@ -142,15 +142,15 @@ getBeIdSymbolTable <- function(
             )
         )
         toRet <- cacheBedCall(
-            f=cypher,
-            query=prepCql(cql),
+            f=neo2R::cypher,
+            query=neo2R::prepCql(cql),
             tn=tn,
             recache=recache
         )
     }else{
         toRet <- bedCall(
-            f=cypher,
-            query=prepCql(cql),
+            f=neo2R::cypher,
+            query=neo2R::prepCql(cql),
             parameters=list(filter=as.list(filter))
         )
     }
@@ -160,15 +160,16 @@ getBeIdSymbolTable <- function(
         toRet$canonical <- as.logical(toRet$canonical)
         toRet$direct <- as.logical(toRet$direct)
         # toRet <- toRet[order(toRet$direct, decreasing=T),]
-        toRet <- dplyr::arrange(toRet, desc(direct))
-        toRet <- dplyr::distinct(toRet, id, symbol, .keep_all=TRUE)
+        .data <- NULL
+        toRet <- dplyr::arrange(toRet, dplyr::desc(.data$direct))
+        toRet <- dplyr::distinct(toRet, .data$id, .data$symbol, .keep_all=TRUE)
         # toRet <- toRet[which(!duplicated(toRet[,c("id", "symbol")])),]
         ##
         if(!entity){
             toRet <- unique(toRet[, setdiff(colnames(toRet), c("entity"))])
         }
         if(restricted){
-            toRet <- dplyr::filter(toRet, direct)
+            toRet <- dplyr::filter(toRet, .data$direct)
             # toRet <- toRet[which(toRet$direct),]
         }
     }

@@ -113,10 +113,10 @@ getBeIdConvTable <- function(
         fbeid,
         "from"="id",
         # "fpref"="preferred",
-        "entity"=fromBE,
+        "entity"=!!fromBE,
         "fika"="canonical"
     )
-    fbeid <- dplyr::select(fbeid, from, fika, entity)
+    fbeid <- dplyr::select(fbeid, "from", "fika", "entity")
 
     ## From fromBE to  ----
     bef <- unique(fbeid$entity)
@@ -142,8 +142,8 @@ getBeIdConvTable <- function(
         )
         if(noCache){
             toRet <- bedCall(
-                cypher,
-                prepCql(ftqs),
+                neo2R::cypher,
+                neo2R::prepCql(ftqs),
                 parameters=parameters
             )
         }else{
@@ -156,8 +156,8 @@ getBeIdConvTable <- function(
                 )
             )
             toRet <- cacheBedCall(
-                f=cypher,
-                query=prepCql(ftqs),
+                f=neo2R::cypher,
+                query=neo2R::prepCql(ftqs),
                 tn=tn,
                 recache=recache
             )
@@ -168,7 +168,7 @@ getBeIdConvTable <- function(
         toRet <- dplyr::inner_join(
             toRet, fbeid, by=c("fent"="entity")
         )
-        toRet <- dplyr::select(toRet, -fent)
+        toRet <- dplyr::select(toRet, -"fent")
         bef <- unique(toRet$tent)
     }
 
@@ -195,10 +195,10 @@ getBeIdConvTable <- function(
         tbeid,
         "to"="id",
         # "tpref"="preferred",
-        "entity"=toBE,
+        "entity"=!!toBE,
         "tika"="canonical"
     )
-    tbeid <- dplyr::select(tbeid, to, preferred, tika, entity)
+    tbeid <- dplyr::select(tbeid, "to", "preferred", "tika", "entity")
 
     ## Joining ----
     if(fromBE==toBE){

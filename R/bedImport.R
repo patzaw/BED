@@ -8,6 +8,7 @@
 #' data.frame
 #' @param periodicCommit use periodic commit when loading the data
 #' (default: 1000).
+#' @param ... additional parameters for [bedCall]
 #'
 #' @return the results of the query
 #'

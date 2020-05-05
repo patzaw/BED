@@ -7,7 +7,7 @@
 filterByBEID(x, toKeep, ...)
 }
 \arguments{
-\item{x}{the object to filter}
+\item{x}{an object representing a collection of BEID (e.g. BEIDList)}
 
 \item{toKeep}{a vector of elements to keep}
 

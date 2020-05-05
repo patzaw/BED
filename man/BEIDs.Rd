@@ -6,6 +6,11 @@
 \usage{
 BEIDs(x, ...)
 }
+\arguments{
+\item{x}{an object representing a collection of BEID (e.g. BEIDList)}
+
+\item{...}{method specific parameters}
+}
 \value{
 A tibble with at least 4 columns:
 \itemize{

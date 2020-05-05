@@ -284,13 +284,13 @@ getBeIds <- function(
    }
 
    if(verbose){
-      message(prepCql(cql))
+      message(neo2R::prepCql(cql))
    }
    ##
    if(noCache){
       toRet <- bedCall(
-         f=cypher,
-         query=prepCql(cql),
+         f=neo2R::cypher,
+         query=neo2R::prepCql(cql),
          parameters=parameters
       )
    }else{
@@ -306,8 +306,8 @@ getBeIds <- function(
          )
       )
       toRet <- cacheBedCall(
-         f=cypher,
-         query=prepCql(cql),
+         f=neo2R::cypher,
+         query=neo2R::prepCql(cql),
          tn=tn,
          recache=recache,
          parameters=parameters
@@ -315,20 +315,21 @@ getBeIds <- function(
    }
    toRet <- unique(toRet)
    if(length(filter)>0 & !is.null(toRet)){
+      .data <- NULL
       if(source=="Symbol" & !caseSensitive){
          toRet <- dplyr::filter(
             toRet,
-            toupper(id) %in% filter
+            toupper(.data$id) %in% filter
          )
       }else{
          toRet <- dplyr::filter(
             toRet,
-            id %in% filter
+            .data$id %in% filter
          )
       }
    }
    if(length(bef)>0 & !is.null(toRet)){
-      toRet <- dplyr::filter(toRet, get(!!be) %in% bef)
+      toRet <- dplyr::filter(toRet, get(!!be) %in% !!bef)
    }
    ##
    if(!is.null(toRet)){
@@ -336,7 +337,7 @@ getBeIds <- function(
       toRet <- dplyr::arrange(toRet, get(!!be))
       ##
       if(!entity){
-         toRet <- dplyr::distinct(dplyr::select(toRet, -!!be, -preferred))
+         toRet <- dplyr::distinct(dplyr::select(toRet, -!!be, -"preferred"))
       }
       attr(toRet, "scope") <- list(be=be, source=source, organism=organism)
    }
