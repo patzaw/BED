@@ -75,7 +75,7 @@ This package and the underlying research has been published in
 this peer reviewed article:
 
 <a href="`r citation("BED")[1]$url`" target="_blank">
-`r format(citation("BED"), style="textVersion")`
+`r sub('[[]', '(', sub('[]]', ')', format(citation("BED"), style="textVersion")))`
 </a>
 
 <!----------------------------------------------------------------------------->

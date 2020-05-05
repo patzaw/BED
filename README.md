@@ -84,8 +84,8 @@ reviewed article:
 
 <a href="https://doi.org/10.12688/f1000research.13925.3" target="_blank">
 Patrice Godard and Jonathan van Eyll (2018). BED: a Biological Entity
-Dictionary based on a graph data model \[version 3; peer review: 2
-approved\]. F1000Research, 7:195. </a>
+Dictionary based on a graph data model (version 3; peer review: 2
+approved). F1000Research, 7:195. </a>
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
