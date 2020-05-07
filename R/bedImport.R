@@ -12,7 +12,7 @@
 #'
 #' @return the results of the query
 #'
-#' @seealso [bedCall]
+#' @seealso [bedCall], [neo2R::import_from_df]
 #'
 #' @importFrom neo2R cypher
 #' @importFrom utils write.table
@@ -20,68 +20,10 @@
 bedImport <- function(
    cql, toImport, periodicCommit=10000, ...
 ){
-   if(!inherits(toImport, "data.frame")){
-      stop("toImport must be a data.frame")
-   }
-   importPath <- get("importPath", bedEnv)
-   if(!is.null(importPath)){
-      if(!file.exists(importPath)){
-         stop(sprintf("Import path (%s) does not exist.", importPath))
-      }
-      tf <- tempfile(tmpdir=importPath)
-   }else{
-      tf <- tempfile()
-   }
-   for(cn in colnames(toImport)){
-      toImport[,cn] <- as.character(toImport[,cn])
-   }
-   pc <- c()
-   if(is.numeric(periodicCommit) && length(periodicCommit)==1){
-      pc <- sprintf("USING PERIODIC COMMIT %s", periodicCommit)
-   }
-   cql <- prepCql(c(
-      pc,
-      paste0(
-         'LOAD CSV WITH HEADERS FROM "file:',
-         ifelse(
-            !is.null(importPath),
-            file.path("", basename(tf)),
-            tf
-         ),
-         '" AS row '# FIELDTERMINATOR "\\t"'
-      ),
-      cql
+   invisible(bedCall(
+      neo2R::import_from_df,
+      cql=cql, toImport=toImport,
+      periodicCommit=periodicCommit,
+      ...
    ))
-   if(nrow(toImport)<=1000){
-      utils::write.table(
-         toImport,
-         file=tf,
-         sep=",", #"\t",
-         quote=T,
-         row.names=F, col.names=T
-      )
-      on.exit(file.remove(tf))
-      toRet <- bedCall(neo2R::cypher, query=cql, ...)
-      invisible(toRet)
-   }else{
-      utils::write.table(
-         toImport[c(1:1000), , drop=FALSE],
-         file=tf,
-         sep=",", #"\t",
-         quote=T,
-         row.names=F, col.names=T
-      )
-      on.exit(file.remove(tf))
-      toRet <- bedCall(neo2R::cypher, query=cql, ...)
-      bedCall(neo2R::cypher, query='CALL db.resampleOutdatedIndexes();')
-      utils::write.table(
-         toImport[-c(1:1000), , drop=FALSE],
-         file=tf,
-         sep=",", #"\t",
-         quote=T,
-         row.names=F, col.names=T
-      )
-      toRet <- c(toRet, bedCall(neo2R::cypher, query=cql, ...))
-      invisible(toRet)
-   }
 }

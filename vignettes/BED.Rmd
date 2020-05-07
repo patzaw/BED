@@ -4,23 +4,23 @@ author: "Patrice Godard"
 date: "`r format(Sys.time(), '%B %d %Y')`"
 always_allow_html: true
 output:
-  html_document:
-    keep_md: no
-    number_sections: yes
-    self_contained: yes
-    theme: cerulean
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: yes
-    number_sections: yes
+   html_document:
+      keep_md: no
+      number_sections: yes
+      self_contained: yes
+      theme: cerulean
+      toc: yes
+      toc_float: yes
+   pdf_document:
+      toc: yes
+      number_sections: yes
 package: "BED (version `r packageVersion('BED')`)"
 vignette: >
-    %\VignetteIndexEntry{BED - Tutorial}
-    %\VignetteEncoding{UTF-8}
-    %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteIndexEntry{BED - Tutorial}
+   %\VignetteEncoding{UTF-8}
+   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
-  chunk_output_type: console
+   chunk_output_type: console
 ---
 
 ```{r setup, echo=FALSE}
@@ -63,10 +63,7 @@ underlying Neo4j DB.
 
 ```{r, message=FALSE}
 library(BED)
-connectToBed(
-    url="http://localhost:5454",
-    username="neo4j", password="1234"
-)
+connectToBed(url="localhost:5454", remember=TRUE, useCache=TRUE)
 ```
 
 The connection can be checked the following way.
@@ -102,8 +99,8 @@ showBedDataModel()
 
 ```{r, echo=FALSE}
 htmltools::includeHTML(system.file(
-    "Documentation", "BED-Model", "BED.html",
-    package="BED"
+   "Documentation", "BED-Model", "BED.html",
+   package="BED"
 ))
 ```
 

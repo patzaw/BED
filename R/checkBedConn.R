@@ -53,6 +53,11 @@ checkBedConn <- function(verbose=FALSE){
       message(dbVersion$name)
       message(dbVersion$instance)
       message(dbVersion$version)
+      if(get("useCache", bedEnv)){
+         message("Cache ON")
+      }else{
+         message("Cache OFF")
+      }
    }
    if(
       is.null(dbVersion$name) || dbVersion$name!="BED" ||

@@ -9,13 +9,14 @@ connectToBed(
   username = NULL,
   password = NULL,
   connection = 1,
-  remember = TRUE,
+  remember = FALSE,
+  useCache = NA,
   importPath = NULL
 )
 }
 \arguments{
 \item{url}{a character string. The host and the port are sufficient
-(e.g: "localhost:7474")}
+(e.g: "localhost:5454")}
 
 \item{username}{a character string}
 
@@ -24,9 +25,19 @@ connectToBed(
 \item{connection}{the id of the connection already registered to use. By
 default the first registered connection is used.}
 
-\item{remember}{if TRUE the connection is registered. All the registered
-connections can be listed with \code{\link{lsBedConnections}} and any of
-them can be forgotten with \code{\link{forgetBedConnection}}.}
+\item{remember}{if TRUE connection information is saved localy in a file
+and used to automatically connect the next time.
+The default is set to FALSE.
+All the connections that have been saved can be listed
+with \link{lsBedConnections} and any of
+them can be forgotten with \link{forgetBedConnection}.}
+
+\item{useCache}{if TRUE the results of large queries can be saved localy
+in a file. The default is FALSE for policy reasons.
+But it is recommended to set it to TRUE to improve the speed
+of recurent queries.
+If NA (default parameter) the value is taken from former connection if
+it exists or it is set to false}
 
 \item{importPath}{the path to the import folder for loading information
 in BED (used only when feeding the database ==> default: NULL)}
@@ -43,6 +54,6 @@ Be carefull that you should reconnect to BED database each time
 the environment is reloaded.
 }
 \seealso{
-\code{\link{checkBedConn}}, \code{\link{lsBedConnections}},
-\code{\link{forgetBedConnection}}
+\link{checkBedConn}, \link{lsBedConnections},
+\link{forgetBedConnection}
 }

@@ -13,6 +13,5 @@ forgetBedConnection(connection)
 Forget a BED connection
 }
 \seealso{
-\code{\link{lsBedConnections}},
-\code{\link{checkBedConn}}, \code{\link{connectToBed}}
+\link{lsBedConnections}, \link{checkBedConn}, \link{connectToBed}
 }

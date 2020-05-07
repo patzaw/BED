@@ -25,5 +25,5 @@ the results of the query
 Not exported to avoid unintended modifications of the DB.
 }
 \seealso{
-\link{bedCall}
+\link{bedCall}, \link[neo2R:import_from_df]{neo2R::import_from_df}
 }

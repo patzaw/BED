@@ -11,21 +11,25 @@ cacheBedResult <- function(
    value,
    name
 ){
-   if(length(grep("^0000-", name))>0){
-      stop('names starting by "0000-" are reserved')
+   if(!get("useCache", bedEnv)){
+      invisible(NULL)
+   }else{
+      if(length(grep("^0000-", name))>0){
+         stop('names starting by "0000-" are reserved')
+      }
+      cache <- get("cache", bedEnv)
+      cachedbFile <- get("cachedbFile", bedEnv)
+      cachedbDir <- dirname(cachedbFile)
+      file <- paste0(name, ".rda")
+      save(value, file=file.path(cachedbDir, file))
+      cache[name, ] <- data.frame(name=name, file=file, stringsAsFactors=FALSE)
+      save(cache, file=cachedbFile)
+      assign(
+         "cache",
+         cache,
+         bedEnv
+      )
    }
-   cache <- get("cache", bedEnv)
-   cachedbFile <- get("cachedbFile", bedEnv)
-   cachedbDir <- dirname(cachedbFile)
-   file <- paste0(name, ".rda")
-   save(value, file=file.path(cachedbDir, file))
-   cache[name, ] <- data.frame(name=name, file=file, stringsAsFactors=FALSE)
-   save(cache, file=cachedbFile)
-   assign(
-      "cache",
-      cache,
-      bedEnv
-   )
 }
 
 #' Get a BED query result from cache

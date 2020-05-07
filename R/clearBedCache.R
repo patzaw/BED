@@ -17,63 +17,46 @@ clearBedCache <- function(
    if(!checkBedConn(verbose=FALSE)){
       stop("Unsuccessful connection")
    }
-   if(hard){
-      cachedbFile <- get("cachedbFile", bedEnv)
-      cachedbDir <- dirname(cachedbFile)
-      file.remove(list.files(path=cachedbDir, full.names=TRUE))
-      cache <- data.frame(
-         name=character(),
-         file=character(),
-         stringsAsFactors=FALSE
-      )
-      assign(
-         "cache",
-         cache,
-         bedEnv
-      )
-      checkBedCache()
-      invisible()
-   }
-   cache <- get("cache", bedEnv)
-   cachedbFile <- get("cachedbFile", bedEnv)
-   cachedbDir <- dirname(cachedbFile)
-   if(is.null(queries)){
-      queries <- cache
+   if(!get("useCache", bedEnv)){
+      warning("Cache is OFF: nothing is done")
+      invisible(NULL)
    }else{
-      if(any(!queries %in% rownames(cache))){
-         warning(sprintf(
-            "%s not in cache",
-            paste(setdiff(queries, rownames(cache)), collapse=", ")
-         ))
-      }
-      queries <- cache[intersect(queries, rownames(cache)),]
-   }
-   for(tn in rownames(queries)){
-      if(verbose){
-         message(paste("Removing", tn, "from cache"))
-      }
-      if(file.remove(file.path(cachedbDir, queries[tn, "file"]))){
-         cache <- cache[setdiff(rownames(cache), tn),]
-         save(cache, file=cachedbFile)
+      if(hard){
+         cachedbFile <- get("cachedbFile", bedEnv)
+         cachedbDir <- dirname(cachedbFile)
+         file.remove(list.files(path=cachedbDir, full.names=TRUE))
+         cache <- data.frame(
+            name=character(),
+            file=character(),
+            stringsAsFactors=FALSE
+         )
          assign(
             "cache",
             cache,
             bedEnv
          )
+         checkBedCache()
+         invisible()
+      }
+      cache <- get("cache", bedEnv)
+      cachedbFile <- get("cachedbFile", bedEnv)
+      cachedbDir <- dirname(cachedbFile)
+      if(is.null(queries)){
+         queries <- cache
       }else{
-         if(!force){
-            stop(paste(
-               "Could not remove the following file:",
-               file.path(cachedbDir, queries[tn, "file"]),
-               "\nCheck cache files and/or clear the whole-",
-               "cache using force=TRUE"
+         if(any(!queries %in% rownames(cache))){
+            warning(sprintf(
+               "%s not in cache",
+               paste(setdiff(queries, rownames(cache)), collapse=", ")
             ))
-         }else{
-            warning(paste(
-               "Could not remove the following file:",
-               file.path(cachedbDir, queries[tn, "file"]),
-               "\nClearing cache table anyway (force=TRUE)"
-            ))
+         }
+         queries <- cache[intersect(queries, rownames(cache)),]
+      }
+      for(tn in rownames(queries)){
+         if(verbose){
+            message(paste("Removing", tn, "from cache"))
+         }
+         if(file.remove(file.path(cachedbDir, queries[tn, "file"]))){
             cache <- cache[setdiff(rownames(cache), tn),]
             save(cache, file=cachedbFile)
             assign(
@@ -81,8 +64,30 @@ clearBedCache <- function(
                cache,
                bedEnv
             )
+         }else{
+            if(!force){
+               stop(paste(
+                  "Could not remove the following file:",
+                  file.path(cachedbDir, queries[tn, "file"]),
+                  "\nCheck cache files and/or clear the whole-",
+                  "cache using force=TRUE"
+               ))
+            }else{
+               warning(paste(
+                  "Could not remove the following file:",
+                  file.path(cachedbDir, queries[tn, "file"]),
+                  "\nClearing cache table anyway (force=TRUE)"
+               ))
+               cache <- cache[setdiff(rownames(cache), tn),]
+               save(cache, file=cachedbFile)
+               assign(
+                  "cache",
+                  cache,
+                  bedEnv
+               )
+            }
          }
       }
+      invisible(cache)
    }
-   invisible(cache)
 }

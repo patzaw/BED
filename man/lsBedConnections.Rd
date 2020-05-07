@@ -10,6 +10,5 @@ lsBedConnections()
 List all registered BED connection
 }
 \seealso{
-\code{\link{connectToBed}},
-\code{\link{forgetBedConnection}}, \code{\link{checkBedConn}}
+\link{connectToBed}, \link{forgetBedConnection}, \link{checkBedConn}
 }

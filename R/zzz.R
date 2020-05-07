@@ -1,14 +1,24 @@
+###############################################################################@
 #' Connect to a neo4j BED database
 #'
 #' @param url a character string. The host and the port are sufficient
-#' (e.g: "localhost:7474")
+#' (e.g: "localhost:5454")
 #' @param username a character string
 #' @param password a character string
 #' @param connection the id of the connection already registered to use. By
 #' default the first registered connection is used.
-#' @param remember if TRUE the connection is registered. All the registered
-#' connections can be listed with \code{\link{lsBedConnections}} and any of
-#' them can be forgotten with \code{\link{forgetBedConnection}}.
+#' @param remember if TRUE connection information is saved localy in a file
+#' and used to automatically connect the next time.
+#' The default is set to FALSE.
+#' All the connections that have been saved can be listed
+#' with [lsBedConnections] and any of
+#' them can be forgotten with [forgetBedConnection].
+#' @param useCache if TRUE the results of large queries can be saved localy
+#' in a file. The default is FALSE for policy reasons.
+#' But it is recommended to set it to TRUE to improve the speed
+#' of recurent queries.
+#' If NA (default parameter) the value is taken from former connection if
+#' it exists or it is set to false
 #' @param importPath the path to the import folder for loading information
 #' in BED (used only when feeding the database ==> default: NULL)
 #'
@@ -18,24 +28,26 @@
 #' @details Be carefull that you should reconnect to BED database each time
 #' the environment is reloaded.
 #'
-#' @seealso \code{\link{checkBedConn}}, \code{\link{lsBedConnections}},
-#' \code{\link{forgetBedConnection}}
+#' @seealso [checkBedConn], [lsBedConnections],
+#' [forgetBedConnection]
 #'
 #' @importFrom neo2R startGraph
 #' @export
 #'
 connectToBed <- function(
    url=NULL, username=NULL, password=NULL, connection=1,
-   remember=TRUE,
+   remember=FALSE, useCache=NA,
    importPath=NULL
 ){
-   bedDir <- file.path(
-      Sys.getenv("HOME"), "R", "BED"
+   stopifnot(
+      is.logical(remember), length(remember)==1, !is.na(remember),
+      is.logical(useCache), length(useCache)==1
    )
-   dir.create(bedDir, showWarnings=FALSE, recursive=TRUE)
-   conFile <- file.path(
-      bedDir, "BED-Connections.rda"
-   )
+   bedDir <- file.path(Sys.getenv("HOME"), "R", "BED")
+   if(remember){
+      dir.create(bedDir, showWarnings=FALSE, recursive=TRUE)
+   }
+   conFile <- file.path(bedDir, "BED-Connections.rda")
    connections <- list()
    if(file.exists(conFile)){
       load(conFile)
@@ -45,17 +57,28 @@ connectToBed <- function(
          checkBedConn()
          return(FALSE)
       }else{
-         url <- connections[[connection]]["url"]
-         username <- connections[[connection]]["username"]
-         password <- connections[[connection]]["password"]
+         url <- connections[[connection]][["url"]]
+         username <- connections[[connection]][["username"]]
+         password <- connections[[connection]][["password"]]
+         useCache <- ifelse(
+            is.na(useCache),
+            connections[[connection]][["cache"]],
+            useCache
+         )
       }
       connections <- c(connections[connection], connections[-connection])
    }else{
       if(length(username)==0 && length(password)==0){
          username <- password <- NA
       }
+      url <- sub("^https?://", "", url)
+      if(is.na(useCache)){
+         useCache <- FALSE
+      }
       connections <- c(
-         list(c(url=url, username=username, password=password)),
+         list(list(
+            url=url, username=username, password=password, cache=useCache
+         )),
          connections
       )
    }
@@ -65,10 +88,12 @@ connectToBed <- function(
       startGraph(
          url=url,
          username=username,
-         password=password
+         password=password,
+         importPath=importPath
       ),
       bedEnv
    ))
+   assign("useCache", useCache, bedEnv)
    corrConn <- checkBedConn(verbose=TRUE)
    if(!corrConn){
       rm("graph", envir=bedEnv)
@@ -76,6 +101,7 @@ connectToBed <- function(
    }else{
       connections[[1]][colnames(attr(corrConn, "dbVersion")[1,])] <-
          as.character(attr(checkBedConn(), "dbVersion")[1,])
+      connections[[1]]["cache"] <- useCache
    }
    ##
    if(remember){
@@ -89,58 +115,53 @@ connectToBed <- function(
       )]
       save(connections, file=conFile)
    }
-   ## The SQLite cache
-   cachedbDir <- file.path(
-      Sys.getenv("HOME"), "R",
-      "BED",
-      paste(
-         sub(
-            "[:]", "..",
+   ## File system cache
+   if(useCache){
+      dir.create(bedDir, showWarnings=FALSE, recursive=TRUE)
+      cachedbDir <- file.path(
+         bedDir,
+         paste(
             sub(
-               "[/].*$", "",
-               sub("^https{0,1}[:][/]{2}", "", url)
-            )
-         ),
-         username,
-         sep=".."
+               "[:]", "..",
+               sub(
+                  "[/].*$", "",
+                  sub("^https{0,1}[:][/]{2}", "", url)
+               )
+            ),
+            username,
+            sep=".."
+         )
       )
-   )
-   dir.create(cachedbDir, showWarnings=FALSE, recursive=TRUE)
-   cachedbFile <- file.path(cachedbDir, "0000-BED-cache.rda")
-   assign(
-      "cachedbFile",
-      cachedbFile,
-      bedEnv
-   )
-   if(file.exists(cachedbFile)){
-      load(cachedbFile)
-   }else{
-      cache <- data.frame(
-         name=character(),
-         file=character(),
-         stringsAsFactors=FALSE
+      dir.create(cachedbDir, showWarnings=FALSE, recursive=TRUE)
+      cachedbFile <- file.path(cachedbDir, "0000-BED-cache.rda")
+      assign(
+         "cachedbFile",
+         cachedbFile,
+         bedEnv
       )
+      if(file.exists(cachedbFile)){
+         load(cachedbFile)
+      }else{
+         cache <- data.frame(
+            name=character(),
+            file=character(),
+            stringsAsFactors=FALSE
+         )
+      }
+      assign(
+         "cache",
+         cache,
+         bedEnv
+      )
+      ## Managing cache vs DB version
+      checkBedCache(newCon=TRUE)
    }
-   assign(
-      "cache",
-      cache,
-      bedEnv
-   )
-   ## Managing cache vs DB version
-   checkBedCache(newCon=TRUE)
-   ## Setting the import path for feeding the database
-   assign(
-      "importPath",
-      importPath,
-      bedEnv
-   )
 }
 
-##########################
+###############################################################################@
 #' List all registered BED connection
 #'
-#' @seealso \code{\link{connectToBed}},
-#' \code{\link{forgetBedConnection}}, \code{\link{checkBedConn}}
+#' @seealso [connectToBed], [forgetBedConnection], [checkBedConn]
 #'
 #' @export
 #'
@@ -155,13 +176,12 @@ lsBedConnections <- function(){
    return(connections)
 }
 
-##########################
+###############################################################################@
 #' Forget a BED connection
 #'
 #' @param connection the id of the connection to forget.
 #'
-#' @seealso \code{\link{lsBedConnections}},
-#' \code{\link{checkBedConn}}, \code{\link{connectToBed}}
+#' @seealso [lsBedConnections], [checkBedConn], [connectToBed]
 #'
 #'
 #' @export
@@ -178,7 +198,7 @@ forgetBedConnection <- function(connection){
    save(connections, file=conFile)
 }
 
-##########################
+###############################################################################@
 bedEnv <- new.env(hash=TRUE, parent=emptyenv())
 .onLoad <- function(libname, pkgname){
    connectToBed()

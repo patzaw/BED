@@ -238,7 +238,9 @@ neo4j authentication is disabled.
 
 ```{r bedConnect, message=FALSE}
 connectToBed(
-   url="http://localhost:5410",
+   url="localhost:5410",
+   remember=FALSE,
+   useCache=TRUE,
    importPath=file.path(getwd(), "neo4jImport")
 )
 ```

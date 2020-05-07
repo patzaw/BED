@@ -1,4 +1,14 @@
 <!----------------------------------------------------------------------------->
+## Version 1.4.0
+
+### Implementation changes
+
+   - By default the system does not remember connections for policy reasons.
+   - By default the system does not use cache for policy reasons. However,
+   it is recommended to set it to TRUE when connecting to improve the speed
+   of recurent queries.
+
+<!----------------------------------------------------------------------------->
 ## Version 1.3.0
 
 ### New features
