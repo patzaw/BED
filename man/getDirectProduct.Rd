@@ -25,13 +25,15 @@ If FALSE returns only non-canonical production processes.
 If NA (default) canonical information is taken into account.}
 }
 \value{
-a data.frame with the following columns: \itemize{
-\item origin: the origin BE identifiers
-\item osource: the origin database
-\item product: the product BE identifiers
-\item psource: the production database
-\item canonical: whether the production process is canonical or not
+a data.frame with the following columns:
+\itemize{
+\item \strong{origin}: the origin BE identifiers
+\item \strong{osource}: the origin database
+\item \strong{product}: the product BE identifiers
+\item \strong{psource}: the production database
+\item \strong{canonical}: whether the production process is canonical or not
 }
+
 The process is also returned as an attribute of the data.frame.
 }
 \description{
@@ -52,5 +54,5 @@ attr(res, "process")
 
 }
 \seealso{
-\code{\link{getDirectOrigin}}, \code{\link{convBeIds}}
+\link{getDirectOrigin}, \link{convBeIds}
 }

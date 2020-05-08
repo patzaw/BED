@@ -15,7 +15,6 @@
 #' exploreBe("Gene", "100", "EntrezGene")
 #' }
 #'
-#' @import neo2R visNetwork
 #' @export
 #'
 exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){

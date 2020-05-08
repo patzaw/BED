@@ -19,8 +19,8 @@ getBeIdURL <- function(ids, databases){
         length(databases)==1 | length(databases)==length(ids)
     )
     dbs <- bedCall(
-        f=cypher,
-        query=prepCql("MATCH (db:BEDB) RETURN db.name, db.idURL")
+        f=neo2R::cypher,
+        query=neo2R::prepCql("MATCH (db:BEDB) RETURN db.name, db.idURL")
     )
     baseUrls <- dbs[match(databases, dbs$db.name), ]$"db.idURL"
     if(length(databases)==1){

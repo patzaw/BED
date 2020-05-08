@@ -9,13 +9,14 @@
 #' @param process the production process among:
 #' "is_expressed_as", "is_translated_in", "codes_for".
 #'
-#' @return a data.frame with the following columns: \itemize{
-#'  \item origin: the origin BE identifiers
-#'  \item osource: the origin database
-#'  \item product: the product BE identifiers
-#'  \item psource: the production database
-#'  \item canonical: whether the production process is canonical or not
-#' }
+#' @return a data.frame with the following columns:
+#'
+#'  - **origin**: the origin BE identifiers
+#'  - **osource**: the origin database
+#'  - **product**: the product BE identifiers
+#'  - **psource**: the production database
+#'  - **canonical**: whether the production process is canonical or not
+#'
 #' The process is also returned as an attribute of the data.frame.
 #'
 #' @examples \dontrun{
@@ -28,7 +29,7 @@
 #' attr(res, "process")
 #' }
 #'
-#' @seealso \code{\link{getDirectOrigin}}, \code{\link{convBeIds}}
+#' @seealso [getDirectOrigin], [convBeIds]
 #'
 #' @export
 #'
@@ -58,8 +59,8 @@ getDirectOrigin <- function(
       )
    )
    toRet <- bedCall(
-      f=cypher,
-      query=prepCql(cql),
+      f=neo2R::cypher,
+      query=neo2R::prepCql(cql),
       parameters=list(
          ids=as.list(unique(as.character(ids))),
          sources=as.list(unique(as.character(sources)))

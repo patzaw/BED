@@ -13,17 +13,17 @@ getBeIdSymbols(ids, limForCache = 4000, ...)
 collected for all IDs (beyond provided ids) and cached for futur queries.
 If not, results are collected only for provided ids and not cached.}
 
-\item{...}{params for the \code{\link{getBeIdSymbolTable}} function}
+\item{...}{params for the \link{getBeIdSymbolTable} function}
 }
 \value{
 a data.frame with the
 following fields:
-\describe{
-\item{id}{the from BE ID}
-\item{symbol}{the BE symbol}
-\item{canonical}{true if the symbol is canonical for the direct BE ID}
-\item{direct}{false if the symbol is not directly associated to the BE ID}
-\item{entity}{(optional) the technical ID of to BE}
+\itemize{
+\item \strong{id}: the from BE ID
+\item \strong{symbol}: the BE symbol
+\item \strong{canonical}: true if the symbol is canonical for the direct BE ID
+\item \strong{direct}: false if the symbol is not directly associated to the BE ID
+\item \strong{entity}: (optional) the technical ID of to BE
 }
 }
 \description{
@@ -41,6 +41,5 @@ getBeIdSymbols(
 
 }
 \seealso{
-\code{\link{getBeIdSymbolTable}},
-\code{\link{getBeIdNames}}
+\link{getBeIdSymbolTable}, \link{getBeIdNames}
 }

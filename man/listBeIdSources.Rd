@@ -46,11 +46,11 @@ taken from sources)}
 \value{
 A data.frame indicating the number of ID in each available database
 with the following fields:
-\describe{
-\item{database}{the database name}
-\item{nbBe}{number of distinct entities}
-\item{nbId}{number of identifiers}
-\item{be}{the BE under focus}
+\itemize{
+\item \strong{database}: the database name
+\item \strong{nbBe}: number of distinct entities
+\item \strong{nbId}: number of identifiers
+\item \strong{be}: the BE under focus
 }
 }
 \description{
@@ -64,5 +64,5 @@ listBeIdSources(be="Transcript", organism="mouse")
 
 }
 \seealso{
-\code{\link{listBe}}, \code{\link{largestBeSource}}
+\link{listBe}, \link{largestBeSource}
 }

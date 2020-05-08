@@ -6,9 +6,7 @@
 #' @param organism character vector of 1 element corresponding to the organism
 #' of interest (e.g. "Homo sapiens")
 #' @param reDumpThr time difference threshold between 2 downloads
-#' @param curDate current date as given by \code{\link{Sys.Date}}
-#'
-#' @importFrom utils stack
+#' @param curDate current date as given by [Sys.Date]
 #'
 getNcbiGeneTransPep <- function(
    organism,
@@ -16,11 +14,11 @@ getNcbiGeneTransPep <- function(
    curDate
 ){
 
-   ################################################
-   ## Organism
+   ################################################@
+   ## Organism ----
    taxId <- getTaxId(organism)
 
-   ################################################
+   ################################################@
    ## Dump ----
    dumpDate <- gene_info <- gene2ensembl <-
       # gene2unigene <- gene2vega <-
@@ -39,7 +37,7 @@ getNcbiGeneTransPep <- function(
       curDate=curDate
    )
 
-   ################################################
+   ################################################@
    ## DB information ----
    gdbname <- "EntrezGene"
    tdbname <- "RefSeq"
@@ -47,7 +45,7 @@ getNcbiGeneTransPep <- function(
    ddate <- dumpDate
    release <- format(ddate, "%Y%m%d")
 
-   ################################################
+   ################################################@
    ## Genes ----
    gdbCref <- c(
       # "MIM"="MIM_GENE",
@@ -63,7 +61,7 @@ getNcbiGeneTransPep <- function(
       "MIM"="MIM_GENE"
    )
 
-   ################################################
+   ################################################@
    ## Add gene IDs ----
    message(Sys.time(), " --> Importing gene IDs")
    geneAss <- unique(gene2refseq[,c("GeneID", "assembly")])
@@ -95,7 +93,7 @@ getNcbiGeneTransPep <- function(
       attribute="assembly"
    )
 
-   ################################################
+   ################################################@
    ## Add gene symbols ----
    message(Sys.time(), " --> Importing gene symbols")
    gSymb <- data.frame(
@@ -109,7 +107,7 @@ getNcbiGeneTransPep <- function(
       split="[|]"
    )
    names(gSyn) <- gene_info$GeneID
-   gSyn <- stack(gSyn)
+   gSyn <- utils::stack(gSyn)
    gSyn$ind <- as.character(gSyn$ind)
    gSyn <- gSyn[,c("ind", "values")]
    gSyn$canonical <- rep("FALSE", nrow(gSyn))
@@ -127,7 +125,7 @@ getNcbiGeneTransPep <- function(
    toImport <- rbind(gSymb, gSyn, otherSyn)
    loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
 
-   ################################################
+   ################################################@
    ## Add gene names ----
    message(Sys.time(), " --> Importing gene names")
    toImport <- gene_info[, c("GeneID", "Full_name_from_nomenclature_authority")]
@@ -139,7 +137,7 @@ getNcbiGeneTransPep <- function(
    )
    loadBENames(d=toImport, be="Gene", dbname=gdbname)
 
-   ################################################
+   ################################################@
    ## Add gene cross references ----
    ## Cross references from gene_info
    withXref <- gene_info[which(gene_info$dbXrefs!="-"),]
@@ -163,7 +161,7 @@ getNcbiGeneTransPep <- function(
    xrefByDb <- lapply(
       dbs,
       function(db){
-         toRet <- stack(lapply(xref, function(x) x$ref[which(x$db==db)]))
+         toRet <- utils::stack(lapply(xref, function(x) x$ref[which(x$db==db)]))
          colnames(toRet) <- c("xref", "GeneID")
          toRet <- toRet[,c("GeneID", "xref")]
          return(toRet)
@@ -307,7 +305,7 @@ getNcbiGeneTransPep <- function(
       }
    }
 
-   ################################################
+   ################################################@
    ## Gene history ----
    message(Sys.time(), " --> Importing gene history")
    beidToAdd <- gene_history[
@@ -352,7 +350,7 @@ getNcbiGeneTransPep <- function(
    colnames(toImport) <- c("new", "old")
    loadHistory(d=toImport, dbname=gdbname, be="Gene")
 
-   ################################################
+   ################################################@
    ## Transcription events ----
    message(Sys.time(), " --> Importing transcript IDs")
    transcriptions <- unique(
@@ -458,7 +456,7 @@ getNcbiGeneTransPep <- function(
    #    )
    # }
 
-   ################################################
+   ################################################@
    ## Translation events ----
    message(Sys.time(), " --> Importing peptide IDs")
    translations <- unique(gene2refseq[,c(

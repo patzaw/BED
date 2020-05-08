@@ -5,20 +5,18 @@
 #'
 #' @return A data.frame mapping taxonomy IDs to organism names with the
 #' following fields:
-#' \describe{
-#'  \item{taxID}{the taxonomy ID}
-#'  \item{name}{the organism name}
-#'  \item{nameClass}{the class of the name}
-#' }
+#'
+#'  - **taxID**: the taxonomy ID
+#'  - **name**: the organism name
+#'  - **nameClass**: the class of the name
 #'
 #' @examples \dontrun{
 #' getOrgNames(c("9606", "10090"))
 #' getOrgNames("9606")
 #' }
 #'
-#' @seealso \code{\link{getTaxId}}, \code{\link{listOrganisms}}
+#' @seealso [getTaxId], [listOrganisms]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 getOrgNames <- function(taxID=NULL){
@@ -40,8 +38,8 @@ getOrgNames <- function(taxID=NULL){
         'ORDER BY taxID, nameClass'
     )
     toRet <- unique(bedCall(
-        cypher,
-        query=prepCql(cql),
+        neo2R::cypher,
+        query=neo2R::prepCql(cql),
         parameters=list(tid=as.list(as.character(taxID)))
     ))
     return(toRet)

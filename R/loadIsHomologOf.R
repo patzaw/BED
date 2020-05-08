@@ -124,7 +124,7 @@ loadIsHomologOf <- function(
                 'RETURN beid.value as id1, id(bef) as bef1'
             )
             qres <- bedCall(
-                f=cypher, prepCql(cql),
+                f=neo2R::cypher, neo2R::prepCql(cql),
                 parameters=list(
                     db=db1,
                     limitTo=as.list(as.character(id))
@@ -134,9 +134,9 @@ loadIsHomologOf <- function(
                 qres <- data.frame(id1=character(), bef1=numeric())
             }
             colnames(qres) <- c("id1", "bef1")
-            rem <- merge(rem, qres, by="id1")
+            rem <- dplyr::inner_join(rem, qres, by="id1")
             colnames(qres) <- c("id2", "bef2")
-            rem <- merge(rem, qres, by="id2")
+            rem <- dplyr::inner_join(rem, qres, by="id2")
         }else{
             ##
             id <- unique(rem$id1)
@@ -153,7 +153,7 @@ loadIsHomologOf <- function(
                 'RETURN beid.value as id1, id(bef) as bef1'
             )
             qres <- bedCall(
-                f=cypher, prepCql(cql),
+                f=neo2R::cypher, neo2R::prepCql(cql),
                 parameters=list(
                     db=db1,
                     limitTo=as.list(as.character(id))
@@ -163,7 +163,7 @@ loadIsHomologOf <- function(
                 qres <- data.frame(id1=character(), bef1=numeric())
             }
             colnames(qres) <- c("id1", "bef1")
-            rem <- merge(rem, qres, by="id1")
+            rem <- dplyr::inner_join(rem, qres, by="id1")
             ##
             id <- unique(rem$id2)
             cql <- c(
@@ -179,7 +179,7 @@ loadIsHomologOf <- function(
                 'RETURN beid.value as id2, id(bef) as bef2'
             )
             qres <- bedCall(
-                f=cypher, prepCql(cql),
+                f=neo2R::cypher, neo2R::prepCql(cql),
                 parameters=list(
                     db=db2,
                     limitTo=as.list(as.character(id))
@@ -189,7 +189,7 @@ loadIsHomologOf <- function(
                 qres <- data.frame(id2=character(), bef2=numeric())
             }
             colnames(qres) <- c("id2", "bef2")
-            rem <- merge(rem, qres, by="id2")
+            rem <- dplyr::inner_join(rem, qres, by="id2")
         }
         ##
         ## Filter uninformative nodes

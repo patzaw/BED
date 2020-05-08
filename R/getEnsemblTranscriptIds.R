@@ -37,12 +37,12 @@ getEnsemblTranscriptIds <- function(
     )
     dumpEnsCore(organism, release, gv, toDump)
 
-    ################################################
-    ## Current Ensembl database and organism
+    ################################################@
+    ## Current Ensembl database and organism ----
     taxId <- getTaxId(organism)
 
-    ################################################
-    ## Add stable IDs
+    ################################################@
+    ## Add stable IDs ----
     message(Sys.time(), " --> Importing internal IDs")
     toAdd <- seq_region[
        match(transcript$seq_region_id, seq_region$"seq_region_id"),
@@ -79,25 +79,21 @@ getEnsemblTranscriptIds <- function(
        attribute="seq_region"
     )
 
-    ################################################
-    ## Add expression events
+    ################################################@
+    ## Add expression events ----
     message(Sys.time(), " --> Importing expression events")
-    canTrans <- merge(
+    canTrans <- dplyr::inner_join(
         gene[,c("stable_id", "canonical_transcript_id")],
         transcript[,c("transcript_id", "stable_id")],
-        by.x="canonical_transcript_id",
-        by.y="transcript_id",
-        all=F
+        by=c("canonical_transcript_id"="transcript_id")
     )[,2:3]
     colnames(canTrans) <- c("gid", "tid")
     canTrans$canonical <- TRUE
     ##
-    expTrans <- merge(
+    expTrans <- dplyr::inner_join(
         gene[,c("gene_id", "stable_id")],
         transcript[,c("transcript_id", "stable_id", "gene_id")],
-        by.x="gene_id",
-        by.y="gene_id",
-        all=F
+        by=c("gene_id"="gene_id")
     )[,c(2,4)]
     colnames(expTrans) <- c("gid", "tid")
     expTrans$canonical <- FALSE
@@ -112,8 +108,8 @@ getEnsemblTranscriptIds <- function(
         tdb=tdbname
     )
 
-    ################################################
-    ## Add cross references
+    ################################################@
+    ## Add cross references ----
     for(ensDb in names(dbCref)){
         db <- dbCref[ensDb]
         message(Sys.time(), " --> ", ensDb)
@@ -123,18 +119,15 @@ getEnsemblTranscriptIds <- function(
             c("xref_id", "dbprimary_acc")
         ]
         if(nrow(takenXref)>0){
-            cref <- merge(
+            cref <- dplyr::inner_join(
                 takenXref,
                 object_xref[,c("ensembl_id", "xref_id")],
-                by="xref_id",
-                all.x=F, all.y=F
+                by="xref_id"
             )
-            cref <- merge(
+            cref <- dplyr::inner_join(
                 cref,
                 transcript[,c("stable_id", "transcript_id")],
-                by.x="ensembl_id",
-                by.y="transcript_id",
-                all.x=F, all.y=F
+                by=c("ensembl_id"="transcript_id")
             )[, c("dbprimary_acc", "stable_id")]
             if(length(grep("Vega", ensDb))>0){
                 cref <- cref[
@@ -168,15 +161,13 @@ getEnsemblTranscriptIds <- function(
         }
     }
 
-    ################################################
-    ## Add symbols
+    ################################################@
+    ## Add symbols ----
     message(Sys.time(), " --> Importing transcript symbols")
-    disp <- merge(
+    disp <- dplyr::inner_join(
         transcript[,c("stable_id", "display_xref_id")],
         xref[,c("xref_id", "display_label", "description")],
-        by.x="display_xref_id",
-        by.y="xref_id",
-        all.x=F, all.y=F
+        by=c("display_xref_id"="xref_id")
     )
     tSymb <- data.frame(
         disp[,c("stable_id", "display_label")],
@@ -191,8 +182,8 @@ getEnsemblTranscriptIds <- function(
     ),])
     loadBESymbols(d=toImport, be="Transcript", dbname=tdbname)
 
-    ################################################
-    ## Add names
+    ################################################@
+    ## Add names ----
     message(Sys.time(), " --> Importing transcript names")
     toImport <- disp[,c("stable_id", "description")]
     toImport <- unique(toImport[which(
@@ -201,8 +192,8 @@ getEnsemblTranscriptIds <- function(
     colnames(toImport) <- c("id", "name")
     loadBENames(d=toImport, be="Transcript", dbname=tdbname)
 
-    ################################################
-    ## History
+    ################################################@
+    ## History ----
     message(Sys.time(), " --> Importing transcript history")
     beidToAdd <- stable_id_event[
         which(
@@ -212,7 +203,7 @@ getEnsemblTranscriptIds <- function(
         ),
         c("old_stable_id", "mapping_session_id")
         ]
-    beidToAdd <- merge(
+    beidToAdd <- dplyr::inner_join(
         beidToAdd,
         mapping_session[, c("mapping_session_id", "old_release", "created")],
         by="mapping_session_id"
@@ -228,7 +219,7 @@ getEnsemblTranscriptIds <- function(
         ),
         c("new_stable_id", "mapping_session_id")
         ]
-    toAdd <- merge(
+    toAdd <- dplyr::inner_join(
         toAdd,
         mapping_session[, c("mapping_session_id", "new_release")],
         by="mapping_session_id"

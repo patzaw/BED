@@ -32,6 +32,7 @@ scope <- function(x, ...){
 #' @param ... method specific parameters
 #'
 #' @return A tibble with 4 columns:
+#'
 #' - be
 #' - source
 #' - organism
@@ -62,6 +63,7 @@ metadata <- function(x, ...){
 #' @param ... method specific parameters
 #'
 #' @return A tibble with at least 4 columns:
+#'
 #' - value
 #' - be
 #' - source

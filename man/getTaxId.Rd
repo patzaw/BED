@@ -22,6 +22,5 @@ getTaxId("human")
 
 }
 \seealso{
-\code{\link{getOrgNames}},
-\code{\link{listOrganisms}}
+\link{getOrgNames}, \link{listOrganisms}
 }

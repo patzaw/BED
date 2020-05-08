@@ -7,8 +7,6 @@
 #' @param env the R environment in which to load the tables when downloaded
 #' @param curDate current date as given by [Sys.Date]
 #'
-#' @importFrom utils download.file read.table
-#'
 dumpNcbiTax <- function(
     reDumpThr,
     toDump=c("names.dmp"),

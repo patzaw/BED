@@ -96,8 +96,8 @@ loadCorrespondsTo <- function(
                 'RETURN beid.value as id1, id(be) as be1'
             )
             qres <- bedCall(
-                f=cypher,
-                query=prepCql(cql),
+                f=neo2R::cypher,
+                query=neo2R::prepCql(cql),
                 parameters=list(
                     db=db1,
                     limitTo=as.list(as.character(id))
@@ -107,9 +107,9 @@ loadCorrespondsTo <- function(
                 qres <- data.frame(id1=character(), be1=numeric())
             }
             colnames(qres) <- c("id1", "be1")
-            rem <- merge(rem, qres, by="id1")
+            rem <- dplyr::inner_join(rem, qres, by="id1")
             colnames(qres) <- c("id2", "be2")
-            rem <- merge(rem, qres, by="id2")
+            rem <- dplyr::inner_join(rem, qres, by="id2")
         }else{
             ##
             id <- unique(rem$id1)
@@ -127,7 +127,7 @@ loadCorrespondsTo <- function(
                 'RETURN beid.value as id1, id(be) as be1'
             )
             qres <- bedCall(
-                f=cypher, query=prepCql(cql),
+                f=neo2R::cypher, query=neo2R::prepCql(cql),
                 parameters=list(
                     db=db1,
                     limitTo=as.list(as.character(id))
@@ -137,7 +137,7 @@ loadCorrespondsTo <- function(
                 qres <- data.frame(id1=character(), be1=numeric())
             }
             colnames(qres) <- c("id1", "be1")
-            rem <- merge(rem, qres, by="id1")
+            rem <- dplyr::inner_join(rem, qres, by="id1")
             ##
             id <- unique(rem$id2)
             cql <- c(
@@ -154,7 +154,7 @@ loadCorrespondsTo <- function(
                 'RETURN beid.value as id2, id(be) as be2'
             )
             qres <- bedCall(
-                f=cypher, query=prepCql(cql),
+                f=neo2R::cypher, query=neo2R::prepCql(cql),
                 parameters=list(
                     db=db2,
                     limitTo=as.list(as.character(id))
@@ -164,7 +164,7 @@ loadCorrespondsTo <- function(
                 qres <- data.frame(id2=character(), be2=numeric())
             }
             colnames(qres) <- c("id2", "be2")
-            rem <- merge(rem, qres, by="id2")
+            rem <- dplyr::inner_join(rem, qres, by="id2")
         }
         ##
         ## Filter uninformative nodes

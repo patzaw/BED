@@ -13,16 +13,16 @@ getBeIdNames(ids, limForCache = 4000, ...)
 collected for all IDs (beyond provided ids) and cached for futur queries.
 If not, results are collected only for provided ids and not cached.}
 
-\item{...}{params for the \code{\link{getBeIdNameTable}} function}
+\item{...}{params for the \link{getBeIdNameTable} function}
 }
 \value{
 a data.frame mapping BE IDs and names with the
 following fields:
-\describe{
-\item{id}{the BE ID}
-\item{name}{the corresponding name}
-\item{direct}{true if the name is directly related to the BE ID}
-\item{entity}{(optional) the technical ID of to BE}
+\itemize{
+\item \strong{id}: the BE ID
+\item \strong{name}: the corresponding name
+\item \strong{direct}: true if the name is directly related to the BE ID
+\item \strong{entity}: (optional) the technical ID of to BE
 }
 }
 \description{
@@ -40,6 +40,5 @@ getBeIdNames(
 
 }
 \seealso{
-\code{\link{getBeIdNameTable}},
-\code{\link{getBeIdSymbols}}
+\link{getBeIdNameTable}, \link{getBeIdSymbols}
 }

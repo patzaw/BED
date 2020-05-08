@@ -100,7 +100,7 @@ loadBEVersion <- function(
     )
     cql <- c('MERGE', dbcql)
     ##
-    bedCall(cypher, prepCql(cql))
+    bedCall(neo2R::cypher, neo2R::prepCql(cql))
 
     cql <- c(
        sprintf(
@@ -126,7 +126,7 @@ loadBEVersion <- function(
        )
        cql <- c('MERGE', orgcql)
        ##
-       bedCall(cypher, prepCql(cql))
+       bedCall(neo2R::cypher, neo2R::prepCql(cql))
 
        if(be=="Gene"){
           cql <- c(

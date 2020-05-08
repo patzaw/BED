@@ -2,9 +2,6 @@
 #'
 #' Not exported to avoid unintended modifications of the DB.
 #'
-#' @importFrom utils packageName
-#' @importFrom neo2R readCql cypher
-#'
 loadLuceneIndexes <- function(){
     pkgname <- utils::packageName()
     ## Indexes

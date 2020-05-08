@@ -11,7 +11,7 @@ loadNcbiTax(reDumpThr, orgOfInt = c("human", "rat", "mouse"), curDate)
 
 \item{orgOfInt}{organisms of interest: a character vector}
 
-\item{curDate}{current date as given by \code{\link{Sys.Date}}}
+\item{curDate}{current date as given by \link{Sys.Date}}
 }
 \description{
 Not exported to avoid unintended modifications of the DB.

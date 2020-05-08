@@ -22,9 +22,6 @@
 #' - **Gene_source** (optional): the gene source input
 #' - **Gene_organism** (optional): the gene organism input
 #'
-#' @importFrom neo2R cypher
-#' @importFrom dplyr mutate select filter rename distinct bind_rows
-#' @importFrom stringr str_remove
 #' @export
 #'
 geneIDsToAllScopes <- function(

@@ -5,17 +5,17 @@
 #'
 #' @return A data.frame indicating the BE related to the ID source (database).
 #'
-#' @seealso \code{\link{listBeIdSources}}, \code{\link{listPlatforms}}
+#' @seealso [listBeIdSources], [listPlatforms]
 #'
 #' @export
 #'
 getAllBeIdSources <- function(recache=FALSE){
-    cql <- prepCql(
+    cql <- neo2R::prepCql(
         'MATCH (n:BEID) RETURN DISTINCT n.database as database, labels(n) as BE'
     )
     tn <- as.character(match.call()[[1]])
     toRet <- cacheBedCall(
-        f=cypher,
+        f=neo2R::cypher,
         query=cql,
         tn=tn,
         recache=recache

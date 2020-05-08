@@ -15,16 +15,16 @@ getBeIdDescription(ids, be, source, organism, ...)
 
 \item{organism}{organism name}
 
-\item{...}{further arguments for
-\code{\link{getBeIdNames}} and \code{\link{getBeIdSymbols}} functions}
+\item{...}{further arguments
+for \link{getBeIdNames} and \link{getBeIdSymbols} functions}
 }
 \value{
 a data.frame providing for each BE IDs
 (row.names are provided BE IDs):
-\describe{
-\item{id}{the BE ID}
-\item{symbol}{the BE symbol}
-\item{name}{the corresponding name}
+\itemize{
+\item \strong{id}: the BE ID
+\item \strong{symbol}: the BE symbol
+\item \strong{name}: the corresponding name
 }
 }
 \description{
@@ -42,6 +42,5 @@ getBeIdDescription(
 
 }
 \seealso{
-\code{\link{getBeIdNames}},
-\code{\link{getBeIdSymbols}}
+\link{getBeIdNames}, \link{getBeIdSymbols}
 }

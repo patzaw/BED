@@ -3,9 +3,6 @@
 #'
 #' Not exported to avoid unintended modifications of the DB.
 #'
-#' @importFrom utils packageName
-#' @importFrom neo2R readCql cypher
-#'
 loadBedModel <- function(){
     pkgname <- utils::packageName()
     ## Model
@@ -34,9 +31,6 @@ loadBedModel <- function(){
 #' Feeding BED: Load additional indexes in neo4j
 #'
 #' Not exported to avoid unintended modifications of the DB.
-#'
-#' @importFrom utils packageName
-#' @importFrom neo2R readCql cypher
 #'
 loadBedOtherIndexes <- function(){
     pkgname <- utils::packageName()

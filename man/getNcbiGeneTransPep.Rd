@@ -13,7 +13,7 @@ of interest (e.g. "Homo sapiens")}
 
 \item{reDumpThr}{time difference threshold between 2 downloads}
 
-\item{curDate}{current date as given by \code{\link{Sys.Date}}}
+\item{curDate}{current date as given by \link{Sys.Date}}
 }
 \description{
 Not exported to avoid unintended modifications of the DB.

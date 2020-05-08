@@ -22,7 +22,6 @@
 #' )
 #' }
 #'
-#' @import neo2R visNetwork
 #' @export
 #'
 exploreConvPath <- function(
@@ -134,7 +133,10 @@ exploreConvPath <- function(
    ))
    nodesSymbol <- c()
    for(i in 1:nrow(nodes)){
-      if(!nodes[i, "label"] %in% c("GeneID", "TranscriptID", "PeptideID", "ObjectID")){
+      if(
+         !nodes[i, "label"] %in%
+         c("GeneID", "TranscriptID", "PeptideID", "ObjectID")
+      ){
          nodesSymbol <- c(nodesSymbol, "")
       }else{
          qr <- bedCall(

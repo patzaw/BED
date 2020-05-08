@@ -18,5 +18,5 @@ The \code{attr(,"be")} correspond to the BE targeted by probes
 Internal use
 }
 \seealso{
-\code{\link{genBePath}}, \code{\link{listPlatforms}}
+\link{genBePath}, \link{listPlatforms}
 }

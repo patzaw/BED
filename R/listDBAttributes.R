@@ -4,7 +4,6 @@
 #'
 #' @return A character vector of attribute names
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 listDBAttributes <- function(dbname){
@@ -12,8 +11,8 @@ listDBAttributes <- function(dbname){
       stop("dbname should be a character vector of lenght 1")
    }
    bedCall(
-      cypher,
-      query=prepCql(c(
+      neo2R::cypher,
+      query=neo2R::prepCql(c(
          'MATCH (db:BEDB {name:$dbname})-[:provides]->(at:Attribute)',
          'RETURN DISTINCT at.name'
       )),

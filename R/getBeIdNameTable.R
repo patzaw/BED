@@ -31,8 +31,6 @@
 #'
 #' @seealso [getBeIdNames], [getBeIdSymbolTable]
 #'
-#' @importFrom neo2R prepCql cypher
-#' @importFrom dplyr arrange select filter distinct desc
 #' @export
 #'
 getBeIdNameTable <- function(

@@ -10,17 +10,15 @@
 #' @return A character value corresponding to the sub-query.
 #' Or, if onlyR, a character vector with the names of the relationships.
 #'
-#' @seealso \code{\link{genProbePath}}, \code{\link{listBe}}
-#'
-#' @importFrom neo2R prepCql cypher
+#' @seealso [genProbePath], [listBe]
 #'
 genBePath <- function(from, to, onlyR=FALSE){
    if(from==to){
       stop('from and to should be different.')
    }
    cqRes <- bedCall(
-      cypher,
-      query=prepCql(c(
+      neo2R::cypher,
+      query=neo2R::prepCql(c(
          sprintf(
             'MATCH (f:BEType {value:"%s"})',
             from

@@ -22,5 +22,5 @@ Or, if onlyR, a character vector with the names of the relationships.
 Internal use
 }
 \seealso{
-\code{\link{genProbePath}}, \code{\link{listBe}}
+\link{genProbePath}, \link{listBe}
 }

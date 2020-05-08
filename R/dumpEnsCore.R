@@ -8,9 +8,6 @@
 #' @param toDump the list of tables to download
 #' @param env the R environment in which to load the tables when downloaded
 #'
-#' @importFrom utils download.file read.table
-#' @importFrom readr read_file
-#'
 dumpEnsCore <- function(
     organism,
     release,

@@ -12,7 +12,7 @@ convBeIdLists(idList, entity = FALSE, ...)
 \item{entity}{if TRUE returns BE instead of BEID (default: FALSE).
 BE CAREFUL, THIS INTERNAL ID IS NOT STABLE AND CANNOT BE USED AS A REFERENCE.
 This internal identifier is useful to avoid biases related to identifier
-redundancy. See \url{../doc/BED.html#3_managing_identifiers}}
+redundancy. See <../doc/BED.html#3_managing_identifiers>}
 
 \item{...}{params for the \link{convBeIds} function}
 }

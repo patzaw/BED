@@ -28,8 +28,8 @@ incomplete name matches.}
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:
-\strong{Depending on history it can take a very long time to return
-a very large result!}}
+\strong{Depending on history it can take a very long time to return}
+\strong{a very large result!}}
 
 \item{by}{number of found items to be converted into relevant IDs.}
 
@@ -39,20 +39,22 @@ used to manage orphan IDs (not linked to any gene based on information
 taken from sources)}
 }
 \value{
-A data frame with the following fields:\itemize{
-\item{found: the element found in BED corresponding to the searched term}
-\item{be: the type of the element}
-\item{source: the source of the element}
-\item{organism: the related organism}
-\item{entity: the related entity internal ID}
-\item{ebe: the BE of the related entity}
-\item{canonical: if the symbol is canonical}
-\item{Relevant ID: the seeked element id}
-\item{Symbol: the symbol(s) of the corresponding gene(s)}
-\item{Name: the symbol(s) of the corresponding gene(s)}
+A data frame with the following fields:
+\itemize{
+\item \strong{found}: the element found in BED corresponding to the searched term
+\item \strong{be}: the type of the element
+\item \strong{source}: the source of the element
+\item \strong{organism}: the related organism
+\item \strong{entity}: the related entity internal ID
+\item \strong{ebe}: the BE of the related entity
+\item \strong{canonical}: if the symbol is canonical
+\item \strong{Relevant ID}: the seeked element id
+\item \strong{Symbol}: the symbol(s) of the corresponding gene(s)
+\item \strong{Name}: the symbol(s) of the corresponding gene(s)
 }
+
 Scope ("be", "source" and "organism") is provided as a named list
-in the "scope" attributes: \code{attr(x, "scope")}
+in the "scope" attributes: `attr(x, "scope")``
 }
 \description{
 Find Biological Entity in BED based on their IDs, symbols and names

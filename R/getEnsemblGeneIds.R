@@ -40,12 +40,12 @@ getEnsemblGeneIds <- function(
    )
    dumpEnsCore(organism, release, gv, toDump)
 
-   ################################################
-   ## Current Ensembl database and organism
+   ################################################@
+   ## Current Ensembl database and organism ----
    taxId <- getTaxId(organism)
 
-   ################################################
-   ## Add stable IDs
+   ################################################@
+   ## Add stable IDs ----
    message(Sys.time(), " --> Importing internal IDs")
    toAdd <- seq_region[
       match(gene$seq_region_id, seq_region$"seq_region_id"),
@@ -82,8 +82,8 @@ getEnsemblGeneIds <- function(
       attribute="seq_region"
    )
 
-   ################################################
-   ## Add cross references
+   ################################################@
+   ## Add cross references ----
    for(ensDb in names(dbCref)){
       db <- dbCref[ensDb]
       message(Sys.time(), " --> ", ensDb)
@@ -93,18 +93,15 @@ getEnsemblGeneIds <- function(
          c("xref_id", "dbprimary_acc")
          ]
       if(nrow(takenXref)>0){
-         cref <- merge(
+         cref <- dplyr::inner_join(
             takenXref,
             object_xref[,c("ensembl_id", "xref_id")],
-            by="xref_id",
-            all.x=F, all.y=F
+            by="xref_id"
          )
-         cref <- merge(
+         cref <- dplyr::inner_join(
             cref,
             gene[,c("stable_id", "gene_id")],
-            by.x="ensembl_id",
-            by.y="gene_id",
-            all.x=F, all.y=F
+            by=c("ensembl_id"="gene_id")
          )[, c("dbprimary_acc", "stable_id")]
          if(length(grep("Vega", ensDb))>0){
             cref <- cref[
@@ -140,8 +137,8 @@ getEnsemblGeneIds <- function(
       }
    }
 
-   ################################################
-   ## Add associations
+   ################################################@
+   ## Add associations ----
    for(ensDb in names(dbAss)){
       db <- dbAss[ensDb]
       message(Sys.time(), " --> ", ensDb)
@@ -151,18 +148,15 @@ getEnsemblGeneIds <- function(
          c("xref_id", "dbprimary_acc")
          ]
       if(nrow(takenXref)>0){
-         cref <- merge(
+         cref <- dplyr::inner_join(
             takenXref,
             object_xref[,c("ensembl_id", "xref_id")],
-            by="xref_id",
-            all.x=F, all.y=F
+            by="xref_id"
          )
-         cref <- merge(
+         cref <- dplyr::inner_join(
             cref,
             gene[,c("stable_id", "gene_id")],
-            by.x="ensembl_id",
-            by.y="gene_id",
-            all.x=F, all.y=F
+            by=c("ensembl_id"="gene_id")
          )[, c("dbprimary_acc", "stable_id")]
          if(length(grep("Vega", ensDb))>0){
             cref <- cref[
@@ -194,15 +188,13 @@ getEnsemblGeneIds <- function(
       }
    }
 
-   ################################################
-   ## Add symbols
+   ################################################@
+   ## Add symbols ----
    message(Sys.time(), " --> Importing gene symbols")
-   disp <- merge(
+   disp <- dplyr::inner_join(
       gene[,c("stable_id", "display_xref_id")],
       xref[,c("xref_id", "display_label", "description")],
-      by.x="display_xref_id",
-      by.y="xref_id",
-      all.x=F, all.y=F
+      by=c("display_xref_id"="xref_id")
    )
    gSymb <- data.frame(
       disp[,c("stable_id", "display_label")],
@@ -210,18 +202,15 @@ getEnsemblGeneIds <- function(
       stringsAsFactors=F
    )
    colnames(gSymb) <- c("id", "symbol", "canonical")
-   gSyn <- merge(
+   gSyn <- dplyr::inner_join(
       gene,
       object_xref,
-      by.x="gene_id",
-      by.y="ensembl_id",
-      all.x=F, all.y=F
+      by=c("gene_id"="ensembl_id")
    )[, c("stable_id", "xref_id")]
-   gSyn <- merge(
+   gSyn <- dplyr::inner_join(
       gSyn,
       external_synonym,
-      by="xref_id",
-      all.x=F, all.y=F
+      by="xref_id"
    )[, c("stable_id", "synonym")]
    gSyn <- unique(data.frame(
       gSyn,
@@ -240,8 +229,8 @@ getEnsemblGeneIds <- function(
    ),])
    loadBESymbols(d=toImport, be="Gene", dbname=dbname)
 
-   ################################################
-   ## Add names
+   ################################################@
+   ## Add names ----
    message(Sys.time(), " --> Importing gene names")
    toImport <- disp[,c("stable_id", "description")]
    toImport <- unique(toImport[which(
@@ -250,8 +239,8 @@ getEnsemblGeneIds <- function(
    colnames(toImport) <- c("id", "name")
    loadBENames(d=toImport, be="Gene", dbname=dbname)
 
-   ################################################
-   ## History
+   ################################################@
+   ## History ----
    message(Sys.time(), " --> Importing gene history")
    beidToAdd <- stable_id_event[
       which(
@@ -261,7 +250,7 @@ getEnsemblGeneIds <- function(
       ),
       c("old_stable_id", "mapping_session_id")
       ]
-   beidToAdd <- merge(
+   beidToAdd <- dplyr::inner_join(
       beidToAdd,
       mapping_session[, c("mapping_session_id", "old_release", "created")],
       by="mapping_session_id"
@@ -277,7 +266,7 @@ getEnsemblGeneIds <- function(
       ),
       c("new_stable_id", "mapping_session_id")
       ]
-   toAdd <- merge(
+   toAdd <- dplyr::inner_join(
       toAdd,
       mapping_session[, c("mapping_session_id", "new_release")],
       by="mapping_session_id"

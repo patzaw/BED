@@ -8,17 +8,16 @@
 #' @param limForCache if there are more ids than limForCache. Results are
 #' collected for all IDs (beyond provided ids) and cached for futur queries.
 #' If not, results are collected only for provided ids and not cached.
-#' @param ... params for the \code{\link{getBeIdSymbolTable}} function
+#' @param ... params for the [getBeIdSymbolTable] function
 #'
 #' @return a data.frame with the
 #' following fields:
-#' \describe{
-#'  \item{id}{the from BE ID}
-#'  \item{symbol}{the BE symbol}
-#'  \item{canonical}{true if the symbol is canonical for the direct BE ID}
-#'  \item{direct}{false if the symbol is not directly associated to the BE ID}
-#'  \item{entity}{(optional) the technical ID of to BE}
-#' }
+#'
+#'  - **id**: the from BE ID
+#'  - **symbol**: the BE symbol
+#'  - **canonical**: true if the symbol is canonical for the direct BE ID
+#'  - **direct**: false if the symbol is not directly associated to the BE ID
+#'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
 #' getBeIdSymbols(
@@ -29,8 +28,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdSymbolTable}},
-#' \code{\link{getBeIdNames}}
+#' @seealso [getBeIdSymbolTable], [getBeIdNames]
 #'
 #' @export
 #'

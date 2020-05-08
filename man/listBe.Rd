@@ -13,6 +13,6 @@ A character vector of biological entities (BE)
 Lists all the biological entities (BE) available in the BED database
 }
 \seealso{
-\code{\link{listPlatforms}}, \code{\link{listBeIdSources}},
-\code{\link{listOrganisms}}
+\link{listPlatforms}, \link{listBeIdSources},
+\link{listOrganisms}
 }

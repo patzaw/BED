@@ -13,13 +13,12 @@
 #'
 #' @return a data.frame providing for each BE IDs
 #' (row.names are provided BE IDs):
-#' \describe{
-#'  \item{id}{the BE ID}
-#'  \item{gsource}{the Gene ID the column name provides the source of the
-#'  used identifier}
-#'  \item{symbol}{the associated gene symbols}
-#'  \item{name}{the associated gene names}
-#' }
+#'
+#'  - **id**: the BE ID
+#'  - **gsource**: the Gene ID the column name provides the source of the
+#'  used identifier
+#'  - **symbol**: the associated gene symbols
+#'  - **name**: the associated gene names
 #'
 #' @examples \dontrun{
 #' getGeneDescription(
@@ -30,11 +29,8 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdDescription}},
-#' \code{\link{getBeIdNames}},
-#' \code{\link{getBeIdSymbols}}
+#' @seealso [getBeIdDescription], [getBeIdNames], [getBeIdSymbols]
 #'
-#' @importFrom dplyr group_by summarise
 #' @export
 #'
 getGeneDescription <- function(
@@ -78,14 +74,12 @@ getGeneDescription <- function(
       source=gsource,
       organism=organism
    )
-   tDesc <- merge(
+   tDesc <- dplyr::full_join(
       gids,
       gDesc,
-      by.x="to",
-      by.y="id",
-      all=TRUE
+      by=c("to"="id")
    )
-   tDesc <- group_by(tDesc, from)
+   tDesc <- dplyr::group_by(tDesc, from)
    ##
    gidSum <- function(x){
       x <- setdiff(x, NA)
@@ -107,7 +101,7 @@ getGeneDescription <- function(
          ))
       }
    }
-   toRet <- summarise(
+   toRet <- dplyr::summarise(
       tDesc,
       gene=gidSum(to),
       symbol=snSum(to, symbol),

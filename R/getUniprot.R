@@ -6,17 +6,15 @@
 #' of interest (e.g. "Homo sapiens")
 #' @param release the release of interest (check if already downloaded)
 #'
-#' @importFrom utils stack
-#'
 getUniprot <- function(
     organism,
     release
 ){
-    ################################################
+    ################################################@
     ## Organism ----
     taxId <- getTaxId(organism)
 
-    ################################################
+    ################################################@
     ## Dump ----
     gene_info <- NULL
     dumpUniprotDb(
@@ -24,18 +22,18 @@ getUniprot <- function(
         release=release
     )
 
-    ################################################
+    ################################################@
     ## Organism focus ----
     uids <- uids[which(uids$tax==taxId),]
     deprecated <- deprecated[which(deprecated$ID %in% uids$ID),]
     rsCref <- rsCref[which(rsCref$ID %in% uids$ID),]
     ensCref <- ensCref[which(ensCref$ID %in% uids$ID),]
 
-    ################################################
+    ################################################@
     ## DB information ----
     pdbname <- "Uniprot"
 
-    ################################################
+    ################################################@
     ## Uniprot IDs ----
     message(Sys.time(), " --> Importing Uniprot IDs")
     toImport <- unique(uids[, c("ID", "status"), drop=F])
@@ -55,7 +53,7 @@ getUniprot <- function(
        attribute="status"
     )
 
-    ################################################
+    ################################################@
     ## Add symbols ----
     message(Sys.time(), " --> Importing Uniprot symbols")
     toImport <- data.frame(
@@ -66,7 +64,7 @@ getUniprot <- function(
     colnames(toImport) <- c("id", "symbol", "canonical")
     loadBESymbols(d=toImport, be="Peptide", dbname=pdbname)
 
-    ################################################
+    ################################################@
     ## Add names ----
     message(Sys.time(), " --> Importing Uniprot names")
     toImport <- uids[,c("ID", "name")]
@@ -78,7 +76,7 @@ getUniprot <- function(
     )
     loadBENames(d=toImport, be="Peptide", dbname=pdbname)
 
-    ################################################
+    ################################################@
     ## Add Uniprot cross references ----
 
     ## * Ensembl ----
@@ -123,7 +121,7 @@ getUniprot <- function(
         be="Peptide"
     )
 
-    ################################################
+    ################################################@
     ## Depreacted IDs ----
     message(Sys.time(), " --> Importing Uniprot deprecated IDs")
     toImport <- unique(deprecated[, "deprecated", drop=F])
@@ -141,14 +139,14 @@ getUniprot <- function(
     colnames(toImport) <- c("new", "old")
     loadHistory(d=toImport, dbname=pdbname, be="Peptide")
 
-    ################################################
+    ################################################@
     ## Orphan Uniprot IDs ----
     message(Sys.time(), " --> Managing orphan Uniprot IDs")
     gdbname <- "BEDTech_gene"
     tdbname <- "BEDTech_transcript"
     orph <- bedCall(
-        cypher,
-        query=prepCql(c(
+        neo2R::cypher,
+        query=neo2R::prepCql(c(
             sprintf(
                 'MATCH (pid {database:"%s"})-[:identifies]->(p:Peptide)',
                 pdbname

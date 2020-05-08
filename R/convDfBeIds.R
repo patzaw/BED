@@ -57,7 +57,7 @@ convDfBeIds <- function(
    ct <- ct[,c("from", ifelse(entity, "to.entity", "to"))]
    colnames(ct) <- c("from", "to")
    colnames(ct) <- paste("conv", colnames(ct), sep=".")
-   df <- dplyr::left_join(df, ct, by="conv.from")
+   df <- dplyr::inner_join(df, ct, by="conv.from")
    df <- df[, c(cols, "conv.from", "conv.to")]
    class(df) <- oriClass
    attr(df, "scope") <- c(scope, list(entity=entity))

@@ -37,7 +37,7 @@ in a file. The default is FALSE for policy reasons.
 But it is recommended to set it to TRUE to improve the speed
 of recurent queries.
 If NA (default parameter) the value is taken from former connection if
-it exists or it is set to false}
+it exists or it is set to FALSE.}
 
 \item{importPath}{the path to the import folder for loading information
 in BED (used only when feeding the database ==> default: NULL)}
@@ -51,7 +51,7 @@ Connect to a neo4j BED database
 }
 \details{
 Be carefull that you should reconnect to BED database each time
-the environment is reloaded. It is done automaticaly if \code{remember} is
+the environment is reloaded. It is done automatically if \code{remember} is
 set to TRUE.
 
 Information about how to get an instance of the BED neo4j database is

@@ -9,9 +9,6 @@
 #' @return This function returns d without dubious cross-references.
 #' Issues are reported in attr(d, "issues").
 #'
-#' @importFrom dplyr filter group_by ungroup mutate summarise left_join select bind_rows
-#' @export
-#'
 cleanDubiousXRef <- function(d, strict=TRUE){
 
    ############################################################################@
@@ -61,9 +58,9 @@ cleanDubiousXRef <- function(d, strict=TRUE){
    ############################################################################@
    ## Preprocessing ----
    dup1 <- dplyr::group_by(d, .data$id1)
-   dup1 <- dplyr::ungroup(summarise(dup1, l2=length(.data$id2)))
+   dup1 <- dplyr::ungroup(dplyr::summarise(dup1, l2=length(.data$id2)))
    dup2 <- dplyr::group_by(d, .data$id2)
-   dup2 <- dplyr::ungroup(summarise(dup2, l1=length(.data$id1)))
+   dup2 <- dplyr::ungroup(dplyr::summarise(dup2, l1=length(.data$id1)))
    exref <- d
    exref <- dplyr::left_join(exref, dup1, by="id1")
    exref <- dplyr::left_join(exref, dup2, by="id2")
@@ -95,9 +92,9 @@ cleanDubiousXRef <- function(d, strict=TRUE){
       while(!identical(exrefTmp, undecided)){
          exrefTmp <- dplyr::select(undecided, -"l2", -"l1")
          dup1 <- dplyr::group_by(exrefTmp, .data$id1)
-         dup1 <- dplyr::ungroup(summarise(dup1, l2=length(.data$id2)))
+         dup1 <- dplyr::ungroup(dplyr::summarise(dup1, l2=length(.data$id2)))
          dup2 <- dplyr::group_by(exrefTmp, .data$id2)
-         dup2 <- dplyr::ungroup(summarise(dup2, l1=length(.data$id1)))
+         dup2 <- dplyr::ungroup(dplyr::summarise(dup2, l1=length(.data$id1)))
          exrefTmp <- dplyr::left_join(exrefTmp, dup1, by="id1")
          exrefTmp <- dplyr::left_join(exrefTmp, dup2, by="id2")
          ##

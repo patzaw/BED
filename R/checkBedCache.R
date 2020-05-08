@@ -9,9 +9,6 @@
 #'
 #' @seealso [clearBedCache], [lsBedCache]
 #'
-#' @importFrom neo2R prepCql cypher
-#' @importFrom utils packageDescription packageName
-#'
 checkBedCache <- function(newCon=FALSE){
    if(!checkBedConn()){
       stop("Not connected to BED")
@@ -34,7 +31,9 @@ checkBedCache <- function(newCon=FALSE){
                'n.name as name, n.instance as instance, n.version as version'
             ))
          )
-         dbVersion$rbed <- utils::packageDescription(utils::packageName())$Version
+         dbVersion$rbed <- utils::packageDescription(
+            utils::packageName()
+         )$Version
          ##
          cachedbFile <- get("cachedbFile", bedEnv)
          cachedbDir <- dirname(cachedbFile)

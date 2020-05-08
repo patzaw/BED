@@ -83,6 +83,5 @@ getBeIdConvTable(
 
 }
 \seealso{
-\link{getHomTable}, \link{listBe},
-\link{listPlatforms}, \link{listBeIdSources}
+\link{getHomTable}, \link{listBe}, \link{listPlatforms}, \link{listBeIdSources}
 }

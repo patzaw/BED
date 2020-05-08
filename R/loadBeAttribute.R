@@ -43,7 +43,7 @@ loadBeAttribute <- function(
       ),
       'MERGE (db)-[:provides]->(at)'
    )
-   bedCall(cypher, query=prepCql(cql))
+   bedCall(neo2R::cypher, query=neo2R::prepCql(cql))
 
    ########################
    ## Load attribute values

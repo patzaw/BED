@@ -17,5 +17,5 @@ A data.frame indicating the BE related to the ID source (database).
 List all the source databases of BE identifiers whatever the BE type
 }
 \seealso{
-\code{\link{listBeIdSources}}, \code{\link{listPlatforms}}
+\link{listBeIdSources}, \link{listPlatforms}
 }

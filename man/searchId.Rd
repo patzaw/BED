@@ -34,14 +34,14 @@ incomplete name matches.}
 \value{
 A data frame with the following fields:
 \itemize{
-\item found: the element found in BED corresponding to the searched term
-\item be: the type of the element
-\item source: the source of the element
-\item organism: the related organism
-\item entity: the related entity internal ID
-\item ebe: the BE of the related entity
-\item canonical: if the symbol is canonical
-\item gene: list of the related genes BE internal ID
+\item \strong{found}: the element found in BED corresponding to the searched term
+\item \strong{be}: the type of the element
+\item \strong{source}: the source of the element
+\item \strong{organism}: the related organism
+\item \strong{entity}: the related entity internal ID
+\item \strong{ebe}: the BE of the related entity
+\item \strong{canonical}: if the symbol is canonical
+\item \strong{gene}: list of the related genes BE internal ID
 }
 
 Exact matches are returned first folowed by the shortest elements.

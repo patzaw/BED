@@ -4,7 +4,7 @@
 #'
 #' @param reDumpThr time difference threshold between 2 downloads
 #' @param orgOfInt organisms of interest: a character vector
-#' @param curDate current date as given by \code{\link{Sys.Date}}
+#' @param curDate current date as given by [Sys.Date]
 #'
 loadNcbiTax <- function(
    reDumpThr,

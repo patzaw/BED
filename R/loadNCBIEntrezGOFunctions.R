@@ -6,7 +6,7 @@
 #' @param organism character vector of 1 element corresponding to the organism
 #' of interest (e.g. "Homo sapiens")
 #' @param reDumpThr time difference threshold between 2 downloads
-#' @param curDate current date as given by \code{\link{Sys.Date}}
+#' @param curDate current date as given by [Sys.Date]
 #'
 loadNCBIEntrezGOFunctions <- function(
    organism,

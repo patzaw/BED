@@ -31,5 +31,5 @@ firstCommonUpstreamBe(c("Peptide", "Transcript"), uniqueOrg=FALSE)
 
 }
 \seealso{
-\code{\link{listBe}}
+\link{listBe}
 }

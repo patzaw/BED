@@ -12,10 +12,10 @@ if NA (default) all the BE are considered.}
 }
 \value{
 A data.frame mapping platforms to BE with the following fields:
-\describe{
-\item{name}{the platform nam}
-\item{description}{platform description}
-\item{focus}{Targeted BE}
+\itemize{
+\item \strong{name}: the platform nam
+\item \strong{description}: platform description
+\item \strong{focus}: Targeted BE
 }
 }
 \description{
@@ -29,6 +29,6 @@ listPlatforms()
 
 }
 \seealso{
-\code{\link{listBe}}, \code{\link{listBeIdSources}},
-\code{\link{listOrganisms}}, \code{\link{getTargetedBe}}
+\link{listBe}, \link{listBeIdSources},
+\link{listOrganisms}, \link{getTargetedBe}
 }

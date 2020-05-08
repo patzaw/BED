@@ -23,7 +23,7 @@ loadPlf <- function(name, description, be){
         ),
         'MERGE (plf)-[:is_focused_on]->(bet)'
     )
-    bedCall(f=cypher, prepCql(cql))
+    bedCall(f=neo2R::cypher, neo2R::prepCql(cql))
 
 }
 

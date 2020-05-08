@@ -19,5 +19,5 @@ attribute "Total" corresponds to the sum of all the file size.
 List all the BED queries in cache and the total size of the cache
 }
 \seealso{
-\code{\link{clearBedCache}}
+\link{clearBedCache}
 }

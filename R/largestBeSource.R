@@ -23,7 +23,7 @@
 #' largestBeSource(be="Gene", "Mus musculus")
 #' }
 #'
-#' @seealso \code{\link{listBeIdSources}}
+#' @seealso [listBeIdSources]
 #'
 #' @export
 #'

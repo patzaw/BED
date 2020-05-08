@@ -8,10 +8,8 @@
 #' getTaxId("human")
 #' }
 #'
-#' @seealso \code{\link{getOrgNames}},
-#' \code{\link{listOrganisms}}
+#' @seealso [getOrgNames], [listOrganisms]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 getTaxId <- function(name){
@@ -24,8 +22,8 @@ getTaxId <- function(name){
         'RETURN DISTINCT tid.value'
     )
     toRet <- bedCall(
-        cypher,
-        query=prepCql(cql),
+        neo2R::cypher,
+        query=neo2R::prepCql(cql),
         parameters=list(name=toupper(name))
     )$tid.value
     return(toRet)

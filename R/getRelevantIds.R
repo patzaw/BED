@@ -26,7 +26,6 @@
 #'
 #' @seealso [searchId]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 getRelevantIds <- function(

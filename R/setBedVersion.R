@@ -8,8 +8,8 @@
 #'
 setBedVersion <- function(bedInstance, bedVersion){
     bedCall(
-        cypher,
-        query=prepCql(c(
+        neo2R::cypher,
+        query=neo2R::prepCql(c(
             'MERGE (n:System {name:"BED"})',
             sprintf(
                'SET n.instance = "%s"',

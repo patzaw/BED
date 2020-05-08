@@ -33,8 +33,6 @@
 #'
 #' @seealso [getBeIdConvTable]
 #'
-#' @importFrom neo2R prepCql cypher
-#' @importFrom dplyr select rename inner_join
 #' @export
 #'
 getHomTable <- function(

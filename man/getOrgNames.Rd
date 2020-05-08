@@ -13,10 +13,10 @@ all taxonomy IDs available in the DB.}
 \value{
 A data.frame mapping taxonomy IDs to organism names with the
 following fields:
-\describe{
-\item{taxID}{the taxonomy ID}
-\item{name}{the organism name}
-\item{nameClass}{the class of the name}
+\itemize{
+\item \strong{taxID}: the taxonomy ID
+\item \strong{name}: the organism name
+\item \strong{nameClass}: the class of the name
 }
 }
 \description{
@@ -30,5 +30,5 @@ getOrgNames("9606")
 
 }
 \seealso{
-\code{\link{getTaxId}}, \code{\link{listOrganisms}}
+\link{getTaxId}, \link{listOrganisms}
 }

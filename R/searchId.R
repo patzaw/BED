@@ -22,14 +22,14 @@
 #'
 #' @return A data frame with the following fields:
 #'
-#' - found: the element found in BED corresponding to the searched term
-#' - be: the type of the element
-#' - source: the source of the element
-#' - organism: the related organism
-#' - entity: the related entity internal ID
-#' - ebe: the BE of the related entity
-#' - canonical: if the symbol is canonical
-#' - gene: list of the related genes BE internal ID
+#' - **found**: the element found in BED corresponding to the searched term
+#' - **be**: the type of the element
+#' - **source**: the source of the element
+#' - **organism**: the related organism
+#' - **entity**: the related entity internal ID
+#' - **ebe**: the BE of the related entity
+#' - **canonical**: if the symbol is canonical
+#' - **gene**: list of the related genes BE internal ID
 #'
 #' Exact matches are returned first folowed by the shortest elements.
 #'
@@ -57,7 +57,7 @@ searchId <- function(
         org=as.list(toupper(organism))
     )
     ##
-    query <- prepCql(
+    query <- neo2R::prepCql(
        'MATCH (n:BEID)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
        'WHERE n.value = $searched',
        'MATCH (ni)-[:identifies]->(e)',
@@ -84,12 +84,12 @@ searchId <- function(
     )
     if(verbose) message(query)
     beids <- unique(bedCall(
-        f=cypher,
+        f=neo2R::cypher,
         query=query,
         parameters=parameters
     ))
     ##
-    query <- prepCql(
+    query <- neo2R::prepCql(
        'MATCH (n:BESymbol)',
        ifelse(
           nchar(searched)>=ncharSymb,
@@ -124,12 +124,12 @@ searchId <- function(
     )
     if(verbose) message(query)
     besymbs <- unique(bedCall(
-        f=cypher,
+        f=neo2R::cypher,
         query=query,
         parameters=parameters
     ))
     ##
-    query <-prepCql(
+    query <-neo2R::prepCql(
        'MATCH (n:BEName)',
        ifelse(
           nchar(searched)>=ncharName,
@@ -163,12 +163,12 @@ searchId <- function(
     )
     if(verbose) message(query)
     benames <- unique(bedCall(
-        f=cypher,
+        f=neo2R::cypher,
         query=query,
         parameters=parameters
     ))
     ##
-    query <- prepCql(
+    query <- neo2R::prepCql(
        'MATCH (n:ProbeID)',
        'WHERE n.value = $searched',
        'WITH DISTINCT n',
@@ -188,7 +188,7 @@ searchId <- function(
     )
     if(verbose) message(query)
     probes <- unique(bedCall(
-        f=cypher,
+        f=neo2R::cypher,
         query=query,
         parameters=parameters
     ))

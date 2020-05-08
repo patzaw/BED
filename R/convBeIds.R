@@ -70,8 +70,6 @@
 #'
 #' @seealso [getBeIdConvTable], [convBeIdLists], [convDfBeIds]
 #'
-#' @importFrom dplyr rename
-#'
 #' @export
 #'
 convBeIds <- function(
@@ -217,11 +215,11 @@ convBeIds <- function(
                }
                ##
                if(!stopConv){
-                  ct <- unique(merge(
+                  ct <- unique(dplyr::inner_join(
                      ct1, ht,
                      by="gfrom"
                   )[, c("from", "gto")])
-                  ct <- unique(merge(
+                  ct <- unique(dplyr::inner_join(
                      ct, ct2,
                      by="gto"
                   )[, c("from", "to", "preferred", "entity")])
@@ -243,7 +241,10 @@ convBeIds <- function(
          stringsAsFactors=FALSE
       )
       ct$FROM <- toupper(ct$from)
-      ct <- merge(oriIds, ct[,setdiff(colnames(ct), "from")], by="FROM")
+      ct <- dplyr::inner_join(
+         oriIds, ct[,setdiff(colnames(ct), "from")],
+         by="FROM"
+      )
       ct <- unique(ct[, setdiff(colnames(ct), "FROM")])
    }
    ##

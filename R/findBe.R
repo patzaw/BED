@@ -11,34 +11,31 @@
 #' incomplete name matches.
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
-#' \strong{Depending on history it can take a very long time to return
-#' a very large result!}
+#' **Depending on history it can take a very long time to return**
+#' **a very large result!**
 #' @param by number of found items to be converted into relevant IDs.
 #' @param exclude database to exclude from possible selection. Used to filter
 #' out technical database names such as "BEDTech_gene" and "BEDTech_transcript"
 #' used to manage orphan IDs (not linked to any gene based on information
 #' taken from sources)
 #'
-#' @return A data frame with the following fields:\itemize{
-#' \item{found: the element found in BED corresponding to the searched term}
-#' \item{be: the type of the element}
-#' \item{source: the source of the element}
-#' \item{organism: the related organism}
-#' \item{entity: the related entity internal ID}
-#' \item{ebe: the BE of the related entity}
-#' \item{canonical: if the symbol is canonical}
-#' \item{Relevant ID: the seeked element id}
-#' \item{Symbol: the symbol(s) of the corresponding gene(s)}
-#' \item{Name: the symbol(s) of the corresponding gene(s)}
-#' }
-#' Scope ("be", "source" and "organism") is provided as a named list
-#' in the "scope" attributes: \code{attr(x, "scope")}
+#' @return A data frame with the following fields:
+#' - **found**: the element found in BED corresponding to the searched term
+#' - **be**: the type of the element
+#' - **source**: the source of the element
+#' - **organism**: the related organism
+#' - **entity**: the related entity internal ID
+#' - **ebe**: the BE of the related entity
+#' - **canonical**: if the symbol is canonical
+#' - **Relevant ID**: the seeked element id
+#' - **Symbol**: the symbol(s) of the corresponding gene(s)
+#' - **Name**: the symbol(s) of the corresponding gene(s)
 #'
-#' @importFrom shiny fluidPage fluidRow column textInput checkboxInput uiOutput reactiveValues renderUI selectInput tags actionButton observe withProgress req isolate observeEvent runGadget stopApp dialogViewer p strong tags
-#' @importFrom miniUI gadgetTitleBar
+#' Scope ("be", "source" and "organism") is provided as a named list
+#' in the "scope" attributes: `attr(x, "scope")``
+#'
+#' @importFrom shiny fluidPage fluidRow column textInput checkboxInput uiOutput reactiveValues renderUI selectInput tags actionButton observe withProgress req isolate observeEvent runGadget stopApp dialogViewer p strong
 #' @importFrom DT dataTableOutput renderDataTable datatable formatStyle styleEqual
-#' @import rstudioapi
-#' @import htmltools
 #' @export
 #'
 findBe <- function(
@@ -55,46 +52,46 @@ findBe <- function(
 
    #############################################
 
-   ui <- fluidPage(
-      gadgetTitleBar("Find a Biological Entity"),
-      fluidRow(
-         column(
+   ui <- shiny::fluidPage(
+      shiny::strong("Find a Biological Entity"),
+      shiny::fluidRow(
+         shiny::column(
             width=3,
-            textInput(
+            shiny::textInput(
                inputId="request",
                label="Searched term",
                placeholder="An ID, a symbol or name"
             )
          ),
-         column(
+         shiny::column(
             width=3,
-            uiOutput("uiBe")
+            shiny::uiOutput("uiBe")
          ),
-         column(
+         shiny::column(
             width=3,
-            uiOutput("uiOrg")
+            shiny::uiOutput("uiOrg")
          ),
-         column(
+         shiny::column(
             width=3,
-            uiOutput("uiSource")
+            shiny::uiOutput("uiSource")
          )
       ),
-      fluidRow(
-         column(
+      shiny::fluidRow(
+         shiny::column(
             width=12,
-            uiOutput(
+            shiny::uiOutput(
                outputId="renderRes"
             )
          )
       ),
-      fluidRow(
-         column(
+      shiny::fluidRow(
+         shiny::column(
             width=7,
-            checkboxInput(
+            shiny::checkboxInput(
                inputId="crossOrg",
-               label=p(
-                  strong("Cross species search"),
-                  tags$small(
+               label=shiny::p(
+                  shiny::strong("Cross species search"),
+                  shiny::tags$small(
                      "(time consuming and not relevant for complex objects
                      such as GO functions)"
                   )
@@ -102,13 +99,13 @@ findBe <- function(
                value=FALSE
             )
          ),
-         column(
+         shiny::column(
             width=5,
-            checkboxInput(
+            shiny::checkboxInput(
                inputId="showGeneAnno",
-               label=p(
-                  strong("Show gene annotation"),
-                  tags$small(
+               label=shiny::p(
+                  shiny::strong("Show gene annotation"),
+                  shiny::tags$small(
                      "(not relevant for complex objects such as GO functions)"
                   )
                ),
@@ -169,7 +166,7 @@ findBe <- function(
       }
 
       ## Follow-up
-      curSel <- reactiveValues(
+      curSel <- shiny::reactiveValues(
          curSource=NULL,
          searchRes=NULL,
          selRes=NULL,
@@ -177,25 +174,25 @@ findBe <- function(
       )
 
       ## Search input
-      output$uiBe <- renderUI({
-         return(selectInput(
+      output$uiBe <- shiny::renderUI({
+         return(shiny::selectInput(
             inputId="uiBe",
             label="BE of interest",
             choices=c(listBe(), "Probe")
          ))
       })
-      output$uiOrg <- renderUI({
-         return(selectInput(
+      output$uiOrg <- shiny::renderUI({
+         return(shiny::selectInput(
             inputId="uiOrg",
             label="Organism of interest",
             choices=listOrganisms()
          ))
       })
-      output$uiSource <- renderUI({
+      output$uiSource <- shiny::renderUI({
          be <- input$uiBe
-         req(be)
+         shiny::req(be)
          org <- input$uiOrg
-         req(org)
+         shiny::req(org)
          if(be=="Probe"){
             lp <- listPlatforms()
             choices <- lp$name
@@ -210,25 +207,25 @@ findBe <- function(
                exclude=exclude
             )$database)
          }
-         curSource <- isolate(curSel$curSource)
+         curSource <- shiny::isolate(curSel$curSource)
          if(is.null(curSource)){
             curSource <- NULL
          }else{
             curSource <- intersect(choices, curSource)
          }
-         return(selectInput(
+         return(shiny::selectInput(
             inputId="uiSource",
             label="Source",
             choices=choices,
             selected=curSource
          ))
       })
-      observe({
+      shiny::observe({
          curSel$curSource <- input$uiSource
       })
 
       ## Display output
-      output$renderRes <- renderUI({
+      output$renderRes <- shiny::renderUI({
          searchRes <- curSel$searchRes
          request <- input$request
          results <- curSel$results
@@ -237,7 +234,7 @@ findBe <- function(
             return(NULL)
          }
          if(is.null(searchRes) || nrow(searchRes)==0){
-            return(tags$span(
+            return(shiny::tags$span(
                "Input text not found anywhere",
                style='color:red;weight:bold;'
             ))
@@ -245,15 +242,15 @@ findBe <- function(
          if(is.null(results) || nrow(results)==0){
             if(max(sel) < nrow(searchRes)){
                return(list(
-                  tags$span(
+                  shiny::tags$span(
                      sprintf(
                         "Could not find relevant IDs for the %s first terms shown below",
                         max(sel)
                      ),
                      style='color:red;weight:bold;'
                   ),
-                  dataTableOutput("dispRes"),
-                  actionButton(
+                  DT::dataTableOutput("dispRes"),
+                  shiny::actionButton(
                      "nextRes",
                      label=sprintf(
                         "Try the next %s terms (%s not tried yet)",
@@ -263,17 +260,17 @@ findBe <- function(
                ))
             }
             return(list(
-               tags$span(
+               shiny::tags$span(
                   "Could not find relevant IDs for terms shown below",
                   style='color:red;weight:bold;'
                ),
-               dataTableOutput("dispRes")
+               DT::dataTableOutput("dispRes")
             ))
          }else{
             if(max(sel) < nrow(searchRes)){
                return(list(
-                  dataTableOutput("dispRes"),
-                  actionButton(
+                  DT::dataTableOutput("dispRes"),
+                  shiny::actionButton(
                      "nextRes",
                      label=sprintf(
                         "Get results for %s additional terms (%s not tried yet)",
@@ -282,18 +279,18 @@ findBe <- function(
                   )
                ))
             }
-            return(dataTableOutput("dispRes"))
+            return(DT::dataTableOutput("dispRes"))
          }
          return(toRet)
       })
 
       ## Search a given term
-      observe({
+      shiny::observe({
          curSel$searchRes <- NULL
          curSel$results <- NULL
          curSel$selRes <- NULL
-         req(input$request)
-         withProgress(
+         shiny::req(input$request)
+         shiny::withProgress(
             message="Finding BE",
             value=0,
             style="notification",
@@ -305,13 +302,13 @@ findBe <- function(
                )
             }
          )
-         req(searchRes)
+         shiny::req(searchRes)
          if(!input$crossOrg){
             searchRes <- searchRes[which(searchRes$organism==input$uiOrg),]
          }
-         ibe <- isolate(input$uiBe)
-         iorg <- isolate(input$uiOrg)
-         isrc <- isolate(input$uiSource)
+         ibe <- shiny::isolate(input$uiBe)
+         iorg <- shiny::isolate(input$uiOrg)
+         isrc <- shiny::isolate(input$uiSource)
          searchRes <- orderSearch(
             d=searchRes,
             r=input$request,
@@ -328,9 +325,9 @@ findBe <- function(
             restricted=restricted
          ), silent=T)
          curSel$selRes <- sel
-         req(!inherits(results, "try-error"))
+         shiny::req(!inherits(results, "try-error"))
          # if(is.null(results) && max(sel) < nrow(searchRes)){
-         #     withProgress(
+         #     shiny::withProgress(
          #         message="Searching for any relevant ID",
          #         value=max(sel)/nrow(searchRes),
          #         style="notification",
@@ -420,17 +417,17 @@ findBe <- function(
          curSel$results <- results
          curSel$selRes <- sel
       })
-      observe({
+      shiny::observe({
          ibe <- input$uiBe
          iorg <- input$uiOrg
          isrc <- input$uiSource
          curSel$results <- NULL
          curSel$selRes <- NULL
-         searchRes <- isolate(curSel$searchRes)
-         req(searchRes)
+         searchRes <- shiny::isolate(curSel$searchRes)
+         shiny::req(searchRes)
          searchRes <- orderSearch(
             d=searchRes,
-            r=isolate(input$request),
+            r=shiny::isolate(input$request),
             b=ibe,
             o=iorg,
             s=isrc
@@ -444,9 +441,9 @@ findBe <- function(
             restricted=restricted
          ), silent=TRUE)
          curSel$selRes <- sel
-         req(!inherits(results, "try-error"))
+         shiny::req(!inherits(results, "try-error"))
          # if(is.null(results) && max(sel) < nrow(searchRes)){
-         #     withProgress(
+         #     shiny::withProgress(
          #         message="Searching for any relevant ID",
          #         value=max(sel)/nrow(searchRes),
          #         style="notification",
@@ -537,15 +534,15 @@ findBe <- function(
          curSel$selRes <- sel
       })
 
-      observe({
-         req(input$nextRes)
-         ibe <- isolate(input$uiBe)
-         iorg <- isolate(input$uiOrg)
-         isrc <- isolate(input$uiSource)
-         searchRes <- isolate(curSel$searchRes)
-         req(searchRes)
-         results <- isolate(curSel$results)
-         sel <- isolate(curSel$selRes)
+      shiny::observe({
+         shiny::req(input$nextRes)
+         ibe <- shiny::isolate(input$uiBe)
+         iorg <- shiny::isolate(input$uiOrg)
+         isrc <- shiny::isolate(input$uiSource)
+         searchRes <- shiny::isolate(curSel$searchRes)
+         shiny::req(searchRes)
+         results <- shiny::isolate(curSel$results)
+         sel <- shiny::isolate(curSel$selRes)
          nsel <- (max(sel)+1):min(max(sel)+by, nrow(searchRes))
          sel <- c(sel, nsel)
          toAdd <- try(getRelevantIds(
@@ -555,7 +552,7 @@ findBe <- function(
             restricted=restricted
          ), silent=TRUE)
          curSel$selRes <- sel
-         req(!inherits(toAdd, "try-error"))
+         shiny::req(!inherits(toAdd, "try-error"))
          if(!is.null(toAdd)){
             colnames(toAdd)[ncol(toAdd)] <- "Relevant ID"
             if(ibe=="Gene"){
@@ -628,10 +625,10 @@ findBe <- function(
          curSel$results <- results
       })
 
-      output$dispRes <- renderDataTable({
+      output$dispRes <- DT::renderDataTable({
          searchRes <- curSel$searchRes
-         req(searchRes)
-         request <- isolate(input$request)
+         shiny::req(searchRes)
+         request <- shiny::isolate(input$request)
          results <- curSel$results
          foundColumns <- c("found", "be", "source", "organism", "canonical")
          if(is.null(results) || nrow(results)==0){
@@ -661,7 +658,7 @@ findBe <- function(
             ridht <- highlightText(toShow$"Relevant ID", request)
             ridurl <- getBeIdURL(
                toShow$"Relevant ID",
-               isolate(input$uiSource)
+               shiny::isolate(input$uiSource)
             )
             toShow$"Relevant ID" <- ifelse(
                is.na(ridurl),
@@ -695,7 +692,7 @@ findBe <- function(
             "Found",
             setdiff(colnames(toShow), c("Found", foundColumns))
          ), drop=FALSE]
-         shown <- datatable(
+         shown <- DT::datatable(
             toShow,
             rownames=FALSE,
             extensions="Scroller",
@@ -709,7 +706,7 @@ findBe <- function(
             )
          )
          if("Relevant ID" %in% colnames(toShow)){
-            shown <- formatStyle(
+            shown <- DT::formatStyle(
                shown,
                'Relevant ID',
                color='darkblue',
@@ -718,10 +715,10 @@ findBe <- function(
             )
          }
          if("Preferred" %in% colnames(toShow)){
-            shown <- formatStyle(
+            shown <- DT::formatStyle(
                shown,
                'Preferred',
-               backgroundColor=styleEqual(
+               backgroundColor=DT::styleEqual(
                   c(1, 0), c('green', 'transparent')
                )
             )
@@ -730,26 +727,26 @@ findBe <- function(
       })
 
       # Handle the Done button being pressed.
-      observeEvent(input$done, {
+      shiny::observeEvent(input$done, {
          # Return the selected ID
-         toRet <- isolate(curSel$results)
+         toRet <- shiny::isolate(curSel$results)
          if(is.null(toRet)){
-            stopApp(NULL)
+            shiny::stopApp(NULL)
          }else{
-            sel <- isolate(input$dispRes_rows_selected)
+            sel <- shiny::isolate(input$dispRes_rows_selected)
             attr(toRet, "scope") <- list(
-               be=isolate(input$uiBe),
-               source=isolate(input$uiSource),
-               organism=isolate(input$uiOrg)
+               be=shiny::isolate(input$uiBe),
+               source=shiny::isolate(input$uiSource),
+               organism=shiny::isolate(input$uiOrg)
             )
-            stopApp(isolate(toRet[sel,]))
+            shiny::stopApp(shiny::isolate(toRet[sel,]))
          }
       })
    }
 
-   runGadget(
+   shiny::runGadget(
       ui, server,
-      viewer = dialogViewer("Find BE", height=560, width=850)
+      viewer = shiny::dialogViewer("Find BE", height=560, width=850)
    )
-   # runGadget(ui, server)
+   # shiny::runGadget(ui, server)
 }

@@ -7,8 +7,6 @@
 #' @param release the release of interest (check if already downloaded)
 #' @param env the R environment in which to load the tables when built
 #'
-#' @importFrom utils download.file
-#'
 dumpUniprotDb <- function(
     taxOfInt,
     release,

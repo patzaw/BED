@@ -9,7 +9,8 @@
 #' @param tcLim number of identifiers to check to guess origin for the whole set.
 #' Inf ==> no limit.
 #'
-#' @return a list (NULL if no match):
+#' @return A list (NULL if no match):
+#'
 #'  - **be**: a character vector of length 1 providing the best BE guess
 #'  (NA if inconsistent with user input: be, source or organism)
 #'  - **source**: a character vector of length 1 providing the best source
@@ -17,14 +18,13 @@
 #'  - **organism*$: a character vector of length 1 providing the best organism
 #'  guess (NA if inconsistent with user input: be, source or organism)
 #'
-#' "details" attribute (`attr(x, "details")``) is a data frame providing numbers
-#' supporting the guess
+#' The "details" attribute (`attr(x, "details")``) is a data frame providing
+#' numbers supporting the guess
 #'
 #' @examples \dontrun{
 #' guessIdScope(ids=c("10", "100"))
 #' }
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 guessIdScope <- function(ids, be, source, organism, tcLim=100){

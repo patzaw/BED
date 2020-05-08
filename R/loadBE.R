@@ -113,7 +113,7 @@ loadBE <- function(
    if(!is.na(version)){
       cql <- c('MERGE', dbcql)
       ##
-      bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+      bedCall(neo2R::cypher, neo2R::prepCql(cql), parameters=list(db=dbname))
 
       cql <- c(
          sprintf(
@@ -139,7 +139,7 @@ loadBE <- function(
       if(!is.na(deprecated)){
          cql <- c('MERGE', dbcql)
          ##
-         bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+         bedCall(neo2R::cypher, neo2R::prepCql(cql), parameters=list(db=dbname))
 
          cql <- c(
             sprintf(
@@ -170,7 +170,7 @@ loadBE <- function(
       )
       cql <- c('MERGE', orgcql)
       ##
-      bedCall(cypher, prepCql(cql), parameters=list(db=dbname))
+      bedCall(neo2R::cypher, neo2R::prepCql(cql), parameters=list(db=dbname))
 
       if(be=="Gene"){
          cql <- c(

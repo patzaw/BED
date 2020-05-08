@@ -22,5 +22,5 @@ getTargetedBe("GPL570")
 
 }
 \seealso{
-\code{\link{listPlatforms}}
+\link{listPlatforms}
 }

@@ -2,10 +2,9 @@
 #'
 #' @return A character vector of organism scientific names
 #'
-#' @seealso \code{\link{listPlatforms}}, \code{\link{listBeIdSources}},
-#' \code{\link{listBe}}, \code{\link{getTaxId}}, \code{\link{getOrgNames}}
+#' @seealso [listPlatforms], [listBeIdSources],
+#' [listBe], [getTaxId], [getOrgNames]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 listOrganisms <- function(){
@@ -13,6 +12,6 @@ listOrganisms <- function(){
         'MATCH (t)-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
         'RETURN DISTINCT o.value as name'
     )
-    toRet <- bedCall(cypher, prepCql(cql))
+    toRet <- bedCall(neo2R::cypher, neo2R::prepCql(cql))
     return(toRet$name)
 }

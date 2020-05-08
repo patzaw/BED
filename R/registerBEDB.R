@@ -48,5 +48,5 @@ registerBEDB <- function(
             )
         )
     }
-    bedCall(cypher, prepCql(cql))
+    bedCall(neo2R::cypher, neo2R::prepCql(cql))
 }

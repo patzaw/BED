@@ -6,16 +6,15 @@
 #' @param be one BE
 #' @param source the BE ID database
 #' @param organism organism name
-#' @param ... further arguments for
-#' \code{\link{getBeIdNames}} and \code{\link{getBeIdSymbols}} functions
+#' @param ... further arguments
+#' for [getBeIdNames] and [getBeIdSymbols] functions
 #'
 #' @return a data.frame providing for each BE IDs
 #' (row.names are provided BE IDs):
-#' \describe{
-#'  \item{id}{the BE ID}
-#'  \item{symbol}{the BE symbol}
-#'  \item{name}{the corresponding name}
-#' }
+#'
+#'  - **id**: the BE ID
+#'  - **symbol**: the BE symbol
+#'  - **name**: the corresponding name
 #'
 #' @examples \dontrun{
 #' getBeIdDescription(
@@ -26,8 +25,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdNames}},
-#' \code{\link{getBeIdSymbols}}
+#' @seealso [getBeIdNames], [getBeIdSymbols]
 #'
 #' @export
 #'
@@ -84,7 +82,7 @@ getBeIdDescription <- function(
    if(!all(ids %in% csymb$id)){
       stop("Could not find all IDs for symbols")
    }
-   toRet <- merge(csymb, cnames, by="id")
+   toRet <- dplyr::inner_join(csymb, cnames, by="id")
 
 
    beidDesc <- getBeIds(
@@ -107,7 +105,7 @@ getBeIdDescription <- function(
       ,
       c("id", "preferred", "db.version", "db.deprecated")
    ])
-   toRet <- merge(toRet, beidDesc, by="id", all=TRUE)
+   toRet <- dplyr::full_join(toRet, beidDesc, by="id")
 
    rownames(toRet) <- toRet$id
    return(toRet[ids,])

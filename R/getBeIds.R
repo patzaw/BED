@@ -46,8 +46,6 @@
 #'
 #' @seealso [listPlatforms], [listBeIdSources]
 #'
-#' @importFrom neo2R prepCql cypher
-#' @importFrom dplyr arrange filter select distinct
 #' @export
 #'
 getBeIds <- function(

@@ -8,16 +8,15 @@
 #' @param limForCache if there are more ids than limForCache results are
 #' collected for all IDs (beyond provided ids) and cached for futur queries.
 #' If not, results are collected only for provided ids and not cached.
-#' @param ... params for the \code{\link{getBeIdNameTable}} function
+#' @param ... params for the [getBeIdNameTable] function
 #'
 #' @return a data.frame mapping BE IDs and names with the
 #' following fields:
-#' \describe{
-#'  \item{id}{the BE ID}
-#'  \item{name}{the corresponding name}
-#'  \item{direct}{true if the name is directly related to the BE ID}
-#'  \item{entity}{(optional) the technical ID of to BE}
-#' }
+#'
+#'  - **id**: the BE ID
+#'  - **name**: the corresponding name
+#'  - **direct**: true if the name is directly related to the BE ID
+#'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
 #' getBeIdNames(
@@ -28,8 +27,7 @@
 #' )
 #' }
 #'
-#' @seealso \code{\link{getBeIdNameTable}},
-#' \code{\link{getBeIdSymbols}}
+#' @seealso [getBeIdNameTable], [getBeIdSymbols]
 #'
 #' @export
 #'

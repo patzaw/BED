@@ -6,9 +6,9 @@
 #' @param platform the platform of the probes
 #'
 #' @return A character value corresponding to the sub-query.
-#' The \code{attr(,"be")} correspond to the BE targeted by probes
+#' The `attr(,"be")` correspond to the BE targeted by probes
 #'
-#' @seealso \code{\link{genBePath}}, \code{\link{listPlatforms}}
+#' @seealso [genBePath], [listPlatforms]
 #'
 genProbePath <- function(platform){
     be <- getTargetedBe(platform)

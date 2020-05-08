@@ -18,9 +18,8 @@
 #' firstCommonUpstreamBe(c("Peptide", "Transcript"), uniqueOrg=FALSE)
 #' }
 #'
-#' @seealso \code{\link{listBe}}
+#' @seealso [listBe]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 firstCommonUpstreamBe <- function(beList=listBe(), uniqueOrg=TRUE){
@@ -70,8 +69,8 @@ firstCommonUpstreamBe <- function(beList=listBe(), uniqueOrg=TRUE){
             'ORDER BY lp'
         )
         cqRes <- bedCall(
-            cypher,
-            query=prepCql(cql)
+            neo2R::cypher,
+            query=neo2R::prepCql(cql)
         )
         return(cqRes[1,1])
     }

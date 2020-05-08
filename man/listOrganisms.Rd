@@ -13,6 +13,6 @@ A character vector of organism scientific names
 Lists all the organisms available in the BED database
 }
 \seealso{
-\code{\link{listPlatforms}}, \code{\link{listBeIdSources}},
-\code{\link{listBe}}, \code{\link{getTaxId}}, \code{\link{getOrgNames}}
+\link{listPlatforms}, \link{listBeIdSources},
+\link{listBe}, \link{getTaxId}, \link{getOrgNames}
 }

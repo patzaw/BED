@@ -8,9 +8,8 @@
 #' getTargetedBe("GPL570")
 #' }
 #'
-#' @seealso \code{\link{listPlatforms}}
+#' @seealso [listPlatforms]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 getTargetedBe <- function(platform){
@@ -18,8 +17,8 @@ getTargetedBe <- function(platform){
         stop("platform should be a character vector of length 1")
     }
     cqRes <- bedCall(
-        cypher,
-        query=prepCql(c(
+        neo2R::cypher,
+        query=neo2R::prepCql(c(
             'MATCH (pl:Platform {name:$platform})',
             '-[:is_focused_on]->(bet:BEType)',
             'RETURN bet.value'

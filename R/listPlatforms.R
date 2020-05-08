@@ -4,21 +4,19 @@
 #' if NA (default) all the BE are considered.
 #'
 #' @return A data.frame mapping platforms to BE with the following fields:
-#' \describe{
-#'  \item{name}{the platform nam}
-#'  \item{description}{platform description}
-#'  \item{focus}{Targeted BE}
-#' }
+#'
+#'  - **name**: the platform nam
+#'  - **description**: platform description
+#'  - **focus**: Targeted BE
 #'
 #' @examples \dontrun{
 #' listPlatforms(be="Gene")
 #' listPlatforms()
 #' }
 #'
-#' @seealso \code{\link{listBe}}, \code{\link{listBeIdSources}},
-#' \code{\link{listOrganisms}}, \code{\link{getTargetedBe}}
+#' @seealso [listBe], [listBeIdSources],
+#' [listOrganisms], [getTargetedBe]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 listPlatforms <- function(be=c(NA, listBe())){
@@ -37,8 +35,8 @@ listPlatforms <- function(be=c(NA, listBe())){
         'RETURN p.name as name, p.description as description, be.value as focus'
     )
     toRet <- bedCall(
-        cypher,
-        query=prepCql(cql),
+        neo2R::cypher,
+        query=neo2R::prepCql(cql),
         parameters=list(bes=as.list(as.character(be)))
     )
     rownames(toRet) <- toRet$name

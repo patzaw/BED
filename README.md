@@ -135,7 +135,7 @@ Build a BED database instance
 =============================
 
 Building and feeding a BED database instance is achieved using scripts
-available in the “Build” folder.
+available in the “supp/Build” folder.
 
 Run a neo4j docker images
 -------------------------

@@ -37,12 +37,12 @@ getEnsemblPeptideIds <- function(
    )
    dumpEnsCore(organism, release, gv, toDump)
 
-   ################################################
-   ## Current Ensembl database and organism
+   ################################################@
+   ## Current Ensembl database and organism ----
    taxId <- getTaxId(organism)
 
-   ################################################
-   ## Add stable IDs
+   ################################################@
+   ## Add stable IDs ----
    message(Sys.time(), " --> Importing internal IDs")
    toAdd <- seq_region[
       match(transcript$seq_region_id, seq_region$"seq_region_id"),
@@ -86,25 +86,21 @@ getEnsemblPeptideIds <- function(
       attribute="seq_region"
    )
 
-   ################################################
-   ## Add translation events
+   ################################################@
+   ## Add translation events ----
    message(Sys.time(), " --> Importing translation events")
-   canTrans <- merge(
+   canTrans <- dplyr::inner_join(
       transcript[,c("stable_id", "canonical_translation_id")],
       translation[,c("translation_id", "stable_id")],
-      by.x="canonical_translation_id",
-      by.y="translation_id",
-      all=F
+      by=c("canonical_translation_id"="translation_id")
    )[,2:3]
    colnames(canTrans) <- c("tid", "pid")
    canTrans$canonical <- TRUE
    ##
-   expTrans <- merge(
+   expTrans <- dplyr::inner_join(
       transcript[,c("transcript_id", "stable_id")],
       translation[,c("translation_id", "stable_id", "transcript_id")],
-      by.x="transcript_id",
-      by.y="transcript_id",
-      all=F
+      by=c("transcript_id"="transcript_id")
    )[,c(2,4)]
    colnames(expTrans) <- c("tid", "pid")
    expTrans$canonical <- FALSE
@@ -119,8 +115,8 @@ getEnsemblPeptideIds <- function(
       pdb=pdbname
    )
 
-   ################################################
-   ## Add cross references
+   ################################################@
+   ## Add cross references ----
    for(ensDb in names(dbCref)){
       db <- dbCref[ensDb]
       message(Sys.time(), " --> ", ensDb)
@@ -130,18 +126,15 @@ getEnsemblPeptideIds <- function(
          c("xref_id", "dbprimary_acc")
          ]
       if(nrow(takenXref)>0){
-         cref <- merge(
+         cref <- dplyr::inner_join(
             takenXref,
             object_xref[,c("ensembl_id", "xref_id")],
-            by="xref_id",
-            all.x=F, all.y=F
+            by="xref_id"
          )
-         cref <- merge(
+         cref <- dplyr::inner_join(
             cref,
             translation[,c("stable_id", "translation_id")],
-            by.x="ensembl_id",
-            by.y="translation_id",
-            all.x=F, all.y=F
+            by=c("ensembl_id"="translation_id")
          )[, c("dbprimary_acc", "stable_id")]
          if(length(grep("Vega", ensDb))>0){
             cref <- cref[
@@ -175,14 +168,14 @@ getEnsemblPeptideIds <- function(
       }
    }
 
-   ################################################
-   ## No peptide symbol in Ensembl
+   ################################################@
+   ## No peptide symbol in Ensembl ----
 
-   ################################################
-   ## No peptide name in Ensembl
+   ################################################@
+   ## No peptide name in Ensembl ----
 
-   ################################################
-   ## History
+   ################################################@
+   ## History ----
    message(Sys.time(), " --> Importing translation versions mapping")
    beidToAdd <- stable_id_event[
       which(
@@ -192,7 +185,7 @@ getEnsemblPeptideIds <- function(
       ),
       c("old_stable_id", "mapping_session_id")
       ]
-   beidToAdd <- merge(
+   beidToAdd <- dplyr::inner_join(
       beidToAdd,
       mapping_session[, c("mapping_session_id", "old_release", "created")],
       by="mapping_session_id"
@@ -208,7 +201,7 @@ getEnsemblPeptideIds <- function(
       ),
       c("new_stable_id", "mapping_session_id")
       ]
-   toAdd <- merge(
+   toAdd <- dplyr::inner_join(
       toAdd,
       mapping_session[, c("mapping_session_id", "new_release")],
       by="mapping_session_id"

@@ -22,20 +22,18 @@
 #'
 #' @return A data.frame indicating the number of ID in each available database
 #' with the following fields:
-#' \describe{
-#'  \item{database}{the database name}
-#'  \item{nbBe}{number of distinct entities}
-#'  \item{nbId}{number of identifiers}
-#'  \item{be}{the BE under focus}
-#' }
+#'
+#'  - **database**: the database name
+#'  - **nbBe**: number of distinct entities
+#'  - **nbId**: number of identifiers
+#'  - **be**: the BE under focus
 #'
 #' @examples \dontrun{
 #' listBeIdSources(be="Transcript", organism="mouse")
 #' }
 #'
-#' @seealso \code{\link{listBe}}, \code{\link{largestBeSource}}
+#' @seealso [listBe], [largestBeSource]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 listBeIdSources <- function(
@@ -123,7 +121,7 @@ listBeIdSources <- function(
         ', count(DISTINCT beid) as nbId'
     )
     if(verbose){
-        message(prepCql(cql))
+        message(neo2R::prepCql(cql))
     }
     ##
     tn <- gsub(
@@ -138,8 +136,8 @@ listBeIdSources <- function(
         )
     )
     toRet <- cacheBedCall(
-        f=cypher,
-        query=prepCql(cql),
+        f=neo2R::cypher,
+        query=neo2R::prepCql(cql),
         parameters=parameters,
         tn=tn,
         recache=recache

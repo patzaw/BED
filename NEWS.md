@@ -5,7 +5,7 @@
 
    - `guessIdOrigin()` (still available) has been renamed `guessIdScope()`.
    It takes into account user input to guess the identifiers scope.
-   - The scope of the identifiers to convert or to explore is automaticaly
+   - The scope of the identifiers to convert or to explore is automatically
    guessed when not provided by the user.
 
 ### Implementation changes
@@ -14,6 +14,9 @@
    - By default the system does not use cache for policy reasons. However,
    it is recommended to set it to TRUE when connecting to improve the speed
    of recurent queries.
+   - `merge()` calls have been replaced by `dplyr::inner_join()`.
+   - Import statements have been replaced as much as possible by
+   explicit `::` calls.
 
 <!----------------------------------------------------------------------------->
 ## Version 1.3.0

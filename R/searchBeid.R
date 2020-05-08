@@ -22,9 +22,6 @@
 #' - **Gene_entity**: technical gene identifier
 #' - **Organism**: gene organism (scientific name)
 #'
-#' @importFrom neo2R multicypher
-#' @importFrom dplyr mutate select filter rename distinct
-#' @importFrom stringr str_remove str_remove_all str_replace_all fixed
 #' @export
 #'
 searchBeid <- function(x){
@@ -78,14 +75,14 @@ searchBeid <- function(x){
    # 'YIELD node WITH collect(node) as l1',
    # 'CALL db.index.fulltext.queryNodes("bename", "%s")',
    # 'YIELD node WITH collect(node) as l2, l1',
-   # 'UNWIND l1+l2 as mn WITH distinct mn limit 50',
+   # 'UNWIND l1+l2 as mn WITH DISTINCT mn limit 50',
    # 'MATCH (mn)-[r:targets|is_named|:is_known_as*0..1]-(beid:BEID)',
 
    queries <- c(
       id=sprintf(
          paste(
             'CALL db.index.fulltext.queryNodes("beid", "%s")',
-            'YIELD node WITH distinct node as mn limit 5',
+            'YIELD node WITH DISTINCT node as mn limit 5',
             'MATCH (mn)-[r:targets*0..1]-(beid:BEID)'
          ),
          vi
@@ -93,7 +90,7 @@ searchBeid <- function(x){
       name=sprintf(
          paste(
             'CALL db.index.fulltext.queryNodes("bename", "%s")',
-            'YIELD node WITH distinct node as mn limit 50',
+            'YIELD node WITH DISTINCT node as mn limit 50',
             'MATCH (mn)-[r:is_named|:is_known_as]-(beid:BEID)'
          ),
          vn
@@ -135,7 +132,7 @@ searchBeid <- function(x){
       return(NULL)
    }
    .data <- NULL
-   values <- mutate(
+   values <- dplyr::mutate(
       values,
       From=stringr::str_remove(.data$from, "BEID [|][|] "),
       BE=stringr::str_remove(.data$be, "BEID [|][|] ")

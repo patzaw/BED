@@ -11,7 +11,6 @@
 #'
 #' @seealso [connectToBed]
 #'
-#' @importFrom neo2R prepCql cypher
 #' @export
 #'
 checkBedConn <- function(verbose=FALSE){

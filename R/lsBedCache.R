@@ -7,7 +7,7 @@
 #' (column "size") and in human readable format (column "hr"). The
 #' attribute "Total" corresponds to the sum of all the file size.
 #'
-#' @seealso \code{\link{clearBedCache}}
+#' @seealso [clearBedCache]
 #'
 #' @export
 #'

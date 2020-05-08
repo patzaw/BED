@@ -14,7 +14,6 @@
 #' The "**.lname**" column correspond to the names of the BEIDList.
 #' - **scope**: the BEID scope ("be", "source" and "organism")
 #'
-#' @importFrom dplyr mutate
 #' @export
 #'
 BEIDList <- function(
@@ -181,7 +180,6 @@ print.BEIDList <- function(x, ...) cat(format(x, ...), "\n")
 }
 
 ###############################################################################@
-#' @importFrom dplyr bind_rows
 #' @export
 #'
 c.BEIDList <- function(...){
