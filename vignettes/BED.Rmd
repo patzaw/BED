@@ -360,7 +360,7 @@ oriId <- c(
     "12400", "106582", "19062", "245607", "79196", "16878", "320727",
     "230649", "66880", "66245", "103742", "320145", "140795"
 )
-idOrigin <- guessIdOrigin(oriId)
+idOrigin <- guessIdScope(oriId)
 print(idOrigin$be)
 print(idOrigin$source)
 print(idOrigin$organism)

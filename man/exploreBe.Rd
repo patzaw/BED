@@ -4,14 +4,14 @@
 \alias{exploreBe}
 \title{Explore BE identifiers}
 \usage{
-exploreBe(id, source, be = listBe(), showBE = FALSE, showProbes = FALSE)
+exploreBe(id, source, be, showBE = FALSE, showProbes = FALSE)
 }
 \arguments{
 \item{id}{one ID for the BE}
 
-\item{source}{the ID source database}
+\item{source}{the ID source database \strong{Guessed if not provided}}
 
-\item{be}{the type of BE}
+\item{be}{the type of BE \strong{Guessed if not provided}}
 
 \item{showBE}{boolean. If TRUE the Biological Entity corresponding to the
 id is shown. If id is isolated (not mapped to any other ID or symbol)

@@ -4,8 +4,8 @@
 #' corresponding to one BE (including ProbeID and BESymbol)
 #'
 #' @param id one ID for the BE
-#' @param source the ID source database
-#' @param be the type of BE
+#' @param source the ID source database **Guessed if not provided**
+#' @param be the type of BE **Guessed if not provided**
 #' @param showProbes boolean. If TRUE, probes targeting any BEID are shown.
 #' @param showBE boolean. If TRUE the Biological Entity corresponding to the
 #' id is shown. If id is isolated (not mapped to any other ID or symbol)
@@ -19,14 +19,48 @@
 #' @importFrom visNetwork visNetwork visLegend visInteraction visOptions
 #' @export
 #'
-exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
+exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
    id <- as.character(id)
-   be <- match.arg(be)
+   stopifnot(length(id)==1)
+   ##
+   if(missing(be) || missing(source)){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(ids=id, be=be, source=source)
+   if(is.null(guess)){
+      stop("Could not find the provided id")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided id does not match the provided scope",
+         " (be, source or organism)"
+      )
+   }
+   source <- guess$source
+   be <- guess$be
+   if(toWarn){
+      warning(
+         "Guessing ID scope:\n",
+         sprintf("   - be: %s\n", be),
+         sprintf("   - source: %s", source)
+      )
+   }
+   ##
+   if(be=="Probe"){
+      showProbes <- TRUE
+   }
    net <- bedCall(
       f=neo2R::cypher,
       query=neo2R::prepCql(
-         sprintf('MATCH (s:%s {value:$id, database:$db})', paste0(be, "ID")),
-         '-[:is_replaced_by|is_associated_to*0..]->()-[:identifies]->(be)',
+         sprintf(
+            'MATCH (s:%s {value:$id, %s:$db})',
+            paste0(be, "ID"),
+            ifelse(be=="Probe", "platform", "database")
+         ),
+         '-[:is_replaced_by|is_associated_to|targets*0..]->()',
+         '-[:identifies]->(be)',
          'WITH DISTINCT be',
          'MATCH (be)<-[ir:identifies]-(di)',
          'OPTIONAL MATCH (di)<-[iir:is_replaced_by|is_associated_to*0..]-(ii)',
@@ -206,7 +240,7 @@ exploreBe <- function(id, source, be=listBe(), showBE=FALSE, showProbes=FALSE){
       highlightNearest = TRUE,
       nodesIdSelection=list(
          selected=tpNodes$id[which(
-            tpNodes$label==id & tpNodes$database==source
+            tpNodes$label==id & tpNodes$source==source
          )]
       )
    )

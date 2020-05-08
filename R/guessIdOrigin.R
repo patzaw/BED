@@ -2,25 +2,32 @@
 #' of identifiers.
 #'
 #' @param ids a character vector of identifiers
+#' @param be one BE or "Probe". **Guessed if not provided**
+#' @param source the BE ID database or "Symbol" if BE or
+#' the probe platform if Probe. **Guessed if not provided**
+#' @param organism organism name. **Guessed if not provided**
 #' @param tcLim number of identifiers to check to guess origin for the whole set.
 #' Inf ==> no limit.
 #'
-#' @return a list: \itemize{
-#'  \item{be: a character vector of length 1 providing the best BE guess}
-#'  \item{source: a character vector of length 1 providing the best source guess}
-#'  \item{organism: a character vector of length 1 providing the best organism guess}
-#' }
-#' "details" attribute (\code{attr(x, "details")}) is a data frame providing numbers
+#' @return a list (NULL if no match):
+#'  - **be**: a character vector of length 1 providing the best BE guess
+#'  (NA if inconsistent with user input: be, source or organism)
+#'  - **source**: a character vector of length 1 providing the best source
+#'  guess (NA if inconsistent with user input: be, source or organism)
+#'  - **organism*$: a character vector of length 1 providing the best organism
+#'  guess (NA if inconsistent with user input: be, source or organism)
+#'
+#' "details" attribute (`attr(x, "details")``) is a data frame providing numbers
 #' supporting the guess
 #'
 #' @examples \dontrun{
-#' guessIdOrigin(ids=c("10", "100"))
+#' guessIdScope(ids=c("10", "100"))
 #' }
 #'
 #' @importFrom neo2R prepCql cypher
 #' @export
 #'
-guessIdOrigin <- function(ids, tcLim=100){
+guessIdScope <- function(ids, be, source, organism, tcLim=100){
     ##
     tcLim <- as.numeric(tcLim)
     if(!is.atomic(tcLim) || length(tcLim)!=1 || is.na(tcLim) || tcLim <= 0){
@@ -36,8 +43,8 @@ guessIdOrigin <- function(ids, tcLim=100){
     parameters.symb <- list(ids=as.list(toupper(as.character(toCheck))))
     ##
     beids <- bedCall(
-        f=cypher,
-        query=prepCql(
+        f=neo2R::cypher,
+        query=neo2R::prepCql(
             'MATCH (n:BEID) WHERE n.value IN $ids',
             'MATCH (n)-[:is_replaced_by|is_associated_to*0..]->(ni:BEID)',
             'MATCH (ni)-[:identifies]->(e)',
@@ -55,8 +62,8 @@ guessIdOrigin <- function(ids, tcLim=100){
     )
     ##
     besymbs <- bedCall(
-        f=cypher,
-        query=prepCql(
+        f=neo2R::cypher,
+        query=neo2R::prepCql(
             'MATCH (n:BESymbol)',
             'WHERE n.value_up IN $ids',
             ##
@@ -84,8 +91,8 @@ guessIdOrigin <- function(ids, tcLim=100){
     )
     ##
     probes <- bedCall(
-        f=cypher,
-        query=prepCql(
+        f=neo2R::cypher,
+        query=neo2R::prepCql(
             'MATCH (n:ProbeID)',
             'WHERE n.value IN $ids',
             'WITH DISTINCT n',
@@ -107,12 +114,52 @@ guessIdOrigin <- function(ids, tcLim=100){
     if(!is.null(toRetDetails)){
         toRetDetails <- toRetDetails[order(toRetDetails$nb, decreasing=T),]
         toRetDetails$proportion <- toRetDetails$nb/length(toCheck)
+    }else{
+        return(NULL)
     }
+    ## Select scope according to user input
+    sel <- 1:nrow(toRetDetails)
+    if(!missing(be)){
+        be <- match.arg(be, c(listBe(), "Probe"))
+        sel <- intersect(sel, which(toRetDetails$be==be))
+    }
+    if(!missing(source)){
+        stopifnot(is.character(source), length(source)==1, !is.na(source))
+        sel <- intersect(sel, which(toRetDetails$source==source))
+    }
+    if(!missing(organism)){
+        stopifnot(
+            is.character(organism), length(organism)==1, !is.na(organism)
+        )
+        tid <- getTaxId(organism)
+        if(length(tid)!=1){
+            stop(sprintf("Could find %s organism in BED", organism))
+        }
+        sn <- getOrgNames(tid)
+        sn <- sn$name[which(sn$nameClass=="scientific name")]
+        sel <- intersect(sel, which(toRetDetails$organism==sn))
+    }
+    sel <- sel[1]
+    ##
     toRet <- list(
-        "be"=toRetDetails[1, "be"],
-        "source"=toRetDetails[1, "source"],
-        "organism"=toRetDetails[1, "organism"]
+        "be"=toRetDetails[sel, "be"],
+        "source"=toRetDetails[sel, "source"],
+        "organism"=toRetDetails[sel, "organism"]
     )
     attr(x=toRet, which="details") <- toRetDetails
     return(toRet)
 }
+
+
+#' @describeIn guessIdScope
+#'
+#' Deprecated version of guessIdScope
+#'
+#' @param ... params for `guessIdScope`
+#'
+#' @export
+guessIdOrigin <- function(...){
+    warning("Deprecated. Use guessIdScope instead")
+    guessIdScope(...)
+}
+
