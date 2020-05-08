@@ -16,7 +16,11 @@
 #'
 checkBedConn <- function(verbose=FALSE){
    if(!exists("graph", bedEnv)){
-      warning("You should connect to a BED DB using the connectToBed function")
+      message(
+         "BED is not connected.\n",
+         "You can connect to a BED database instance using the connectToBed",
+         " function."
+      )
       return(FALSE)
    }
    if(verbose) message(get("graph", bedEnv)$url)

@@ -22,8 +22,7 @@
 #' )
 #' }
 #'
-#' @importFrom neo2R prepCql cypher
-#' @importFrom visNetwork visNetwork visLegend visInteraction visOptions
+#' @import neo2R visNetwork
 #' @export
 #'
 exploreConvPath <- function(

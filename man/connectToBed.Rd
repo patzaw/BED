@@ -51,7 +51,15 @@ Connect to a neo4j BED database
 }
 \details{
 Be carefull that you should reconnect to BED database each time
-the environment is reloaded.
+the environment is reloaded. It is done automaticaly if \code{remember} is
+set to TRUE.
+
+Information about how to get an instance of the BED neo4j database is
+provided here:
+\itemize{
+\item \url{https://github.com/patzaw/BED#bed-database-instance-available-as-a-docker-image}
+\item \url{https://github.com/patzaw/BED#build-a-bed-database-instance}
+}
 }
 \seealso{
 \link{checkBedConn}, \link{lsBedConnections}, \link{forgetBedConnection}

@@ -1,6 +1,13 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.4.0
 
+### New features
+
+   - `guessIdOrigin()` (still available) has been renamed `guessIdScope()`.
+   It takes into account user input to guess the identifiers scope.
+   - The scope of the identifiers to convert or to explore is automaticaly
+   guessed when not provided by the user.
+
 ### Implementation changes
 
    - By default the system does not remember connections for policy reasons.

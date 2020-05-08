@@ -28,7 +28,6 @@
 #'
 #' @seealso [convBeIds], [convBeIdLists]
 #'
-#' @importFrom dplyr left_join
 #' @export
 #'
 convDfBeIds <- function(

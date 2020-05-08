@@ -26,11 +26,16 @@
 #' environment to allow transparent DB calls.
 #'
 #' @details Be carefull that you should reconnect to BED database each time
-#' the environment is reloaded.
+#' the environment is reloaded. It is done automaticaly if `remember` is
+#' set to TRUE.
+#'
+#' Information about how to get an instance of the BED neo4j database is
+#' provided here:
+#' - <https://github.com/patzaw/BED#bed-database-instance-available-as-a-docker-image>
+#' - <https://github.com/patzaw/BED#build-a-bed-database-instance>
 #'
 #' @seealso [checkBedConn], [lsBedConnections], [forgetBedConnection]
 #'
-#' @importFrom neo2R startGraph
 #' @export
 #'
 connectToBed <- function(
@@ -84,7 +89,7 @@ connectToBed <- function(
    ## The graph DB
    try(assign(
       "graph",
-      startGraph(
+      neo2R::startGraph(
          url=url,
          username=username,
          password=password,
@@ -181,7 +186,6 @@ lsBedConnections <- function(){
 #' @param connection the id of the connection to forget.
 #'
 #' @seealso [lsBedConnections], [checkBedConn], [connectToBed]
-#'
 #'
 #' @export
 #'
