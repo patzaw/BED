@@ -54,6 +54,5 @@ Be carefull that you should reconnect to BED database each time
 the environment is reloaded.
 }
 \seealso{
-\link{checkBedConn}, \link{lsBedConnections},
-\link{forgetBedConnection}
+\link{checkBedConn}, \link{lsBedConnections}, \link{forgetBedConnection}
 }

@@ -14,8 +14,7 @@
 #'
 #' @seealso [bedCall], [neo2R::import_from_df]
 #'
-#' @importFrom neo2R cypher
-#' @importFrom utils write.table
+#' @importFrom neo2R import_from_df
 #'
 bedImport <- function(
    cql, toImport, periodicCommit=10000, ...

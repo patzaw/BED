@@ -28,8 +28,7 @@
 #' @details Be carefull that you should reconnect to BED database each time
 #' the environment is reloaded.
 #'
-#' @seealso [checkBedConn], [lsBedConnections],
-#' [forgetBedConnection]
+#' @seealso [checkBedConn], [lsBedConnections], [forgetBedConnection]
 #'
 #' @importFrom neo2R startGraph
 #' @export

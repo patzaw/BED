@@ -28,6 +28,7 @@
 #'
 #' @seealso [convBeIds], [convBeIdLists]
 #'
+#' @importFrom dplyr left_join
 #' @export
 #'
 convDfBeIds <- function(
@@ -36,6 +37,7 @@ convDfBeIds <- function(
    entity=FALSE,
    ...
 ){
+   oriClass <- class(df)
    if(any(colnames(df) %in% c("conv.from", "conv.to"))){
       colnames(df) <- paste("x", colnames(df), sep=".")
    }
@@ -56,8 +58,9 @@ convDfBeIds <- function(
    ct <- ct[,c("from", ifelse(entity, "to.entity", "to"))]
    colnames(ct) <- c("from", "to")
    colnames(ct) <- paste("conv", colnames(ct), sep=".")
-   df <- merge(df, ct, by="conv.from")
+   df <- dplyr::left_join(df, ct, by="conv.from")
    df <- df[, c(cols, "conv.from", "conv.to")]
+   class(df) <- oriClass
    attr(df, "scope") <- c(scope, list(entity=entity))
    return(df)
 }
