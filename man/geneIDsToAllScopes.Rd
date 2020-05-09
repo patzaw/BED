@@ -2,15 +2,14 @@
 % Please edit documentation in R/geneIDsToAllScopes.R
 \name{geneIDsToAllScopes}
 \alias{geneIDsToAllScopes}
-\title{Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene}
+\title{Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene in any organism}
 \usage{
 geneIDsToAllScopes(
   geneids,
   source,
   organism,
   entities = NULL,
-  canonical_symbols = TRUE,
-  entity_warning = TRUE
+  canonical_symbols = TRUE
 )
 }
 \arguments{
@@ -25,10 +24,6 @@ geneids, source and organism arguments are used to identify genes.
 Be carefull when using entities as these identifiers are not stable.}
 
 \item{canonical_symbols}{return only canonical symbols (default: TRUE).}
-
-\item{entity_warning}{by default (TRUE) a warning is shown when
-the entities argument is used. Set this argument to FALSE to avoid this
-warning.}
 }
 \value{
 A data.frame with the following fields:
@@ -44,5 +39,5 @@ A data.frame with the following fields:
 }
 }
 \description{
-Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene
+Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene in any organism
 }

@@ -8,26 +8,21 @@
 #' beids, source and organism arguments are used to identify BEs.
 #' Be carefull when using entities as these identifiers are not stable.
 #' @param canonical_symbols return only canonical symbols (default: TRUE).
-#' @param entity_warning by default (TRUE) a warning is shown when
-#' the entities argument is used. Set this argument to FALSE to avoid this
-#' warning.
 #'
 #' @return A data.frame with the following fields:
 #'
 #' - **value**: the identifier
 #' - **be**: the type of BE
-#' - **organism**: the BE organism
 #' - **source**: the source of the identifier
-#' - **Gene_entity**: the gene entity input
-#' - **GeneID** (optional): the gene ID input
-#' - **Gene_source** (optional): the gene source input
-#' - **Gene_organism** (optional): the gene organism input
+#' - **organism**: the BE organism
+#' - **BE_entity**: the BE entity input
+#' - **BEID** (optional): the BE ID input
+#' - **BE_source** (optional): the BE source input
 #'
 #' @export
 #'
 beIDsToAllScopes <- function(
-   beids, be, source, organism, entities=NULL, canonical_symbols=TRUE,
-   entity_warning=TRUE
+   beids, be, source, organism, entities=NULL, canonical_symbols=TRUE
 ){
    if(is.null(entities)){
       stopifnot(
@@ -83,13 +78,11 @@ beIDsToAllScopes <- function(
       stopifnot(
          is.numeric(entities), all(!is.na(entities)), length(entities)>0
       )
-      if(entity_warning){
-         warning(
-            'Be carefull when using entities as these identifiers are ',
-            'not stable.',
-            '\nYou can disable this warning by setting entity_warning to FALSE.'
-         )
-      }
+      warning(
+         'Be carefull when using entities as these identifiers are ',
+         'not stable.',
+         '\nYou can disable this warning by setting entity_warning to FALSE.'
+      )
       query <- paste(
          'MATCH (be)',
          '<-[:is_expressed_as|is_translated_in|codes_for*0..2]-(:Gene)',
@@ -119,9 +112,9 @@ beIDsToAllScopes <- function(
    if(is.null(entities)){
       query <- paste(
          query,
-         sprintf(', bid.value as %s,', paste0(be, "ID")),
+         ', bid.value as BEID,',
          sprintf(
-            'bid.%s as %s_source',
+            'bid.%s as BE_source',
             ifelse(be=="Probe", "platform", "database"), be
          )
       )
@@ -148,7 +141,7 @@ beIDsToAllScopes <- function(
       if(is.null(entities)){
          toRet <- dplyr::select(
             toRet, "value", "be", "source", "organism", "BE_entity",
-            paste0(!!be, "ID"), paste0(!!be, "_source"),
+            "BEID", "BE_source"
          )
       }else{
          toRet <- dplyr::select(

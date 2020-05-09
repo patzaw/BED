@@ -1,4 +1,4 @@
-#' Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene
+#' Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID corresponding to a Gene in any organism
 #'
 #' @param geneids a character vector of gene identifiers
 #' @param source the source of gene identifiers. **Guessed if not provided**
@@ -7,9 +7,6 @@
 #' geneids, source and organism arguments are used to identify genes.
 #' Be carefull when using entities as these identifiers are not stable.
 #' @param canonical_symbols return only canonical symbols (default: TRUE).
-#' @param entity_warning by default (TRUE) a warning is shown when
-#' the entities argument is used. Set this argument to FALSE to avoid this
-#' warning.
 #'
 #' @return A data.frame with the following fields:
 #'
@@ -25,8 +22,7 @@
 #' @export
 #'
 geneIDsToAllScopes <- function(
-   geneids, source, organism, entities=NULL, canonical_symbols=TRUE,
-   entity_warning=TRUE
+   geneids, source, organism, entities=NULL, canonical_symbols=TRUE
 ){
    if(is.null(entities)){
       stopifnot(
@@ -76,13 +72,11 @@ geneIDsToAllScopes <- function(
       stopifnot(
          is.numeric(entities), all(!is.na(entities)), length(entities)>0
       )
-      if(entity_warning){
-         warning(
-            'Be carefull when using entities as these identifiers are ',
-            'not stable.',
-            '\nYou can disable this warning by setting entity_warning to FALSE.'
-         )
-      }
+      warning(
+         'Be carefull when using entities as these identifiers are ',
+         'not stable.',
+         '\nYou can disable this warning by setting entity_warning to FALSE.'
+      )
       query <- paste(
          'MATCH (g:Gene) WHERE id(g) IN $ids'
       )

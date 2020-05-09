@@ -10,8 +10,7 @@ beIDsToAllScopes(
   source,
   organism,
   entities = NULL,
-  canonical_symbols = TRUE,
-  entity_warning = TRUE
+  canonical_symbols = TRUE
 )
 }
 \arguments{
@@ -28,22 +27,17 @@ beids, source and organism arguments are used to identify BEs.
 Be carefull when using entities as these identifiers are not stable.}
 
 \item{canonical_symbols}{return only canonical symbols (default: TRUE).}
-
-\item{entity_warning}{by default (TRUE) a warning is shown when
-the entities argument is used. Set this argument to FALSE to avoid this
-warning.}
 }
 \value{
 A data.frame with the following fields:
 \itemize{
 \item \strong{value}: the identifier
 \item \strong{be}: the type of BE
-\item \strong{organism}: the BE organism
 \item \strong{source}: the source of the identifier
-\item \strong{Gene_entity}: the gene entity input
-\item \strong{GeneID} (optional): the gene ID input
-\item \strong{Gene_source} (optional): the gene source input
-\item \strong{Gene_organism} (optional): the gene organism input
+\item \strong{organism}: the BE organism
+\item \strong{BE_entity}: the BE entity input
+\item \strong{BEID} (optional): the BE ID input
+\item \strong{BE_source} (optional): the BE source input
 }
 }
 \description{
