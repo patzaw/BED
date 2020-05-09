@@ -3,9 +3,9 @@
 #' This description can be used for annotating tables or graph based on BE IDs.
 #'
 #' @param ids list of identifiers
-#' @param be one BE
-#' @param source the BE ID database
-#' @param organism organism name
+#' @param be one BE. **Guessed if not provided**
+#' @param source the BE ID database. **Guessed if not provided**
+#' @param organism organism name. **Guessed if not provided**
 #' @param gsource the source of the gene IDs to use. It's chosen automatically
 #' by default.
 #' @param limForCache The number of ids above which the description
@@ -35,7 +35,7 @@
 #'
 getGeneDescription <- function(
    ids,
-   be=c(listBe(), "Probe"),
+   be,
    source,
    organism,
    gsource=largestBeSource(
@@ -46,7 +46,46 @@ getGeneDescription <- function(
    ##
    from <- to <- symbol <- name <- NULL # for passing R check
    ##
-   be <- match.arg(be)
+   if(length(ids)==0){
+      # stop("ids should be a character vector with at least one value")
+      return(data.frame(
+         "id"=character(),
+         "symbol"=character(),
+         "name"=character(),
+         "preferred"=logical(),
+         "db.version"=character(),
+         "db.deprecated"=logical(),
+         stringsAsFactors=FALSE
+      ))
+   }
+   ##
+   if(missing(be) || missing(source) || missing(organism)){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(ids=ids, be=be, source=source, organism=organism)
+   if(is.null(guess)){
+      stop("Could not find the provided ids")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided ids does not match the provided scope",
+         " (be, source or organism)"
+      )
+   }
+   be <- guess$be
+   source <- guess$source
+   organism <- guess$organism
+   if(toWarn){
+      warning(
+         "Guessing ID scope:",
+         sprintf("\n   - be: %s", be),
+         sprintf("\n   - source: %s", source),
+         sprintf("\n   - organism: %s", organism)
+      )
+   }
+   ##
    if(be=="Gene"){
       return(getBeIdDescription(
          ids=ids,

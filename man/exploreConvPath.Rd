@@ -6,11 +6,11 @@
 \usage{
 exploreConvPath(
   from.id,
+  to.id,
   from,
   from.source,
-  to.id,
-  to = from,
-  to.source = from.source,
+  to,
+  to.source,
   edgeDirection = FALSE,
   verbose = FALSE
 )
@@ -18,15 +18,19 @@ exploreConvPath(
 \arguments{
 \item{from.id}{the first identifier}
 
-\item{from}{the type of entity: \code{listBe()} or Probe}
+\item{to.id}{the second identifier}
 
-\item{from.source}{the identifier source: database or platform}
+\item{from}{the type of entity: \code{listBe()} or Probe.
+\strong{Guessed if not provided}}
 
-\item{to.id}{the first identifier}
+\item{from.source}{the identifier source: database or platform.
+\strong{Guessed if not provided}}
 
-\item{to}{the type of entity: \code{listBe()} or Probe}
+\item{to}{the type of entity: \code{listBe()} or Probe.
+\strong{Guessed if not provided}}
 
-\item{to.source}{the identifier source: database or platform}
+\item{to.source}{the identifier source: database or platform.
+\strong{Guessed if not provided}}
 
 \item{edgeDirection}{a logical value indicating if the direction of the
 edges should be drawn.}

@@ -6,7 +6,9 @@
    - `guessIdOrigin()` (still available) has been renamed `guessIdScope()`.
    It takes into account user input to guess the identifiers scope.
    - The scope of the identifiers to convert or to explore is automatically
-   guessed when not provided by the user.
+   guessed when not provided by the user. It is still recommended to
+   provide them when they are known but this feature could help for
+   exploratory session.
 
 ### Implementation changes
 

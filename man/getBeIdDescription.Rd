@@ -9,11 +9,11 @@ getBeIdDescription(ids, be, source, organism, ...)
 \arguments{
 \item{ids}{list of identifiers}
 
-\item{be}{one BE}
+\item{be}{one BE. \strong{Guessed if not provided}}
 
-\item{source}{the BE ID database}
+\item{source}{the BE ID database. \strong{Guessed if not provided}}
 
-\item{organism}{organism name}
+\item{organism}{organism name. \strong{Guessed if not provided}}
 
 \item{...}{further arguments
 for \link{getBeIdNames} and \link{getBeIdSymbols} functions}

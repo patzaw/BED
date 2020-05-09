@@ -9,11 +9,12 @@ checkBeIds(ids, be, source, organism, stopThr = 1, caseSensitive = FALSE)
 \arguments{
 \item{ids}{a vector of identifiers to be checked}
 
-\item{be}{biological entity. See \link{getBeIds}.}
+\item{be}{biological entity. See \link{getBeIds}. \strong{Guessed if not provided}}
 
-\item{source}{source of the ids. See \link{getBeIds}.}
+\item{source}{source of the ids. See \link{getBeIds}. \strong{Guessed if not provided}}
 
-\item{organism}{the organism of interest. See \link{getBeIds}.}
+\item{organism}{the organism of interest. See \link{getBeIds}.
+\strong{Guessed if not provided}}
 
 \item{stopThr}{proportion of non-recognized IDs above which an error is
 thrown. Default: 1 ==> no check}

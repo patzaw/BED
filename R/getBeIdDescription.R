@@ -3,9 +3,9 @@
 #' This description can be used for annotating tables or graph based on BE IDs.
 #'
 #' @param ids list of identifiers
-#' @param be one BE
-#' @param source the BE ID database
-#' @param organism organism name
+#' @param be one BE. **Guessed if not provided**
+#' @param source the BE ID database. **Guessed if not provided**
+#' @param organism organism name. **Guessed if not provided**
 #' @param ... further arguments
 #' for [getBeIdNames] and [getBeIdSymbols] functions
 #'
@@ -48,6 +48,34 @@ getBeIdDescription <- function(
          stringsAsFactors=FALSE
       ))
    }
+   ##
+   if(missing(be) || missing(source) || missing(organism)){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(ids=ids, be=be, source=source, organism=organism)
+   if(is.null(guess)){
+      stop("Could not find the provided ids")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided ids does not match the provided scope",
+         " (be, source or organism)"
+      )
+   }
+   be <- guess$be
+   source <- guess$source
+   organism <- guess$organism
+   if(toWarn){
+      warning(
+         "Guessing ID scope:",
+         sprintf("\n   - be: %s", be),
+         sprintf("\n   - source: %s", source),
+         sprintf("\n   - organism: %s", organism)
+      )
+   }
+   ##
    cnames <- getBeIdNames(
       ids=ids,
       be=be, source=source,

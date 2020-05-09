@@ -6,7 +6,7 @@
 \usage{
 getGeneDescription(
   ids,
-  be = c(listBe(), "Probe"),
+  be,
   source,
   organism,
   gsource = largestBeSource(be = "Gene", organism = organism, rel = "is_known_as",
@@ -17,11 +17,11 @@ getGeneDescription(
 \arguments{
 \item{ids}{list of identifiers}
 
-\item{be}{one BE}
+\item{be}{one BE. \strong{Guessed if not provided}}
 
-\item{source}{the BE ID database}
+\item{source}{the BE ID database. \strong{Guessed if not provided}}
 
-\item{organism}{organism name}
+\item{organism}{organism name. \strong{Guessed if not provided}}
 
 \item{gsource}{the source of the gene IDs to use. It's chosen automatically
 by default.}

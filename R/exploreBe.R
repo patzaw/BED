@@ -4,8 +4,8 @@
 #' corresponding to one BE (including ProbeID and BESymbol)
 #'
 #' @param id one ID for the BE
-#' @param source the ID source database **Guessed if not provided**
-#' @param be the type of BE **Guessed if not provided**
+#' @param source the ID source database. **Guessed if not provided**
+#' @param be the type of BE. **Guessed if not provided**
 #' @param showProbes boolean. If TRUE, probes targeting any BEID are shown.
 #' @param showBE boolean. If TRUE the Biological Entity corresponding to the
 #' id is shown. If id is isolated (not mapped to any other ID or symbol)
@@ -36,13 +36,15 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          " (be, source or organism)"
       )
    }
-   source <- guess$source
    be <- guess$be
+   source <- guess$source
+   organism <- guess$organism
    if(toWarn){
       warning(
-         "Guessing ID scope:\n",
-         sprintf("   - be: %s\n", be),
-         sprintf("   - source: %s", source)
+         "Guessing ID scope:",
+         sprintf("\n   - be: %s", be),
+         sprintf("\n   - source: %s", source),
+         sprintf("\n   - organism: %s", organism)
       )
    }
    ##

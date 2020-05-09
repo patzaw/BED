@@ -4,10 +4,16 @@
 \alias{getBeIdSymbols}
 \title{Get symbols of Biological Entity identifiers}
 \usage{
-getBeIdSymbols(ids, limForCache = 4000, ...)
+getBeIdSymbols(ids, be, source, organism, limForCache = 4000, ...)
 }
 \arguments{
 \item{ids}{list of identifiers}
+
+\item{be}{one BE. \strong{Guessed if not provided}}
+
+\item{source}{the BE ID database. \strong{Guessed if not provided}}
+
+\item{organism}{organism name. \strong{Guessed if not provided}}
 
 \item{limForCache}{if there are more ids than limForCache. Results are
 collected for all IDs (beyond provided ids) and cached for futur queries.

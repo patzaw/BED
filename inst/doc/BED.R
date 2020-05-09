@@ -1,12 +1,13 @@
 ## ----setup, echo=FALSE--------------------------------------------------------
 library(knitr)
+## The following line is to avoid building errors on CRAN
+knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
+
+## ---- message=FALSE, eval=TRUE------------------------------------------------
+library(BED)
 
 ## ---- message=FALSE-----------------------------------------------------------
-library(BED)
-connectToBed(
-    url="http://localhost:5454",
-    username="neo4j", password="1234"
-)
+connectToBed(url="localhost:5454", remember=FALSE, useCache=TRUE)
 
 ## ---- message=TRUE------------------------------------------------------------
 checkBedConn(verbose=TRUE)
@@ -17,10 +18,10 @@ lsBedConnections()
 ## ---- eval=FALSE--------------------------------------------------------------
 #  showBedDataModel()
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo=FALSE, eval=TRUE---------------------------------------------------
 htmltools::includeHTML(system.file(
-    "Documentation", "BED-Model", "BED.html",
-    package="BED"
+   "Documentation", "BED-Model", "BED.html",
+   package="BED"
 ))
 
 ## -----------------------------------------------------------------------------
@@ -68,6 +69,7 @@ head(beids)
 
 ## -----------------------------------------------------------------------------
 sort(table(table(beids$Gene)), decreasing = TRUE)
+ambId <- sum(table(table(beids$Gene)[which(table(beids$Gene)>=10)]))
 
 ## -----------------------------------------------------------------------------
 beids <- getBeIds(
@@ -109,7 +111,7 @@ oriId <- c(
     "12400", "106582", "19062", "245607", "79196", "16878", "320727",
     "230649", "66880", "66245", "103742", "320145", "140795"
 )
-idOrigin <- guessIdOrigin(oriId)
+idOrigin <- guessIdScope(oriId)
 print(idOrigin$be)
 print(idOrigin$source)
 print(idOrigin$organism)
@@ -291,19 +293,17 @@ convBeIds(
 )
 
 ## -----------------------------------------------------------------------------
-searched <- searchId("sv2A")
-relIds <- getRelevantIds(
-    d=searched,
-    selected=1,
-    be="Gene",
-    source="Ens_gene",
-    organism="human",
-    restricted=TRUE
+searched <- searchBeid("sv2A")
+toTake <- which(searched$organism=="Homo sapiens")[1]
+relIds <- geneIDsToAllScopes(
+  geneids=searched$GeneID[toTake],
+  source=searched$Gene_source[toTake],
+  organism=searched$organism[toTake]
 )
 
 ## ---- eval=FALSE--------------------------------------------------------------
-#  relIds <- findBe()
+#  relIds <- findBeids()
 
-## ---- echo=FALSE--------------------------------------------------------------
+## ---- echo=FALSE, eval=TRUE---------------------------------------------------
 sessionInfo()
 

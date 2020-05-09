@@ -4,11 +4,15 @@
 #' between two identifiers (including ProbeID).
 #'
 #' @param from.id the first identifier
-#' @param from the type of entity: `listBe()` or Probe
-#' @param from.source the identifier source: database or platform
-#' @param to.id the first identifier
-#' @param to the type of entity: `listBe()` or Probe
-#' @param to.source the identifier source: database or platform
+#' @param to.id the second identifier
+#' @param from the type of entity: `listBe()` or Probe.
+#' **Guessed if not provided**
+#' @param from.source the identifier source: database or platform.
+#' **Guessed if not provided**
+#' @param to the type of entity: `listBe()` or Probe.
+#' **Guessed if not provided**
+#' @param to.source the identifier source: database or platform.
+#' **Guessed if not provided**
 #' @param edgeDirection a logical value indicating if the direction of the
 #' edges should be drawn.
 #' @param verbose if TRUE the cypher query is shown
@@ -26,19 +30,82 @@
 #'
 exploreConvPath <- function(
    from.id,
+   to.id,
    from,
    from.source,
-   to.id,
-   to=from,
-   to.source=from.source,
+   to,
+   to.source,
    edgeDirection=FALSE,
    verbose=FALSE
 ){
 
    ## Verifications
-   echoices <- c("Probe", listBe())
-   match.arg(from, echoices)
-   match.arg(to, echoices)
+   from.id <- as.character(from.id)
+   to.id <- as.character(to.id)
+   stopifnot(
+      length(from.id)==1,
+      length(to.id)==1
+   )
+
+   ##
+   if(
+      missing(from) || missing(from.source)
+   ){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(ids=from.id, be=from, source=from.source)
+   if(is.null(guess)){
+      stop("Could not find the provided from.id")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided from.id does not match the provided scope",
+         " (be, source or organism)"
+      )
+   }
+   from.source <- guess$source
+   from <- guess$be
+   from.organism <- guess$organism
+   if(toWarn){
+      warning(
+         'Guessing "from.id" scope:',
+         sprintf("\n   - be: %s", from),
+         sprintf("\n   - source: %s", from.source),
+         sprintf("\n   - organism: %s", from.organism)
+      )
+   }
+   ##
+   if(
+      missing(to) || missing(to.source)
+   ){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(ids=to.id, be=to, source=to.source)
+   if(is.null(guess)){
+      stop("Could not find the provided to.id")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided to.id does not match the provided scope",
+         " (be, source or organism)"
+      )
+   }
+   to.source <- guess$source
+   to <- guess$be
+   to.organism <- guess$organism
+   if(toWarn){
+      warning(
+         'Guessing "to.id" scope:',
+         sprintf("\n   - be: %s", to),
+         sprintf("\n   - source: %s", to.source),
+         sprintf("\n   - organism: %s", to.organism)
+      )
+   }
+   ##
 
    ## From
    if(from=="Probe"){

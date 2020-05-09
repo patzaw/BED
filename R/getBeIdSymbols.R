@@ -1,10 +1,9 @@
 #' Get symbols of Biological Entity identifiers
 #'
 #' @param ids list of identifiers
-# @param source the BE ID database
-# @param organism organism name
-# @param restricted boolean indicating if the results should be restricted to
-# direct symbols
+#' @param be one BE. **Guessed if not provided**
+#' @param source the BE ID database. **Guessed if not provided**
+#' @param organism organism name. **Guessed if not provided**
 #' @param limForCache if there are more ids than limForCache. Results are
 #' collected for all IDs (beyond provided ids) and cached for futur queries.
 #' If not, results are collected only for provided ids and not cached.
@@ -34,10 +33,41 @@
 #'
 getBeIdSymbols <- function(
     ids,
+    be,
+    source,
+    organism,
     limForCache=4000,
     ...
 ){
     ids <- setdiff(ids, NA)
+    ##
+    if(missing(be) || missing(source) || missing(organism)){
+        toWarn <- TRUE
+    }else{
+        toWarn <- FALSE
+    }
+    guess <- guessIdScope(ids=ids, be=be, source=source, organism=organism)
+    if(is.null(guess)){
+        stop("Could not find the provided ids")
+    }
+    if(is.na(guess$be)){
+        stop(
+            "The provided ids does not match the provided scope",
+            " (be, source or organism)"
+        )
+    }
+    be <- guess$be
+    source <- guess$source
+    organism <- guess$organism
+    if(toWarn){
+        warning(
+            "Guessing ID scope:",
+            sprintf("\n   - be: %s", be),
+            sprintf("\n   - source: %s", source),
+            sprintf("\n   - organism: %s", organism)
+        )
+    }
+    ##
     prepNotFound <- function(x, entity){
         toRet <- data.frame(
             id=x,
@@ -54,9 +84,16 @@ getBeIdSymbols <- function(
         return(toRet)
     }
     if(length(ids) > limForCache){
-        toRet <- getBeIdSymbolTable(...)
+        toRet <- getBeIdSymbolTable(
+            be=be, source=source, organism=organism,
+            ...
+        )
     }else{
-        toRet <- getBeIdSymbolTable(filter=ids, ...)
+        toRet <- getBeIdSymbolTable(
+            be=be, source=source, organism=organism,
+            filter=ids,
+            ...
+        )
     }
     if(is.null(toRet)){
         toRet <- prepNotFound(ids, entity=TRUE)

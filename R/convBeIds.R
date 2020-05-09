@@ -1,9 +1,12 @@
 #' Converts BE IDs
 #'
 #' @param ids list of identifiers
-#' @param from a character corresponding to the biological entity or Probe
-#' @param from.source a character corresponding to the ID source
-#' @param from.org a character corresponding to the organism
+#' @param from a character corresponding to the biological entity or Probe.
+#' **Guessed if not provided**
+#' @param from.source a character corresponding to the ID source.
+#' **Guessed if not provided**
+#' @param from.org a character corresponding to the organism.
+#' **Guessed if not provided**
 #' @param to a character corresponding to the biological entity or Probe
 #' @param to.source a character corresponding to the ID source
 #' @param to.org a character corresponding to the organism
@@ -77,9 +80,9 @@ convBeIds <- function(
    from,
    from.source,
    from.org,
-   to=from,
-   to.source=from.source,
-   to.org=from.org,
+   to,
+   to.source,
+   to.org,
    caseSensitive=FALSE,
    prefFilter=FALSE,
    restricted=TRUE,
@@ -87,6 +90,42 @@ convBeIds <- function(
    limForCache=2000
 ){
    ids <- sort(setdiff(as.character(unique(ids)), NA))
+
+   ##
+   if(missing(from) || missing(from.source) || missing(from.org)){
+      toWarn <- TRUE
+   }else{
+      toWarn <- FALSE
+   }
+   guess <- guessIdScope(
+      ids=ids, be=from, source=from.source, organism=from.org
+   )
+   if(is.null(guess)){
+      stop("Could not find the provided ids")
+   }
+   if(is.na(guess$be)){
+      stop(
+         "The provided ids does not match the provided scope",
+         " (from, from.source or from.org)"
+      )
+   }
+   from <- guess$be
+   from.source <- guess$source
+   from.org <- guess$organism
+   if(toWarn){
+      warning(
+         "Guessing ID scope:",
+         sprintf("\n   - from: %s", from),
+         sprintf("\n   - from.source: %s", from.source),
+         sprintf("\n   - from.org: %s", from.org)
+      )
+   }
+   ##
+   if(missing(to)) to <- from
+   if(missing(to.source)) to.source <- from.source
+   if(missing(to.org)) to.org <- from.org
+   ##
+
    fFilt <- length(ids) <= limForCache
    if(!fFilt){
       tn <- gsub(

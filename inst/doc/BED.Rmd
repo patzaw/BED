@@ -4,38 +4,70 @@ author: "Patrice Godard"
 date: "`r format(Sys.time(), '%B %d %Y')`"
 always_allow_html: true
 output:
-  html_document:
-    keep_md: no
-    number_sections: yes
-    self_contained: yes
-    theme: cerulean
-    toc: yes
-    toc_float: yes
-  pdf_document:
-    toc: yes
-    number_sections: yes
+   html_document:
+      keep_md: no
+      number_sections: yes
+      self_contained: yes
+      theme: cerulean
+      toc: yes
+      toc_float: yes
+   pdf_document:
+      toc: yes
+      number_sections: yes
 package: "BED (version `r packageVersion('BED')`)"
 vignette: >
-    %\VignetteIndexEntry{BED - Tutorial}
-    %\VignetteEncoding{UTF-8}
-    %\VignetteEngine{knitr::rmarkdown}
+   %\VignetteIndexEntry{BED - Tutorial}
+   %\VignetteEncoding{UTF-8}
+   %\VignetteEngine{knitr::rmarkdown}
 editor_options:
-  chunk_output_type: console
+   chunk_output_type: console
 ---
 
 ```{r setup, echo=FALSE}
 library(knitr)
+## The following line is to avoid building errors on CRAN
+knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
 ```
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # Introduction
 
+This Biological Entity Dictionary (BED)
+has been developed to address three main challenges.
+The first one is related to the completeness of identifier mappings.
+Indeed, direct mapping information provided by the different systems
+are not always complete and can be enriched by mappings provided by other
+resources.
+More interestingly, direct mappings not identified by any of these
+resources can be indirectly inferred by using mappings to a third reference.
+For example, many human Ensembl gene ID are not directly mapped to any
+Entrez gene ID but such mappings can be inferred using respective mappings
+to HGNC ID. The second challenge is related to the mapping of deprecated
+identifiers. Indeed, entity identifiers can change from one resource
+release to another. The identifier history is provided by some resources,
+such as Ensembl or the NCBI, but it is generally not used by mapping tools.
+The third challenge is related to the automation of the mapping process
+according to the relationships between the biological entities of interest.
+Indeed, mapping between gene and protein ID scopes should not be done
+the same way than between two scopes regarding gene ID.
+Also, converting identifiers from different organisms should be possible
+using gene orthologs information.
+
 This document shows how to use the **BED (Biological Entity Dictionary)**
 R package to get and explore mapping between
 identifiers of biological entities (BE).
 This package provides a way to connect to a BED Neo4j database in which
 the relationships between the identifiers from different sources are recorded.
+
+## Citing BED
+
+This package and the underlying research has been published in
+this peer reviewed article:
+
+<a href="`r citation("BED")[1]$url`" target="_blank">
+`r sub('[[]', '(', sub('[]]', ')', format(citation("BED"), style="textVersion")))`
+</a>
 
 ## Installation
 
@@ -47,9 +79,9 @@ repository:
 - **dplyr**
 - **readr**
 - **stringr**
-- **htmltools**
-- **DT**
 - **shiny**
+- **DT**
+- **htmltools**
 - **miniUI**
 - **rstudioapi**
 
@@ -61,13 +93,26 @@ Before using BED, the connection needs to be established with the
 underlying Neo4j DB.
 `url`, `username` and `password` should be adapted.
 
-```{r, message=FALSE}
+```{r, message=FALSE, eval=TRUE}
 library(BED)
-connectToBed(
-    url="http://localhost:5454",
-    username="neo4j", password="1234"
-)
 ```
+
+
+```{r, message=FALSE}
+connectToBed(url="localhost:5454", remember=FALSE, useCache=TRUE)
+```
+
+The `remember` parameter can be set to `TRUE` in order to save connection
+information that will be automatically used the next time the `connectToBed()`
+function is called or the next time the BED library is loaded.
+By default, this parameter is set to `FALSE`.
+Saved connection can be managed with the `lsBedConnections()` and
+the `forgetBedConnection()` functions.
+
+The `useCache` parameter is by default set to `FALSE`.
+However, it is recommended to set it to `TRUE` to improve the speed
+of recurent queries: the results of some large queries are saved localy
+in a file.
 
 The connection can be checked the following way.
 
@@ -78,18 +123,12 @@ checkBedConn(verbose=TRUE)
 If the `verbose` parameter is set to TRUE, the URL and the content version
 are displayed as messages.
 
-By default, connections are registered (the `remember` param is set to `TRUE`
-when calling the `connectToBed` function). This way, the connection which
-has been used the last time is automatically used when loading BED during
-a new R session. Connections can be managed with the `lsBedConnections` and
-the `forgetBedConnection()` functions.
-
 ```{r}
 lsBedConnections()
 ```
 
 The `connection` param of the `connectToBed` function can be used to
-connect to a registered connection other than the last one.
+connect to a saved connection other than the last one.
 
 ## Data model
 
@@ -100,17 +139,17 @@ the following command.
 showBedDataModel()
 ```
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=TRUE}
 htmltools::includeHTML(system.file(
-    "Documentation", "BED-Model", "BED.html",
-    package="BED"
+   "Documentation", "BED-Model", "BED.html",
+   package="BED"
 ))
 ```
 
 ## Direct calls
 
 Cypher queries can be run directly on the Neo4j database using the
-`cypher` function from the neo2R package through the `bedCall` function.
+`cypher` function from the **neo2R** package through the `bedCall` function.
 
 ```{r}
 results <- bedCall(
@@ -129,12 +168,19 @@ results
 
 Many functions are provided within the package to build your own BED database
 instance. These functions are not exported in order to avoid their use when
-interacting with BED normally. A vignette showing how to build a BED database
-instance for human, mouse and rat organisms is available in the *Build*
-directory in the package installation directory.
+interacting with BED normally.
+Information about how to get an instance of the BED neo4j database is
+provided here:
+
+- <https://github.com/patzaw/BED#bed-database-instance-available-as-a-docker-image>
+- <https://github.com/patzaw/BED#build-a-bed-database-instance>
+
 It can be adapted to user needs.
 
 ## Caching
+
+This part is relevant if the `useCache` parameter is set to TRUE when
+calling `connectToBed()`.
 
 Functions of the BED package used to retrieve thousands of identifiers
 can take some time (generally a few seconds) before returning a result.
@@ -252,11 +298,12 @@ redundancy.
 
 ```{r}
 sort(table(table(beids$Gene)), decreasing = TRUE)
+ambId <- sum(table(table(beids$Gene)[which(table(beids$Gene)>=10)]))
 ```
 
 In the example above we can see that most of Gene BE are identified by only
 one EntrezGene ID. However many of them are identified by two or more
-ID; `r sum(table(table(beids$Gene)[which(table(beids$Gene)>=10)]))` BE
+ID; `r ifelse(exists("ambId"), ambId, "XXX")` BE
 are even identified by 10 or more EntrezGeneID.
 In this case, most of these redundancies come from ID history extracted
 from Entrez. Legacy ID can be excluded from the retrieved ID
@@ -363,7 +410,7 @@ oriId <- c(
     "12400", "106582", "19062", "245607", "79196", "16878", "320727",
     "230649", "66880", "66245", "103742", "320145", "140795"
 )
-idOrigin <- guessIdOrigin(oriId)
+idOrigin <- guessIdScope(oriId)
 print(idOrigin$be)
 print(idOrigin$source)
 print(idOrigin$organism)
@@ -580,9 +627,10 @@ exploreConvPath(
 ```
 </div>
 
-The figure above shows how the `r from.id` ProbeID, targeting
+The figure above shows how the `r ifelse(exists("from.id"), from.id, "XXX")`
+ProbeID, targeting
 the mouse NM_010552 transcript, can be associated
-to the `r res$to[1]` human protein ID in Uniprot.
+to the `r ifelse(exists("res"), res$to[1], "XXX")` human protein ID in Uniprot.
 
 ## Notes about converting from and to gene symbols
 
@@ -702,6 +750,6 @@ relIds <- findBeids()
 <!----------------------------------------------------------------------------->
 # Session info
 
-```{r, echo=FALSE}
+```{r, echo=FALSE, eval=TRUE}
 sessionInfo()
 ```

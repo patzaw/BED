@@ -4,10 +4,16 @@
 \alias{getBeIdNames}
 \title{Get names of Biological Entity identifiers}
 \usage{
-getBeIdNames(ids, limForCache = 4000, ...)
+getBeIdNames(ids, be, source, organism, limForCache = 4000, ...)
 }
 \arguments{
 \item{ids}{list of identifiers}
+
+\item{be}{one BE. \strong{Guessed if not provided}}
+
+\item{source}{the BE ID database. \strong{Guessed if not provided}}
+
+\item{organism}{organism name. \strong{Guessed if not provided}}
 
 \item{limForCache}{if there are more ids than limForCache results are
 collected for all IDs (beyond provided ids) and cached for futur queries.

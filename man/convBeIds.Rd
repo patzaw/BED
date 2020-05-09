@@ -9,9 +9,9 @@ convBeIds(
   from,
   from.source,
   from.org,
-  to = from,
-  to.source = from.source,
-  to.org = from.org,
+  to,
+  to.source,
+  to.org,
   caseSensitive = FALSE,
   prefFilter = FALSE,
   restricted = TRUE,
@@ -22,11 +22,14 @@ convBeIds(
 \arguments{
 \item{ids}{list of identifiers}
 
-\item{from}{a character corresponding to the biological entity or Probe}
+\item{from}{a character corresponding to the biological entity or Probe.
+\strong{Guessed if not provided}}
 
-\item{from.source}{a character corresponding to the ID source}
+\item{from.source}{a character corresponding to the ID source.
+\strong{Guessed if not provided}}
 
-\item{from.org}{a character corresponding to the organism}
+\item{from.org}{a character corresponding to the organism.
+\strong{Guessed if not provided}}
 
 \item{to}{a character corresponding to the biological entity or Probe}
 
