@@ -1,4 +1,4 @@
-Name: Find BE
+Name: Find gene and related BE identifiers
 Description: Find Biological Entity in BED based on their IDs, symbols and names
-Binding: findBe
+Binding: findBeids
 Interactive: true

@@ -81,8 +81,7 @@ beIDsToAllScopes <- function(
       )
       warning(
          'Be carefull when using entities as these identifiers are ',
-         'not stable.',
-         '\nYou can disable this warning by setting entity_warning to FALSE.'
+         'not stable.'
       )
       query <- paste(
          'MATCH (be)',
@@ -136,7 +135,7 @@ beIDsToAllScopes <- function(
       # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
       toRet2 <- dplyr::select(toRet, -"value")
       toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
-      toRet2 <- dplyr::mutate(toRet2, "value"=bes)
+      toRet2 <- dplyr::mutate(toRet2, "value"=.data$bes)
       toRet2 <- dplyr::mutate(toRet2, source="Symbol")
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)

@@ -15,7 +15,7 @@
 #' - **be**: the type of BE
 #' - **organism**: the BE organism
 #' - **source**: the source of the identifier
-#' - **canonical**: canonical product (logical)
+#' - **canonical**: canonical gene product (logical)
 #' - **symbol**: canonical symbol of the identifier
 #' - **Gene_entity**: the gene entity input
 #' - **GeneID** (optional): the gene ID input
@@ -31,6 +31,9 @@ geneIDsToAllScopes <- function(
    orthologs=TRUE,
    canonical_symbols=TRUE
 ){
+   stopifnot(
+      is.logical(orthologs), length(orthologs)==1, !is.na(orthologs)
+   )
    if(is.null(entities)){
       stopifnot(
          is.character(geneids), all(!is.na(geneids)), length(geneids)>0
@@ -81,8 +84,7 @@ geneIDsToAllScopes <- function(
       )
       warning(
          'Be carefull when using entities as these identifiers are ',
-         'not stable.',
-         '\nYou can disable this warning by setting entity_warning to FALSE.'
+         'not stable.'
       )
       query <- paste(
          'MATCH (g:Gene) WHERE id(g) IN $ids'
@@ -92,8 +94,8 @@ geneIDsToAllScopes <- function(
    query <- paste(
       query,
       sprintf(
-         'MATCH (g)-[:identifies|is_member_of*%s]-(ag:Gene)',
-         ifelse(orthologs, "0..4", "0")
+         'MATCH (g)-[:identifies|is_member_of%s]-(ag:Gene)',
+         ifelse(orthologs, "*0..4", "*0")
       ),
       'MATCH (ag)-[:codes_for|is_expressed_as|is_translated_in*0..3]->()',
       '<-[:identifies]-()<-[:is_associated_to|is_replaced_by|targets*0..]-',
@@ -105,10 +107,10 @@ geneIDsToAllScopes <- function(
          ifelse(canonical_symbols, " {canonical:true}", "")
       ),
       'OPTIONAL MATCH',
-      '(beid)<-[p:codes_for|is_expressed_as|is_translated_in]-()',
+      '(beid)<-[p:codes_for|is_expressed_as|is_translated_in*1..2]-(:GeneID)',
       'RETURN DISTINCT',
       'beid.value as value, labels(beid) as be,',
-      'p.canonical as canonical,',
+      'reduce(canonical=true, n IN p| canonical AND n.canonical) as canonical,',
       'beid.database as db, beid.platform as pl,',
       'bes.value as bes,',
       'beo.value as organism,',
@@ -138,7 +140,7 @@ geneIDsToAllScopes <- function(
       # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
       toRet2 <- dplyr::select(toRet, -"value")
       toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
-      toRet2 <- dplyr::mutate(toRet2, "value"=bes)
+      toRet2 <- dplyr::mutate(toRet2, "value"=.data$bes)
       toRet2 <- dplyr::mutate(toRet2, source="Symbol")
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)

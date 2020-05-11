@@ -35,7 +35,7 @@ A data.frame with the following fields:
 \item \strong{be}: the type of BE
 \item \strong{organism}: the BE organism
 \item \strong{source}: the source of the identifier
-\item \strong{canonical}: canonical product (logical)
+\item \strong{canonical}: canonical gene product (logical)
 \item \strong{symbol}: canonical symbol of the identifier
 \item \strong{Gene_entity}: the gene entity input
 \item \strong{GeneID} (optional): the gene ID input
