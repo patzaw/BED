@@ -185,7 +185,9 @@ beidsServer <- function(
          ## Filtered matches
          fmatches=NULL,
          fgense=NULL,
-         geneEntity=NULL
+         geneEntity=NULL,
+         ## Selection
+         sel=NULL
       )
 
       ## Select organisms ----
@@ -197,6 +199,7 @@ beidsServer <- function(
             }else{
                appState$orgOfInt <- selOrg
             }
+            appState$sel <- NULL
          })
       }
 
@@ -209,6 +212,7 @@ beidsServer <- function(
             }else{
                appState$beOfInt <- selBe
             }
+            appState$sel <- NULL
          })
       }
 
@@ -301,6 +305,7 @@ beidsServer <- function(
          }
          appState$matches <- m
          appState$genes <- g
+         appState$sel <- NULL
       })
 
       ## Filter matches ----
@@ -332,6 +337,7 @@ beidsServer <- function(
          }
          appState$fmatches <- fmatches
          appState$fgenes <- fgenes
+         appState$sel <- NULL
       })
 
       ## Show the results ----
@@ -390,10 +396,13 @@ beidsServer <- function(
             )
          )
       })
+      shiny::observe({
+         appState$sel <- input$searchRes_rows_selected
+      })
 
       ## Return the results ----
       return(shiny::reactive({
-         sel <- input$searchRes_rows_selected
+         sel <- appState$sel
          g <- appState$fgenes
          m <- appState$fmatches
          if(
