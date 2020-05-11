@@ -59,11 +59,12 @@ highlightText <- function(text, value){
 #' @param tableHeight height of the result table (default: 150)
 #'
 #' @return A reactive data.frame with the following columns:
-#' - **beid**: The BE identifier
-#' - **be**: The type of biological entity
-#' - **source**: The source of the identifier
-#' - **organism**: The BE organism
+#' - **beid**: the BE identifier
+#' - **be**: the type of biological entity
+#' - **source**: the source of the identifier
+#' - **organism**: the BE organism
 #' - **entity**:  internal identifier of the BE
+#' - **match**: the matching character string
 #'
 #' @examples \dontrun{
 #' library(shiny)
@@ -292,6 +293,12 @@ beidsServer <- function(
                g <- dplyr::ungroup(g)
             }
          }
+         if(!is.null(m)){
+            m <- dplyr::rename(m, "match"="value")
+         }
+         if(!is.null(g)){
+            g <- dplyr::rename(g, "match"="value")
+         }
          appState$matches <- m
          appState$genes <- g
       })
@@ -310,7 +317,7 @@ beidsServer <- function(
             if(!toGene && !is.null(fmatches)){
                fmatches <- dplyr::distinct(dplyr::select(
                   fmatches,
-                  "value", "from", "be", "beid", "source", "preferred",
+                  "match", "from", "be", "beid", "source", "preferred",
                   "symbol", "name", "entity", "organism"
                ))
             }
@@ -336,13 +343,13 @@ beidsServer <- function(
             toShow <- dplyr::select(
                dplyr::mutate(
                   toShow,
-                  Value=highlightText(.data$value, !!v),
+                  Match=highlightText(.data$match, !!v),
                   From=highlightText(.data$from, !!v),
                   Symbol=highlightText(.data$Gene_symbol, !!v),
                   Name=highlightText(.data$Gene_name, !!v),
                   Organism=as.factor(.data$organism)
                ),
-               "Value", # "From",
+               "Match", # "From",
                "Symbol", "Name", "Organism", "GeneIDs",
             )
          }else{
@@ -351,7 +358,7 @@ beidsServer <- function(
             toShow <- dplyr::select(
                dplyr::mutate(
                   toShow,
-                  Value=highlightText(.data$value, !!v),
+                  Match=highlightText(.data$match, !!v),
                   From=highlightText(.data$from, !!v),
                   Symbol=highlightText(.data$symbol, !!v),
                   Name=highlightText(.data$name, !!v),
@@ -362,7 +369,7 @@ beidsServer <- function(
                      highlightText(.data$beid, !!v)
                   )
                ),
-               "Value", # "From",
+               "Match", # "From",
                "BE"="be", "Symbol", "Name", "Organism", "ID", "Source"="source"
             )
          }
@@ -389,7 +396,11 @@ beidsServer <- function(
          sel <- input$searchRes_rows_selected
          g <- appState$fgenes
          m <- appState$fmatches
-         if(length(sel)==0 || is.null(g) || nrow(g)==0 || is.null(m) || nrow(m)==0){
+         if(
+            length(sel)==0 ||
+            is.null(g) || nrow(g)==0 ||
+            is.null(m) || nrow(m)==0
+         ){
             return(NULL)
          }else{
             if(toGene){
@@ -403,15 +414,20 @@ beidsServer <- function(
                )
                if(nrow(toRet)>0){
                   toRet$be <- "Gene"
+                  toRet <- dplyr::left_join(
+                     toRet,
+                     g[,c("Gene_entity", "match")],
+                     by=c("entity"="Gene_entity")
+                  )
                   toRet <- toRet[
                      ,
-                     c("beid", "be", "source", "organism", "entity")
+                     c("beid", "be", "source", "organism", "entity", "match")
                   ]
                }
             }else{
                toRet <- m[
                   sel,
-                  c("beid", "be", "source", "organism", "entity")
+                  c("beid", "be", "source", "organism", "entity", "match")
                ]
             }
             return(toRet)

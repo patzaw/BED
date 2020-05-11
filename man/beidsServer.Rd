@@ -39,11 +39,12 @@ BE are converted to genes.}
 \value{
 A reactive data.frame with the following columns:
 \itemize{
-\item \strong{beid}: The BE identifier
-\item \strong{be}: The type of biological entity
-\item \strong{source}: The source of the identifier
-\item \strong{organism}: The BE organism
+\item \strong{beid}: the BE identifier
+\item \strong{be}: the type of biological entity
+\item \strong{source}: the source of the identifier
+\item \strong{organism}: the BE organism
 \item \strong{entity}:  internal identifier of the BE
+\item \strong{match}: the matching character string
 }
 }
 \description{
