@@ -36,6 +36,7 @@
 #'
 #' @importFrom shiny fluidPage fluidRow column textInput checkboxInput uiOutput reactiveValues renderUI selectInput tags actionButton observe withProgress req isolate observeEvent runGadget stopApp dialogViewer p strong
 #' @importFrom DT dataTableOutput renderDataTable datatable formatStyle styleEqual
+#' @importFrom miniUI gadgetTitleBar
 #' @export
 #'
 findBe <- function(
@@ -53,7 +54,7 @@ findBe <- function(
    #############################################
 
    ui <- shiny::fluidPage(
-      shiny::strong("Find a Biological Entity"),
+      miniUI::gadgetTitleBar("Find a Biological Entity"),
       shiny::fluidRow(
          shiny::column(
             width=3,

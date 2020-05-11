@@ -9,6 +9,7 @@ geneIDsToAllScopes(
   source,
   organism,
   entities = NULL,
+  orthologs = TRUE,
   canonical_symbols = TRUE
 )
 }
@@ -23,6 +24,8 @@ geneIDsToAllScopes(
 geneids, source and organism arguments are used to identify genes.
 Be carefull when using entities as these identifiers are not stable.}
 
+\item{orthologs}{return identifiers from orthologs}
+
 \item{canonical_symbols}{return only canonical symbols (default: TRUE).}
 }
 \value{
@@ -32,6 +35,8 @@ A data.frame with the following fields:
 \item \strong{be}: the type of BE
 \item \strong{organism}: the BE organism
 \item \strong{source}: the source of the identifier
+\item \strong{canonical}: canonical product (logical)
+\item \strong{symbol}: canonical symbol of the identifier
 \item \strong{Gene_entity}: the gene entity input
 \item \strong{GeneID} (optional): the gene ID input
 \item \strong{Gene_source} (optional): the gene source input

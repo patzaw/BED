@@ -30,5 +30,5 @@
 #' - Repository: <https://github.com/patzaw/BED>
 #' - Bug reports: <https://github.com/patzaw/BED/issues>
 #'
-#' @import utils neo2R dplyr visNetwork
+#' @import utils neo2R dplyr visNetwork stringr
 NULL

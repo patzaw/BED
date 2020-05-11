@@ -15,6 +15,7 @@
 #' - **be**: the type of BE
 #' - **source**: the source of the identifier
 #' - **organism**: the BE organism
+#' - **symbol**: canonical symbol of the identifier
 #' - **BE_entity**: the BE entity input
 #' - **BEID** (optional): the BE ID input
 #' - **BE_source** (optional): the BE source input
@@ -131,21 +132,27 @@ beIDsToAllScopes <- function(
          "source"=ifelse(is.na(toRet$db), toRet$pl, toRet$db)
       )
       toRet <- dplyr::select(toRet, -"db", -"pl")
-      toRet1 <- dplyr::distinct(dplyr::select(toRet, -"bes"))
+      toRet1 <- toRet
+      # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
       toRet2 <- dplyr::select(toRet, -"value")
       toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
-      toRet2 <- dplyr::rename(toRet2, "value"="bes")
+      toRet2 <- dplyr::mutate(toRet2, "value"=bes)
       toRet2 <- dplyr::mutate(toRet2, source="Symbol")
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)
+      toRet <- dplyr::rename(toRet, "symbol"="bes")
       if(is.null(entities)){
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism", "BE_entity",
+            toRet, "value", "be", "source", "organism",
+            "symbol",
+            "BE_entity",
             "BEID", "BE_source"
          )
       }else{
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism", "BE_entity"
+            toRet, "value", "be", "source", "organism",
+            "symbol",
+            "BE_entity"
          )
       }
    }

@@ -35,6 +35,7 @@ A data.frame with the following fields:
 \item \strong{be}: the type of BE
 \item \strong{source}: the source of the identifier
 \item \strong{organism}: the BE organism
+\item \strong{symbol}: canonical symbol of the identifier
 \item \strong{BE_entity}: the BE entity input
 \item \strong{BEID} (optional): the BE ID input
 \item \strong{BE_source} (optional): the BE source input
