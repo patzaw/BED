@@ -65,6 +65,35 @@ highlightText <- function(text, value){
 #' - **organism**: The BE organism
 #' - **entity**:  internal identifier of the BE
 #'
+#' @examples \dontrun{
+#' library(shiny)
+#' library(BED)
+#' library(DT)
+#'
+#' ui <- fluidPage(
+#'    beidsUI("be"),
+#'    fluidRow(
+#'       column(
+#'          12,
+#'          tags$br(),
+#'          h3("Selected gene entities"),
+#'          DTOutput("result")
+#'       )
+#'    )
+#' )
+#'
+#' server <- function(input, output){
+#'    found <- beidsServer("be", toGene=TRUE, multiple=TRUE)
+#'    output$result <- renderDT({
+#'       req(found())
+#'       toRet <- found()
+#'       datatable(toRet, rownames=FALSE)
+#'    })
+#' }
+#'
+#' shinyApp(ui = ui, server = server)
+#' }
+#'
 #' @importFrom shiny reactive renderUI observe fluidRow column textInput NS selectizeInput reactiveValues withProgress req
 #' @importFrom DT datatable DTOutput renderDT
 #' @export

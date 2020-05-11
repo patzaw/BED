@@ -36,6 +36,7 @@
    
 ### Rebuild-BED.Rmd
    
+   - Not in the final package anymore
    - Ensembl 100
    - Based on neo4j-community-3.5.17
    - GO molecular functions are not included anymore

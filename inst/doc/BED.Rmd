@@ -723,7 +723,7 @@ to convert from or to gene symbol.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# An interactive dictionary
+# An interactive dictionary: Shiny module
 
 IDs, symbols and names can be seeked without knowing the original biological
 entity or probe. Then the results can be converted to the context of interest.
@@ -738,11 +738,44 @@ relIds <- geneIDsToAllScopes(
 )
 ```
 
-A shiny gadget integrating these two function has been developped and is also
+A Shiny gadget integrating these two function has been developped and is also
 available as an Rstudio addins.
 
 ```{r, eval=FALSE}
 relIds <- findBeids()
+```
+
+This application relies a Shiny module made to facilitate the development
+of applications focused on biological entity related information.
+The code below shows a minimum example of such an application.
+
+```{r, eval=FALSE}
+library(shiny)
+library(BED)
+library(DT)
+
+ui <- fluidPage(
+   beidsUI("be"),
+   fluidRow(
+      column(
+         12,
+         tags$br(),
+         h3("Selected gene entities"),
+         DTOutput("result")
+      )
+   )
+)
+
+server <- function(input, output){
+    found <- beidsServer("be", toGene=TRUE, multiple=TRUE)
+    output$result <- renderDT({
+       req(found())
+       toRet <- found()
+       datatable(toRet, rownames=FALSE)
+    })
+}
+
+shinyApp(ui = ui, server = server)
 ```
 
 
