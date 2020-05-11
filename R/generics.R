@@ -2,13 +2,37 @@
 #' Focus a BE related object on a specific identifier (BEID) scope
 #'
 #' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param be the type of biological entity to focus on.
+#' Used if `is.null(scope)`
+#' @param source the source of BEID to focus on.
+#' Used if `is.null(scope)`
+#' @param organism the organism of BEID to focus on.
+#' Used if `is.null(scope)`
+#' @param scope a list with the following element:
+#' - **be**
+#' - **source**
+#' - **organism**
+#'
+#' @param force if TRUE the conversion is done even between identical scopes
+#' (default: FALSE)
+#' @param restricted if TRUE (default) the BEID are limited to current version
+#' of the source
+#' @param prefFilter if TRUE (default) the BEID are limited to prefered
+#' identifiers when they exist
 #' @param ... method specific parameters for BEID conversion
 #'
 #' @return Depends on the class of x
 #'
 #' @export
 #'
-focusOnScope <- function(x, ...){
+focusOnScope <- function(
+   x,
+   be, source, organism,
+   scope,
+   force,
+   restricted, prefFilter,
+   ...
+){
    UseMethod("focusOnScope", x)
 }
 

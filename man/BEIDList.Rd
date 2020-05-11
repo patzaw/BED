@@ -10,10 +10,13 @@ BEIDList(l, metadata, scope)
 \item{l}{a named list of BEID vectors}
 
 \item{metadata}{a data.frame with rownames or
-a column "\strong{.lname}" all in names of l}
+a column "\strong{.lname}" all in names of l.
+If missing, the metadata is constructed with \strong{.lname} being the names
+of l.}
 
 \item{scope}{a list with 3 character vectors of length one named "be",
-"source" and "organism"}
+"source" and "organism".
+If missing, it is guessed from l.}
 }
 \value{
 A BEIDList object which is a list of BEID vectors with 2 additional

@@ -9,6 +9,7 @@
   be,
   source,
   organism,
+  scope = NULL,
   force = FALSE,
   restricted = TRUE,
   prefFilter = TRUE,
@@ -18,11 +19,21 @@
 \arguments{
 \item{x}{the BEIDList to be converted}
 
-\item{be}{the type of biological entity to focus on}
+\item{be}{the type of biological entity to focus on.
+Used if \code{is.null(scope)}}
 
-\item{source}{the source of BEID to focus on}
+\item{source}{the source of BEID to focus on.
+Used if \code{is.null(scope)}}
 
-\item{organism}{the organism of BEID to focus on}
+\item{organism}{the organism of BEID to focus on.
+Used if \code{is.null(scope)}}
+
+\item{scope}{a list with the following element:
+\itemize{
+\item \strong{be}
+\item \strong{source}
+\item \strong{organism}
+}}
 
 \item{force}{if TRUE the conversion is done even between identical scopes
 (default: FALSE)}

@@ -3,9 +3,12 @@
 #'
 #' @param l a named list of BEID vectors
 #' @param metadata a data.frame with rownames or
-#' a column "**.lname**" all in names of l
+#' a column "**.lname**" all in names of l.
+#' If missing, the metadata is constructed with **.lname** being the names
+#' of l.
 #' @param scope a list with 3 character vectors of length one named "be",
-#' "source" and "organism"
+#' "source" and "organism".
+#' If missing, it is guessed from l.
 #'
 #' @return A BEIDList object which is a list of BEID vectors with 2 additional
 #' attributes:
@@ -21,6 +24,19 @@ BEIDList <- function(
    metadata,
    scope
 ){
+
+   if(missing(metadata)){
+      metadata <- data.frame(.lname=names(l), stringsAsFactors=FALSE)
+   }
+   if(missing(scope)){
+      scope <- BED::guessIdScope(unlist(l))
+      warning(
+         "Guessing ID scope:",
+         sprintf("\n   - be: %s", scope$be),
+         sprintf("\n   - source: %s", scope$source),
+         sprintf("\n   - organism: %s", scope$organism)
+      )
+   }
 
    ## Checks ----
    stopifnot(is.data.frame(metadata))
@@ -207,9 +223,17 @@ c.BEIDList <- function(...){
 #' Convert a BEIDList object in a specific identifier (BEID) scope
 #'
 #' @param x the BEIDList to be converted
-#' @param be the type of biological entity to focus on
-#' @param source the source of BEID to focus on
-#' @param organism the organism of BEID to focus on
+#' @param be the type of biological entity to focus on.
+#' Used if `is.null(scope)`
+#' @param source the source of BEID to focus on.
+#' Used if `is.null(scope)`
+#' @param organism the organism of BEID to focus on.
+#' Used if `is.null(scope)`
+#' @param scope a list with the following element:
+#' - **be**
+#' - **source**
+#' - **organism**
+#'
 #' @param force if TRUE the conversion is done even between identical scopes
 #' (default: FALSE)
 #' @param restricted if TRUE (default) the BEID are limited to current version
@@ -224,10 +248,16 @@ c.BEIDList <- function(...){
 #'
 focusOnScope.BEIDList <- function(
    x, be, source, organism,
+   scope=NULL,
    force=FALSE,
    restricted=TRUE, prefFilter=TRUE,
    ...
 ){
+   if(!is.null(scope)){
+      be <- scope$be
+      source <- scope$source
+      organism <- scope$organism
+   }
    taxid <- getTaxId(organism)
    stopifnot(length(taxid)==1)
    orgsn <- getOrgNames(taxid)
