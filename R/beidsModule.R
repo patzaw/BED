@@ -60,6 +60,7 @@ highlightText <- function(text, value){
 #'
 #' @return A reactive data.frame with the following columns:
 #' - **beid**: the BE identifier
+#' - **preferred**: preferred identifier for the same BE in the same scope
 #' - **be**: the type of biological entity
 #' - **source**: the source of the identifier
 #' - **organism**: the BE organism
@@ -84,7 +85,7 @@ highlightText <- function(text, value){
 #' )
 #'
 #' server <- function(input, output){
-#'    found <- beidsServer("be", toGene=TRUE, multiple=TRUE)
+#'    found <- beidsServer("be", toGene=TRUE, multiple=TRUE, tableHeight=250)
 #'    output$result <- renderDT({
 #'       req(found())
 #'       toRet <- found()
@@ -96,7 +97,7 @@ highlightText <- function(text, value){
 #' }
 #'
 #' @importFrom shiny reactive renderUI observe fluidRow column textInput NS selectizeInput reactiveValues withProgress req
-#' @importFrom DT datatable DTOutput renderDT
+#' @importFrom DT datatable DTOutput renderDT formatStyle styleEqual
 #' @export
 #'
 beidsServer <- function(
@@ -278,8 +279,16 @@ beidsServer <- function(
                   GeneIDs=paste(unique(sprintf(
                      '<a href="%s" target="_blank">%s</a>',
                      url,
-                     highlightText(.data$GeneID, !!v)
-                  )), collapse=","),
+                     highlightText(
+                        sprintf(
+                           '%s%s%s',
+                           ifelse(.data$preferred_gene, "<u><strong>", ""),
+                           .data$GeneID,
+                           ifelse(.data$preferred_gene, "</strong></u>", "")
+                        ),
+                        !!v
+                     )
+                  )[order(.data$preferred_gene, decreasing=T)]), collapse=","),
                   Gene_symbol=paste(
                      setdiff(.data$Gene_symbol, NA), collapse=", "
                   ),
@@ -376,10 +385,11 @@ beidsServer <- function(
                   )
                ),
                "Match", # "From",
-               "BE"="be", "Symbol", "Name", "Organism", "ID", "Source"="source"
+               "BE"="be", "Symbol", "Name", "Organism", "ID",
+               "Source"="source", "Preferred"="preferred"
             )
          }
-         DT::datatable(
+         toShow <- DT::datatable(
             toShow,
             rownames=FALSE,
             escape=FALSE,
@@ -395,6 +405,19 @@ beidsServer <- function(
                scrollCollapse=TRUE
             )
          )
+         if(!toGene){
+            DT::formatStyle(
+               toShow, "Preferred",
+               backgroundColor=DT::styleEqual(
+                  c(TRUE, FALSE), c('darkgreen', 'transparent')
+               ),
+               color=DT::styleEqual(
+                  c(TRUE, FALSE), c('white', 'black')
+               )
+            )
+         }else{
+            toShow
+         }
       })
       shiny::observe({
          appState$sel <- input$searchRes_rows_selected
@@ -416,10 +439,13 @@ beidsServer <- function(
                ge <- unique(g$Gene_entity[sel])
                toRet <- unique(m[
                   which(m$Gene_entity %in% ge),
-                  c("GeneID", "Gene_source", "organism", "Gene_entity")
+                  c(
+                     "GeneID", "preferred_gene", "Gene_source", "organism",
+                     "Gene_entity"
+                  )
                ])
                colnames(toRet) <- c(
-                  "beid", "source", "organism", "entity"
+                  "beid", "preferred", "source", "organism", "entity"
                )
                if(nrow(toRet)>0){
                   toRet$be <- "Gene"
@@ -430,13 +456,19 @@ beidsServer <- function(
                   )
                   toRet <- toRet[
                      ,
-                     c("beid", "be", "source", "organism", "entity", "match")
+                     c(
+                        "beid", "preferred", "be", "source", "organism",
+                        "entity", "match"
+                     )
                   ]
                }
             }else{
                toRet <- m[
                   sel,
-                  c("beid", "be", "source", "organism", "entity", "match")
+                  c(
+                     "beid",  "preferred", "be", "source", "organism",
+                     "entity", "match"
+                  )
                ]
             }
             return(toRet)

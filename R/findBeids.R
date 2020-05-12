@@ -8,6 +8,7 @@
 #' values and the following column:
 #'
 #' - **value**: the BE identifier
+#' - **preferred**: preferred identifier for the same BE in the same scope
 #' - **be**: the type of biological entity
 #' - **source**: the source of the identifier
 #' - **organism**: the organism of the BE
@@ -65,7 +66,7 @@ findBeids <- function(toGene=TRUE, ...){
                   ))
                   conv <- conv[,intersect(
                      c(
-                        "value", "be", "source", "organism",
+                        "value", "preferred", "be", "source", "organism",
                         "canonical", "symbol"
                      ),
                      colnames(conv)
@@ -77,7 +78,7 @@ findBeids <- function(toGene=TRUE, ...){
                ))
                conv <- conv[,intersect(
                   c(
-                     "value", "be", "source", "organism",
+                     "value", "preferred", "be", "source", "organism",
                      "canonical", "symbol"
                   ),
                   colnames(conv)

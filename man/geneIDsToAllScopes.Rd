@@ -32,6 +32,7 @@ Be carefull when using entities as these identifiers are not stable.}
 A data.frame with the following fields:
 \itemize{
 \item \strong{value}: the identifier
+\item \strong{preferred}: preferred identifier for the same BE in the same scope
 \item \strong{be}: the type of BE
 \item \strong{organism}: the BE organism
 \item \strong{source}: the source of the identifier

@@ -17,6 +17,7 @@ NULL if not any result, or a data.frame with the selected
 values and the following column:
 \itemize{
 \item \strong{value}: the BE identifier
+\item \strong{preferred}: preferred identifier for the same BE in the same scope
 \item \strong{be}: the type of biological entity
 \item \strong{source}: the source of the identifier
 \item \strong{organism}: the organism of the BE

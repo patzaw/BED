@@ -322,7 +322,7 @@ relIds <- geneIDsToAllScopes(
 #  )
 #  
 #  server <- function(input, output){
-#      found <- beidsServer("be", toGene=TRUE, multiple=TRUE)
+#      found <- beidsServer("be", toGene=TRUE, multiple=TRUE, tableHeight=250)
 #      output$result <- renderDT({
 #         req(found())
 #         toRet <- found()

@@ -40,6 +40,7 @@ BE are converted to genes.}
 A reactive data.frame with the following columns:
 \itemize{
 \item \strong{beid}: the BE identifier
+\item \strong{preferred}: preferred identifier for the same BE in the same scope
 \item \strong{be}: the type of biological entity
 \item \strong{source}: the source of the identifier
 \item \strong{organism}: the BE organism
@@ -74,7 +75,7 @@ ui <- fluidPage(
 )
 
 server <- function(input, output){
-   found <- beidsServer("be", toGene=TRUE, multiple=TRUE)
+   found <- beidsServer("be", toGene=TRUE, multiple=TRUE, tableHeight=250)
    output$result <- renderDT({
       req(found())
       toRet <- found()

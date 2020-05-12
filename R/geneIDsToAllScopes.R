@@ -12,6 +12,7 @@
 #' @return A data.frame with the following fields:
 #'
 #' - **value**: the identifier
+#' - **preferred**: preferred identifier for the same BE in the same scope
 #' - **be**: the type of BE
 #' - **organism**: the BE organism
 #' - **source**: the source of the identifier
@@ -103,7 +104,7 @@ geneIDsToAllScopes <- function(
       'MATCH (ag)-[:belongs_to]->(:TaxID)',
       '-[:is_named {nameClass:"scientific name"}]->(beo:OrganismName)',
       sprintf(
-         'OPTIONAL MATCH (beid)-[:is_known_as%s]->(bes)',
+         'OPTIONAL MATCH (beid)-[k:is_known_as%s]->(bes)',
          ifelse(canonical_symbols, " {canonical:true}", "")
       ),
       'OPTIONAL MATCH',
@@ -112,7 +113,9 @@ geneIDsToAllScopes <- function(
       'beid.value as value, labels(beid) as be,',
       'reduce(canonical=true, n IN p| canonical AND n.canonical) as canonical,',
       'beid.database as db, beid.platform as pl,',
+      'beid.preferred as preferred,',
       'bes.value as bes,',
+      'k.canonical as canBes,',
       'beo.value as organism,',
       'id(g) as Gene_entity'
    )
@@ -136,25 +139,44 @@ geneIDsToAllScopes <- function(
          "source"=ifelse(is.na(toRet$db), toRet$pl, toRet$db)
       )
       toRet <- dplyr::select(toRet, -"db", -"pl")
-      toRet1 <- toRet
+      ##
+      # toRet1 <- toRet
+      toRet1 <- dplyr::arrange(toRet, desc(.data$canBes))
+      toRet1 <- dplyr::group_by(
+         toRet1,
+         .data$value, .data$preferred, .data$be,
+         .data$source, .data$organism, .data$Gene_entity
+      )
+      toRet1 <- dplyr::summarise_all(toRet1, function(x)x[1])
+      toRet1 <- dplyr::select(toRet1, -"canBes")
       # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
-      toRet2 <- dplyr::select(toRet, -"value")
+      toRet2 <- dplyr::select(toRet, -"value", -"preferred")
       toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
-      toRet2 <- dplyr::mutate(toRet2, "value"=.data$bes)
+      ##
+      # toRet2 <- dplyr::mutate(
+      #    toRet2, "value"=.data$bes, "preferred"=NA
+      # )
+      toRet2 <- dplyr::mutate(
+         toRet2,
+         "value"=.data$bes,
+         source="Symbol"
+      )
+      toRet2 <- dplyr::rename(toRet2, "preferred"="canBes")
+      ##
       toRet2 <- dplyr::mutate(toRet2, source="Symbol")
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)
       toRet <- dplyr::rename(toRet, "symbol"="bes")
       if(is.null(entities)){
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism",
+            toRet, "value", "preferred", "be", "source", "organism",
             "canonical", "symbol",
             "Gene_entity",
             "GeneID", "Gene_source", "Gene_organism"
          )
       }else{
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism",
+            toRet, "value", "preferred", "be", "source", "organism",
             "canonical", "symbol",
             "Gene_entity"
          )

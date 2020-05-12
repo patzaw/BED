@@ -99,13 +99,15 @@ beIDsToAllScopes <- function(
       'MATCH (tid)',
       '-[:is_named {nameClass:"scientific name"}]->(beo:OrganismName)',
       sprintf(
-         'OPTIONAL MATCH (beid)-[:is_known_as%s]->(bes)',
+         'OPTIONAL MATCH (beid)-[k:is_known_as%s]->(bes)',
          ifelse(canonical_symbols, " {canonical:true}", "")
       ),
       'RETURN DISTINCT',
       'beid.value as value, labels(beid) as be,',
       'beid.database as db, beid.platform as pl,',
+      'beid.preferred as preferred,',
       'bes.value as bes,',
+      'k.canonical as canBes,',
       'beo.value as organism,',
       'id(be) as BE_entity'
    )
@@ -131,25 +133,39 @@ beIDsToAllScopes <- function(
          "source"=ifelse(is.na(toRet$db), toRet$pl, toRet$db)
       )
       toRet <- dplyr::select(toRet, -"db", -"pl")
-      toRet1 <- toRet
+      ##
+      toRet1 <- dplyr::arrange(toRet, desc(.data$canBes))
+      toRet1 <- dplyr::group_by(
+         toRet1,
+         .data$value, .data$preferred, .data$be,
+         .data$source, .data$organism, .data$BE_entity
+      )
+      toRet1 <- dplyr::summarise_all(toRet1, function(x)x[1])
+      toRet1 <- dplyr::select(toRet1, -"canBes")
       # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
-      toRet2 <- dplyr::select(toRet, -"value")
+      toRet2 <- dplyr::select(toRet, -"value", -"preferred")
       toRet2 <- dplyr::filter(toRet2, !is.na(toRet2$bes))
-      toRet2 <- dplyr::mutate(toRet2, "value"=.data$bes)
-      toRet2 <- dplyr::mutate(toRet2, source="Symbol")
+      ##
+      toRet2 <- dplyr::mutate(
+         toRet2,
+         "value"=.data$bes,
+         source="Symbol"
+      )
+      toRet2 <- dplyr::rename(toRet2, "preferred"="canBes")
+      ##
       toRet2 <- dplyr::distinct(toRet2)
       toRet <- dplyr::bind_rows(toRet1, toRet2)
       toRet <- dplyr::rename(toRet, "symbol"="bes")
       if(is.null(entities)){
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism",
+            toRet, "value", "preferred", "be", "source", "organism",
             "symbol",
             "BE_entity",
             "BEID", "BE_source"
          )
       }else{
          toRet <- dplyr::select(
-            toRet, "value", "be", "source", "organism",
+            toRet, "value", "preferred", "be", "source", "organism",
             "symbol",
             "BE_entity"
          )
