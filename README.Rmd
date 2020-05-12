@@ -59,6 +59,37 @@ They can be easily installed with the `install.packages()` function.
 devtools::install_github("patzaw/BED")
 ```
 
+If you get an error like the following...
+
+```
+Error: package or namespace load failed for ‘BED’:
+ .onLoad failed in loadNamespace() for 'BED', details:
+  call: connections[[connection]][["cache"]]
+  error: subscript out of bounds
+```
+
+... remove the BED folder located here:
+
+```{r, echo=TRUE, eval=FALSE}
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+```
+
+## Possible issue when updating from releases <= 1.3.0
+
+If you get an error like the following...
+
+```
+Error: package or namespace load failed for ‘BED’:
+ .onLoad failed in loadNamespace() for 'BED', details:
+  call: connections[[connection]][["cache"]]
+  error: subscript out of bounds
+```
+
+... remove the BED folder located here:
+
+```{r, echo=TRUE, eval=FALSE}
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+```
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

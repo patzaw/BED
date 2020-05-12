@@ -71,6 +71,8 @@ this peer reviewed article:
 
 ## Installation
 
+### Dependencies
+
 This BED package depends on the following packages available in the CRAN
 repository:
 
@@ -86,6 +88,29 @@ repository:
 - **rstudioapi**
 
 All these packages must be installed before installing BED.
+
+### Installation from github
+
+```{r, eval=FALSE}
+devtools::install_github("patzaw/BED")
+```
+
+### Possible issue when updating from releases <= 1.3.0
+
+If you get an error like the following...
+
+```
+Error: package or namespace load failed for ‘BED’:
+ .onLoad failed in loadNamespace() for 'BED', details:
+  call: connections[[connection]][["cache"]]
+  error: subscript out of bounds
+```
+
+... remove the BED folder located here:
+
+```{r, echo=TRUE, eval=FALSE}
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+```
 
 ## Connection
 

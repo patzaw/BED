@@ -3,12 +3,16 @@
 
 ### New features
 
+   - Shiny module: `beidsServer()` and `beidsUI()` functions
+   - New Shiny gadget (RStudio addin): `findBeids()`
    - `guessIdOrigin()` (still available) has been renamed `guessIdScope()`.
    It takes into account user input to guess the identifiers scope.
    - The scope of the identifiers to convert or to explore is automatically
    guessed when not provided by the user. It is still recommended to
    provide them when they are known but this feature could help for
    exploratory session.
+   - Find all identifiers in all scopes corresponding to BE:
+      - `beIDsToAllScopes()` (more specific than `geneIDsToAllScopes()`)
 
 ### Implementation changes
 

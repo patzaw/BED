@@ -3,6 +3,12 @@ library(knitr)
 ## The following line is to avoid building errors on CRAN
 knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
 
+## ---- eval=FALSE--------------------------------------------------------------
+#  devtools::install_github("patzaw/BED")
+
+## ---- echo=TRUE, eval=FALSE---------------------------------------------------
+#  file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+
 ## ---- message=FALSE, eval=TRUE------------------------------------------------
 library(BED)
 

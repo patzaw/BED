@@ -2,6 +2,8 @@
 -   [Installation](#installation)
     -   [Dependencies](#dependencies)
     -   [Installation from github](#installation-from-github)
+    -   [Possible issue when updating from releases &lt;=
+        1.3.0](#possible-issue-when-updating-from-releases-1.3.0)
 -   [R package in normal use](#r-package-in-normal-use)
 -   [Citing BED](#citing-bed)
 -   [BED database instance available as a docker
@@ -51,9 +53,9 @@ repository:
 -   **dplyr**
 -   **readr**
 -   **stringr**
--   **htmltools**
--   **DT**
 -   **shiny**
+-   **DT**
+-   **htmltools**
 -   **miniUI**
 -   **rstudioapi**
 
@@ -64,6 +66,35 @@ Installation from github
 
 ``` r
 devtools::install_github("patzaw/BED")
+```
+
+If you get an error like the following…
+
+    Error: package or namespace load failed for ‘BED’:
+     .onLoad failed in loadNamespace() for 'BED', details:
+      call: connections[[connection]][["cache"]]
+      error: subscript out of bounds
+
+… remove the BED folder located here:
+
+``` r
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+```
+
+Possible issue when updating from releases &lt;= 1.3.0
+------------------------------------------------------
+
+If you get an error like the following…
+
+    Error: package or namespace load failed for ‘BED’:
+     .onLoad failed in loadNamespace() for 'BED', details:
+      call: connections[[connection]][["cache"]]
+      error: subscript out of bounds
+
+… remove the BED folder located here:
+
+``` r
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 ```
 
 <!----------------------------------------------------------------------------->
