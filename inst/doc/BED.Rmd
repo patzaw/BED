@@ -745,7 +745,9 @@ available as an Rstudio addins.
 relIds <- findBeids()
 ```
 
-This application relies a Shiny module made to facilitate the development
+It relies on
+a Shiny module (`beidsServer()` and `beidsUI()` functions)
+made to facilitate the development
 of applications focused on biological entity related information.
 The code below shows a minimum example of such an application.
 
