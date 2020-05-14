@@ -148,6 +148,7 @@ geneIDsToAllScopes <- function(
          .data$source, .data$organism, .data$Gene_entity
       )
       toRet1 <- dplyr::summarise_all(toRet1, function(x)x[1])
+      toRet1 <- dplyr::ungroup(toRet1)
       toRet1 <- dplyr::select(toRet1, -"canBes")
       # toRet1 <- dplyr::distinct(dplyr::select(toRet, "bes"))
       toRet2 <- dplyr::select(toRet, -"value", -"preferred")
