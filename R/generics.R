@@ -81,6 +81,19 @@ metadata <- function(x, ...){
 }
 
 ###############################################################################@
+#' Set object metadata
+#'
+#' @param x an object representing a collection of BEID (e.g. BEIDList)
+#' @param value a data.frame with rownames or
+#' a column "**.lname**" all in names of l.
+#'
+#' @export
+#'
+`metadata<-` <- function(x, value){
+   UseMethod("metadata<-", x)
+}
+
+###############################################################################@
 #' Get the BEIDs from an object
 #'
 #' @param x an object representing a collection of BEID (e.g. BEIDList)

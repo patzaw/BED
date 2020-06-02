@@ -17,6 +17,25 @@
 #' The "**.lname**" column correspond to the names of the BEIDList.
 #' - **scope**: the BEID scope ("be", "source" and "organism")
 #'
+#' @examples \dontrun{
+#' bel <- BEIDList(
+#'    l=list(
+#'       kinases=c("117283", "3706", "3707", "51447", "80271", "9807"),
+#'       phosphatases=c(
+#'          "130367", "249", "283871", "493911", "57026", "5723", "81537"
+#'       )
+#'    ),
+#'    scope=list(be="Gene", source="EntrezGene", organism="Homo sapiens")
+#' )
+#' scope(bel)
+#' metadata(bel)
+#' metadata(bel) <- dplyr::mutate(
+#'    metadata(bel),
+#'    "description"=c("A few kinases", "A few phosphatases")
+#' )
+#' metadata(bel)
+#' }
+#'
 #' @export
 #'
 BEIDList <- function(
@@ -79,6 +98,13 @@ scope.BEIDList <- function(x, ...){
 #'
 metadata.BEIDList <- function(x, ...){
    attr(x, "metadata")
+}
+
+###############################################################################@
+#' @export
+#'
+`metadata<-.BEIDList` <- function(x, value){
+   return(BEIDList(x, scope=scope(x), metadata=value))
 }
 
 ###############################################################################@

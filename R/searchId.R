@@ -42,6 +42,9 @@ searchId <- function(
     ncharSymb=4, ncharName=8,
     verbose=FALSE
 ){
+
+    warning("Deprecated. Use `searchBeid()` instead.")
+
     ##
     if(length(searched)!=1){
         stop("search should be of length 1")

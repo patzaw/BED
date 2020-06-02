@@ -143,8 +143,10 @@ getGeneDescription <- function(
    toRet <- dplyr::summarise(
       tDesc,
       gene=gidSum(to),
-      symbol=snSum(to, symbol),
-      name=snSum(to, name)
+      symbol=gidSum(symbol),
+      name=gidSum(name)
+      # symbol=snSum(to, symbol),
+      # name=snSum(to, name)
    )
    toRet <- as.data.frame(toRet)
    colnames(toRet) <- c("id", gsource, "symbol", "name")

@@ -46,6 +46,8 @@ findBe <- function(
    exclude=c("BEDTech_gene", "BEDTech_transcript")
 ){
 
+   warning("Deprecated because it's too slow. Use `findBeids()` instead.")
+
    require(BED)
    if(!checkBedConn()){
       stop()
