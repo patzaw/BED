@@ -4,10 +4,16 @@
 \alias{searchBeid}
 \title{Search a BEID}
 \usage{
-searchBeid(x)
+searchBeid(x, clean_id_search = TRUE, clean_name_search = TRUE)
 }
 \arguments{
 \item{x}{a character value to search}
+
+\item{clean_id_search}{clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.}
+
+\item{clean_name_search}{clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.}
 }
 \value{
 NULL if there is not any match or

@@ -8,6 +8,7 @@ moduleServer <- function(id, module){
 
 highlightText <- function(text, value){
    value <- sub('^"', '', sub('"$', '', value))
+   value <- gsub("[[:punct:]]", ".?", value)
    return(unlist(lapply(
       text,
       function(x){

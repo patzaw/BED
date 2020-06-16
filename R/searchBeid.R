@@ -1,6 +1,10 @@
 #' Search a BEID
 #'
 #' @param x a character value to search
+#' @param clean_id_search clean x to avoid error during ID search.
+#' Default: TRUE. Set it to false if you're sure of your lucene query.
+#' @param clean_name_search clean x to avoid error during ID search.
+#' Default: TRUE. Set it to false if you're sure of your lucene query.
 #'
 #' @return NULL if there is not any match or
 #' a data.frame with the following columns:
@@ -24,7 +28,7 @@
 #'
 #' @export
 #'
-searchBeid <- function(x){
+searchBeid <- function(x, clean_id_search=TRUE, clean_name_search=TRUE){
    stopifnot(
       is.character(x),
       length(x)==1,
@@ -50,6 +54,27 @@ searchBeid <- function(x){
       ){
          x <- substr(x, 1, nchar(x)-1)
       }
+      clean_brack <- function(x, bl, br){
+         y <- x
+         yc <- stringr::str_remove_all(
+            y,
+            sprintf('[%s][^%s%s]*[%s]', bl, bl, br, br)
+         )
+         while(nchar(yc) < nchar(y)){
+            y <- yc
+            yc <- stringr::str_remove_all(
+               y,
+               sprintf('[%s][^%s%s]*[%s]', bl, bl, br, br)
+            )
+         }
+         if(sum(stringr::str_detect(y, sprintf('[%s%s]', br, bl)))==1){
+            x <- stringr::str_replace_all(x, sprintf('[%s%s]', br, bl), " ")
+         }
+         return(x)
+      }
+      x <- clean_brack(x, "(", ")")
+      x <- clean_brack(x, "{", "}")
+      x <- clean_brack(x, "\\[", "\\]")
       if(nchar(x)>0){
          x <- paste0(x, "~")
       }
@@ -66,8 +91,8 @@ searchBeid <- function(x){
       }
       return(x)
    }
-   vi <- clean_search_id(x)
-   vn <- clean_search_name(x)
+   if(clean_id_search) vi <- clean_search_id(x)
+   if(clean_name_search) vn <- clean_search_name(x)
    if(nchar(vi)==0 || nchar(vn)==0){
       return(NULL)
    }
