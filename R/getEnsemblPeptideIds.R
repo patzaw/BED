@@ -90,8 +90,14 @@ getEnsemblPeptideIds <- function(
    ## Add translation events ----
    message(Sys.time(), " --> Importing translation events")
    canTrans <- dplyr::inner_join(
-      transcript[,c("stable_id", "canonical_translation_id")],
-      translation[,c("translation_id", "stable_id")],
+      dplyr::mutate_all(
+         transcript[,c("stable_id", "canonical_translation_id")],
+         as.character
+      ),
+      dplyr::mutate_all(
+         translation[,c("translation_id", "stable_id")],
+         as.character
+      ),
       by=c("canonical_translation_id"="translation_id")
    )[,2:3]
    colnames(canTrans) <- c("tid", "pid")
