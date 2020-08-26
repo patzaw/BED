@@ -192,8 +192,12 @@ getEnsemblGeneIds <- function(
    ## Add symbols ----
    message(Sys.time(), " --> Importing gene symbols")
    disp <- dplyr::inner_join(
-      gene[,c("stable_id", "display_xref_id")],
-      xref[,c("xref_id", "display_label", "description")],
+      dplyr::mutate_all(
+         gene[,c("stable_id", "display_xref_id")], as.character
+      ),
+      dplyr::mutate_all(
+         xref[,c("xref_id", "display_label", "description")], as.character
+      ),
       by=c("display_xref_id"="xref_id")
    )
    gSymb <- data.frame(

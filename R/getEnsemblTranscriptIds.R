@@ -165,8 +165,12 @@ getEnsemblTranscriptIds <- function(
     ## Add symbols ----
     message(Sys.time(), " --> Importing transcript symbols")
     disp <- dplyr::inner_join(
-        transcript[,c("stable_id", "display_xref_id")],
-        xref[,c("xref_id", "display_label", "description")],
+        dplyr::mutate_all(
+            transcript[,c("stable_id", "display_xref_id")], as.character
+        ),
+        dplyr::mutate_all(
+            xref[,c("xref_id", "display_label", "description")], as.character
+        ),
         by=c("display_xref_id"="xref_id")
     )
     tSymb <- data.frame(
