@@ -142,7 +142,9 @@ listBeIdSources <- function(
         tn=tn,
         recache=recache
     )
-    toRet$be <- be
-    toRet <- toRet[which(!toRet$database %in% exclude),]
+    if(!is.null(toRet)){
+        toRet$be <- be
+        toRet <- toRet[which(!toRet$database %in% exclude),]
+    }
     return(toRet)
 }

@@ -39,12 +39,14 @@ compareBedInstances <- function(connections){
             exclude=c("BEDTech_gene", "BEDTech_transcript"),
             verbose=FALSE
          )
-         colnames(toAdd) <- c("Database", "nbBE", "BEID", "BE")
-         toAdd$Organism <- org
-         be.V1 <- rbind(
-            be.V1,
-            toAdd[,c("BE", "Organism", "Database", "BEID")]
-         )
+         if(!is.null(toAdd)){
+            colnames(toAdd) <- c("Database", "nbBE", "BEID", "BE")
+            toAdd$Organism <- org
+            be.V1 <- rbind(
+               be.V1,
+               toAdd[,c("BE", "Organism", "Database", "BEID")]
+            )
+         }
       }
    }
    pl.V1 <- listPlatforms()
@@ -68,12 +70,14 @@ compareBedInstances <- function(connections){
             exclude=c("BEDTech_gene", "BEDTech_transcript"),
             verbose=FALSE
          )
-         colnames(toAdd) <- c("Database", "nbBE", "BEID", "BE")
-         toAdd$Organism <- org
-         be.V2 <- rbind(
-            be.V2,
-            toAdd[,c("BE", "Organism", "Database", "BEID")]
-         )
+         if(!is.null(toAdd)){
+            colnames(toAdd) <- c("Database", "nbBE", "BEID", "BE")
+            toAdd$Organism <- org
+            be.V2 <- rbind(
+               be.V2,
+               toAdd[,c("BE", "Organism", "Database", "BEID")]
+            )
+         }
       }
    }
    pl.V2 <- listPlatforms()

@@ -3,7 +3,8 @@
 
 ### Bug fixes
 
-   - type correction before inner_join when getting Ensembl data
+   - Correction of a bug when no data is returned by listBeIdSources
+   - Type correction before inner_join when getting data
 
 <!----------------------------------------------------------------------------->
 ## Version 1.4.0
