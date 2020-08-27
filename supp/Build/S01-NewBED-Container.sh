@@ -1,6 +1,6 @@
 #!/bin/sh
 
-export NJ_VERSION=3.5.17
+export NJ_VERSION=3.5.21
 
 export BED_HTTP_PORT=5410
 export BED_BOLT_PORT=5610
@@ -33,6 +33,9 @@ docker run -d \
 	neo4j:$NJ_VERSION
 
 sleep 10
+uid=`id -u`
+gid=`id -g`
+sudo chown $uid:$gid $BED_IMPORT
 chmod a+rx $BED_IMPORT
 
 

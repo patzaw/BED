@@ -56,7 +56,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "100"
+ensembl_release <- "101"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1002,7 +1002,7 @@ BED:::registerBEDB(
 ## Homo sapiens data
 
 ```{r MetaBaseHs}
-BED:::loadMBObjects(
+loadMBObjects(
     orgOfInt=c("Homo sapiens")
 )
 gc()
@@ -1011,7 +1011,7 @@ gc()
 ## Mus musculus data
 
 ```{r MetaBaseMm, message=FALSE}
-BED:::loadMBObjects(
+loadMBObjects(
     orgOfInt=c("Mus musculus")
 )
 gc()
@@ -1020,7 +1020,7 @@ gc()
 ## Rattus norvegicus data
 
 ```{r MetaBaseRn, message=FALSE}
-BED:::loadMBObjects(
+loadMBObjects(
     orgOfInt=c("Rattus norvegicus")
 )
 gc()
@@ -1126,6 +1126,7 @@ for(i in 1:length(taxOfInt)){
    ]
    if(nrow(toImport)>0){
       colnames(toImport) <- c("id1", "id2")
+      toImport <- dplyr::mutate_all(toImport, as.character)
       BED:::loadIsHomologOf(
           d=toImport,
           db1=gdbname, db2=gdbname,
@@ -1772,7 +1773,7 @@ for(db in names(otherIdURL)){
 
 **Start**: `r Sys.time()`
 
-```{r dataModel, message=FALSE}
+```{r LuceneIndexes, message=FALSE}
 BED:::loadLuceneIndexes()
 ```
 
