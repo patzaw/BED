@@ -198,7 +198,10 @@ getNcbiGeneTransPep <- function(
    ## Cross references from gene2ensembl file
    db <- "Ens_gene"
    message(Sys.time(), " --> ", db)
-   cref <- unique(gene2ensembl[,c("Ensembl_gene_identifier", "GeneID")])
+   cref <- dplyr::mutate_all(
+      unique(gene2ensembl[,c("Ensembl_gene_identifier", "GeneID")]),
+      as.character
+   )
    colnames(cref) <- c("xref", "GeneID")
    cref <- cref[which(cref$xref != "-" & cref$GeneID != "-"),]
    if(nrow(cref)>0){
