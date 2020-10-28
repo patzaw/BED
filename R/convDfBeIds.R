@@ -43,14 +43,14 @@ convDfBeIds <- function(
    if(length(idCol)==0){
       cols <- colnames(df)
       ct <- convBeIds(rownames(df), ...)
-      df$conv.from <- rownames(df)
+      df$conv.from <- as.character(rownames(df))
    }else{
       if(length(idCol)>1){
          stop("Only one idCol should be provided")
       }
       cols <- setdiff(colnames(df), idCol)
       ct <- convBeIds(df[, idCol, drop=TRUE], ...)
-      df$conv.from <- df[, idCol, drop=TRUE]
+      df$conv.from <- as.character(df[, idCol, drop=TRUE])
       df <- df[, c(cols, "conv.from")]
    }
    scope <- attr(ct, "scope")
