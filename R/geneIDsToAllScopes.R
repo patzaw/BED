@@ -48,17 +48,25 @@ geneIDsToAllScopes <- function(
       be <- "Gene"
       guess <- guessIdScope(ids=geneids, be=be, source=source, organism=organism)
       if(is.null(guess)){
-         stop("Could not find the provided geneids")
+         warning("Could not find the provided ids")
+         if(missing(be) || missing(source) || missing(organism)){
+            stop("Missing be, source or organism information")
+         }
+      }else{
+         if(is.na(guess$be)){
+            warning(
+               "The provided ids does not match the provided scope",
+               " (be, source or organism)"
+            )
+            if(missing(be) || missing(source) || missing(organism)){
+               stop("Missing be, source or organism information")
+            }
+         }else{
+            be <- guess$be
+            source <- guess$source
+            organism <- guess$organism
+         }
       }
-      if(is.na(guess$be)){
-         stop(
-            "The provided geneids does not match the provided scope",
-            " (be, source or organism)"
-         )
-      }
-      be <- guess$be
-      source <- guess$source
-      organism <- guess$organism
       if(toWarn){
          warning(
             "Guessing ID scope:",

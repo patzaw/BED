@@ -47,17 +47,25 @@ getBeIdNames <- function(
     }
     guess <- guessIdScope(ids=ids, be=be, source=source, organism=organism)
     if(is.null(guess)){
-        stop("Could not find the provided ids")
+        warning("Could not find the provided ids")
+        if(missing(be) || missing(source) || missing(organism)){
+            stop("Missing be, source or organism information")
+        }
+    }else{
+        if(is.na(guess$be)){
+            warning(
+                "The provided ids does not match the provided scope",
+                " (be, source or organism)"
+            )
+            if(missing(be) || missing(source) || missing(organism)){
+                stop("Missing be, source or organism information")
+            }
+        }else{
+            be <- guess$be
+            source <- guess$source
+            organism <- guess$organism
+        }
     }
-    if(is.na(guess$be)){
-        stop(
-            "The provided ids does not match the provided scope",
-            " (be, source or organism)"
-        )
-    }
-    be <- guess$be
-    source <- guess$source
-    organism <- guess$organism
     if(toWarn){
         warning(
             "Guessing ID scope:",

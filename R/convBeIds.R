@@ -107,17 +107,25 @@ convBeIds <- function(
       ids=ids, be=from, source=from.source, organism=from.org
    )
    if(is.null(guess)){
-      stop("Could not find the provided ids")
+      warning("Could not find the provided ids")
+      if(missing(from) || missing(from.source) || missing(from.org)){
+         stop("Missing from, from.source or from.org information")
+      }
+   }else{
+      if(is.na(guess$be)){
+         warning(
+            "The provided ids does not match the provided scope",
+            " (from, from.source or from.org)"
+         )
+         if(missing(from) || missing(from.source) || missing(from.org)){
+            stop("Missing from, from.source or from.org information")
+         }
+      }else{
+         from <- guess$be
+         from.source <- guess$source
+         from.org <- guess$organism
+      }
    }
-   if(is.na(guess$be)){
-      stop(
-         "The provided ids does not match the provided scope",
-         " (from, from.source or from.org)"
-      )
-   }
-   from <- guess$be
-   from.source <- guess$source
-   from.org <- guess$organism
    if(toWarn){
       warning(
          "Guessing ID scope:",
