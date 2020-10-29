@@ -10,10 +10,14 @@
 #' @export
 #'
 getAllBeIdSources <- function(recache=FALSE){
+    fn <- sub(
+        sprintf("^%s[:][::]", utils::packageName()), "",
+        sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+    )
     cql <- neo2R::prepCql(
         'MATCH (n:BEID) RETURN DISTINCT n.database as database, labels(n) as BE'
     )
-    tn <- as.character(match.call()[[1]])
+    tn <- fn
     toRet <- cacheBedCall(
         f=neo2R::cypher,
         query=cql,

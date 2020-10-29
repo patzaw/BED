@@ -63,6 +63,11 @@ getBeIdConvTable <- function(
     limForCache=100
 ){
 
+    fn <- sub(
+        sprintf("^%s[:][::]", utils::packageName()), "",
+        sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+    )
+
     ## Null results ----
     nullRes <- data.frame(
         from=character(),
@@ -147,7 +152,7 @@ getBeIdConvTable <- function(
             tn <- gsub(
                 "[^[:alnum:]]", "_",
                 paste(
-                    match.call()[[1]],
+                    fn,
                     fromBE, toBE,
                     sep="_"
                 )

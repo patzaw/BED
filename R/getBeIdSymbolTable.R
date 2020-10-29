@@ -44,6 +44,12 @@ getBeIdSymbolTable <- function(
     recache=FALSE,
     filter=NULL
 ){
+
+    fn <- sub(
+        sprintf("^%s[:][::]", utils::packageName()), "",
+        sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+    )
+
     ## Organism
     taxId <- getTaxId(name=organism)
     if(length(taxId)==0){
@@ -133,7 +139,7 @@ getBeIdSymbolTable <- function(
         tn <- gsub(
             "[^[:alnum:]]", "_",
             paste(
-                match.call()[[1]],
+                fn,
                 be, source,
                 taxId,
                 sep="_"

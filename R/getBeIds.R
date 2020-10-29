@@ -63,6 +63,11 @@ getBeIds <- function(
    bef=NULL
 ){
 
+   fn <- sub(
+      sprintf("^%s[:][::]", utils::packageName()), "",
+      sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+   )
+
    ## Other verifications
    bentity <- match.arg(be)
    bedSources <- c(
@@ -295,7 +300,7 @@ getBeIds <- function(
       tn <- gsub(
          "[^[:alnum:]]", "_",
          paste(
-            match.call()[[1]],
+            fn,
             bentity, source,
             taxId,
             ifelse(restricted, "restricted", "full"),

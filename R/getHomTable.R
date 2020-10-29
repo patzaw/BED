@@ -46,6 +46,12 @@ getHomTable <- function(
     filter=NULL,
     limForCache=100
 ){
+
+    fn <- sub(
+        sprintf("^%s[:][::]", utils::packageName()), "",
+        sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+    )
+
     to.source <- to.source
     ## Organisms
     fromTaxId <- getTaxId(name=from.org)
@@ -118,7 +124,7 @@ getHomTable <- function(
         tn <- gsub(
             "[^[:alnum:]]", "_",
             paste(
-                match.call()[[1]],
+                fn,
                 fromTaxId,
                 toTaxId,
                 sep="_"
@@ -230,7 +236,7 @@ getHomTable <- function(
     #     tn <- gsub(
     #         "[^[:alnum:]]", "_",
     #         paste(
-    #             match.call()[[1]],
+    #             fn,
     #             fromTaxId, from.source,
     #             toTaxId, to.source,
     #             ifelse(restricted, "restricted", "full"),

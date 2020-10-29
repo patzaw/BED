@@ -89,6 +89,12 @@ convBeIds <- function(
    recache=FALSE,
    limForCache=2000
 ){
+
+   fn <- sub(
+      sprintf("^%s[:][::]", utils::packageName()), "",
+      sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+   )
+
    ids <- sort(setdiff(as.character(unique(ids)), NA))
 
    ##
@@ -130,8 +136,8 @@ convBeIds <- function(
    if(!fFilt){
       tn <- gsub(
          "[^[:alnum:]]", "_",
-         paste(
-            match.call()[[1]],
+         paste(fn
+            ,
             from, from.source,
             to, to.source,
             getTaxId(from.org), getTaxId(to.org),

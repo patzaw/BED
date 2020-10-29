@@ -45,6 +45,11 @@ listBeIdSources <- function(
     verbose=FALSE,
     exclude=c()
 ){
+    fn <- sub(
+        sprintf("^%s[:][::]", utils::packageName()), "",
+        sub("[(].*$", "", deparse(sys.call(), nlines=1, width.cutoff=500L))
+    )
+
     be <- match.arg(be)
     if(!is.logical(direct)){
         stop("direct should be a logical vector of length 1")
@@ -127,7 +132,7 @@ listBeIdSources <- function(
     tn <- gsub(
         "[^[:alnum:]]", "_",
         paste(
-            match.call()[[1]],
+            fn,
             be, taxId,
             rel,
             ifelse(direct, "direct", "indirect"),
