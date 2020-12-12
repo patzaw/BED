@@ -26,8 +26,8 @@ Description: An interface for the neo4j database providing
     the same way than between two scopes regarding gene ID.
     Also, converting identifiers from different organisms should be possible
     using gene orthologs information.
-URL: https://github.com/patzaw/neo2r
-BugReports: https://github.com/patzaw/neo2r/issues
+URL: https://github.com/patzaw/BED
+BugReports: https://github.com/patzaw/BED/issues
 License: GPL-3
 LazyData: TRUE
 Depends:
