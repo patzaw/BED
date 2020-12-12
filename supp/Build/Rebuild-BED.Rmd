@@ -56,7 +56,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "101"
+ensembl_release <- "102"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
