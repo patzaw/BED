@@ -26,6 +26,17 @@
 <script src="data:application/x-javascript,%0A%0A%2F%2A%2A%0A%20%2A%20jQuery%20Plugin%3A%20Sticky%20Tabs%0A%20%2A%0A%20%2A%20%40author%20Aidan%20Lister%20%3Caidan%40php%2Enet%3E%0A%20%2A%20adapted%20by%20Ruben%20Arslan%20to%20activate%20parent%20tabs%20too%0A%20%2A%20http%3A%2F%2Fwww%2Eaidanlister%2Ecom%2F2014%2F03%2Fpersisting%2Dthe%2Dtab%2Dstate%2Din%2Dbootstrap%2F%0A%20%2A%2F%0A%28function%28%24%29%20%7B%0A%20%20%22use%20strict%22%3B%0A%20%20%24%2Efn%2ErmarkdownStickyTabs%20%3D%20function%28%29%20%7B%0A%20%20%20%20var%20context%20%3D%20this%3B%0A%20%20%20%20%2F%2F%20Show%20the%20tab%20corresponding%20with%20the%20hash%20in%20the%20URL%2C%20or%20the%20first%20tab%0A%20%20%20%20var%20showStuffFromHash%20%3D%20function%28%29%20%7B%0A%20%20%20%20%20%20var%20hash%20%3D%20window%2Elocation%2Ehash%3B%0A%20%20%20%20%20%20var%20selector%20%3D%20hash%20%3F%20%27a%5Bhref%3D%22%27%20%2B%20hash%20%2B%20%27%22%5D%27%20%3A%20%27li%2Eactive%20%3E%20a%27%3B%0A%20%20%20%20%20%20var%20%24selector%20%3D%20%24%28selector%2C%20context%29%3B%0A%20%20%20%20%20%20if%28%24selector%2Edata%28%27toggle%27%29%20%3D%3D%3D%20%22tab%22%29%20%7B%0A%20%20%20%20%20%20%20%20%24selector%2Etab%28%27show%27%29%3B%0A%20%20%20%20%20%20%20%20%2F%2F%20walk%20up%20the%20ancestors%20of%20this%20element%2C%20show%20any%20hidden%20tabs%0A%20%20%20%20%20%20%20%20%24selector%2Eparents%28%27%2Esection%2Etabset%27%29%2Eeach%28function%28i%2C%20elm%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20var%20link%20%3D%20%24%28%27a%5Bhref%3D%22%23%27%20%2B%20%24%28elm%29%2Eattr%28%27id%27%29%20%2B%20%27%22%5D%27%29%3B%0A%20%20%20%20%20%20%20%20%20%20if%28link%2Edata%28%27toggle%27%29%20%3D%3D%3D%20%22tab%22%29%20%7B%0A%20%20%20%20%20%20%20%20%20%20%20%20link%2Etab%28%22show%22%29%3B%0A%20%20%20%20%20%20%20%20%20%20%7D%0A%20%20%20%20%20%20%20%20%7D%29%3B%0A%20%20%20%20%20%20%7D%0A%20%20%20%20%7D%3B%0A%0A%0A%20%20%20%20%2F%2F%20Set%20the%20correct%20tab%20when%20the%20page%20loads%0A%20%20%20%20showStuffFromHash%28context%29%3B%0A%0A%20%20%20%20%2F%2F%20Set%20the%20correct%20tab%20when%20a%20user%20uses%20their%20back%2Fforward%20button%0A%20%20%20%20%24%28window%29%2Eon%28%27hashchange%27%2C%20function%28%29%20%7B%0A%20%20%20%20%20%20showStuffFromHash%28context%29%3B%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20%2F%2F%20Change%20the%20URL%20when%20tabs%20are%20clicked%0A%20%20%20%20%24%28%27a%27%2C%20context%29%2Eon%28%27click%27%2C%20function%28e%29%20%7B%0A%20%20%20%20%20%20history%2EpushState%28null%2C%20null%2C%20this%2Ehref%29%3B%0A%20%20%20%20%20%20showStuffFromHash%28context%29%3B%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20return%20this%3B%0A%20%20%7D%3B%0A%7D%28jQuery%29%29%3B%0A%0Awindow%2EbuildTabsets%20%3D%20function%28tocID%29%20%7B%0A%0A%20%20%2F%2F%20build%20a%20tabset%20from%20a%20section%20div%20with%20the%20%2Etabset%20class%0A%20%20function%20buildTabset%28tabset%29%20%7B%0A%0A%20%20%20%20%2F%2F%20check%20for%20fade%20and%20pills%20options%0A%20%20%20%20var%20fade%20%3D%20tabset%2EhasClass%28%22tabset%2Dfade%22%29%3B%0A%20%20%20%20var%20pills%20%3D%20tabset%2EhasClass%28%22tabset%2Dpills%22%29%3B%0A%20%20%20%20var%20navClass%20%3D%20pills%20%3F%20%22nav%2Dpills%22%20%3A%20%22nav%2Dtabs%22%3B%0A%0A%20%20%20%20%2F%2F%20determine%20the%20heading%20level%20of%20the%20tabset%20and%20tabs%0A%20%20%20%20var%20match%20%3D%20tabset%2Eattr%28%27class%27%29%2Ematch%28%2Flevel%28%5Cd%29%20%2F%29%3B%0A%20%20%20%20if%20%28match%20%3D%3D%3D%20null%29%0A%20%20%20%20%20%20return%3B%0A%20%20%20%20var%20tabsetLevel%20%3D%20Number%28match%5B1%5D%29%3B%0A%20%20%20%20var%20tabLevel%20%3D%20tabsetLevel%20%2B%201%3B%0A%0A%20%20%20%20%2F%2F%20find%20all%20subheadings%20immediately%20below%0A%20%20%20%20var%20tabs%20%3D%20tabset%2Efind%28%22div%2Esection%2Elevel%22%20%2B%20tabLevel%29%3B%0A%20%20%20%20if%20%28%21tabs%2Elength%29%0A%20%20%20%20%20%20return%3B%0A%0A%20%20%20%20%2F%2F%20create%20tablist%20and%20tab%2Dcontent%20elements%0A%20%20%20%20var%20tabList%20%3D%20%24%28%27%3Cul%20class%3D%22nav%20%27%20%2B%20navClass%20%2B%20%27%22%20role%3D%22tablist%22%3E%3C%2Ful%3E%27%29%3B%0A%20%20%20%20%24%28tabs%5B0%5D%29%2Ebefore%28tabList%29%3B%0A%20%20%20%20var%20tabContent%20%3D%20%24%28%27%3Cdiv%20class%3D%22tab%2Dcontent%22%3E%3C%2Fdiv%3E%27%29%3B%0A%20%20%20%20%24%28tabs%5B0%5D%29%2Ebefore%28tabContent%29%3B%0A%0A%20%20%20%20%2F%2F%20build%20the%20tabset%0A%20%20%20%20var%20activeTab%20%3D%200%3B%0A%20%20%20%20tabs%2Eeach%28function%28i%29%20%7B%0A%0A%20%20%20%20%20%20%2F%2F%20get%20the%20tab%20div%0A%20%20%20%20%20%20var%20tab%20%3D%20%24%28tabs%5Bi%5D%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20get%20the%20id%20then%20sanitize%20it%20for%20use%20with%20bootstrap%20tabs%0A%20%20%20%20%20%20var%20id%20%3D%20tab%2Eattr%28%27id%27%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20see%20if%20this%20is%20marked%20as%20the%20active%20tab%0A%20%20%20%20%20%20if%20%28tab%2EhasClass%28%27active%27%29%29%0A%20%20%20%20%20%20%20%20activeTab%20%3D%20i%3B%0A%0A%20%20%20%20%20%20%2F%2F%20remove%20any%20table%20of%20contents%20entries%20associated%20with%0A%20%20%20%20%20%20%2F%2F%20this%20ID%20%28since%20we%27ll%20be%20removing%20the%20heading%20element%29%0A%20%20%20%20%20%20%24%28%22div%23%22%20%2B%20tocID%20%2B%20%22%20li%20a%5Bhref%3D%27%23%22%20%2B%20id%20%2B%20%22%27%5D%22%29%2Eparent%28%29%2Eremove%28%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20sanitize%20the%20id%20for%20use%20with%20bootstrap%20tabs%0A%20%20%20%20%20%20id%20%3D%20id%2Ereplace%28%2F%5B%2E%5C%2F%3F%26%21%23%3C%3E%5D%2Fg%2C%20%27%27%29%2Ereplace%28%2F%5Cs%2Fg%2C%20%27%5F%27%29%3B%0A%20%20%20%20%20%20tab%2Eattr%28%27id%27%2C%20id%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20get%20the%20heading%20element%20within%20it%2C%20grab%20it%27s%20text%2C%20then%20remove%20it%0A%20%20%20%20%20%20var%20heading%20%3D%20tab%2Efind%28%27h%27%20%2B%20tabLevel%20%2B%20%27%3Afirst%27%29%3B%0A%20%20%20%20%20%20var%20headingText%20%3D%20heading%2Ehtml%28%29%3B%0A%20%20%20%20%20%20heading%2Eremove%28%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20build%20and%20append%20the%20tab%20list%20item%0A%20%20%20%20%20%20var%20a%20%3D%20%24%28%27%3Ca%20role%3D%22tab%22%20data%2Dtoggle%3D%22tab%22%3E%27%20%2B%20headingText%20%2B%20%27%3C%2Fa%3E%27%29%3B%0A%20%20%20%20%20%20a%2Eattr%28%27href%27%2C%20%27%23%27%20%2B%20id%29%3B%0A%20%20%20%20%20%20a%2Eattr%28%27aria%2Dcontrols%27%2C%20id%29%3B%0A%20%20%20%20%20%20var%20li%20%3D%20%24%28%27%3Cli%20role%3D%22presentation%22%3E%3C%2Fli%3E%27%29%3B%0A%20%20%20%20%20%20li%2Eappend%28a%29%3B%0A%20%20%20%20%20%20tabList%2Eappend%28li%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20set%20it%27s%20attributes%0A%20%20%20%20%20%20tab%2Eattr%28%27role%27%2C%20%27tabpanel%27%29%3B%0A%20%20%20%20%20%20tab%2EaddClass%28%27tab%2Dpane%27%29%3B%0A%20%20%20%20%20%20tab%2EaddClass%28%27tabbed%2Dpane%27%29%3B%0A%20%20%20%20%20%20if%20%28fade%29%0A%20%20%20%20%20%20%20%20tab%2EaddClass%28%27fade%27%29%3B%0A%0A%20%20%20%20%20%20%2F%2F%20move%20it%20into%20the%20tab%20content%20div%0A%20%20%20%20%20%20tab%2Edetach%28%29%2EappendTo%28tabContent%29%3B%0A%20%20%20%20%7D%29%3B%0A%0A%20%20%20%20%2F%2F%20set%20active%20tab%0A%20%20%20%20%24%28tabList%2Echildren%28%27li%27%29%5BactiveTab%5D%29%2EaddClass%28%27active%27%29%3B%0A%20%20%20%20var%20active%20%3D%20%24%28tabContent%2Echildren%28%27div%2Esection%27%29%5BactiveTab%5D%29%3B%0A%20%20%20%20active%2EaddClass%28%27active%27%29%3B%0A%20%20%20%20if%20%28fade%29%0A%20%20%20%20%20%20active%2EaddClass%28%27in%27%29%3B%0A%0A%20%20%20%20if%20%28tabset%2EhasClass%28%22tabset%2Dsticky%22%29%29%0A%20%20%20%20%20%20tabset%2ErmarkdownStickyTabs%28%29%3B%0A%20%20%7D%0A%0A%20%20%2F%2F%20convert%20section%20divs%20with%20the%20%2Etabset%20class%20to%20tabsets%0A%20%20var%20tabsets%20%3D%20%24%28%22div%2Esection%2Etabset%22%29%3B%0A%20%20tabsets%2Eeach%28function%28i%29%20%7B%0A%20%20%20%20buildTabset%28%24%28tabsets%5Bi%5D%29%29%3B%0A%20%20%7D%29%3B%0A%7D%3B%0A%0A"></script>
 <link href="data:text/css,%2Ehljs%2Dliteral%20%7B%0A%20%20color%3A%20%23990073%3B%0A%7D%0A%0A%2Ehljs%2Dnumber%20%7B%0A%20%20color%3A%20%23099%3B%0A%7D%0A%0A%2Ehljs%2Dcomment%20%7B%0A%20%20color%3A%20%23998%3B%0A%20%20font%2Dstyle%3A%20italic%3B%0A%7D%0A%0A%2Ehljs%2Dkeyword%20%7B%0A%20%20color%3A%20%23900%3B%0A%20%20font%2Dweight%3A%20bold%3B%0A%7D%0A%0A%2Ehljs%2Dstring%20%7B%0A%20%20color%3A%20%23d14%3B%0A%7D%0A" rel="stylesheet" />
 <script src="data:application/x-javascript,%2F%2A%21%20highlight%2Ejs%20v9%2E12%2E0%20%7C%20BSD3%20License%20%7C%20git%2Eio%2Fhljslicense%20%2A%2F%0A%21function%28e%29%7Bvar%20n%3D%22object%22%3D%3Dtypeof%20window%26%26window%7C%7C%22object%22%3D%3Dtypeof%20self%26%26self%3B%22undefined%22%21%3Dtypeof%20exports%3Fe%28exports%29%3An%26%26%28n%2Ehljs%3De%28%7B%7D%29%2C%22function%22%3D%3Dtypeof%20define%26%26define%2Eamd%26%26define%28%5B%5D%2Cfunction%28%29%7Breturn%20n%2Ehljs%7D%29%29%7D%28function%28e%29%7Bfunction%20n%28e%29%7Breturn%20e%2Ereplace%28%2F%26%2Fg%2C%22%26amp%3B%22%29%2Ereplace%28%2F%3C%2Fg%2C%22%26lt%3B%22%29%2Ereplace%28%2F%3E%2Fg%2C%22%26gt%3B%22%29%7Dfunction%20t%28e%29%7Breturn%20e%2EnodeName%2EtoLowerCase%28%29%7Dfunction%20r%28e%2Cn%29%7Bvar%20t%3De%26%26e%2Eexec%28n%29%3Breturn%20t%26%260%3D%3D%3Dt%2Eindex%7Dfunction%20a%28e%29%7Breturn%20k%2Etest%28e%29%7Dfunction%20i%28e%29%7Bvar%20n%2Ct%2Cr%2Ci%2Co%3De%2EclassName%2B%22%20%22%3Bif%28o%2B%3De%2EparentNode%3Fe%2EparentNode%2EclassName%3A%22%22%2Ct%3DB%2Eexec%28o%29%29return%20w%28t%5B1%5D%29%3Ft%5B1%5D%3A%22no%2Dhighlight%22%3Bfor%28o%3Do%2Esplit%28%2F%5Cs%2B%2F%29%2Cn%3D0%2Cr%3Do%2Elength%3Br%3En%3Bn%2B%2B%29if%28i%3Do%5Bn%5D%2Ca%28i%29%7C%7Cw%28i%29%29return%20i%7Dfunction%20o%28e%29%7Bvar%20n%2Ct%3D%7B%7D%2Cr%3DArray%2Eprototype%2Eslice%2Ecall%28arguments%2C1%29%3Bfor%28n%20in%20e%29t%5Bn%5D%3De%5Bn%5D%3Breturn%20r%2EforEach%28function%28e%29%7Bfor%28n%20in%20e%29t%5Bn%5D%3De%5Bn%5D%7D%29%2Ct%7Dfunction%20u%28e%29%7Bvar%20n%3D%5B%5D%3Breturn%20function%20r%28e%2Ca%29%7Bfor%28var%20i%3De%2EfirstChild%3Bi%3Bi%3Di%2EnextSibling%293%3D%3D%3Di%2EnodeType%3Fa%2B%3Di%2EnodeValue%2Elength%3A1%3D%3D%3Di%2EnodeType%26%26%28n%2Epush%28%7Bevent%3A%22start%22%2Coffset%3Aa%2Cnode%3Ai%7D%29%2Ca%3Dr%28i%2Ca%29%2Ct%28i%29%2Ematch%28%2Fbr%7Chr%7Cimg%7Cinput%2F%29%7C%7Cn%2Epush%28%7Bevent%3A%22stop%22%2Coffset%3Aa%2Cnode%3Ai%7D%29%29%3Breturn%20a%7D%28e%2C0%29%2Cn%7Dfunction%20c%28e%2Cr%2Ca%29%7Bfunction%20i%28%29%7Breturn%20e%2Elength%26%26r%2Elength%3Fe%5B0%5D%2Eoffset%21%3D%3Dr%5B0%5D%2Eoffset%3Fe%5B0%5D%2Eoffset%3Cr%5B0%5D%2Eoffset%3Fe%3Ar%3A%22start%22%3D%3D%3Dr%5B0%5D%2Eevent%3Fe%3Ar%3Ae%2Elength%3Fe%3Ar%7Dfunction%20o%28e%29%7Bfunction%20r%28e%29%7Breturn%22%20%22%2Be%2EnodeName%2B%27%3D%22%27%2Bn%28e%2Evalue%29%2Ereplace%28%27%22%27%2C%22%26quot%3B%22%29%2B%27%22%27%7Ds%2B%3D%22%3C%22%2Bt%28e%29%2BE%2Emap%2Ecall%28e%2Eattributes%2Cr%29%2Ejoin%28%22%22%29%2B%22%3E%22%7Dfunction%20u%28e%29%7Bs%2B%3D%22%3C%2F%22%2Bt%28e%29%2B%22%3E%22%7Dfunction%20c%28e%29%7B%28%22start%22%3D%3D%3De%2Eevent%3Fo%3Au%29%28e%2Enode%29%7Dfor%28var%20l%3D0%2Cs%3D%22%22%2Cf%3D%5B%5D%3Be%2Elength%7C%7Cr%2Elength%3B%29%7Bvar%20g%3Di%28%29%3Bif%28s%2B%3Dn%28a%2Esubstring%28l%2Cg%5B0%5D%2Eoffset%29%29%2Cl%3Dg%5B0%5D%2Eoffset%2Cg%3D%3D%3De%29%7Bf%2Ereverse%28%29%2EforEach%28u%29%3Bdo%20c%28g%2Esplice%280%2C1%29%5B0%5D%29%2Cg%3Di%28%29%3Bwhile%28g%3D%3D%3De%26%26g%2Elength%26%26g%5B0%5D%2Eoffset%3D%3D%3Dl%29%3Bf%2Ereverse%28%29%2EforEach%28o%29%7Delse%22start%22%3D%3D%3Dg%5B0%5D%2Eevent%3Ff%2Epush%28g%5B0%5D%2Enode%29%3Af%2Epop%28%29%2Cc%28g%2Esplice%280%2C1%29%5B0%5D%29%7Dreturn%20s%2Bn%28a%2Esubstr%28l%29%29%7Dfunction%20l%28e%29%7Breturn%20e%2Ev%26%26%21e%2Ecached%5Fvariants%26%26%28e%2Ecached%5Fvariants%3De%2Ev%2Emap%28function%28n%29%7Breturn%20o%28e%2C%7Bv%3Anull%7D%2Cn%29%7D%29%29%2Ce%2Ecached%5Fvariants%7C%7Ce%2EeW%26%26%5Bo%28e%29%5D%7C%7C%5Be%5D%7Dfunction%20s%28e%29%7Bfunction%20n%28e%29%7Breturn%20e%26%26e%2Esource%7C%7Ce%7Dfunction%20t%28t%2Cr%29%7Breturn%20new%20RegExp%28n%28t%29%2C%22m%22%2B%28e%2EcI%3F%22i%22%3A%22%22%29%2B%28r%3F%22g%22%3A%22%22%29%29%7Dfunction%20r%28a%2Ci%29%7Bif%28%21a%2Ecompiled%29%7Bif%28a%2Ecompiled%3D%210%2Ca%2Ek%3Da%2Ek%7C%7Ca%2EbK%2Ca%2Ek%29%7Bvar%20o%3D%7B%7D%2Cu%3Dfunction%28n%2Ct%29%7Be%2EcI%26%26%28t%3Dt%2EtoLowerCase%28%29%29%2Ct%2Esplit%28%22%20%22%29%2EforEach%28function%28e%29%7Bvar%20t%3De%2Esplit%28%22%7C%22%29%3Bo%5Bt%5B0%5D%5D%3D%5Bn%2Ct%5B1%5D%3FNumber%28t%5B1%5D%29%3A1%5D%7D%29%7D%3B%22string%22%3D%3Dtypeof%20a%2Ek%3Fu%28%22keyword%22%2Ca%2Ek%29%3Ax%28a%2Ek%29%2EforEach%28function%28e%29%7Bu%28e%2Ca%2Ek%5Be%5D%29%7D%29%2Ca%2Ek%3Do%7Da%2ElR%3Dt%28a%2El%7C%7C%2F%5Cw%2B%2F%2C%210%29%2Ci%26%26%28a%2EbK%26%26%28a%2Eb%3D%22%5C%5Cb%28%22%2Ba%2EbK%2Esplit%28%22%20%22%29%2Ejoin%28%22%7C%22%29%2B%22%29%5C%5Cb%22%29%2Ca%2Eb%7C%7C%28a%2Eb%3D%2F%5CB%7C%5Cb%2F%29%2Ca%2EbR%3Dt%28a%2Eb%29%2Ca%2Ee%7C%7Ca%2EeW%7C%7C%28a%2Ee%3D%2F%5CB%7C%5Cb%2F%29%2Ca%2Ee%26%26%28a%2EeR%3Dt%28a%2Ee%29%29%2Ca%2EtE%3Dn%28a%2Ee%29%7C%7C%22%22%2Ca%2EeW%26%26i%2EtE%26%26%28a%2EtE%2B%3D%28a%2Ee%3F%22%7C%22%3A%22%22%29%2Bi%2EtE%29%29%2Ca%2Ei%26%26%28a%2EiR%3Dt%28a%2Ei%29%29%2Cnull%3D%3Da%2Er%26%26%28a%2Er%3D1%29%2Ca%2Ec%7C%7C%28a%2Ec%3D%5B%5D%29%2Ca%2Ec%3DArray%2Eprototype%2Econcat%2Eapply%28%5B%5D%2Ca%2Ec%2Emap%28function%28e%29%7Breturn%20l%28%22self%22%3D%3D%3De%3Fa%3Ae%29%7D%29%29%2Ca%2Ec%2EforEach%28function%28e%29%7Br%28e%2Ca%29%7D%29%2Ca%2Estarts%26%26r%28a%2Estarts%2Ci%29%3Bvar%20c%3Da%2Ec%2Emap%28function%28e%29%7Breturn%20e%2EbK%3F%22%5C%5C%2E%3F%28%22%2Be%2Eb%2B%22%29%5C%5C%2E%3F%22%3Ae%2Eb%7D%29%2Econcat%28%5Ba%2EtE%2Ca%2Ei%5D%29%2Emap%28n%29%2Efilter%28Boolean%29%3Ba%2Et%3Dc%2Elength%3Ft%28c%2Ejoin%28%22%7C%22%29%2C%210%29%3A%7Bexec%3Afunction%28%29%7Breturn%20null%7D%7D%7D%7Dr%28e%29%7Dfunction%20f%28e%2Ct%2Ca%2Ci%29%7Bfunction%20o%28e%2Cn%29%7Bvar%20t%2Ca%3Bfor%28t%3D0%2Ca%3Dn%2Ec%2Elength%3Ba%3Et%3Bt%2B%2B%29if%28r%28n%2Ec%5Bt%5D%2EbR%2Ce%29%29return%20n%2Ec%5Bt%5D%7Dfunction%20u%28e%2Cn%29%7Bif%28r%28e%2EeR%2Cn%29%29%7Bfor%28%3Be%2EendsParent%26%26e%2Eparent%3B%29e%3De%2Eparent%3Breturn%20e%7Dreturn%20e%2EeW%3Fu%28e%2Eparent%2Cn%29%3Avoid%200%7Dfunction%20c%28e%2Cn%29%7Breturn%21a%26%26r%28n%2EiR%2Ce%29%7Dfunction%20l%28e%2Cn%29%7Bvar%20t%3DN%2EcI%3Fn%5B0%5D%2EtoLowerCase%28%29%3An%5B0%5D%3Breturn%20e%2Ek%2EhasOwnProperty%28t%29%26%26e%2Ek%5Bt%5D%7Dfunction%20p%28e%2Cn%2Ct%2Cr%29%7Bvar%20a%3Dr%3F%22%22%3AI%2EclassPrefix%2Ci%3D%27%3Cspan%20class%3D%22%27%2Ba%2Co%3Dt%3F%22%22%3AC%3Breturn%20i%2B%3De%2B%27%22%3E%27%2Ci%2Bn%2Bo%7Dfunction%20h%28%29%7Bvar%20e%2Ct%2Cr%2Ca%3Bif%28%21E%2Ek%29return%20n%28k%29%3Bfor%28a%3D%22%22%2Ct%3D0%2CE%2ElR%2ElastIndex%3D0%2Cr%3DE%2ElR%2Eexec%28k%29%3Br%3B%29a%2B%3Dn%28k%2Esubstring%28t%2Cr%2Eindex%29%29%2Ce%3Dl%28E%2Cr%29%2Ce%3F%28B%2B%3De%5B1%5D%2Ca%2B%3Dp%28e%5B0%5D%2Cn%28r%5B0%5D%29%29%29%3Aa%2B%3Dn%28r%5B0%5D%29%2Ct%3DE%2ElR%2ElastIndex%2Cr%3DE%2ElR%2Eexec%28k%29%3Breturn%20a%2Bn%28k%2Esubstr%28t%29%29%7Dfunction%20d%28%29%7Bvar%20e%3D%22string%22%3D%3Dtypeof%20E%2EsL%3Bif%28e%26%26%21y%5BE%2EsL%5D%29return%20n%28k%29%3Bvar%20t%3De%3Ff%28E%2EsL%2Ck%2C%210%2Cx%5BE%2EsL%5D%29%3Ag%28k%2CE%2EsL%2Elength%3FE%2EsL%3Avoid%200%29%3Breturn%20E%2Er%3E0%26%26%28B%2B%3Dt%2Er%29%2Ce%26%26%28x%5BE%2EsL%5D%3Dt%2Etop%29%2Cp%28t%2Elanguage%2Ct%2Evalue%2C%211%2C%210%29%7Dfunction%20b%28%29%7BL%2B%3Dnull%21%3DE%2EsL%3Fd%28%29%3Ah%28%29%2Ck%3D%22%22%7Dfunction%20v%28e%29%7BL%2B%3De%2EcN%3Fp%28e%2EcN%2C%22%22%2C%210%29%3A%22%22%2CE%3DObject%2Ecreate%28e%2C%7Bparent%3A%7Bvalue%3AE%7D%7D%29%7Dfunction%20m%28e%2Cn%29%7Bif%28k%2B%3De%2Cnull%3D%3Dn%29return%20b%28%29%2C0%3Bvar%20t%3Do%28n%2CE%29%3Bif%28t%29return%20t%2Eskip%3Fk%2B%3Dn%3A%28t%2EeB%26%26%28k%2B%3Dn%29%2Cb%28%29%2Ct%2ErB%7C%7Ct%2EeB%7C%7C%28k%3Dn%29%29%2Cv%28t%2Cn%29%2Ct%2ErB%3F0%3An%2Elength%3Bvar%20r%3Du%28E%2Cn%29%3Bif%28r%29%7Bvar%20a%3DE%3Ba%2Eskip%3Fk%2B%3Dn%3A%28a%2ErE%7C%7Ca%2EeE%7C%7C%28k%2B%3Dn%29%2Cb%28%29%2Ca%2EeE%26%26%28k%3Dn%29%29%3Bdo%20E%2EcN%26%26%28L%2B%3DC%29%2CE%2Eskip%7C%7C%28B%2B%3DE%2Er%29%2CE%3DE%2Eparent%3Bwhile%28E%21%3D%3Dr%2Eparent%29%3Breturn%20r%2Estarts%26%26v%28r%2Estarts%2C%22%22%29%2Ca%2ErE%3F0%3An%2Elength%7Dif%28c%28n%2CE%29%29throw%20new%20Error%28%27Illegal%20lexeme%20%22%27%2Bn%2B%27%22%20for%20mode%20%22%27%2B%28E%2EcN%7C%7C%22%3Cunnamed%3E%22%29%2B%27%22%27%29%3Breturn%20k%2B%3Dn%2Cn%2Elength%7C%7C1%7Dvar%20N%3Dw%28e%29%3Bif%28%21N%29throw%20new%20Error%28%27Unknown%20language%3A%20%22%27%2Be%2B%27%22%27%29%3Bs%28N%29%3Bvar%20R%2CE%3Di%7C%7CN%2Cx%3D%7B%7D%2CL%3D%22%22%3Bfor%28R%3DE%3BR%21%3D%3DN%3BR%3DR%2Eparent%29R%2EcN%26%26%28L%3Dp%28R%2EcN%2C%22%22%2C%210%29%2BL%29%3Bvar%20k%3D%22%22%2CB%3D0%3Btry%7Bfor%28var%20M%2Cj%2CO%3D0%3B%3B%29%7Bif%28E%2Et%2ElastIndex%3DO%2CM%3DE%2Et%2Eexec%28t%29%2C%21M%29break%3Bj%3Dm%28t%2Esubstring%28O%2CM%2Eindex%29%2CM%5B0%5D%29%2CO%3DM%2Eindex%2Bj%7Dfor%28m%28t%2Esubstr%28O%29%29%2CR%3DE%3BR%2Eparent%3BR%3DR%2Eparent%29R%2EcN%26%26%28L%2B%3DC%29%3Breturn%7Br%3AB%2Cvalue%3AL%2Clanguage%3Ae%2Ctop%3AE%7D%7Dcatch%28T%29%7Bif%28T%2Emessage%26%26%2D1%21%3D%3DT%2Emessage%2EindexOf%28%22Illegal%22%29%29return%7Br%3A0%2Cvalue%3An%28t%29%7D%3Bthrow%20T%7D%7Dfunction%20g%28e%2Ct%29%7Bt%3Dt%7C%7CI%2Elanguages%7C%7Cx%28y%29%3Bvar%20r%3D%7Br%3A0%2Cvalue%3An%28e%29%7D%2Ca%3Dr%3Breturn%20t%2Efilter%28w%29%2EforEach%28function%28n%29%7Bvar%20t%3Df%28n%2Ce%2C%211%29%3Bt%2Elanguage%3Dn%2Ct%2Er%3Ea%2Er%26%26%28a%3Dt%29%2Ct%2Er%3Er%2Er%26%26%28a%3Dr%2Cr%3Dt%29%7D%29%2Ca%2Elanguage%26%26%28r%2Esecond%5Fbest%3Da%29%2Cr%7Dfunction%20p%28e%29%7Breturn%20I%2EtabReplace%7C%7CI%2EuseBR%3Fe%2Ereplace%28M%2Cfunction%28e%2Cn%29%7Breturn%20I%2EuseBR%26%26%22%5Cn%22%3D%3D%3De%3F%22%3Cbr%3E%22%3AI%2EtabReplace%3Fn%2Ereplace%28%2F%5Ct%2Fg%2CI%2EtabReplace%29%3A%22%22%7D%29%3Ae%7Dfunction%20h%28e%2Cn%2Ct%29%7Bvar%20r%3Dn%3FL%5Bn%5D%3At%2Ca%3D%5Be%2Etrim%28%29%5D%3Breturn%20e%2Ematch%28%2F%5Cbhljs%5Cb%2F%29%7C%7Ca%2Epush%28%22hljs%22%29%2C%2D1%3D%3D%3De%2EindexOf%28r%29%26%26a%2Epush%28r%29%2Ca%2Ejoin%28%22%20%22%29%2Etrim%28%29%7Dfunction%20d%28e%29%7Bvar%20n%2Ct%2Cr%2Co%2Cl%2Cs%3Di%28e%29%3Ba%28s%29%7C%7C%28I%2EuseBR%3F%28n%3Ddocument%2EcreateElementNS%28%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F1999%2Fxhtml%22%2C%22div%22%29%2Cn%2EinnerHTML%3De%2EinnerHTML%2Ereplace%28%2F%5Cn%2Fg%2C%22%22%29%2Ereplace%28%2F%3Cbr%5B%20%5C%2F%5D%2A%3E%2Fg%2C%22%5Cn%22%29%29%3An%3De%2Cl%3Dn%2EtextContent%2Cr%3Ds%3Ff%28s%2Cl%2C%210%29%3Ag%28l%29%2Ct%3Du%28n%29%2Ct%2Elength%26%26%28o%3Ddocument%2EcreateElementNS%28%22http%3A%2F%2Fwww%2Ew3%2Eorg%2F1999%2Fxhtml%22%2C%22div%22%29%2Co%2EinnerHTML%3Dr%2Evalue%2Cr%2Evalue%3Dc%28t%2Cu%28o%29%2Cl%29%29%2Cr%2Evalue%3Dp%28r%2Evalue%29%2Ce%2EinnerHTML%3Dr%2Evalue%2Ce%2EclassName%3Dh%28e%2EclassName%2Cs%2Cr%2Elanguage%29%2Ce%2Eresult%3D%7Blanguage%3Ar%2Elanguage%2Cre%3Ar%2Er%7D%2Cr%2Esecond%5Fbest%26%26%28e%2Esecond%5Fbest%3D%7Blanguage%3Ar%2Esecond%5Fbest%2Elanguage%2Cre%3Ar%2Esecond%5Fbest%2Er%7D%29%29%7Dfunction%20b%28e%29%7BI%3Do%28I%2Ce%29%7Dfunction%20v%28%29%7Bif%28%21v%2Ecalled%29%7Bv%2Ecalled%3D%210%3Bvar%20e%3Ddocument%2EquerySelectorAll%28%22pre%20code%22%29%3BE%2EforEach%2Ecall%28e%2Cd%29%7D%7Dfunction%20m%28%29%7BaddEventListener%28%22DOMContentLoaded%22%2Cv%2C%211%29%2CaddEventListener%28%22load%22%2Cv%2C%211%29%7Dfunction%20N%28n%2Ct%29%7Bvar%20r%3Dy%5Bn%5D%3Dt%28e%29%3Br%2Ealiases%26%26r%2Ealiases%2EforEach%28function%28e%29%7BL%5Be%5D%3Dn%7D%29%7Dfunction%20R%28%29%7Breturn%20x%28y%29%7Dfunction%20w%28e%29%7Breturn%20e%3D%28e%7C%7C%22%22%29%2EtoLowerCase%28%29%2Cy%5Be%5D%7C%7Cy%5BL%5Be%5D%5D%7Dvar%20E%3D%5B%5D%2Cx%3DObject%2Ekeys%2Cy%3D%7B%7D%2CL%3D%7B%7D%2Ck%3D%2F%5E%28no%2D%3Fhighlight%7Cplain%7Ctext%29%24%2Fi%2CB%3D%2F%5Cblang%28%3F%3Auage%29%3F%2D%28%5B%5Cw%2D%5D%2B%29%5Cb%2Fi%2CM%3D%2F%28%28%5E%28%3C%5B%5E%3E%5D%2B%3E%7C%5Ct%7C%29%2B%7C%28%3F%3A%5Cn%29%29%29%2Fgm%2CC%3D%22%3C%2Fspan%3E%22%2CI%3D%7BclassPrefix%3A%22hljs%2D%22%2CtabReplace%3Anull%2CuseBR%3A%211%2Clanguages%3Avoid%200%7D%3Breturn%20e%2Ehighlight%3Df%2Ce%2EhighlightAuto%3Dg%2Ce%2EfixMarkup%3Dp%2Ce%2EhighlightBlock%3Dd%2Ce%2Econfigure%3Db%2Ce%2EinitHighlighting%3Dv%2Ce%2EinitHighlightingOnLoad%3Dm%2Ce%2EregisterLanguage%3DN%2Ce%2ElistLanguages%3DR%2Ce%2EgetLanguage%3Dw%2Ce%2Einherit%3Do%2Ce%2EIR%3D%22%5Ba%2DzA%2DZ%5D%5C%5Cw%2A%22%2Ce%2EUIR%3D%22%5Ba%2DzA%2DZ%5F%5D%5C%5Cw%2A%22%2Ce%2ENR%3D%22%5C%5Cb%5C%5Cd%2B%28%5C%5C%2E%5C%5Cd%2B%29%3F%22%2Ce%2ECNR%3D%22%28%2D%3F%29%28%5C%5Cb0%5BxX%5D%5Ba%2DfA%2DF0%2D9%5D%2B%7C%28%5C%5Cb%5C%5Cd%2B%28%5C%5C%2E%5C%5Cd%2A%29%3F%7C%5C%5C%2E%5C%5Cd%2B%29%28%5BeE%5D%5B%2D%2B%5D%3F%5C%5Cd%2B%29%3F%29%22%2Ce%2EBNR%3D%22%5C%5Cb%280b%5B01%5D%2B%29%22%2Ce%2ERSR%3D%22%21%7C%21%3D%7C%21%3D%3D%7C%25%7C%25%3D%7C%26%7C%26%26%7C%26%3D%7C%5C%5C%2A%7C%5C%5C%2A%3D%7C%5C%5C%2B%7C%5C%5C%2B%3D%7C%2C%7C%2D%7C%2D%3D%7C%2F%3D%7C%2F%7C%3A%7C%3B%7C%3C%3C%7C%3C%3C%3D%7C%3C%3D%7C%3C%7C%3D%3D%3D%7C%3D%3D%7C%3D%7C%3E%3E%3E%3D%7C%3E%3E%3D%7C%3E%3D%7C%3E%3E%3E%7C%3E%3E%7C%3E%7C%5C%5C%3F%7C%5C%5C%5B%7C%5C%5C%7B%7C%5C%5C%28%7C%5C%5C%5E%7C%5C%5C%5E%3D%7C%5C%5C%7C%7C%5C%5C%7C%3D%7C%5C%5C%7C%5C%5C%7C%7C%7E%22%2Ce%2EBE%3D%7Bb%3A%22%5C%5C%5C%5C%5B%5C%5Cs%5C%5CS%5D%22%2Cr%3A0%7D%2Ce%2EASM%3D%7BcN%3A%22string%22%2Cb%3A%22%27%22%2Ce%3A%22%27%22%2Ci%3A%22%5C%5Cn%22%2Cc%3A%5Be%2EBE%5D%7D%2Ce%2EQSM%3D%7BcN%3A%22string%22%2Cb%3A%27%22%27%2Ce%3A%27%22%27%2Ci%3A%22%5C%5Cn%22%2Cc%3A%5Be%2EBE%5D%7D%2Ce%2EPWM%3D%7Bb%3A%2F%5Cb%28a%7Can%7Cthe%7Care%7CI%27m%7Cisn%27t%7Cdon%27t%7Cdoesn%27t%7Cwon%27t%7Cbut%7Cjust%7Cshould%7Cpretty%7Csimply%7Cenough%7Cgonna%7Cgoing%7Cwtf%7Cso%7Csuch%7Cwill%7Cyou%7Cyour%7Cthey%7Clike%7Cmore%29%5Cb%2F%7D%2Ce%2EC%3Dfunction%28n%2Ct%2Cr%29%7Bvar%20a%3De%2Einherit%28%7BcN%3A%22comment%22%2Cb%3An%2Ce%3At%2Cc%3A%5B%5D%7D%2Cr%7C%7C%7B%7D%29%3Breturn%20a%2Ec%2Epush%28e%2EPWM%29%2Ca%2Ec%2Epush%28%7BcN%3A%22doctag%22%2Cb%3A%22%28%3F%3ATODO%7CFIXME%7CNOTE%7CBUG%7CXXX%29%3A%22%2Cr%3A0%7D%29%2Ca%7D%2Ce%2ECLCM%3De%2EC%28%22%2F%2F%22%2C%22%24%22%29%2Ce%2ECBCM%3De%2EC%28%22%2F%5C%5C%2A%22%2C%22%5C%5C%2A%2F%22%29%2Ce%2EHCM%3De%2EC%28%22%23%22%2C%22%24%22%29%2Ce%2ENM%3D%7BcN%3A%22number%22%2Cb%3Ae%2ENR%2Cr%3A0%7D%2Ce%2ECNM%3D%7BcN%3A%22number%22%2Cb%3Ae%2ECNR%2Cr%3A0%7D%2Ce%2EBNM%3D%7BcN%3A%22number%22%2Cb%3Ae%2EBNR%2Cr%3A0%7D%2Ce%2ECSSNM%3D%7BcN%3A%22number%22%2Cb%3Ae%2ENR%2B%22%28%25%7Cem%7Cex%7Cch%7Crem%7Cvw%7Cvh%7Cvmin%7Cvmax%7Ccm%7Cmm%7Cin%7Cpt%7Cpc%7Cpx%7Cdeg%7Cgrad%7Crad%7Cturn%7Cs%7Cms%7CHz%7CkHz%7Cdpi%7Cdpcm%7Cdppx%29%3F%22%2Cr%3A0%7D%2Ce%2ERM%3D%7BcN%3A%22regexp%22%2Cb%3A%2F%5C%2F%2F%2Ce%3A%2F%5C%2F%5Bgimuy%5D%2A%2F%2Ci%3A%2F%5Cn%2F%2Cc%3A%5Be%2EBE%2C%7Bb%3A%2F%5C%5B%2F%2Ce%3A%2F%5C%5D%2F%2Cr%3A0%2Cc%3A%5Be%2EBE%5D%7D%5D%7D%2Ce%2ETM%3D%7BcN%3A%22title%22%2Cb%3Ae%2EIR%2Cr%3A0%7D%2Ce%2EUTM%3D%7BcN%3A%22title%22%2Cb%3Ae%2EUIR%2Cr%3A0%7D%2Ce%2EMETHOD%5FGUARD%3D%7Bb%3A%22%5C%5C%2E%5C%5Cs%2A%22%2Be%2EUIR%2Cr%3A0%7D%2Ce%7D%29%3Bhljs%2EregisterLanguage%28%22sql%22%2Cfunction%28e%29%7Bvar%20t%3De%2EC%28%22%2D%2D%22%2C%22%24%22%29%3Breturn%7BcI%3A%210%2Ci%3A%2F%5B%3C%3E%7B%7D%2A%23%5D%2F%2Cc%3A%5B%7BbK%3A%22begin%20end%20start%20commit%20rollback%20savepoint%20lock%20alter%20create%20drop%20rename%20call%20delete%20do%20handler%20insert%20load%20replace%20select%20truncate%20update%20set%20show%20pragma%20grant%20merge%20describe%20use%20explain%20help%20declare%20prepare%20execute%20deallocate%20release%20unlock%20purge%20reset%20change%20stop%20analyze%20cache%20flush%20optimize%20repair%20kill%20install%20uninstall%20checksum%20restore%20check%20backup%20revoke%20comment%22%2Ce%3A%2F%3B%2F%2CeW%3A%210%2Cl%3A%2F%5B%5Cw%5C%2E%5D%2B%2F%2Ck%3A%7Bkeyword%3A%22abort%20abs%20absolute%20acc%20acce%20accep%20accept%20access%20accessed%20accessible%20account%20acos%20action%20activate%20add%20addtime%20admin%20administer%20advanced%20advise%20aes%5Fdecrypt%20aes%5Fencrypt%20after%20agent%20aggregate%20ali%20alia%20alias%20allocate%20allow%20alter%20always%20analyze%20ancillary%20and%20any%20anydata%20anydataset%20anyschema%20anytype%20apply%20archive%20archived%20archivelog%20are%20as%20asc%20ascii%20asin%20assembly%20assertion%20associate%20asynchronous%20at%20atan%20atn2%20attr%20attri%20attrib%20attribu%20attribut%20attribute%20attributes%20audit%20authenticated%20authentication%20authid%20authors%20auto%20autoallocate%20autodblink%20autoextend%20automatic%20availability%20avg%20backup%20badfile%20basicfile%20before%20begin%20beginning%20benchmark%20between%20bfile%20bfile%5Fbase%20big%20bigfile%20bin%20binary%5Fdouble%20binary%5Ffloat%20binlog%20bit%5Fand%20bit%5Fcount%20bit%5Flength%20bit%5For%20bit%5Fxor%20bitmap%20blob%5Fbase%20block%20blocksize%20body%20both%20bound%20buffer%5Fcache%20buffer%5Fpool%20build%20bulk%20by%20byte%20byteordermark%20bytes%20cache%20caching%20call%20calling%20cancel%20capacity%20cascade%20cascaded%20case%20cast%20catalog%20category%20ceil%20ceiling%20chain%20change%20changed%20char%5Fbase%20char%5Flength%20character%5Flength%20characters%20characterset%20charindex%20charset%20charsetform%20charsetid%20check%20checksum%20checksum%5Fagg%20child%20choose%20chr%20chunk%20class%20cleanup%20clear%20client%20clob%20clob%5Fbase%20clone%20close%20cluster%5Fid%20cluster%5Fprobability%20cluster%5Fset%20clustering%20coalesce%20coercibility%20col%20collate%20collation%20collect%20colu%20colum%20column%20column%5Fvalue%20columns%20columns%5Fupdated%20comment%20commit%20compact%20compatibility%20compiled%20complete%20composite%5Flimit%20compound%20compress%20compute%20concat%20concat%5Fws%20concurrent%20confirm%20conn%20connec%20connect%20connect%5Fby%5Fiscycle%20connect%5Fby%5Fisleaf%20connect%5Fby%5Froot%20connect%5Ftime%20connection%20consider%20consistent%20constant%20constraint%20constraints%20constructor%20container%20content%20contents%20context%20contributors%20controlfile%20conv%20convert%20convert%5Ftz%20corr%20corr%5Fk%20corr%5Fs%20corresponding%20corruption%20cos%20cost%20count%20count%5Fbig%20counted%20covar%5Fpop%20covar%5Fsamp%20cpu%5Fper%5Fcall%20cpu%5Fper%5Fsession%20crc32%20create%20creation%20critical%20cross%20cube%20cume%5Fdist%20curdate%20current%20current%5Fdate%20current%5Ftime%20current%5Ftimestamp%20current%5Fuser%20cursor%20curtime%20customdatum%20cycle%20data%20database%20databases%20datafile%20datafiles%20datalength%20date%5Fadd%20date%5Fcache%20date%5Fformat%20date%5Fsub%20dateadd%20datediff%20datefromparts%20datename%20datepart%20datetime2fromparts%20day%20day%5Fto%5Fsecond%20dayname%20dayofmonth%20dayofweek%20dayofyear%20days%20db%5Frole%5Fchange%20dbtimezone%20ddl%20deallocate%20declare%20decode%20decompose%20decrement%20decrypt%20deduplicate%20def%20defa%20defau%20defaul%20default%20defaults%20deferred%20defi%20defin%20define%20degrees%20delayed%20delegate%20delete%20delete%5Fall%20delimited%20demand%20dense%5Frank%20depth%20dequeue%20des%5Fdecrypt%20des%5Fencrypt%20des%5Fkey%5Ffile%20desc%20descr%20descri%20describ%20describe%20descriptor%20deterministic%20diagnostics%20difference%20dimension%20direct%5Fload%20directory%20disable%20disable%5Fall%20disallow%20disassociate%20discardfile%20disconnect%20diskgroup%20distinct%20distinctrow%20distribute%20distributed%20div%20do%20document%20domain%20dotnet%20double%20downgrade%20drop%20dumpfile%20duplicate%20duration%20each%20edition%20editionable%20editions%20element%20ellipsis%20else%20elsif%20elt%20empty%20enable%20enable%5Fall%20enclosed%20encode%20encoding%20encrypt%20end%20end%2Dexec%20endian%20enforced%20engine%20engines%20enqueue%20enterprise%20entityescaping%20eomonth%20error%20errors%20escaped%20evalname%20evaluate%20event%20eventdata%20events%20except%20exception%20exceptions%20exchange%20exclude%20excluding%20execu%20execut%20execute%20exempt%20exists%20exit%20exp%20expire%20explain%20export%20export%5Fset%20extended%20extent%20external%20external%5F1%20external%5F2%20externally%20extract%20failed%20failed%5Flogin%5Fattempts%20failover%20failure%20far%20fast%20feature%5Fset%20feature%5Fvalue%20fetch%20field%20fields%20file%20file%5Fname%5Fconvert%20filesystem%5Flike%5Flogging%20final%20finish%20first%20first%5Fvalue%20fixed%20flash%5Fcache%20flashback%20floor%20flush%20following%20follows%20for%20forall%20force%20form%20forma%20format%20found%20found%5Frows%20freelist%20freelists%20freepools%20fresh%20from%20from%5Fbase64%20from%5Fdays%20ftp%20full%20function%20general%20generated%20get%20get%5Fformat%20get%5Flock%20getdate%20getutcdate%20global%20global%5Fname%20globally%20go%20goto%20grant%20grants%20greatest%20group%20group%5Fconcat%20group%5Fid%20grouping%20grouping%5Fid%20groups%20gtid%5Fsubtract%20guarantee%20guard%20handler%20hash%20hashkeys%20having%20hea%20head%20headi%20headin%20heading%20heap%20help%20hex%20hierarchy%20high%20high%5Fpriority%20hosts%20hour%20http%20id%20ident%5Fcurrent%20ident%5Fincr%20ident%5Fseed%20identified%20identity%20idle%5Ftime%20if%20ifnull%20ignore%20iif%20ilike%20ilm%20immediate%20import%20in%20include%20including%20increment%20index%20indexes%20indexing%20indextype%20indicator%20indices%20inet6%5Faton%20inet6%5Fntoa%20inet%5Faton%20inet%5Fntoa%20infile%20initial%20initialized%20initially%20initrans%20inmemory%20inner%20innodb%20input%20insert%20install%20instance%20instantiable%20instr%20interface%20interleaved%20intersect%20into%20invalidate%20invisible%20is%20is%5Ffree%5Flock%20is%5Fipv4%20is%5Fipv4%5Fcompat%20is%5Fnot%20is%5Fnot%5Fnull%20is%5Fused%5Flock%20isdate%20isnull%20isolation%20iterate%20java%20join%20json%20json%5Fexists%20keep%20keep%5Fduplicates%20key%20keys%20kill%20language%20large%20last%20last%5Fday%20last%5Finsert%5Fid%20last%5Fvalue%20lax%20lcase%20lead%20leading%20least%20leaves%20left%20len%20lenght%20length%20less%20level%20levels%20library%20like%20like2%20like4%20likec%20limit%20lines%20link%20list%20listagg%20little%20ln%20load%20load%5Ffile%20lob%20lobs%20local%20localtime%20localtimestamp%20locate%20locator%20lock%20locked%20log%20log10%20log2%20logfile%20logfiles%20logging%20logical%20logical%5Freads%5Fper%5Fcall%20logoff%20logon%20logs%20long%20loop%20low%20low%5Fpriority%20lower%20lpad%20lrtrim%20ltrim%20main%20make%5Fset%20makedate%20maketime%20managed%20management%20manual%20map%20mapping%20mask%20master%20master%5Fpos%5Fwait%20match%20matched%20materialized%20max%20maxextents%20maximize%20maxinstances%20maxlen%20maxlogfiles%20maxloghistory%20maxlogmembers%20maxsize%20maxtrans%20md5%20measures%20median%20medium%20member%20memcompress%20memory%20merge%20microsecond%20mid%20migration%20min%20minextents%20minimum%20mining%20minus%20minute%20minvalue%20missing%20mod%20mode%20model%20modification%20modify%20module%20monitoring%20month%20months%20mount%20move%20movement%20multiset%20mutex%20name%20name%5Fconst%20names%20nan%20national%20native%20natural%20nav%20nchar%20nclob%20nested%20never%20new%20newline%20next%20nextval%20no%20no%5Fwrite%5Fto%5Fbinlog%20noarchivelog%20noaudit%20nobadfile%20nocheck%20nocompress%20nocopy%20nocycle%20nodelay%20nodiscardfile%20noentityescaping%20noguarantee%20nokeep%20nologfile%20nomapping%20nomaxvalue%20nominimize%20nominvalue%20nomonitoring%20none%20noneditionable%20nonschema%20noorder%20nopr%20nopro%20noprom%20nopromp%20noprompt%20norely%20noresetlogs%20noreverse%20normal%20norowdependencies%20noschemacheck%20noswitch%20not%20nothing%20notice%20notrim%20novalidate%20now%20nowait%20nth%5Fvalue%20nullif%20nulls%20num%20numb%20numbe%20nvarchar%20nvarchar2%20object%20ocicoll%20ocidate%20ocidatetime%20ociduration%20ociinterval%20ociloblocator%20ocinumber%20ociref%20ocirefcursor%20ocirowid%20ocistring%20ocitype%20oct%20octet%5Flength%20of%20off%20offline%20offset%20oid%20oidindex%20old%20on%20online%20only%20opaque%20open%20operations%20operator%20optimal%20optimize%20option%20optionally%20or%20oracle%20oracle%5Fdate%20oradata%20ord%20ordaudio%20orddicom%20orddoc%20order%20ordimage%20ordinality%20ordvideo%20organization%20orlany%20orlvary%20out%20outer%20outfile%20outline%20output%20over%20overflow%20overriding%20package%20pad%20parallel%20parallel%5Fenable%20parameters%20parent%20parse%20partial%20partition%20partitions%20pascal%20passing%20password%20password%5Fgrace%5Ftime%20password%5Flock%5Ftime%20password%5Freuse%5Fmax%20password%5Freuse%5Ftime%20password%5Fverify%5Ffunction%20patch%20path%20patindex%20pctincrease%20pctthreshold%20pctused%20pctversion%20percent%20percent%5Frank%20percentile%5Fcont%20percentile%5Fdisc%20performance%20period%20period%5Fadd%20period%5Fdiff%20permanent%20physical%20pi%20pipe%20pipelined%20pivot%20pluggable%20plugin%20policy%20position%20post%5Ftransaction%20pow%20power%20pragma%20prebuilt%20precedes%20preceding%20precision%20prediction%20prediction%5Fcost%20prediction%5Fdetails%20prediction%5Fprobability%20prediction%5Fset%20prepare%20present%20preserve%20prior%20priority%20private%20private%5Fsga%20privileges%20procedural%20procedure%20procedure%5Fanalyze%20processlist%20profiles%20project%20prompt%20protection%20public%20publishingservername%20purge%20quarter%20query%20quick%20quiesce%20quota%20quotename%20radians%20raise%20rand%20range%20rank%20raw%20read%20reads%20readsize%20rebuild%20record%20records%20recover%20recovery%20recursive%20recycle%20redo%20reduced%20ref%20reference%20referenced%20references%20referencing%20refresh%20regexp%5Flike%20register%20regr%5Favgx%20regr%5Favgy%20regr%5Fcount%20regr%5Fintercept%20regr%5Fr2%20regr%5Fslope%20regr%5Fsxx%20regr%5Fsxy%20reject%20rekey%20relational%20relative%20relaylog%20release%20release%5Flock%20relies%5Fon%20relocate%20rely%20rem%20remainder%20rename%20repair%20repeat%20replace%20replicate%20replication%20required%20reset%20resetlogs%20resize%20resource%20respect%20restore%20restricted%20result%20result%5Fcache%20resumable%20resume%20retention%20return%20returning%20returns%20reuse%20reverse%20revoke%20right%20rlike%20role%20roles%20rollback%20rolling%20rollup%20round%20row%20row%5Fcount%20rowdependencies%20rowid%20rownum%20rows%20rtrim%20rules%20safe%20salt%20sample%20save%20savepoint%20sb1%20sb2%20sb4%20scan%20schema%20schemacheck%20scn%20scope%20scroll%20sdo%5Fgeoraster%20sdo%5Ftopo%5Fgeometry%20search%20sec%5Fto%5Ftime%20second%20section%20securefile%20security%20seed%20segment%20select%20self%20sequence%20sequential%20serializable%20server%20servererror%20session%20session%5Fuser%20sessions%5Fper%5Fuser%20set%20sets%20settings%20sha%20sha1%20sha2%20share%20shared%20shared%5Fpool%20short%20show%20shrink%20shutdown%20si%5Faveragecolor%20si%5Fcolorhistogram%20si%5Ffeaturelist%20si%5Fpositionalcolor%20si%5Fstillimage%20si%5Ftexture%20siblings%20sid%20sign%20sin%20size%20size%5Ft%20sizes%20skip%20slave%20sleep%20smalldatetimefromparts%20smallfile%20snapshot%20some%20soname%20sort%20soundex%20source%20space%20sparse%20spfile%20split%20sql%20sql%5Fbig%5Fresult%20sql%5Fbuffer%5Fresult%20sql%5Fcache%20sql%5Fcalc%5Ffound%5Frows%20sql%5Fsmall%5Fresult%20sql%5Fvariant%5Fproperty%20sqlcode%20sqldata%20sqlerror%20sqlname%20sqlstate%20sqrt%20square%20standalone%20standby%20start%20starting%20startup%20statement%20static%20statistics%20stats%5Fbinomial%5Ftest%20stats%5Fcrosstab%20stats%5Fks%5Ftest%20stats%5Fmode%20stats%5Fmw%5Ftest%20stats%5Fone%5Fway%5Fanova%20stats%5Ft%5Ftest%5F%20stats%5Ft%5Ftest%5Findep%20stats%5Ft%5Ftest%5Fone%20stats%5Ft%5Ftest%5Fpaired%20stats%5Fwsr%5Ftest%20status%20std%20stddev%20stddev%5Fpop%20stddev%5Fsamp%20stdev%20stop%20storage%20store%20stored%20str%20str%5Fto%5Fdate%20straight%5Fjoin%20strcmp%20strict%20string%20struct%20stuff%20style%20subdate%20subpartition%20subpartitions%20substitutable%20substr%20substring%20subtime%20subtring%5Findex%20subtype%20success%20sum%20suspend%20switch%20switchoffset%20switchover%20sync%20synchronous%20synonym%20sys%20sys%5Fxmlagg%20sysasm%20sysaux%20sysdate%20sysdatetimeoffset%20sysdba%20sysoper%20system%20system%5Fuser%20sysutcdatetime%20table%20tables%20tablespace%20tan%20tdo%20template%20temporary%20terminated%20tertiary%5Fweights%20test%20than%20then%20thread%20through%20tier%20ties%20time%20time%5Fformat%20time%5Fzone%20timediff%20timefromparts%20timeout%20timestamp%20timestampadd%20timestampdiff%20timezone%5Fabbr%20timezone%5Fminute%20timezone%5Fregion%20to%20to%5Fbase64%20to%5Fdate%20to%5Fdays%20to%5Fseconds%20todatetimeoffset%20trace%20tracking%20transaction%20transactional%20translate%20translation%20treat%20trigger%20trigger%5Fnestlevel%20triggers%20trim%20truncate%20try%5Fcast%20try%5Fconvert%20try%5Fparse%20type%20ub1%20ub2%20ub4%20ucase%20unarchived%20unbounded%20uncompress%20under%20undo%20unhex%20unicode%20uniform%20uninstall%20union%20unique%20unix%5Ftimestamp%20unknown%20unlimited%20unlock%20unpivot%20unrecoverable%20unsafe%20unsigned%20until%20untrusted%20unusable%20unused%20update%20updated%20upgrade%20upped%20upper%20upsert%20url%20urowid%20usable%20usage%20use%20use%5Fstored%5Foutlines%20user%20user%5Fdata%20user%5Fresources%20users%20using%20utc%5Fdate%20utc%5Ftimestamp%20uuid%20uuid%5Fshort%20validate%20validate%5Fpassword%5Fstrength%20validation%20valist%20value%20values%20var%20var%5Fsamp%20varcharc%20vari%20varia%20variab%20variabl%20variable%20variables%20variance%20varp%20varraw%20varrawc%20varray%20verify%20version%20versions%20view%20virtual%20visible%20void%20wait%20wallet%20warning%20warnings%20week%20weekday%20weekofyear%20wellformed%20when%20whene%20whenev%20wheneve%20whenever%20where%20while%20whitespace%20with%20within%20without%20work%20wrapped%20xdb%20xml%20xmlagg%20xmlattributes%20xmlcast%20xmlcolattval%20xmlelement%20xmlexists%20xmlforest%20xmlindex%20xmlnamespaces%20xmlpi%20xmlquery%20xmlroot%20xmlschema%20xmlserialize%20xmltable%20xmltype%20xor%20year%20year%5Fto%5Fmonth%20years%20yearweek%22%2Cliteral%3A%22true%20false%20null%22%2Cbuilt%5Fin%3A%22array%20bigint%20binary%20bit%20blob%20boolean%20char%20character%20date%20dec%20decimal%20float%20int%20int8%20integer%20interval%20number%20numeric%20real%20record%20serial%20serial8%20smallint%20text%20varchar%20varying%20void%22%7D%2Cc%3A%5B%7BcN%3A%22string%22%2Cb%3A%22%27%22%2Ce%3A%22%27%22%2Cc%3A%5Be%2EBE%2C%7Bb%3A%22%27%27%22%7D%5D%7D%2C%7BcN%3A%22string%22%2Cb%3A%27%22%27%2Ce%3A%27%22%27%2Cc%3A%5Be%2EBE%2C%7Bb%3A%27%22%22%27%7D%5D%7D%2C%7BcN%3A%22string%22%2Cb%3A%22%60%22%2Ce%3A%22%60%22%2Cc%3A%5Be%2EBE%5D%7D%2Ce%2ECNM%2Ce%2ECBCM%2Ct%5D%7D%2Ce%2ECBCM%2Ct%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22r%22%2Cfunction%28e%29%7Bvar%20r%3D%22%28%5Ba%2DzA%2DZ%5D%7C%5C%5C%2E%5Ba%2DzA%2DZ%2E%5D%29%5Ba%2DzA%2DZ0%2D9%2E%5F%5D%2A%22%3Breturn%7Bc%3A%5Be%2EHCM%2C%7Bb%3Ar%2Cl%3Ar%2Ck%3A%7Bkeyword%3A%22function%20if%20in%20break%20next%20repeat%20else%20for%20return%20switch%20while%20try%20tryCatch%20stop%20warning%20require%20library%20attach%20detach%20source%20setMethod%20setGeneric%20setGroupGeneric%20setClass%20%2E%2E%2E%22%2Cliteral%3A%22NULL%20NA%20TRUE%20FALSE%20T%20F%20Inf%20NaN%20NA%5Finteger%5F%7C10%20NA%5Freal%5F%7C10%20NA%5Fcharacter%5F%7C10%20NA%5Fcomplex%5F%7C10%22%7D%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%220%5BxX%5D%5B0%2D9a%2DfA%2DF%5D%2B%5BLi%5D%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3FL%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%5C%5C%2E%28%3F%21%5C%5Cd%29%28%3F%3Ai%5C%5Cb%29%3F%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%28%3F%3A%5C%5C%2E%5C%5Cd%2A%29%3F%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3Fi%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5C%2E%5C%5Cd%2B%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3Fi%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7Bb%3A%22%60%22%2Ce%3A%22%60%22%2Cr%3A0%7D%2C%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%5D%2Cv%3A%5B%7Bb%3A%27%22%27%2Ce%3A%27%22%27%7D%2C%7Bb%3A%22%27%22%2Ce%3A%22%27%22%7D%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22perl%22%2Cfunction%28e%29%7Bvar%20t%3D%22getpwent%20getservent%20quotemeta%20msgrcv%20scalar%20kill%20dbmclose%20undef%20lc%20ma%20syswrite%20tr%20send%20umask%20sysopen%20shmwrite%20vec%20qx%20utime%20local%20oct%20semctl%20localtime%20readpipe%20do%20return%20format%20read%20sprintf%20dbmopen%20pop%20getpgrp%20not%20getpwnam%20rewinddir%20qqfileno%20qw%20endprotoent%20wait%20sethostent%20bless%20s%7C0%20opendir%20continue%20each%20sleep%20endgrent%20shutdown%20dump%20chomp%20connect%20getsockname%20die%20socketpair%20close%20flock%20exists%20index%20shmgetsub%20for%20endpwent%20redo%20lstat%20msgctl%20setpgrp%20abs%20exit%20select%20print%20ref%20gethostbyaddr%20unshift%20fcntl%20syscall%20goto%20getnetbyaddr%20join%20gmtime%20symlink%20semget%20splice%20x%7C0%20getpeername%20recv%20log%20setsockopt%20cos%20last%20reverse%20gethostbyname%20getgrnam%20study%20formline%20endhostent%20times%20chop%20length%20gethostent%20getnetent%20pack%20getprotoent%20getservbyname%20rand%20mkdir%20pos%20chmod%20y%7C0%20substr%20endnetent%20printf%20next%20open%20msgsnd%20readdir%20use%20unlink%20getsockopt%20getpriority%20rindex%20wantarray%20hex%20system%20getservbyport%20endservent%20int%20chr%20untie%20rmdir%20prototype%20tell%20listen%20fork%20shmread%20ucfirst%20setprotoent%20else%20sysseek%20link%20getgrgid%20shmctl%20waitpid%20unpack%20getnetbyname%20reset%20chdir%20grep%20split%20require%20caller%20lcfirst%20until%20warn%20while%20values%20shift%20telldir%20getpwuid%20my%20getprotobynumber%20delete%20and%20sort%20uc%20defined%20srand%20accept%20package%20seekdir%20getprotobyname%20semop%20our%20rename%20seek%20if%20q%7C0%20chroot%20sysread%20setpwent%20no%20crypt%20getc%20chown%20sqrt%20write%20setnetent%20setpriority%20foreach%20tie%20sin%20msgget%20map%20stat%20getlogin%20unless%20elsif%20truncate%20exec%20keys%20glob%20tied%20closedirioctl%20socket%20readlink%20eval%20xor%20readline%20binmode%20setservent%20eof%20ord%20bind%20alarm%20pipe%20atan2%20getgrent%20exp%20time%20push%20setgrent%20gt%20lt%20or%20ne%20m%7C0%20break%20given%20say%20state%20when%22%2Cr%3D%7BcN%3A%22subst%22%2Cb%3A%22%5B%24%40%5D%5C%5C%7B%22%2Ce%3A%22%5C%5C%7D%22%2Ck%3At%7D%2Cs%3D%7Bb%3A%22%2D%3E%7B%22%2Ce%3A%22%7D%22%7D%2Cn%3D%7Bv%3A%5B%7Bb%3A%2F%5C%24%5Cd%2F%7D%2C%7Bb%3A%2F%5B%5C%24%25%40%5D%28%5C%5E%5Cw%5Cb%7C%23%5Cw%2B%28%3A%3A%5Cw%2B%29%2A%7C%7B%5Cw%2B%7D%7C%5Cw%2B%28%3A%3A%5Cw%2A%29%2A%29%2F%7D%2C%7Bb%3A%2F%5B%5C%24%25%40%5D%5B%5E%5Cs%5Cw%7B%5D%2F%2Cr%3A0%7D%5D%7D%2Ci%3D%5Be%2EBE%2Cr%2Cn%5D%2Co%3D%5Bn%2Ce%2EHCM%2Ce%2EC%28%22%5E%5C%5C%3D%5C%5Cw%22%2C%22%5C%5C%3Dcut%22%2C%7BeW%3A%210%7D%29%2Cs%2C%7BcN%3A%22string%22%2Cc%3Ai%2Cv%3A%5B%7Bb%3A%22q%5Bqwxr%5D%3F%5C%5Cs%2A%5C%5C%28%22%2Ce%3A%22%5C%5C%29%22%2Cr%3A5%7D%2C%7Bb%3A%22q%5Bqwxr%5D%3F%5C%5Cs%2A%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%2Cr%3A5%7D%2C%7Bb%3A%22q%5Bqwxr%5D%3F%5C%5Cs%2A%5C%5C%7B%22%2Ce%3A%22%5C%5C%7D%22%2Cr%3A5%7D%2C%7Bb%3A%22q%5Bqwxr%5D%3F%5C%5Cs%2A%5C%5C%7C%22%2Ce%3A%22%5C%5C%7C%22%2Cr%3A5%7D%2C%7Bb%3A%22q%5Bqwxr%5D%3F%5C%5Cs%2A%5C%5C%3C%22%2Ce%3A%22%5C%5C%3E%22%2Cr%3A5%7D%2C%7Bb%3A%22qw%5C%5Cs%2Bq%22%2Ce%3A%22q%22%2Cr%3A5%7D%2C%7Bb%3A%22%27%22%2Ce%3A%22%27%22%2Cc%3A%5Be%2EBE%5D%7D%2C%7Bb%3A%27%22%27%2Ce%3A%27%22%27%7D%2C%7Bb%3A%22%60%22%2Ce%3A%22%60%22%2Cc%3A%5Be%2EBE%5D%7D%2C%7Bb%3A%22%7B%5C%5Cw%2B%7D%22%2Cc%3A%5B%5D%2Cr%3A0%7D%2C%7Bb%3A%22%2D%3F%5C%5Cw%2B%5C%5Cs%2A%5C%5C%3D%5C%5C%3E%22%2Cc%3A%5B%5D%2Cr%3A0%7D%5D%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%28%5C%5Cb0%5B0%2D7%5F%5D%2B%29%7C%28%5C%5Cb0x%5B0%2D9a%2DfA%2DF%5F%5D%2B%29%7C%28%5C%5Cb%5B1%2D9%5D%5B0%2D9%5F%5D%2A%28%5C%5C%2E%5B0%2D9%5F%5D%2B%29%3F%29%7C%5B0%5F%5D%5C%5Cb%22%2Cr%3A0%7D%2C%7Bb%3A%22%28%5C%5C%2F%5C%5C%2F%7C%22%2Be%2ERSR%2B%22%7C%5C%5Cb%28split%7Creturn%7Cprint%7Creverse%7Cgrep%29%5C%5Cb%29%5C%5Cs%2A%22%2Ck%3A%22split%20return%20print%20reverse%20grep%22%2Cr%3A0%2Cc%3A%5Be%2EHCM%2C%7BcN%3A%22regexp%22%2Cb%3A%22%28s%7Ctr%7Cy%29%2F%28%5C%5C%5C%5C%2E%7C%5B%5E%2F%5D%29%2A%2F%28%5C%5C%5C%5C%2E%7C%5B%5E%2F%5D%29%2A%2F%5Ba%2Dz%5D%2A%22%2Cr%3A10%7D%2C%7BcN%3A%22regexp%22%2Cb%3A%22%28m%7Cqr%29%3F%2F%22%2Ce%3A%22%2F%5Ba%2Dz%5D%2A%22%2Cc%3A%5Be%2EBE%5D%2Cr%3A0%7D%5D%7D%2C%7BcN%3A%22function%22%2CbK%3A%22sub%22%2Ce%3A%22%28%5C%5Cs%2A%5C%5C%28%2E%2A%3F%5C%5C%29%29%3F%5B%3B%7B%5D%22%2CeE%3A%210%2Cr%3A5%2Cc%3A%5Be%2ETM%5D%7D%2C%7Bb%3A%22%2D%5C%5Cw%5C%5Cb%22%2Cr%3A0%7D%2C%7Bb%3A%22%5E%5F%5FDATA%5F%5F%24%22%2Ce%3A%22%5E%5F%5FEND%5F%5F%24%22%2CsL%3A%22mojolicious%22%2Cc%3A%5B%7Bb%3A%22%5E%40%40%2E%2A%22%2Ce%3A%22%24%22%2CcN%3A%22comment%22%7D%5D%7D%5D%3Breturn%20r%2Ec%3Do%2Cs%2Ec%3Do%2C%7Baliases%3A%5B%22pl%22%2C%22pm%22%5D%2Cl%3A%2F%5B%5Cw%5C%2E%5D%2B%2F%2Ck%3At%2Cc%3Ao%7D%7D%29%3Bhljs%2EregisterLanguage%28%22ini%22%2Cfunction%28e%29%7Bvar%20b%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%5D%2Cv%3A%5B%7Bb%3A%22%27%27%27%22%2Ce%3A%22%27%27%27%22%2Cr%3A10%7D%2C%7Bb%3A%27%22%22%22%27%2Ce%3A%27%22%22%22%27%2Cr%3A10%7D%2C%7Bb%3A%27%22%27%2Ce%3A%27%22%27%7D%2C%7Bb%3A%22%27%22%2Ce%3A%22%27%22%7D%5D%7D%3Breturn%7Baliases%3A%5B%22toml%22%5D%2CcI%3A%210%2Ci%3A%2F%5CS%2F%2Cc%3A%5Be%2EC%28%22%3B%22%2C%22%24%22%29%2Ce%2EHCM%2C%7BcN%3A%22section%22%2Cb%3A%2F%5E%5Cs%2A%5C%5B%2B%2F%2Ce%3A%2F%5C%5D%2B%2F%7D%2C%7Bb%3A%2F%5E%5Ba%2Dz0%2D9%5C%5B%5C%5D%5F%2D%5D%2B%5Cs%2A%3D%5Cs%2A%2F%2Ce%3A%22%24%22%2CrB%3A%210%2Cc%3A%5B%7BcN%3A%22attr%22%2Cb%3A%2F%5Ba%2Dz0%2D9%5C%5B%5C%5D%5F%2D%5D%2B%2F%7D%2C%7Bb%3A%2F%3D%2F%2CeW%3A%210%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22literal%22%2Cb%3A%2F%5Cbon%7Coff%7Ctrue%7Cfalse%7Cyes%7Cno%5Cb%2F%7D%2C%7BcN%3A%22variable%22%2Cv%3A%5B%7Bb%3A%2F%5C%24%5B%5Cw%5Cd%22%5D%5B%5Cw%5Cd%5F%5D%2A%2F%7D%2C%7Bb%3A%2F%5C%24%5C%7B%28%2E%2A%3F%29%7D%2F%7D%5D%7D%2Cb%2C%7BcN%3A%22number%22%2Cb%3A%2F%28%5B%5C%2B%5C%2D%5D%2B%29%3F%5B%5Cd%5D%2B%5F%5B%5Cd%5F%5D%2B%2F%7D%2Ce%2ENM%5D%7D%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22diff%22%2Cfunction%28e%29%7Breturn%7Baliases%3A%5B%22patch%22%5D%2Cc%3A%5B%7BcN%3A%22meta%22%2Cr%3A10%2Cv%3A%5B%7Bb%3A%2F%5E%40%40%20%2B%5C%2D%5Cd%2B%2C%5Cd%2B%20%2B%5C%2B%5Cd%2B%2C%5Cd%2B%20%2B%40%40%24%2F%7D%2C%7Bb%3A%2F%5E%5C%2A%5C%2A%5C%2A%20%2B%5Cd%2B%2C%5Cd%2B%20%2B%5C%2A%5C%2A%5C%2A%5C%2A%24%2F%7D%2C%7Bb%3A%2F%5E%5C%2D%5C%2D%5C%2D%20%2B%5Cd%2B%2C%5Cd%2B%20%2B%5C%2D%5C%2D%5C%2D%5C%2D%24%2F%7D%5D%7D%2C%7BcN%3A%22comment%22%2Cv%3A%5B%7Bb%3A%2FIndex%3A%20%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%3D%7B3%2C%7D%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%5E%5C%2D%7B3%7D%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%5E%5C%2A%7B3%7D%20%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%5E%5C%2B%7B3%7D%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%5C%2A%7B5%7D%2F%2Ce%3A%2F%5C%2A%7B5%7D%24%2F%7D%5D%7D%2C%7BcN%3A%22addition%22%2Cb%3A%22%5E%5C%5C%2B%22%2Ce%3A%22%24%22%7D%2C%7BcN%3A%22deletion%22%2Cb%3A%22%5E%5C%5C%2D%22%2Ce%3A%22%24%22%7D%2C%7BcN%3A%22addition%22%2Cb%3A%22%5E%5C%5C%21%22%2Ce%3A%22%24%22%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22go%22%2Cfunction%28e%29%7Bvar%20t%3D%7Bkeyword%3A%22break%20default%20func%20interface%20select%20case%20map%20struct%20chan%20else%20goto%20package%20switch%20const%20fallthrough%20if%20range%20type%20continue%20for%20import%20return%20var%20go%20defer%20bool%20byte%20complex64%20complex128%20float32%20float64%20int8%20int16%20int32%20int64%20string%20uint8%20uint16%20uint32%20uint64%20int%20uint%20uintptr%20rune%22%2Cliteral%3A%22true%20false%20iota%20nil%22%2Cbuilt%5Fin%3A%22append%20cap%20close%20complex%20copy%20imag%20len%20make%20new%20panic%20print%20println%20real%20recover%20delete%22%7D%3Breturn%7Baliases%3A%5B%22golang%22%5D%2Ck%3At%2Ci%3A%22%3C%2F%22%2Cc%3A%5Be%2ECLCM%2Ce%2ECBCM%2C%7BcN%3A%22string%22%2Cv%3A%5Be%2EQSM%2C%7Bb%3A%22%27%22%2Ce%3A%22%5B%5E%5C%5C%5C%5C%5D%27%22%7D%2C%7Bb%3A%22%60%22%2Ce%3A%22%60%22%7D%5D%7D%2C%7BcN%3A%22number%22%2Cv%3A%5B%7Bb%3Ae%2ECNR%2B%22%5Bdflsi%5D%22%2Cr%3A1%7D%2Ce%2ECNM%5D%7D%2C%7Bb%3A%2F%3A%3D%2F%7D%2C%7BcN%3A%22function%22%2CbK%3A%22func%22%2Ce%3A%2F%5Cs%2A%5C%7B%2F%2CeE%3A%210%2Cc%3A%5Be%2ETM%2C%7BcN%3A%22params%22%2Cb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3At%2Ci%3A%2F%5B%22%27%5D%2F%7D%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22bash%22%2Cfunction%28e%29%7Bvar%20t%3D%7BcN%3A%22variable%22%2Cv%3A%5B%7Bb%3A%2F%5C%24%5B%5Cw%5Cd%23%40%5D%5B%5Cw%5Cd%5F%5D%2A%2F%7D%2C%7Bb%3A%2F%5C%24%5C%7B%28%2E%2A%3F%29%7D%2F%7D%5D%7D%2Cs%3D%7BcN%3A%22string%22%2Cb%3A%2F%22%2F%2Ce%3A%2F%22%2F%2Cc%3A%5Be%2EBE%2Ct%2C%7BcN%3A%22variable%22%2Cb%3A%2F%5C%24%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Cc%3A%5Be%2EBE%5D%7D%5D%7D%2Ca%3D%7BcN%3A%22string%22%2Cb%3A%2F%27%2F%2Ce%3A%2F%27%2F%7D%3Breturn%7Baliases%3A%5B%22sh%22%2C%22zsh%22%5D%2Cl%3A%2F%5Cb%2D%3F%5Ba%2Dz%5C%2E%5F%5D%2B%5Cb%2F%2Ck%3A%7Bkeyword%3A%22if%20then%20else%20elif%20fi%20for%20while%20in%20do%20done%20case%20esac%20function%22%2Cliteral%3A%22true%20false%22%2Cbuilt%5Fin%3A%22break%20cd%20continue%20eval%20exec%20exit%20export%20getopts%20hash%20pwd%20readonly%20return%20shift%20test%20times%20trap%20umask%20unset%20alias%20bind%20builtin%20caller%20command%20declare%20echo%20enable%20help%20let%20local%20logout%20mapfile%20printf%20read%20readarray%20source%20type%20typeset%20ulimit%20unalias%20set%20shopt%20autoload%20bg%20bindkey%20bye%20cap%20chdir%20clone%20comparguments%20compcall%20compctl%20compdescribe%20compfiles%20compgroups%20compquote%20comptags%20comptry%20compvalues%20dirs%20disable%20disown%20echotc%20echoti%20emulate%20fc%20fg%20float%20functions%20getcap%20getln%20history%20integer%20jobs%20kill%20limit%20log%20noglob%20popd%20print%20pushd%20pushln%20rehash%20sched%20setcap%20setopt%20stat%20suspend%20ttyctl%20unfunction%20unhash%20unlimit%20unsetopt%20vared%20wait%20whence%20where%20which%20zcompile%20zformat%20zftp%20zle%20zmodload%20zparseopts%20zprof%20zpty%20zregexparse%20zsocket%20zstyle%20ztcp%22%2C%5F%3A%22%2Dne%20%2Deq%20%2Dlt%20%2Dgt%20%2Df%20%2Dd%20%2De%20%2Ds%20%2Dl%20%2Da%22%7D%2Cc%3A%5B%7BcN%3A%22meta%22%2Cb%3A%2F%5E%23%21%5B%5E%5Cn%5D%2Bsh%5Cs%2A%24%2F%2Cr%3A10%7D%2C%7BcN%3A%22function%22%2Cb%3A%2F%5Cw%5B%5Cw%5Cd%5F%5D%2A%5Cs%2A%5C%28%5Cs%2A%5C%29%5Cs%2A%5C%7B%2F%2CrB%3A%210%2Cc%3A%5Be%2Einherit%28e%2ETM%2C%7Bb%3A%2F%5Cw%5B%5Cw%5Cd%5F%5D%2A%2F%7D%29%5D%2Cr%3A0%7D%2Ce%2EHCM%2Cs%2Ca%2Ct%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22python%22%2Cfunction%28e%29%7Bvar%20r%3D%7Bkeyword%3A%22and%20elif%20is%20global%20as%20in%20if%20from%20raise%20for%20except%20finally%20print%20import%20pass%20return%20exec%20else%20break%20not%20with%20class%20assert%20yield%20try%20while%20continue%20del%20or%20def%20lambda%20async%20await%20nonlocal%7C10%20None%20True%20False%22%2Cbuilt%5Fin%3A%22Ellipsis%20NotImplemented%22%7D%2Cb%3D%7BcN%3A%22meta%22%2Cb%3A%2F%5E%28%3E%3E%3E%7C%5C%2E%5C%2E%5C%2E%29%20%2F%7D%2Cc%3D%7BcN%3A%22subst%22%2Cb%3A%2F%5C%7B%2F%2Ce%3A%2F%5C%7D%2F%2Ck%3Ar%2Ci%3A%2F%23%2F%7D%2Ca%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%5D%2Cv%3A%5B%7Bb%3A%2F%28u%7Cb%29%3Fr%3F%27%27%27%2F%2Ce%3A%2F%27%27%27%2F%2Cc%3A%5Bb%5D%2Cr%3A10%7D%2C%7Bb%3A%2F%28u%7Cb%29%3Fr%3F%22%22%22%2F%2Ce%3A%2F%22%22%22%2F%2Cc%3A%5Bb%5D%2Cr%3A10%7D%2C%7Bb%3A%2F%28fr%7Crf%7Cf%29%27%27%27%2F%2Ce%3A%2F%27%27%27%2F%2Cc%3A%5Bb%2Cc%5D%7D%2C%7Bb%3A%2F%28fr%7Crf%7Cf%29%22%22%22%2F%2Ce%3A%2F%22%22%22%2F%2Cc%3A%5Bb%2Cc%5D%7D%2C%7Bb%3A%2F%28u%7Cr%7Cur%29%27%2F%2Ce%3A%2F%27%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28u%7Cr%7Cur%29%22%2F%2Ce%3A%2F%22%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28b%7Cbr%29%27%2F%2Ce%3A%2F%27%2F%7D%2C%7Bb%3A%2F%28b%7Cbr%29%22%2F%2Ce%3A%2F%22%2F%7D%2C%7Bb%3A%2F%28fr%7Crf%7Cf%29%27%2F%2Ce%3A%2F%27%2F%2Cc%3A%5Bc%5D%7D%2C%7Bb%3A%2F%28fr%7Crf%7Cf%29%22%2F%2Ce%3A%2F%22%2F%2Cc%3A%5Bc%5D%7D%2Ce%2EASM%2Ce%2EQSM%5D%7D%2Cs%3D%7BcN%3A%22number%22%2Cr%3A0%2Cv%3A%5B%7Bb%3Ae%2EBNR%2B%22%5BlLjJ%5D%3F%22%7D%2C%7Bb%3A%22%5C%5Cb%280o%5B0%2D7%5D%2B%29%5BlLjJ%5D%3F%22%7D%2C%7Bb%3Ae%2ECNR%2B%22%5BlLjJ%5D%3F%22%7D%5D%7D%2Ci%3D%7BcN%3A%22params%22%2Cb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Cc%3A%5B%22self%22%2Cb%2Cs%2Ca%5D%7D%3Breturn%20c%2Ec%3D%5Ba%2Cs%2Cb%5D%2C%7Baliases%3A%5B%22py%22%2C%22gyp%22%5D%2Ck%3Ar%2Ci%3A%2F%28%3C%5C%2F%7C%2D%3E%7C%5C%3F%29%7C%3D%3E%2F%2Cc%3A%5Bb%2Cs%2Ca%2Ce%2EHCM%2C%7Bv%3A%5B%7BcN%3A%22function%22%2CbK%3A%22def%22%7D%2C%7BcN%3A%22class%22%2CbK%3A%22class%22%7D%5D%2Ce%3A%2F%3A%2F%2Ci%3A%2F%5B%24%7B%3D%3B%5Cn%2C%5D%2F%2Cc%3A%5Be%2EUTM%2Ci%2C%7Bb%3A%2F%2D%3E%2F%2CeW%3A%210%2Ck%3A%22None%22%7D%5D%7D%2C%7BcN%3A%22meta%22%2Cb%3A%2F%5E%5B%5Ct%20%5D%2A%40%2F%2Ce%3A%2F%24%2F%7D%2C%7Bb%3A%2F%5Cb%28print%7Cexec%29%5C%28%2F%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22julia%22%2Cfunction%28e%29%7Bvar%20r%3D%7Bkeyword%3A%22in%20isa%20where%20baremodule%20begin%20break%20catch%20ccall%20const%20continue%20do%20else%20elseif%20end%20export%20false%20finally%20for%20function%20global%20if%20import%20importall%20let%20local%20macro%20module%20quote%20return%20true%20try%20using%20while%20type%20immutable%20abstract%20bitstype%20typealias%20%22%2Cliteral%3A%22true%20false%20ARGS%20C%5FNULL%20DevNull%20ENDIAN%5FBOM%20ENV%20I%20Inf%20Inf16%20Inf32%20Inf64%20InsertionSort%20JULIA%5FHOME%20LOAD%5FPATH%20MergeSort%20NaN%20NaN16%20NaN32%20NaN64%20PROGRAM%5FFILE%20QuickSort%20RoundDown%20RoundFromZero%20RoundNearest%20RoundNearestTiesAway%20RoundNearestTiesUp%20RoundToZero%20RoundUp%20STDERR%20STDIN%20STDOUT%20VERSION%20catalan%20e%7C0%20eu%7C0%20eulergamma%20golden%20im%20nothing%20pi%20%CE%B3%20%CF%80%20%CF%86%20%22%2Cbuilt%5Fin%3A%22ANY%20AbstractArray%20AbstractChannel%20AbstractFloat%20AbstractMatrix%20AbstractRNG%20AbstractSerializer%20AbstractSet%20AbstractSparseArray%20AbstractSparseMatrix%20AbstractSparseVector%20AbstractString%20AbstractUnitRange%20AbstractVecOrMat%20AbstractVector%20Any%20ArgumentError%20Array%20AssertionError%20Associative%20Base64DecodePipe%20Base64EncodePipe%20Bidiagonal%20BigFloat%20BigInt%20BitArray%20BitMatrix%20BitVector%20Bool%20BoundsError%20BufferStream%20CachingPool%20CapturedException%20CartesianIndex%20CartesianRange%20Cchar%20Cdouble%20Cfloat%20Channel%20Char%20Cint%20Cintmax%5Ft%20Clong%20Clonglong%20ClusterManager%20Cmd%20CodeInfo%20Colon%20Complex%20Complex128%20Complex32%20Complex64%20CompositeException%20Condition%20ConjArray%20ConjMatrix%20ConjVector%20Cptrdiff%5Ft%20Cshort%20Csize%5Ft%20Cssize%5Ft%20Cstring%20Cuchar%20Cuint%20Cuintmax%5Ft%20Culong%20Culonglong%20Cushort%20Cwchar%5Ft%20Cwstring%20DataType%20Date%20DateFormat%20DateTime%20DenseArray%20DenseMatrix%20DenseVecOrMat%20DenseVector%20Diagonal%20Dict%20DimensionMismatch%20Dims%20DirectIndexString%20Display%20DivideError%20DomainError%20EOFError%20EachLine%20Enum%20Enumerate%20ErrorException%20Exception%20ExponentialBackOff%20Expr%20Factorization%20FileMonitor%20Float16%20Float32%20Float64%20Function%20Future%20GlobalRef%20GotoNode%20HTML%20Hermitian%20IO%20IOBuffer%20IOContext%20IOStream%20IPAddr%20IPv4%20IPv6%20IndexCartesian%20IndexLinear%20IndexStyle%20InexactError%20InitError%20Int%20Int128%20Int16%20Int32%20Int64%20Int8%20IntSet%20Integer%20InterruptException%20InvalidStateException%20Irrational%20KeyError%20LabelNode%20LinSpace%20LineNumberNode%20LoadError%20LowerTriangular%20MIME%20Matrix%20MersenneTwister%20Method%20MethodError%20MethodTable%20Module%20NTuple%20NewvarNode%20NullException%20Nullable%20Number%20ObjectIdDict%20OrdinalRange%20OutOfMemoryError%20OverflowError%20Pair%20ParseError%20PartialQuickSort%20PermutedDimsArray%20Pipe%20PollingFileWatcher%20ProcessExitedException%20Ptr%20QuoteNode%20RandomDevice%20Range%20RangeIndex%20Rational%20RawFD%20ReadOnlyMemoryError%20Real%20ReentrantLock%20Ref%20Regex%20RegexMatch%20RemoteChannel%20RemoteException%20RevString%20RoundingMode%20RowVector%20SSAValue%20SegmentationFault%20SerializationState%20Set%20SharedArray%20SharedMatrix%20SharedVector%20Signed%20SimpleVector%20Slot%20SlotNumber%20SparseMatrixCSC%20SparseVector%20StackFrame%20StackOverflowError%20StackTrace%20StepRange%20StepRangeLen%20StridedArray%20StridedMatrix%20StridedVecOrMat%20StridedVector%20String%20SubArray%20SubString%20SymTridiagonal%20Symbol%20Symmetric%20SystemError%20TCPSocket%20Task%20Text%20TextDisplay%20Timer%20Tridiagonal%20Tuple%20Type%20TypeError%20TypeMapEntry%20TypeMapLevel%20TypeName%20TypeVar%20TypedSlot%20UDPSocket%20UInt%20UInt128%20UInt16%20UInt32%20UInt64%20UInt8%20UndefRefError%20UndefVarError%20UnicodeError%20UniformScaling%20Union%20UnionAll%20UnitRange%20Unsigned%20UpperTriangular%20Val%20Vararg%20VecElement%20VecOrMat%20Vector%20VersionNumber%20Void%20WeakKeyDict%20WeakRef%20WorkerConfig%20WorkerPool%20%22%7D%2Ct%3D%22%5BA%2DZa%2Dz%5F%5C%5Cu00A1%2D%5C%5CuFFFF%5D%5BA%2DZa%2Dz%5F0%2D9%5C%5Cu00A1%2D%5C%5CuFFFF%5D%2A%22%2Ca%3D%7Bl%3At%2Ck%3Ar%2Ci%3A%2F%3C%5C%2F%2F%7D%2Cn%3D%7BcN%3A%22number%22%2Cb%3A%2F%28%5Cb0x%5B%5Cd%5F%5D%2A%28%5C%2E%5B%5Cd%5F%5D%2A%29%3F%7C0x%5C%2E%5Cd%5B%5Cd%5F%5D%2A%29p%5B%2D%2B%5D%3F%5Cd%2B%7C%5Cb0%5Bbox%5D%5Ba%2DfA%2DF0%2D9%5D%5Ba%2DfA%2DF0%2D9%5F%5D%2A%7C%28%5Cb%5Cd%5B%5Cd%5F%5D%2A%28%5C%2E%5B%5Cd%5F%5D%2A%29%3F%7C%5C%2E%5Cd%5B%5Cd%5F%5D%2A%29%28%5BeEfF%5D%5B%2D%2B%5D%3F%5Cd%2B%29%3F%2F%2Cr%3A0%7D%2Co%3D%7BcN%3A%22string%22%2Cb%3A%2F%27%28%2E%7C%5C%5C%5BxXuU%5D%5Ba%2DzA%2DZ0%2D9%5D%2B%29%27%2F%7D%2Ci%3D%7BcN%3A%22subst%22%2Cb%3A%2F%5C%24%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3Ar%7D%2Cl%3D%7BcN%3A%22variable%22%2Cb%3A%22%5C%5C%24%22%2Bt%7D%2Cc%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%2Ci%2Cl%5D%2Cv%3A%5B%7Bb%3A%2F%5Cw%2A%22%22%22%2F%2Ce%3A%2F%22%22%22%5Cw%2A%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%5Cw%2A%22%2F%2Ce%3A%2F%22%5Cw%2A%2F%7D%5D%7D%2Cs%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%2Ci%2Cl%5D%2Cb%3A%22%60%22%2Ce%3A%22%60%22%7D%2Cd%3D%7BcN%3A%22meta%22%2Cb%3A%22%40%22%2Bt%7D%2Cu%3D%7BcN%3A%22comment%22%2Cv%3A%5B%7Bb%3A%22%23%3D%22%2Ce%3A%22%3D%23%22%2Cr%3A10%7D%2C%7Bb%3A%22%23%22%2Ce%3A%22%24%22%7D%5D%7D%3Breturn%20a%2Ec%3D%5Bn%2Co%2Cc%2Cs%2Cd%2Cu%2Ce%2EHCM%2C%7BcN%3A%22keyword%22%2Cb%3A%22%5C%5Cb%28%28%28abstract%7Cprimitive%29%5C%5Cs%2B%29type%7C%28mutable%5C%5Cs%2B%29%3Fstruct%29%5C%5Cb%22%7D%2C%7Bb%3A%2F%3C%3A%2F%7D%5D%2Ci%2Ec%3Da%2Ec%2Ca%7D%29%3Bhljs%2EregisterLanguage%28%22coffeescript%22%2Cfunction%28e%29%7Bvar%20c%3D%7Bkeyword%3A%22in%20if%20for%20while%20finally%20new%20do%20return%20else%20break%20catch%20instanceof%20throw%20try%20this%20switch%20continue%20typeof%20delete%20debugger%20super%20yield%20import%20export%20from%20as%20default%20await%20then%20unless%20until%20loop%20of%20by%20when%20and%20or%20is%20isnt%20not%22%2Cliteral%3A%22true%20false%20null%20undefined%20yes%20no%20on%20off%22%2Cbuilt%5Fin%3A%22npm%20require%20console%20print%20module%20global%20window%20document%22%7D%2Cn%3D%22%5BA%2DZa%2Dz%24%5F%5D%5B0%2D9A%2DZa%2Dz%24%5F%5D%2A%22%2Cr%3D%7BcN%3A%22subst%22%2Cb%3A%2F%23%5C%7B%2F%2Ce%3A%2F%7D%2F%2Ck%3Ac%7D%2Ci%3D%5Be%2EBNM%2Ce%2Einherit%28e%2ECNM%2C%7Bstarts%3A%7Be%3A%22%28%5C%5Cs%2A%2F%29%3F%22%2Cr%3A0%7D%7D%29%2C%7BcN%3A%22string%22%2Cv%3A%5B%7Bb%3A%2F%27%27%27%2F%2Ce%3A%2F%27%27%27%2F%2Cc%3A%5Be%2EBE%5D%7D%2C%7Bb%3A%2F%27%2F%2Ce%3A%2F%27%2F%2Cc%3A%5Be%2EBE%5D%7D%2C%7Bb%3A%2F%22%22%22%2F%2Ce%3A%2F%22%22%22%2F%2Cc%3A%5Be%2EBE%2Cr%5D%7D%2C%7Bb%3A%2F%22%2F%2Ce%3A%2F%22%2F%2Cc%3A%5Be%2EBE%2Cr%5D%7D%5D%7D%2C%7BcN%3A%22regexp%22%2Cv%3A%5B%7Bb%3A%22%2F%2F%2F%22%2Ce%3A%22%2F%2F%2F%22%2Cc%3A%5Br%2Ce%2EHCM%5D%7D%2C%7Bb%3A%22%2F%2F%5Bgim%5D%2A%22%2Cr%3A0%7D%2C%7Bb%3A%2F%5C%2F%28%3F%21%5B%20%2A%5D%29%28%5C%5C%5C%2F%7C%2E%29%2A%3F%5C%2F%5Bgim%5D%2A%28%3F%3D%5CW%7C%24%29%2F%7D%5D%7D%2C%7Bb%3A%22%40%22%2Bn%7D%2C%7BsL%3A%22javascript%22%2CeB%3A%210%2CeE%3A%210%2Cv%3A%5B%7Bb%3A%22%60%60%60%22%2Ce%3A%22%60%60%60%22%7D%2C%7Bb%3A%22%60%22%2Ce%3A%22%60%22%7D%5D%7D%5D%3Br%2Ec%3Di%3Bvar%20s%3De%2Einherit%28e%2ETM%2C%7Bb%3An%7D%29%2Ct%3D%22%28%5C%5C%28%2E%2A%5C%5C%29%29%3F%5C%5Cs%2A%5C%5CB%5B%2D%3D%5D%3E%22%2Co%3D%7BcN%3A%22params%22%2Cb%3A%22%5C%5C%28%5B%5E%5C%5C%28%5D%22%2CrB%3A%210%2Cc%3A%5B%7Bb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3Ac%2Cc%3A%5B%22self%22%5D%2Econcat%28i%29%7D%5D%7D%3Breturn%7Baliases%3A%5B%22coffee%22%2C%22cson%22%2C%22iced%22%5D%2Ck%3Ac%2Ci%3A%2F%5C%2F%5C%2A%2F%2Cc%3Ai%2Econcat%28%5Be%2EC%28%22%23%23%23%22%2C%22%23%23%23%22%29%2Ce%2EHCM%2C%7BcN%3A%22function%22%2Cb%3A%22%5E%5C%5Cs%2A%22%2Bn%2B%22%5C%5Cs%2A%3D%5C%5Cs%2A%22%2Bt%2Ce%3A%22%5B%2D%3D%5D%3E%22%2CrB%3A%210%2Cc%3A%5Bs%2Co%5D%7D%2C%7Bb%3A%2F%5B%3A%5C%28%2C%3D%5D%5Cs%2A%2F%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22function%22%2Cb%3At%2Ce%3A%22%5B%2D%3D%5D%3E%22%2CrB%3A%210%2Cc%3A%5Bo%5D%7D%5D%7D%2C%7BcN%3A%22class%22%2CbK%3A%22class%22%2Ce%3A%22%24%22%2Ci%3A%2F%5B%3A%3D%22%5C%5B%5C%5D%5D%2F%2Cc%3A%5B%7BbK%3A%22extends%22%2CeW%3A%210%2Ci%3A%2F%5B%3A%3D%22%5C%5B%5C%5D%5D%2F%2Cc%3A%5Bs%5D%7D%2Cs%5D%7D%2C%7Bb%3An%2B%22%3A%22%2Ce%3A%22%3A%22%2CrB%3A%210%2CrE%3A%210%2Cr%3A0%7D%5D%29%7D%7D%29%3Bhljs%2EregisterLanguage%28%22cpp%22%2Cfunction%28t%29%7Bvar%20e%3D%7BcN%3A%22keyword%22%2Cb%3A%22%5C%5Cb%5Ba%2Dz%5C%5Cd%5F%5D%2A%5Ft%5C%5Cb%22%7D%2Cr%3D%7BcN%3A%22string%22%2Cv%3A%5B%7Bb%3A%27%28u8%3F%7CU%29%3FL%3F%22%27%2Ce%3A%27%22%27%2Ci%3A%22%5C%5Cn%22%2Cc%3A%5Bt%2EBE%5D%7D%2C%7Bb%3A%27%28u8%3F%7CU%29%3FR%22%27%2Ce%3A%27%22%27%2Cc%3A%5Bt%2EBE%5D%7D%2C%7Bb%3A%22%27%5C%5C%5C%5C%3F%2E%22%2Ce%3A%22%27%22%2Ci%3A%22%2E%22%7D%5D%7D%2Cs%3D%7BcN%3A%22number%22%2Cv%3A%5B%7Bb%3A%22%5C%5Cb%280b%5B01%27%5D%2B%29%22%7D%2C%7Bb%3A%22%28%2D%3F%29%5C%5Cb%28%5B%5C%5Cd%27%5D%2B%28%5C%5C%2E%5B%5C%5Cd%27%5D%2A%29%3F%7C%5C%5C%2E%5B%5C%5Cd%27%5D%2B%29%28u%7CU%7Cl%7CL%7Cul%7CUL%7Cf%7CF%7Cb%7CB%29%22%7D%2C%7Bb%3A%22%28%2D%3F%29%28%5C%5Cb0%5BxX%5D%5Ba%2DfA%2DF0%2D9%27%5D%2B%7C%28%5C%5Cb%5B%5C%5Cd%27%5D%2B%28%5C%5C%2E%5B%5C%5Cd%27%5D%2A%29%3F%7C%5C%5C%2E%5B%5C%5Cd%27%5D%2B%29%28%5BeE%5D%5B%2D%2B%5D%3F%5B%5C%5Cd%27%5D%2B%29%3F%29%22%7D%5D%2Cr%3A0%7D%2Ci%3D%7BcN%3A%22meta%22%2Cb%3A%2F%23%5Cs%2A%5Ba%2Dz%5D%2B%5Cb%2F%2Ce%3A%2F%24%2F%2Ck%3A%7B%22meta%2Dkeyword%22%3A%22if%20else%20elif%20endif%20define%20undef%20warning%20error%20line%20pragma%20ifdef%20ifndef%20include%22%7D%2Cc%3A%5B%7Bb%3A%2F%5C%5C%5Cn%2F%2Cr%3A0%7D%2Ct%2Einherit%28r%2C%7BcN%3A%22meta%2Dstring%22%7D%29%2C%7BcN%3A%22meta%2Dstring%22%2Cb%3A%2F%3C%5B%5E%5Cn%3E%5D%2A%3E%2F%2Ce%3A%2F%24%2F%2Ci%3A%22%5C%5Cn%22%7D%2Ct%2ECLCM%2Ct%2ECBCM%5D%7D%2Ca%3Dt%2EIR%2B%22%5C%5Cs%2A%5C%5C%28%22%2Cc%3D%7Bkeyword%3A%22int%20float%20while%20private%20char%20catch%20import%20module%20export%20virtual%20operator%20sizeof%20dynamic%5Fcast%7C10%20typedef%20const%5Fcast%7C10%20const%20for%20static%5Fcast%7C10%20union%20namespace%20unsigned%20long%20volatile%20static%20protected%20bool%20template%20mutable%20if%20public%20friend%20do%20goto%20auto%20void%20enum%20else%20break%20extern%20using%20asm%20case%20typeid%20short%20reinterpret%5Fcast%7C10%20default%20double%20register%20explicit%20signed%20typename%20try%20this%20switch%20continue%20inline%20delete%20alignof%20constexpr%20decltype%20noexcept%20static%5Fassert%20thread%5Flocal%20restrict%20%5FBool%20complex%20%5FComplex%20%5FImaginary%20atomic%5Fbool%20atomic%5Fchar%20atomic%5Fschar%20atomic%5Fuchar%20atomic%5Fshort%20atomic%5Fushort%20atomic%5Fint%20atomic%5Fuint%20atomic%5Flong%20atomic%5Fulong%20atomic%5Fllong%20atomic%5Fullong%20new%20throw%20return%20and%20or%20not%22%2Cbuilt%5Fin%3A%22std%20string%20cin%20cout%20cerr%20clog%20stdin%20stdout%20stderr%20stringstream%20istringstream%20ostringstream%20auto%5Fptr%20deque%20list%20queue%20stack%20vector%20map%20set%20bitset%20multiset%20multimap%20unordered%5Fset%20unordered%5Fmap%20unordered%5Fmultiset%20unordered%5Fmultimap%20array%20shared%5Fptr%20abort%20abs%20acos%20asin%20atan2%20atan%20calloc%20ceil%20cosh%20cos%20exit%20exp%20fabs%20floor%20fmod%20fprintf%20fputs%20free%20frexp%20fscanf%20isalnum%20isalpha%20iscntrl%20isdigit%20isgraph%20islower%20isprint%20ispunct%20isspace%20isupper%20isxdigit%20tolower%20toupper%20labs%20ldexp%20log10%20log%20malloc%20realloc%20memchr%20memcmp%20memcpy%20memset%20modf%20pow%20printf%20putchar%20puts%20scanf%20sinh%20sin%20snprintf%20sprintf%20sqrt%20sscanf%20strcat%20strchr%20strcmp%20strcpy%20strcspn%20strlen%20strncat%20strncmp%20strncpy%20strpbrk%20strrchr%20strspn%20strstr%20tanh%20tan%20vfprintf%20vprintf%20vsprintf%20endl%20initializer%5Flist%20unique%5Fptr%22%2Cliteral%3A%22true%20false%20nullptr%20NULL%22%7D%2Cn%3D%5Be%2Ct%2ECLCM%2Ct%2ECBCM%2Cs%2Cr%5D%3Breturn%7Baliases%3A%5B%22c%22%2C%22cc%22%2C%22h%22%2C%22c%2B%2B%22%2C%22h%2B%2B%22%2C%22hpp%22%5D%2Ck%3Ac%2Ci%3A%22%3C%2F%22%2Cc%3An%2Econcat%28%5Bi%2C%7Bb%3A%22%5C%5Cb%28deque%7Clist%7Cqueue%7Cstack%7Cvector%7Cmap%7Cset%7Cbitset%7Cmultiset%7Cmultimap%7Cunordered%5Fmap%7Cunordered%5Fset%7Cunordered%5Fmultiset%7Cunordered%5Fmultimap%7Carray%29%5C%5Cs%2A%3C%22%2Ce%3A%22%3E%22%2Ck%3Ac%2Cc%3A%5B%22self%22%2Ce%5D%7D%2C%7Bb%3At%2EIR%2B%22%3A%3A%22%2Ck%3Ac%7D%2C%7Bv%3A%5B%7Bb%3A%2F%3D%2F%2Ce%3A%2F%3B%2F%7D%2C%7Bb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%7D%2C%7BbK%3A%22new%20throw%20return%20else%22%2Ce%3A%2F%3B%2F%7D%5D%2Ck%3Ac%2Cc%3An%2Econcat%28%5B%7Bb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3Ac%2Cc%3An%2Econcat%28%5B%22self%22%5D%29%2Cr%3A0%7D%5D%29%2Cr%3A0%7D%2C%7BcN%3A%22function%22%2Cb%3A%22%28%22%2Bt%2EIR%2B%22%5B%5C%5C%2A%26%5C%5Cs%5D%2B%29%2B%22%2Ba%2CrB%3A%210%2Ce%3A%2F%5B%7B%3B%3D%5D%2F%2CeE%3A%210%2Ck%3Ac%2Ci%3A%2F%5B%5E%5Cw%5Cs%5C%2A%26%5D%2F%2Cc%3A%5B%7Bb%3Aa%2CrB%3A%210%2Cc%3A%5Bt%2ETM%5D%2Cr%3A0%7D%2C%7BcN%3A%22params%22%2Cb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3Ac%2Cr%3A0%2Cc%3A%5Bt%2ECLCM%2Ct%2ECBCM%2Cr%2Cs%2Ce%5D%7D%2Ct%2ECLCM%2Ct%2ECBCM%2Ci%5D%7D%2C%7BcN%3A%22class%22%2CbK%3A%22class%20struct%22%2Ce%3A%2F%5B%7B%3B%3A%5D%2F%2Cc%3A%5B%7Bb%3A%2F%3C%2F%2Ce%3A%2F%3E%2F%2Cc%3A%5B%22self%22%5D%7D%2Ct%2ETM%5D%7D%5D%29%2Cexports%3A%7Bpreprocessor%3Ai%2Cstrings%3Ar%2Ck%3Ac%7D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22ruby%22%2Cfunction%28e%29%7Bvar%20b%3D%22%5Ba%2DzA%2DZ%5F%5D%5C%5Cw%2A%5B%21%3F%3D%5D%3F%7C%5B%2D%2B%7E%5D%5C%5C%40%7C%3C%3C%7C%3E%3E%7C%3D%7E%7C%3D%3D%3D%3F%7C%3C%3D%3E%7C%5B%3C%3E%5D%3D%3F%7C%5C%5C%2A%5C%5C%2A%7C%5B%2D%2F%2B%25%5E%26%2A%7E%60%7C%5D%7C%5C%5C%5B%5C%5C%5D%3D%3F%22%2Cr%3D%7Bkeyword%3A%22and%20then%20defined%20module%20in%20return%20redo%20if%20BEGIN%20retry%20end%20for%20self%20when%20next%20until%20do%20begin%20unless%20END%20rescue%20else%20break%20undef%20not%20super%20class%20case%20require%20yield%20alias%20while%20ensure%20elsif%20or%20include%20attr%5Freader%20attr%5Fwriter%20attr%5Faccessor%22%2Cliteral%3A%22true%20false%20nil%22%7D%2Cc%3D%7BcN%3A%22doctag%22%2Cb%3A%22%40%5BA%2DZa%2Dz%5D%2B%22%7D%2Ca%3D%7Bb%3A%22%23%3C%22%2Ce%3A%22%3E%22%7D%2Cs%3D%5Be%2EC%28%22%23%22%2C%22%24%22%2C%7Bc%3A%5Bc%5D%7D%29%2Ce%2EC%28%22%5E%5C%5C%3Dbegin%22%2C%22%5E%5C%5C%3Dend%22%2C%7Bc%3A%5Bc%5D%2Cr%3A10%7D%29%2Ce%2EC%28%22%5E%5F%5FEND%5F%5F%22%2C%22%5C%5Cn%24%22%29%5D%2Cn%3D%7BcN%3A%22subst%22%2Cb%3A%22%23%5C%5C%7B%22%2Ce%3A%22%7D%22%2Ck%3Ar%7D%2Ct%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%2Cn%5D%2Cv%3A%5B%7Bb%3A%2F%27%2F%2Ce%3A%2F%27%2F%7D%2C%7Bb%3A%2F%22%2F%2Ce%3A%2F%22%2F%7D%2C%7Bb%3A%2F%60%2F%2Ce%3A%2F%60%2F%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%5C%5C%28%22%2Ce%3A%22%5C%5C%29%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%7B%22%2Ce%3A%22%7D%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%3C%22%2Ce%3A%22%3E%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%2F%22%2Ce%3A%22%2F%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%25%22%2Ce%3A%22%25%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%2D%22%2Ce%3A%22%2D%22%7D%2C%7Bb%3A%22%25%5BqQwWx%5D%3F%5C%5C%7C%22%2Ce%3A%22%5C%5C%7C%22%7D%2C%7Bb%3A%2F%5CB%5C%3F%28%5C%5C%5Cd%7B1%2C3%7D%7C%5C%5Cx%5BA%2DFa%2Df0%2D9%5D%7B1%2C2%7D%7C%5C%5Cu%5BA%2DFa%2Df0%2D9%5D%7B4%7D%7C%5C%5C%3F%5CS%29%5Cb%2F%7D%2C%7Bb%3A%2F%3C%3C%28%2D%3F%29%5Cw%2B%24%2F%2Ce%3A%2F%5E%5Cs%2A%5Cw%2B%24%2F%7D%5D%7D%2Ci%3D%7BcN%3A%22params%22%2Cb%3A%22%5C%5C%28%22%2Ce%3A%22%5C%5C%29%22%2CendsParent%3A%210%2Ck%3Ar%7D%2Cd%3D%5Bt%2Ca%2C%7BcN%3A%22class%22%2CbK%3A%22class%20module%22%2Ce%3A%22%24%7C%3B%22%2Ci%3A%2F%3D%2F%2Cc%3A%5Be%2Einherit%28e%2ETM%2C%7Bb%3A%22%5BA%2DZa%2Dz%5F%5D%5C%5Cw%2A%28%3A%3A%5C%5Cw%2B%29%2A%28%5C%5C%3F%7C%5C%5C%21%29%3F%22%7D%29%2C%7Bb%3A%22%3C%5C%5Cs%2A%22%2Cc%3A%5B%7Bb%3A%22%28%22%2Be%2EIR%2B%22%3A%3A%29%3F%22%2Be%2EIR%7D%5D%7D%5D%2Econcat%28s%29%7D%2C%7BcN%3A%22function%22%2CbK%3A%22def%22%2Ce%3A%22%24%7C%3B%22%2Cc%3A%5Be%2Einherit%28e%2ETM%2C%7Bb%3Ab%7D%29%2Ci%5D%2Econcat%28s%29%7D%2C%7Bb%3Ae%2EIR%2B%22%3A%3A%22%7D%2C%7BcN%3A%22symbol%22%2Cb%3Ae%2EUIR%2B%22%28%5C%5C%21%7C%5C%5C%3F%29%3F%3A%22%2Cr%3A0%7D%2C%7BcN%3A%22symbol%22%2Cb%3A%22%3A%28%3F%21%5C%5Cs%29%22%2Cc%3A%5Bt%2C%7Bb%3Ab%7D%5D%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%28%5C%5Cb0%5B0%2D7%5F%5D%2B%29%7C%28%5C%5Cb0x%5B0%2D9a%2DfA%2DF%5F%5D%2B%29%7C%28%5C%5Cb%5B1%2D9%5D%5B0%2D9%5F%5D%2A%28%5C%5C%2E%5B0%2D9%5F%5D%2B%29%3F%29%7C%5B0%5F%5D%5C%5Cb%22%2Cr%3A0%7D%2C%7Bb%3A%22%28%5C%5C%24%5C%5CW%29%7C%28%28%5C%5C%24%7C%5C%5C%40%5C%5C%40%3F%29%28%5C%5Cw%2B%29%29%22%7D%2C%7BcN%3A%22params%22%2Cb%3A%2F%5C%7C%2F%2Ce%3A%2F%5C%7C%2F%2Ck%3Ar%7D%2C%7Bb%3A%22%28%22%2Be%2ERSR%2B%22%7Cunless%29%5C%5Cs%2A%22%2Ck%3A%22unless%22%2Cc%3A%5Ba%2C%7BcN%3A%22regexp%22%2Cc%3A%5Be%2EBE%2Cn%5D%2Ci%3A%2F%5Cn%2F%2Cv%3A%5B%7Bb%3A%22%2F%22%2Ce%3A%22%2F%5Ba%2Dz%5D%2A%22%7D%2C%7Bb%3A%22%25r%7B%22%2Ce%3A%22%7D%5Ba%2Dz%5D%2A%22%7D%2C%7Bb%3A%22%25r%5C%5C%28%22%2Ce%3A%22%5C%5C%29%5Ba%2Dz%5D%2A%22%7D%2C%7Bb%3A%22%25r%21%22%2Ce%3A%22%21%5Ba%2Dz%5D%2A%22%7D%2C%7Bb%3A%22%25r%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%5Ba%2Dz%5D%2A%22%7D%5D%7D%5D%2Econcat%28s%29%2Cr%3A0%7D%5D%2Econcat%28s%29%3Bn%2Ec%3Dd%2Ci%2Ec%3Dd%3Bvar%20l%3D%22%5B%3E%3F%5D%3E%22%2Co%3D%22%5B%5C%5Cw%23%5D%2B%5C%5C%28%5C%5Cw%2B%5C%5C%29%3A%5C%5Cd%2B%3A%5C%5Cd%2B%3E%22%2Cu%3D%22%28%5C%5Cw%2B%2D%29%3F%5C%5Cd%2B%5C%5C%2E%5C%5Cd%2B%5C%5C%2E%5C%5Cd%28p%5C%5Cd%2B%29%3F%5B%5E%3E%5D%2B%3E%22%2Cw%3D%5B%7Bb%3A%2F%5E%5Cs%2A%3D%3E%2F%2Cstarts%3A%7Be%3A%22%24%22%2Cc%3Ad%7D%7D%2C%7BcN%3A%22meta%22%2Cb%3A%22%5E%28%22%2Bl%2B%22%7C%22%2Bo%2B%22%7C%22%2Bu%2B%22%29%22%2Cstarts%3A%7Be%3A%22%24%22%2Cc%3Ad%7D%7D%5D%3Breturn%7Baliases%3A%5B%22rb%22%2C%22gemspec%22%2C%22podspec%22%2C%22thor%22%2C%22irb%22%5D%2Ck%3Ar%2Ci%3A%2F%5C%2F%5C%2A%2F%2Cc%3As%2Econcat%28w%29%2Econcat%28d%29%7D%7D%29%3Bhljs%2EregisterLanguage%28%22yaml%22%2Cfunction%28e%29%7Bvar%20b%3D%22true%20false%20yes%20no%20null%22%2Ca%3D%22%5E%5B%20%5C%5C%2D%5D%2A%22%2Cr%3D%22%5Ba%2DzA%2DZ%5F%5D%5B%5C%5Cw%5C%5C%2D%5D%2A%22%2Ct%3D%7BcN%3A%22attr%22%2Cv%3A%5B%7Bb%3Aa%2Br%2B%22%3A%22%7D%2C%7Bb%3Aa%2B%27%22%27%2Br%2B%27%22%3A%27%7D%2C%7Bb%3Aa%2B%22%27%22%2Br%2B%22%27%3A%22%7D%5D%7D%2Cc%3D%7BcN%3A%22template%2Dvariable%22%2Cv%3A%5B%7Bb%3A%22%7B%7B%22%2Ce%3A%22%7D%7D%22%7D%2C%7Bb%3A%22%25%7B%22%2Ce%3A%22%7D%22%7D%5D%7D%2Cl%3D%7BcN%3A%22string%22%2Cr%3A0%2Cv%3A%5B%7Bb%3A%2F%27%2F%2Ce%3A%2F%27%2F%7D%2C%7Bb%3A%2F%22%2F%2Ce%3A%2F%22%2F%7D%2C%7Bb%3A%2F%5CS%2B%2F%7D%5D%2Cc%3A%5Be%2EBE%2Cc%5D%7D%3Breturn%7BcI%3A%210%2Caliases%3A%5B%22yml%22%2C%22YAML%22%2C%22yaml%22%5D%2Cc%3A%5Bt%2C%7BcN%3A%22meta%22%2Cb%3A%22%5E%2D%2D%2Ds%2A%24%22%2Cr%3A10%7D%2C%7BcN%3A%22string%22%2Cb%3A%22%5B%5C%5C%7C%3E%5D%20%2A%24%22%2CrE%3A%210%2Cc%3Al%2Ec%2Ce%3At%2Ev%5B0%5D%2Eb%7D%2C%7Bb%3A%22%3C%25%5B%25%3D%2D%5D%3F%22%2Ce%3A%22%5B%25%2D%5D%3F%25%3E%22%2CsL%3A%22ruby%22%2CeB%3A%210%2CeE%3A%210%2Cr%3A0%7D%2C%7BcN%3A%22type%22%2Cb%3A%22%21%21%22%2Be%2EUIR%7D%2C%7BcN%3A%22meta%22%2Cb%3A%22%26%22%2Be%2EUIR%2B%22%24%22%7D%2C%7BcN%3A%22meta%22%2Cb%3A%22%5C%5C%2A%22%2Be%2EUIR%2B%22%24%22%7D%2C%7BcN%3A%22bullet%22%2Cb%3A%22%5E%20%2A%2D%22%2Cr%3A0%7D%2Ce%2EHCM%2C%7BbK%3Ab%2Ck%3A%7Bliteral%3Ab%7D%7D%2Ce%2ECNM%2Cl%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22css%22%2Cfunction%28e%29%7Bvar%20c%3D%22%5Ba%2DzA%2DZ%2D%5D%5Ba%2DzA%2DZ0%2D9%5F%2D%5D%2A%22%2Ct%3D%7Bb%3A%2F%5BA%2DZ%5C%5F%5C%2E%5C%2D%5D%2B%5Cs%2A%3A%2F%2CrB%3A%210%2Ce%3A%22%3B%22%2CeW%3A%210%2Cc%3A%5B%7BcN%3A%22attribute%22%2Cb%3A%2F%5CS%2F%2Ce%3A%22%3A%22%2CeE%3A%210%2Cstarts%3A%7BeW%3A%210%2CeE%3A%210%2Cc%3A%5B%7Bb%3A%2F%5B%5Cw%2D%5D%2B%5C%28%2F%2CrB%3A%210%2Cc%3A%5B%7BcN%3A%22built%5Fin%22%2Cb%3A%2F%5B%5Cw%2D%5D%2B%2F%7D%2C%7Bb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Cc%3A%5Be%2EASM%2Ce%2EQSM%5D%7D%5D%7D%2Ce%2ECSSNM%2Ce%2EQSM%2Ce%2EASM%2Ce%2ECBCM%2C%7BcN%3A%22number%22%2Cb%3A%22%23%5B0%2D9A%2DFa%2Df%5D%2B%22%7D%2C%7BcN%3A%22meta%22%2Cb%3A%22%21important%22%7D%5D%7D%7D%5D%7D%3Breturn%7BcI%3A%210%2Ci%3A%2F%5B%3D%5C%2F%7C%27%5C%24%5D%2F%2Cc%3A%5Be%2ECBCM%2C%7BcN%3A%22selector%2Did%22%2Cb%3A%2F%23%5BA%2DZa%2Dz0%2D9%5F%2D%5D%2B%2F%7D%2C%7BcN%3A%22selector%2Dclass%22%2Cb%3A%2F%5C%2E%5BA%2DZa%2Dz0%2D9%5F%2D%5D%2B%2F%7D%2C%7BcN%3A%22selector%2Dattr%22%2Cb%3A%2F%5C%5B%2F%2Ce%3A%2F%5C%5D%2F%2Ci%3A%22%24%22%7D%2C%7BcN%3A%22selector%2Dpseudo%22%2Cb%3A%2F%3A%28%3A%29%3F%5Ba%2DzA%2DZ0%2D9%5C%5F%5C%2D%5C%2B%5C%28%5C%29%22%27%2E%5D%2B%2F%7D%2C%7Bb%3A%22%40%28font%2Dface%7Cpage%29%22%2Cl%3A%22%5Ba%2Dz%2D%5D%2B%22%2Ck%3A%22font%2Dface%20page%22%7D%2C%7Bb%3A%22%40%22%2Ce%3A%22%5B%7B%3B%5D%22%2Ci%3A%2F%3A%2F%2Cc%3A%5B%7BcN%3A%22keyword%22%2Cb%3A%2F%5Cw%2B%2F%7D%2C%7Bb%3A%2F%5Cs%2F%2CeW%3A%210%2CeE%3A%210%2Cr%3A0%2Cc%3A%5Be%2EASM%2Ce%2EQSM%2Ce%2ECSSNM%5D%7D%5D%7D%2C%7BcN%3A%22selector%2Dtag%22%2Cb%3Ac%2Cr%3A0%7D%2C%7Bb%3A%22%7B%22%2Ce%3A%22%7D%22%2Ci%3A%2F%5CS%2F%2Cc%3A%5Be%2ECBCM%2Ct%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22fortran%22%2Cfunction%28e%29%7Bvar%20t%3D%7BcN%3A%22params%22%2Cb%3A%22%5C%5C%28%22%2Ce%3A%22%5C%5C%29%22%7D%2Cn%3D%7Bliteral%3A%22%2EFalse%2E%20%2ETrue%2E%22%2Ckeyword%3A%22kind%20do%20while%20private%20call%20intrinsic%20where%20elsewhere%20type%20endtype%20endmodule%20endselect%20endinterface%20end%20enddo%20endif%20if%20forall%20endforall%20only%20contains%20default%20return%20stop%20then%20public%20subroutine%7C10%20function%20program%20%2Eand%2E%20%2Eor%2E%20%2Enot%2E%20%2Ele%2E%20%2Eeq%2E%20%2Ege%2E%20%2Egt%2E%20%2Elt%2E%20goto%20save%20else%20use%20module%20select%20case%20access%20blank%20direct%20exist%20file%20fmt%20form%20formatted%20iostat%20name%20named%20nextrec%20number%20opened%20rec%20recl%20sequential%20status%20unformatted%20unit%20continue%20format%20pause%20cycle%20exit%20c%5Fnull%5Fchar%20c%5Falert%20c%5Fbackspace%20c%5Fform%5Ffeed%20flush%20wait%20decimal%20round%20iomsg%20synchronous%20nopass%20non%5Foverridable%20pass%20protected%20volatile%20abstract%20extends%20import%20non%5Fintrinsic%20value%20deferred%20generic%20final%20enumerator%20class%20associate%20bind%20enum%20c%5Fint%20c%5Fshort%20c%5Flong%20c%5Flong%5Flong%20c%5Fsigned%5Fchar%20c%5Fsize%5Ft%20c%5Fint8%5Ft%20c%5Fint16%5Ft%20c%5Fint32%5Ft%20c%5Fint64%5Ft%20c%5Fint%5Fleast8%5Ft%20c%5Fint%5Fleast16%5Ft%20c%5Fint%5Fleast32%5Ft%20c%5Fint%5Fleast64%5Ft%20c%5Fint%5Ffast8%5Ft%20c%5Fint%5Ffast16%5Ft%20c%5Fint%5Ffast32%5Ft%20c%5Fint%5Ffast64%5Ft%20c%5Fintmax%5Ft%20C%5Fintptr%5Ft%20c%5Ffloat%20c%5Fdouble%20c%5Flong%5Fdouble%20c%5Ffloat%5Fcomplex%20c%5Fdouble%5Fcomplex%20c%5Flong%5Fdouble%5Fcomplex%20c%5Fbool%20c%5Fchar%20c%5Fnull%5Fptr%20c%5Fnull%5Ffunptr%20c%5Fnew%5Fline%20c%5Fcarriage%5Freturn%20c%5Fhorizontal%5Ftab%20c%5Fvertical%5Ftab%20iso%5Fc%5Fbinding%20c%5Floc%20c%5Ffunloc%20c%5Fassociated%20%20c%5Ff%5Fpointer%20c%5Fptr%20c%5Ffunptr%20iso%5Ffortran%5Fenv%20character%5Fstorage%5Fsize%20error%5Funit%20file%5Fstorage%5Fsize%20input%5Funit%20iostat%5Fend%20iostat%5Feor%20numeric%5Fstorage%5Fsize%20output%5Funit%20c%5Ff%5Fprocpointer%20ieee%5Farithmetic%20ieee%5Fsupport%5Funderflow%5Fcontrol%20ieee%5Fget%5Funderflow%5Fmode%20ieee%5Fset%5Funderflow%5Fmode%20newunit%20contiguous%20recursive%20pad%20position%20action%20delim%20readwrite%20eor%20advance%20nml%20interface%20procedure%20namelist%20include%20sequence%20elemental%20pure%20integer%20real%20character%20complex%20logical%20dimension%20allocatable%7C10%20parameter%20external%20implicit%7C10%20none%20double%20precision%20assign%20intent%20optional%20pointer%20target%20in%20out%20common%20equivalence%20data%22%2Cbuilt%5Fin%3A%22alog%20alog10%20amax0%20amax1%20amin0%20amin1%20amod%20cabs%20ccos%20cexp%20clog%20csin%20csqrt%20dabs%20dacos%20dasin%20datan%20datan2%20dcos%20dcosh%20ddim%20dexp%20dint%20dlog%20dlog10%20dmax1%20dmin1%20dmod%20dnint%20dsign%20dsin%20dsinh%20dsqrt%20dtan%20dtanh%20float%20iabs%20idim%20idint%20idnint%20ifix%20isign%20max0%20max1%20min0%20min1%20sngl%20algama%20cdabs%20cdcos%20cdexp%20cdlog%20cdsin%20cdsqrt%20cqabs%20cqcos%20cqexp%20cqlog%20cqsin%20cqsqrt%20dcmplx%20dconjg%20derf%20derfc%20dfloat%20dgamma%20dimag%20dlgama%20iqint%20qabs%20qacos%20qasin%20qatan%20qatan2%20qcmplx%20qconjg%20qcos%20qcosh%20qdim%20qerf%20qerfc%20qexp%20qgamma%20qimag%20qlgama%20qlog%20qlog10%20qmax1%20qmin1%20qmod%20qnint%20qsign%20qsin%20qsinh%20qsqrt%20qtan%20qtanh%20abs%20acos%20aimag%20aint%20anint%20asin%20atan%20atan2%20char%20cmplx%20conjg%20cos%20cosh%20exp%20ichar%20index%20int%20log%20log10%20max%20min%20nint%20sign%20sin%20sinh%20sqrt%20tan%20tanh%20print%20write%20dim%20lge%20lgt%20lle%20llt%20mod%20nullify%20allocate%20deallocate%20adjustl%20adjustr%20all%20allocated%20any%20associated%20bit%5Fsize%20btest%20ceiling%20count%20cshift%20date%5Fand%5Ftime%20digits%20dot%5Fproduct%20eoshift%20epsilon%20exponent%20floor%20fraction%20huge%20iand%20ibclr%20ibits%20ibset%20ieor%20ior%20ishft%20ishftc%20lbound%20len%5Ftrim%20matmul%20maxexponent%20maxloc%20maxval%20merge%20minexponent%20minloc%20minval%20modulo%20mvbits%20nearest%20pack%20present%20product%20radix%20random%5Fnumber%20random%5Fseed%20range%20repeat%20reshape%20rrspacing%20scale%20scan%20selected%5Fint%5Fkind%20selected%5Freal%5Fkind%20set%5Fexponent%20shape%20size%20spacing%20spread%20sum%20system%5Fclock%20tiny%20transpose%20trim%20ubound%20unpack%20verify%20achar%20iachar%20transfer%20dble%20entry%20dprod%20cpu%5Ftime%20command%5Fargument%5Fcount%20get%5Fcommand%20get%5Fcommand%5Fargument%20get%5Fenvironment%5Fvariable%20is%5Fiostat%5Fend%20ieee%5Farithmetic%20ieee%5Fsupport%5Funderflow%5Fcontrol%20ieee%5Fget%5Funderflow%5Fmode%20ieee%5Fset%5Funderflow%5Fmode%20is%5Fiostat%5Feor%20move%5Falloc%20new%5Fline%20selected%5Fchar%5Fkind%20same%5Ftype%5Fas%20extends%5Ftype%5Fofacosh%20asinh%20atanh%20bessel%5Fj0%20bessel%5Fj1%20bessel%5Fjn%20bessel%5Fy0%20bessel%5Fy1%20bessel%5Fyn%20erf%20erfc%20erfc%5Fscaled%20gamma%20log%5Fgamma%20hypot%20norm2%20atomic%5Fdefine%20atomic%5Fref%20execute%5Fcommand%5Fline%20leadz%20trailz%20storage%5Fsize%20merge%5Fbits%20bge%20bgt%20ble%20blt%20dshiftl%20dshiftr%20findloc%20iall%20iany%20iparity%20image%5Findex%20lcobound%20ucobound%20maskl%20maskr%20num%5Fimages%20parity%20popcnt%20poppar%20shifta%20shiftl%20shiftr%20this%5Fimage%22%7D%3Breturn%7BcI%3A%210%2Caliases%3A%5B%22f90%22%2C%22f95%22%5D%2Ck%3An%2Ci%3A%2F%5C%2F%5C%2A%2F%2Cc%3A%5Be%2Einherit%28e%2EASM%2C%7BcN%3A%22string%22%2Cr%3A0%7D%29%2Ce%2Einherit%28e%2EQSM%2C%7BcN%3A%22string%22%2Cr%3A0%7D%29%2C%7BcN%3A%22function%22%2CbK%3A%22subroutine%20function%20program%22%2Ci%3A%22%5B%24%7B%3D%5C%5Cn%5D%22%2Cc%3A%5Be%2EUTM%2Ct%5D%7D%2Ce%2EC%28%22%21%22%2C%22%24%22%2C%7Br%3A0%7D%29%2C%7BcN%3A%22number%22%2Cb%3A%22%28%3F%3D%5C%5Cb%7C%5C%5C%2B%7C%5C%5C%2D%7C%5C%5C%2E%29%28%3F%3D%5C%5C%2E%5C%5Cd%7C%5C%5Cd%29%28%3F%3A%5C%5Cd%2B%29%3F%28%3F%3A%5C%5C%2E%3F%5C%5Cd%2A%29%28%3F%3A%5Bde%5D%5B%2B%2D%5D%3F%5C%5Cd%2B%29%3F%5C%5Cb%5C%5C%2E%3F%22%2Cr%3A0%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22awk%22%2Cfunction%28e%29%7Bvar%20r%3D%7BcN%3A%22variable%22%2Cv%3A%5B%7Bb%3A%2F%5C%24%5B%5Cw%5Cd%23%40%5D%5B%5Cw%5Cd%5F%5D%2A%2F%7D%2C%7Bb%3A%2F%5C%24%5C%7B%28%2E%2A%3F%29%7D%2F%7D%5D%7D%2Cb%3D%22BEGIN%20END%20if%20else%20while%20do%20for%20in%20break%20continue%20delete%20next%20nextfile%20function%20func%20exit%7C10%22%2Cn%3D%7BcN%3A%22string%22%2Cc%3A%5Be%2EBE%5D%2Cv%3A%5B%7Bb%3A%2F%28u%7Cb%29%3Fr%3F%27%27%27%2F%2Ce%3A%2F%27%27%27%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28u%7Cb%29%3Fr%3F%22%22%22%2F%2Ce%3A%2F%22%22%22%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28u%7Cr%7Cur%29%27%2F%2Ce%3A%2F%27%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28u%7Cr%7Cur%29%22%2F%2Ce%3A%2F%22%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%28b%7Cbr%29%27%2F%2Ce%3A%2F%27%2F%7D%2C%7Bb%3A%2F%28b%7Cbr%29%22%2F%2Ce%3A%2F%22%2F%7D%2Ce%2EASM%2Ce%2EQSM%5D%7D%3Breturn%7Bk%3A%7Bkeyword%3Ab%7D%2Cc%3A%5Br%2Cn%2Ce%2ERM%2Ce%2EHCM%2Ce%2ENM%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22makefile%22%2Cfunction%28e%29%7Bvar%20i%3D%7BcN%3A%22variable%22%2Cv%3A%5B%7Bb%3A%22%5C%5C%24%5C%5C%28%22%2Be%2EUIR%2B%22%5C%5C%29%22%2Cc%3A%5Be%2EBE%5D%7D%2C%7Bb%3A%2F%5C%24%5B%40%25%3C%3F%5C%5E%5C%2B%5C%2A%5D%2F%7D%5D%7D%2Cr%3D%7BcN%3A%22string%22%2Cb%3A%2F%22%2F%2Ce%3A%2F%22%2F%2Cc%3A%5Be%2EBE%2Ci%5D%7D%2Ca%3D%7BcN%3A%22variable%22%2Cb%3A%2F%5C%24%5C%28%5B%5Cw%2D%5D%2B%5Cs%2F%2Ce%3A%2F%5C%29%2F%2Ck%3A%7Bbuilt%5Fin%3A%22subst%20patsubst%20strip%20findstring%20filter%20filter%2Dout%20sort%20word%20wordlist%20firstword%20lastword%20dir%20notdir%20suffix%20basename%20addsuffix%20addprefix%20join%20wildcard%20realpath%20abspath%20error%20warning%20shell%20origin%20flavor%20foreach%20if%20or%20and%20call%20eval%20file%20value%22%7D%2Cc%3A%5Bi%5D%7D%2Cn%3D%7Bb%3A%22%5E%22%2Be%2EUIR%2B%22%5C%5Cs%2A%5B%3A%2B%3F%5D%3F%3D%22%2Ci%3A%22%5C%5Cn%22%2CrB%3A%210%2Cc%3A%5B%7Bb%3A%22%5E%22%2Be%2EUIR%2Ce%3A%22%5B%3A%2B%3F%5D%3F%3D%22%2CeE%3A%210%7D%5D%7D%2Ct%3D%7BcN%3A%22meta%22%2Cb%3A%2F%5E%5C%2EPHONY%3A%2F%2Ce%3A%2F%24%2F%2Ck%3A%7B%22meta%2Dkeyword%22%3A%22%2EPHONY%22%7D%2Cl%3A%2F%5B%5C%2E%5Cw%5D%2B%2F%7D%2Cl%3D%7BcN%3A%22section%22%2Cb%3A%2F%5E%5B%5E%5Cs%5D%2B%3A%2F%2Ce%3A%2F%24%2F%2Cc%3A%5Bi%5D%7D%3Breturn%7Baliases%3A%5B%22mk%22%2C%22mak%22%5D%2Ck%3A%22define%20endef%20undefine%20ifdef%20ifndef%20ifeq%20ifneq%20else%20endif%20include%20%2Dinclude%20sinclude%20override%20export%20unexport%20private%20vpath%22%2Cl%3A%2F%5B%5Cw%2D%5D%2B%2F%2Cc%3A%5Be%2EHCM%2Ci%2Cr%2Ca%2Cn%2Ct%2Cl%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22java%22%2Cfunction%28e%29%7Bvar%20a%3D%22%5B%C3%80%2D%CA%B8a%2DzA%2DZ%5F%24%5D%5B%C3%80%2D%CA%B8a%2DzA%2DZ%5F%240%2D9%5D%2A%22%2Ct%3Da%2B%22%28%3C%22%2Ba%2B%22%28%5C%5Cs%2A%2C%5C%5Cs%2A%22%2Ba%2B%22%29%2A%3E%29%3F%22%2Cr%3D%22false%20synchronized%20int%20abstract%20float%20private%20char%20boolean%20static%20null%20if%20const%20for%20true%20while%20long%20strictfp%20finally%20protected%20import%20native%20final%20void%20enum%20else%20break%20transient%20catch%20instanceof%20byte%20super%20volatile%20case%20assert%20short%20package%20default%20double%20public%20try%20this%20switch%20continue%20throws%20protected%20public%20private%20module%20requires%20exports%20do%22%2Cs%3D%22%5C%5Cb%280%5BbB%5D%28%5B01%5D%2B%5B01%5F%5D%2B%5B01%5D%2B%7C%5B01%5D%2B%29%7C0%5BxX%5D%28%5Ba%2DfA%2DF0%2D9%5D%2B%5Ba%2DfA%2DF0%2D9%5F%5D%2B%5Ba%2DfA%2DF0%2D9%5D%2B%7C%5Ba%2DfA%2DF0%2D9%5D%2B%29%7C%28%28%5B%5C%5Cd%5D%2B%5B%5C%5Cd%5F%5D%2B%5B%5C%5Cd%5D%2B%7C%5B%5C%5Cd%5D%2B%29%28%5C%5C%2E%28%5B%5C%5Cd%5D%2B%5B%5C%5Cd%5F%5D%2B%5B%5C%5Cd%5D%2B%7C%5B%5C%5Cd%5D%2B%29%29%3F%7C%5C%5C%2E%28%5B%5C%5Cd%5D%2B%5B%5C%5Cd%5F%5D%2B%5B%5C%5Cd%5D%2B%7C%5B%5C%5Cd%5D%2B%29%29%28%5BeE%5D%5B%2D%2B%5D%3F%5C%5Cd%2B%29%3F%29%5BlLfF%5D%3F%22%2Cc%3D%7BcN%3A%22number%22%2Cb%3As%2Cr%3A0%7D%3Breturn%7Baliases%3A%5B%22jsp%22%5D%2Ck%3Ar%2Ci%3A%2F%3C%5C%2F%7C%23%2F%2Cc%3A%5Be%2EC%28%22%2F%5C%5C%2A%5C%5C%2A%22%2C%22%5C%5C%2A%2F%22%2C%7Br%3A0%2Cc%3A%5B%7Bb%3A%2F%5Cw%2B%40%2F%2Cr%3A0%7D%2C%7BcN%3A%22doctag%22%2Cb%3A%22%40%5BA%2DZa%2Dz%5D%2B%22%7D%5D%7D%29%2Ce%2ECLCM%2Ce%2ECBCM%2Ce%2EASM%2Ce%2EQSM%2C%7BcN%3A%22class%22%2CbK%3A%22class%20interface%22%2Ce%3A%2F%5B%7B%3B%3D%5D%2F%2CeE%3A%210%2Ck%3A%22class%20interface%22%2Ci%3A%2F%5B%3A%22%5C%5B%5C%5D%5D%2F%2Cc%3A%5B%7BbK%3A%22extends%20implements%22%7D%2Ce%2EUTM%5D%7D%2C%7BbK%3A%22new%20throw%20return%20else%22%2Cr%3A0%7D%2C%7BcN%3A%22function%22%2Cb%3A%22%28%22%2Bt%2B%22%5C%5Cs%2B%29%2B%22%2Be%2EUIR%2B%22%5C%5Cs%2A%5C%5C%28%22%2CrB%3A%210%2Ce%3A%2F%5B%7B%3B%3D%5D%2F%2CeE%3A%210%2Ck%3Ar%2Cc%3A%5B%7Bb%3Ae%2EUIR%2B%22%5C%5Cs%2A%5C%5C%28%22%2CrB%3A%210%2Cr%3A0%2Cc%3A%5Be%2EUTM%5D%7D%2C%7BcN%3A%22params%22%2Cb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2Ck%3Ar%2Cr%3A0%2Cc%3A%5Be%2EASM%2Ce%2EQSM%2Ce%2ECNM%2Ce%2ECBCM%5D%7D%2Ce%2ECLCM%2Ce%2ECBCM%5D%7D%2Cc%2C%7BcN%3A%22meta%22%2Cb%3A%22%40%5BA%2DZa%2Dz%5D%2B%22%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22stan%22%2Cfunction%28e%29%7Breturn%7Bc%3A%5Be%2EHCM%2Ce%2ECLCM%2Ce%2ECBCM%2C%7Bb%3Ae%2EUIR%2Cl%3Ae%2EUIR%2Ck%3A%7Bname%3A%22for%20in%20while%20repeat%20until%20if%20then%20else%22%2Csymbol%3A%22bernoulli%20bernoulli%5Flogit%20binomial%20binomial%5Flogit%20beta%5Fbinomial%20hypergeometric%20categorical%20categorical%5Flogit%20ordered%5Flogistic%20neg%5Fbinomial%20neg%5Fbinomial%5F2%20neg%5Fbinomial%5F2%5Flog%20poisson%20poisson%5Flog%20multinomial%20normal%20exp%5Fmod%5Fnormal%20skew%5Fnormal%20student%5Ft%20cauchy%20double%5Fexponential%20logistic%20gumbel%20lognormal%20chi%5Fsquare%20inv%5Fchi%5Fsquare%20scaled%5Finv%5Fchi%5Fsquare%20exponential%20inv%5Fgamma%20weibull%20frechet%20rayleigh%20wiener%20pareto%20pareto%5Ftype%5F2%20von%5Fmises%20uniform%20multi%5Fnormal%20multi%5Fnormal%5Fprec%20multi%5Fnormal%5Fcholesky%20multi%5Fgp%20multi%5Fgp%5Fcholesky%20multi%5Fstudent%5Ft%20gaussian%5Fdlm%5Fobs%20dirichlet%20lkj%5Fcorr%20lkj%5Fcorr%5Fcholesky%20wishart%20inv%5Fwishart%22%2C%22selector%2Dtag%22%3A%22int%20real%20vector%20simplex%20unit%5Fvector%20ordered%20positive%5Fordered%20row%5Fvector%20matrix%20cholesky%5Ffactor%5Fcorr%20cholesky%5Ffactor%5Fcov%20corr%5Fmatrix%20cov%5Fmatrix%22%2Ctitle%3A%22functions%20model%20data%20parameters%20quantities%20transformed%20generated%22%2Cliteral%3A%22true%20false%22%7D%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%220%5BxX%5D%5B0%2D9a%2DfA%2DF%5D%2B%5BLi%5D%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%220%5BxX%5D%5B0%2D9a%2DfA%2DF%5D%2B%5BLi%5D%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3FL%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%5C%5C%2E%28%3F%21%5C%5Cd%29%28%3F%3Ai%5C%5Cb%29%3F%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5Cd%2B%28%3F%3A%5C%5C%2E%5C%5Cd%2A%29%3F%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3Fi%3F%5C%5Cb%22%2Cr%3A0%7D%2C%7BcN%3A%22number%22%2Cb%3A%22%5C%5C%2E%5C%5Cd%2B%28%3F%3A%5BeE%5D%5B%2B%5C%5C%2D%5D%3F%5C%5Cd%2A%29%3Fi%3F%5C%5Cb%22%2Cr%3A0%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22javascript%22%2Cfunction%28e%29%7Bvar%20r%3D%22%5BA%2DZa%2Dz%24%5F%5D%5B0%2D9A%2DZa%2Dz%24%5F%5D%2A%22%2Ct%3D%7Bkeyword%3A%22in%20of%20if%20for%20while%20finally%20var%20new%20function%20do%20return%20void%20else%20break%20catch%20instanceof%20with%20throw%20case%20default%20try%20this%20switch%20continue%20typeof%20delete%20let%20yield%20const%20export%20super%20debugger%20as%20async%20await%20static%20import%20from%20as%22%2Cliteral%3A%22true%20false%20null%20undefined%20NaN%20Infinity%22%2Cbuilt%5Fin%3A%22eval%20isFinite%20isNaN%20parseFloat%20parseInt%20decodeURI%20decodeURIComponent%20encodeURI%20encodeURIComponent%20escape%20unescape%20Object%20Function%20Boolean%20Error%20EvalError%20InternalError%20RangeError%20ReferenceError%20StopIteration%20SyntaxError%20TypeError%20URIError%20Number%20Math%20Date%20String%20RegExp%20Array%20Float32Array%20Float64Array%20Int16Array%20Int32Array%20Int8Array%20Uint16Array%20Uint32Array%20Uint8Array%20Uint8ClampedArray%20ArrayBuffer%20DataView%20JSON%20Intl%20arguments%20require%20module%20console%20window%20document%20Symbol%20Set%20Map%20WeakSet%20WeakMap%20Proxy%20Reflect%20Promise%22%7D%2Ca%3D%7BcN%3A%22number%22%2Cv%3A%5B%7Bb%3A%22%5C%5Cb%280%5BbB%5D%5B01%5D%2B%29%22%7D%2C%7Bb%3A%22%5C%5Cb%280%5BoO%5D%5B0%2D7%5D%2B%29%22%7D%2C%7Bb%3Ae%2ECNR%7D%5D%2Cr%3A0%7D%2Cn%3D%7BcN%3A%22subst%22%2Cb%3A%22%5C%5C%24%5C%5C%7B%22%2Ce%3A%22%5C%5C%7D%22%2Ck%3At%2Cc%3A%5B%5D%7D%2Cc%3D%7BcN%3A%22string%22%2Cb%3A%22%60%22%2Ce%3A%22%60%22%2Cc%3A%5Be%2EBE%2Cn%5D%7D%3Bn%2Ec%3D%5Be%2EASM%2Ce%2EQSM%2Cc%2Ca%2Ce%2ERM%5D%3Bvar%20s%3Dn%2Ec%2Econcat%28%5Be%2ECBCM%2Ce%2ECLCM%5D%29%3Breturn%7Baliases%3A%5B%22js%22%2C%22jsx%22%5D%2Ck%3At%2Cc%3A%5B%7BcN%3A%22meta%22%2Cr%3A10%2Cb%3A%2F%5E%5Cs%2A%5B%27%22%5Duse%20%28strict%7Casm%29%5B%27%22%5D%2F%7D%2C%7BcN%3A%22meta%22%2Cb%3A%2F%5E%23%21%2F%2Ce%3A%2F%24%2F%7D%2Ce%2EASM%2Ce%2EQSM%2Cc%2Ce%2ECLCM%2Ce%2ECBCM%2Ca%2C%7Bb%3A%2F%5B%7B%2C%5D%5Cs%2A%2F%2Cr%3A0%2Cc%3A%5B%7Bb%3Ar%2B%22%5C%5Cs%2A%3A%22%2CrB%3A%210%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22attr%22%2Cb%3Ar%2Cr%3A0%7D%5D%7D%5D%7D%2C%7Bb%3A%22%28%22%2Be%2ERSR%2B%22%7C%5C%5Cb%28case%7Creturn%7Cthrow%29%5C%5Cb%29%5C%5Cs%2A%22%2Ck%3A%22return%20throw%20case%22%2Cc%3A%5Be%2ECLCM%2Ce%2ECBCM%2Ce%2ERM%2C%7BcN%3A%22function%22%2Cb%3A%22%28%5C%5C%28%2E%2A%3F%5C%5C%29%7C%22%2Br%2B%22%29%5C%5Cs%2A%3D%3E%22%2CrB%3A%210%2Ce%3A%22%5C%5Cs%2A%3D%3E%22%2Cc%3A%5B%7BcN%3A%22params%22%2Cv%3A%5B%7Bb%3Ar%7D%2C%7Bb%3A%2F%5C%28%5Cs%2A%5C%29%2F%7D%2C%7Bb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2CeB%3A%210%2CeE%3A%210%2Ck%3At%2Cc%3As%7D%5D%7D%5D%7D%2C%7Bb%3A%2F%3C%2F%2Ce%3A%2F%28%5C%2F%5Cw%2B%7C%5Cw%2B%5C%2F%29%3E%2F%2CsL%3A%22xml%22%2Cc%3A%5B%7Bb%3A%2F%3C%5Cw%2B%5Cs%2A%5C%2F%3E%2F%2Cskip%3A%210%7D%2C%7Bb%3A%2F%3C%5Cw%2B%2F%2Ce%3A%2F%28%5C%2F%5Cw%2B%7C%5Cw%2B%5C%2F%29%3E%2F%2Cskip%3A%210%2Cc%3A%5B%7Bb%3A%2F%3C%5Cw%2B%5Cs%2A%5C%2F%3E%2F%2Cskip%3A%210%7D%2C%22self%22%5D%7D%5D%7D%5D%2Cr%3A0%7D%2C%7BcN%3A%22function%22%2CbK%3A%22function%22%2Ce%3A%2F%5C%7B%2F%2CeE%3A%210%2Cc%3A%5Be%2Einherit%28e%2ETM%2C%7Bb%3Ar%7D%29%2C%7BcN%3A%22params%22%2Cb%3A%2F%5C%28%2F%2Ce%3A%2F%5C%29%2F%2CeB%3A%210%2CeE%3A%210%2Cc%3As%7D%5D%2Ci%3A%2F%5C%5B%7C%25%2F%7D%2C%7Bb%3A%2F%5C%24%5B%28%2E%5D%2F%7D%2Ce%2EMETHOD%5FGUARD%2C%7BcN%3A%22class%22%2CbK%3A%22class%22%2Ce%3A%2F%5B%7B%3B%3D%5D%2F%2CeE%3A%210%2Ci%3A%2F%5B%3A%22%5C%5B%5C%5D%5D%2F%2Cc%3A%5B%7BbK%3A%22extends%22%7D%2Ce%2EUTM%5D%7D%2C%7BbK%3A%22constructor%22%2Ce%3A%2F%5C%7B%2F%2CeE%3A%210%7D%5D%2Ci%3A%2F%23%28%3F%21%21%29%2F%7D%7D%29%3Bhljs%2EregisterLanguage%28%22tex%22%2Cfunction%28c%29%7Bvar%20e%3D%7BcN%3A%22tag%22%2Cb%3A%2F%5C%5C%2F%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22name%22%2Cv%3A%5B%7Bb%3A%2F%5Ba%2DzA%2DZ%D0%B0%2D%D1%8F%D0%90%2D%D1%8F%5D%2B%5B%2A%5D%3F%2F%7D%2C%7Bb%3A%2F%5B%5Ea%2DzA%2DZ%D0%B0%2D%D1%8F%D0%90%2D%D1%8F0%2D9%5D%2F%7D%5D%2Cstarts%3A%7BeW%3A%210%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22string%22%2Cv%3A%5B%7Bb%3A%2F%5C%5B%2F%2Ce%3A%2F%5C%5D%2F%7D%2C%7Bb%3A%2F%5C%7B%2F%2Ce%3A%2F%5C%7D%2F%7D%5D%7D%2C%7Bb%3A%2F%5Cs%2A%3D%5Cs%2A%2F%2CeW%3A%210%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22number%22%2Cb%3A%2F%2D%3F%5Cd%2A%5C%2E%3F%5Cd%2B%28pt%7Cpc%7Cmm%7Ccm%7Cin%7Cdd%7Ccc%7Cex%7Cem%29%3F%2F%7D%5D%7D%5D%7D%7D%5D%7D%3Breturn%7Bc%3A%5Be%2C%7BcN%3A%22formula%22%2Cc%3A%5Be%5D%2Cr%3A0%2Cv%3A%5B%7Bb%3A%2F%5C%24%5C%24%2F%2Ce%3A%2F%5C%24%5C%24%2F%7D%2C%7Bb%3A%2F%5C%24%2F%2Ce%3A%2F%5C%24%2F%7D%5D%7D%2Cc%2EC%28%22%25%22%2C%22%24%22%2C%7Br%3A0%7D%29%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22xml%22%2Cfunction%28s%29%7Bvar%20e%3D%22%5BA%2DZa%2Dz0%2D9%5C%5C%2E%5F%3A%2D%5D%2B%22%2Ct%3D%7BeW%3A%210%2Ci%3A%2F%3C%2F%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22attr%22%2Cb%3Ae%2Cr%3A0%7D%2C%7Bb%3A%2F%3D%5Cs%2A%2F%2Cr%3A0%2Cc%3A%5B%7BcN%3A%22string%22%2CendsParent%3A%210%2Cv%3A%5B%7Bb%3A%2F%22%2F%2Ce%3A%2F%22%2F%7D%2C%7Bb%3A%2F%27%2F%2Ce%3A%2F%27%2F%7D%2C%7Bb%3A%2F%5B%5E%5Cs%22%27%3D%3C%3E%60%5D%2B%2F%7D%5D%7D%5D%7D%5D%7D%3Breturn%7Baliases%3A%5B%22html%22%2C%22xhtml%22%2C%22rss%22%2C%22atom%22%2C%22xjb%22%2C%22xsd%22%2C%22xsl%22%2C%22plist%22%5D%2CcI%3A%210%2Cc%3A%5B%7BcN%3A%22meta%22%2Cb%3A%22%3C%21DOCTYPE%22%2Ce%3A%22%3E%22%2Cr%3A10%2Cc%3A%5B%7Bb%3A%22%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%7D%5D%7D%2Cs%2EC%28%22%3C%21%2D%2D%22%2C%22%2D%2D%3E%22%2C%7Br%3A10%7D%29%2C%7Bb%3A%22%3C%5C%5C%21%5C%5C%5BCDATA%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%5C%5C%5D%3E%22%2Cr%3A10%7D%2C%7Bb%3A%2F%3C%5C%3F%28php%29%3F%2F%2Ce%3A%2F%5C%3F%3E%2F%2CsL%3A%22php%22%2Cc%3A%5B%7Bb%3A%22%2F%5C%5C%2A%22%2Ce%3A%22%5C%5C%2A%2F%22%2Cskip%3A%210%7D%5D%7D%2C%7BcN%3A%22tag%22%2Cb%3A%22%3Cstyle%28%3F%3D%5C%5Cs%7C%3E%7C%24%29%22%2Ce%3A%22%3E%22%2Ck%3A%7Bname%3A%22style%22%7D%2Cc%3A%5Bt%5D%2Cstarts%3A%7Be%3A%22%3C%2Fstyle%3E%22%2CrE%3A%210%2CsL%3A%5B%22css%22%2C%22xml%22%5D%7D%7D%2C%7BcN%3A%22tag%22%2Cb%3A%22%3Cscript%28%3F%3D%5C%5Cs%7C%3E%7C%24%29%22%2Ce%3A%22%3E%22%2Ck%3A%7Bname%3A%22script%22%7D%2Cc%3A%5Bt%5D%2Cstarts%3A%7Be%3A%22%3C%2Fscript%3E%22%2CrE%3A%210%2CsL%3A%5B%22actionscript%22%2C%22javascript%22%2C%22handlebars%22%2C%22xml%22%5D%7D%7D%2C%7BcN%3A%22meta%22%2Cv%3A%5B%7Bb%3A%2F%3C%5C%3Fxml%2F%2Ce%3A%2F%5C%3F%3E%2F%2Cr%3A10%7D%2C%7Bb%3A%2F%3C%5C%3F%5Cw%2B%2F%2Ce%3A%2F%5C%3F%3E%2F%7D%5D%7D%2C%7BcN%3A%22tag%22%2Cb%3A%22%3C%2F%3F%22%2Ce%3A%22%2F%3F%3E%22%2Cc%3A%5B%7BcN%3A%22name%22%2Cb%3A%2F%5B%5E%5C%2F%3E%3C%5Cs%5D%2B%2F%2Cr%3A0%7D%2Ct%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22markdown%22%2Cfunction%28e%29%7Breturn%7Baliases%3A%5B%22md%22%2C%22mkdown%22%2C%22mkd%22%5D%2Cc%3A%5B%7BcN%3A%22section%22%2Cv%3A%5B%7Bb%3A%22%5E%23%7B1%2C6%7D%22%2Ce%3A%22%24%22%7D%2C%7Bb%3A%22%5E%2E%2B%3F%5C%5Cn%5B%3D%2D%5D%7B2%2C%7D%24%22%7D%5D%7D%2C%7Bb%3A%22%3C%22%2Ce%3A%22%3E%22%2CsL%3A%22xml%22%2Cr%3A0%7D%2C%7BcN%3A%22bullet%22%2Cb%3A%22%5E%28%5B%2A%2B%2D%5D%7C%28%5C%5Cd%2B%5C%5C%2E%29%29%5C%5Cs%2B%22%7D%2C%7BcN%3A%22strong%22%2Cb%3A%22%5B%2A%5F%5D%7B2%7D%2E%2B%3F%5B%2A%5F%5D%7B2%7D%22%7D%2C%7BcN%3A%22emphasis%22%2Cv%3A%5B%7Bb%3A%22%5C%5C%2A%2E%2B%3F%5C%5C%2A%22%7D%2C%7Bb%3A%22%5F%2E%2B%3F%5F%22%2Cr%3A0%7D%5D%7D%2C%7BcN%3A%22quote%22%2Cb%3A%22%5E%3E%5C%5Cs%2B%22%2Ce%3A%22%24%22%7D%2C%7BcN%3A%22code%22%2Cv%3A%5B%7Bb%3A%22%5E%60%60%60w%2As%2A%24%22%2Ce%3A%22%5E%60%60%60s%2A%24%22%7D%2C%7Bb%3A%22%60%2E%2B%3F%60%22%7D%2C%7Bb%3A%22%5E%28%20%7B4%7D%7C%09%29%22%2Ce%3A%22%24%22%2Cr%3A0%7D%5D%7D%2C%7Bb%3A%22%5E%5B%2D%5C%5C%2A%5D%7B3%2C%7D%22%2Ce%3A%22%24%22%7D%2C%7Bb%3A%22%5C%5C%5B%2E%2B%3F%5C%5C%5D%5B%5C%5C%28%5C%5C%5B%5D%2E%2A%3F%5B%5C%5C%29%5C%5C%5D%5D%22%2CrB%3A%210%2Cc%3A%5B%7BcN%3A%22string%22%2Cb%3A%22%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%2CeB%3A%210%2CrE%3A%210%2Cr%3A0%7D%2C%7BcN%3A%22link%22%2Cb%3A%22%5C%5C%5D%5C%5C%28%22%2Ce%3A%22%5C%5C%29%22%2CeB%3A%210%2CeE%3A%210%7D%2C%7BcN%3A%22symbol%22%2Cb%3A%22%5C%5C%5D%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%2CeB%3A%210%2CeE%3A%210%7D%5D%2Cr%3A10%7D%2C%7Bb%3A%2F%5E%5C%5B%5B%5E%5Cn%5D%2B%5C%5D%3A%2F%2CrB%3A%210%2Cc%3A%5B%7BcN%3A%22symbol%22%2Cb%3A%2F%5C%5B%2F%2Ce%3A%2F%5C%5D%2F%2CeB%3A%210%2CeE%3A%210%7D%2C%7BcN%3A%22link%22%2Cb%3A%2F%3A%5Cs%2A%2F%2Ce%3A%2F%24%2F%2CeB%3A%210%7D%5D%7D%5D%7D%7D%29%3Bhljs%2EregisterLanguage%28%22json%22%2Cfunction%28e%29%7Bvar%20i%3D%7Bliteral%3A%22true%20false%20null%22%7D%2Cn%3D%5Be%2EQSM%2Ce%2ECNM%5D%2Cr%3D%7Be%3A%22%2C%22%2CeW%3A%210%2CeE%3A%210%2Cc%3An%2Ck%3Ai%7D%2Ct%3D%7Bb%3A%22%7B%22%2Ce%3A%22%7D%22%2Cc%3A%5B%7BcN%3A%22attr%22%2Cb%3A%2F%22%2F%2Ce%3A%2F%22%2F%2Cc%3A%5Be%2EBE%5D%2Ci%3A%22%5C%5Cn%22%7D%2Ce%2Einherit%28r%2C%7Bb%3A%2F%3A%2F%7D%29%5D%2Ci%3A%22%5C%5CS%22%7D%2Cc%3D%7Bb%3A%22%5C%5C%5B%22%2Ce%3A%22%5C%5C%5D%22%2Cc%3A%5Be%2Einherit%28r%29%5D%2Ci%3A%22%5C%5CS%22%7D%3Breturn%20n%2Esplice%28n%2Elength%2C0%2Ct%2Cc%29%2C%7Bc%3An%2Ck%3Ai%2Ci%3A%22%5C%5CS%22%7D%7D%29%3B"></script>
+<link href="data:text/css,%2F%2A%20Styles%20for%20section%20anchors%20%2A%2F%0Aa%2Eanchor%2Dsection%20%7Bmargin%2Dleft%3A%2010px%3B%20visibility%3A%20hidden%3B%20color%3A%20inherit%3B%7D%0Aa%2Eanchor%2Dsection%3A%3Abefore%20%7Bcontent%3A%20%27%23%27%3B%7D%0A%2EhasAnchor%3Ahover%20a%2Eanchor%2Dsection%20%7Bvisibility%3A%20visible%3B%7D%0A" rel="stylesheet" />
+<script src="data:application/x-javascript,%2F%2F%20Anchor%20sections%20v1%2E0%20written%20by%20Atsushi%20Yasumoto%20on%20Oct%203rd%2C%202020%2E%0Adocument%2EaddEventListener%28%27DOMContentLoaded%27%2C%20function%28%29%20%7B%0A%20%20%2F%2F%20Do%20nothing%20if%20AnchorJS%20is%20used%0A%20%20if%20%28typeof%20window%2Eanchors%20%3D%3D%3D%20%27object%27%20%26%26%20anchors%2EhasOwnProperty%28%27hasAnchorJSLink%27%29%29%20%7B%0A%20%20%20%20return%3B%0A%20%20%7D%0A%0A%20%20const%20h%20%3D%20document%2EquerySelectorAll%28%27h1%2C%20h2%2C%20h3%2C%20h4%2C%20h5%2C%20h6%27%29%3B%0A%0A%20%20%2F%2F%20Do%20nothing%20if%20sections%20are%20already%20anchored%0A%20%20if%20%28Array%2Efrom%28h%29%2Esome%28x%20%3D%3E%20x%2EclassList%2Econtains%28%27hasAnchor%27%29%29%29%20%7B%0A%20%20%20%20return%20null%3B%0A%20%20%7D%0A%0A%20%20%2F%2F%20Use%20section%20id%20when%20pandoc%20runs%20with%20%2D%2Dsection%2Ddivs%0A%20%20const%20section%5Fid%20%3D%20function%28x%29%20%7B%0A%20%20%20%20return%20%28%28x%2EclassList%2Econtains%28%27section%27%29%20%7C%7C%20%28x%2EtagName%20%3D%3D%3D%20%27SECTION%27%29%29%0A%20%20%20%20%20%20%20%20%20%20%20%20%3F%20x%2Eid%20%3A%20%27%27%29%3B%0A%20%20%7D%3B%0A%0A%20%20%2F%2F%20Add%20anchors%0A%20%20h%2EforEach%28function%28x%29%20%7B%0A%20%20%20%20const%20id%20%3D%20x%2Eid%20%7C%7C%20section%5Fid%28x%2EparentElement%29%3B%0A%20%20%20%20if%20%28id%20%3D%3D%3D%20%27%27%29%20%7B%0A%20%20%20%20%20%20return%20null%3B%0A%20%20%20%20%7D%0A%20%20%20%20let%20anchor%20%3D%20document%2EcreateElement%28%27a%27%29%3B%0A%20%20%20%20anchor%2Ehref%20%3D%20%27%23%27%20%2B%20id%3B%0A%20%20%20%20anchor%2EclassList%20%3D%20%5B%27anchor%2Dsection%27%5D%3B%0A%20%20%20%20x%2EclassList%2Eadd%28%27hasAnchor%27%29%3B%0A%20%20%20%20x%2EappendChild%28anchor%29%3B%0A%20%20%7D%29%3B%0A%7D%29%3B%0A"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
 
 <style type="text/css">code{white-space: pre;}</style>
 <style type="text/css">
@@ -265,7 +276,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Biological Entity Dictionary (BED): Feeding the DB</h1>
 <h4 class="author">Patrice Godard</h4>
-<h4 class="date">August 27 2020</h4>
+<h4 class="date">December 18 2020</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 Dump source identifiers related information and integrate content in BED
@@ -302,7 +313,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance &lt;- &quot;UCB-Human&quot;
 bedVersion &lt;- format(Sys.Date(), &quot;%Y.%m.%d&quot;)
-ensembl_release &lt;- &quot;101&quot;
+ensembl_release &lt;- &quot;102&quot;
 ensembl_Hsapiens &lt;- list(
     release=ensembl_release,
     organism=&quot;Homo sapiens&quot;,
@@ -464,7 +475,7 @@ ensembl_Drerio &lt;- list(
     canChromosomes=c(1:25, &quot;MT&quot;)
 )
 ## General config
-reDumpThr &lt;- as.difftime(2, units=&quot;days&quot;)
+reDumpThr &lt;- as.difftime(200, units=&quot;days&quot;)
 curDate &lt;- Sys.Date()</code></pre>
 </div>
 <div id="bed-initialization" class="section level1">
@@ -498,14 +509,14 @@ if(dbSize!=0){
 <pre class="r"><code>print(bedInstance)</code></pre>
 <pre><code>## [1] &quot;UCB-Human&quot;</code></pre>
 <pre class="r"><code>print(bedVersion)</code></pre>
-<pre><code>## [1] &quot;2020.08.27&quot;</code></pre>
+<pre><code>## [1] &quot;2020.12.18&quot;</code></pre>
 <pre class="r"><code>BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)</code></pre>
 </div>
 <div id="load-data-model" class="section level2">
 <h2><span class="header-section-number">2.3</span> Load Data model</h2>
-<p><strong>Start</strong>: 2020-08-27 12:08:01</p>
+<p><strong>Start</strong>: 2020-12-18 15:57:03</p>
 <pre class="r"><code>BED:::loadBedModel()</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:08:06</p>
+<p><strong>End</strong>: 2020-12-18 15:57:10</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -513,17 +524,18 @@ if(dbSize!=0){
 </div>
 <div id="loading-taxonomy-from-ncbi" class="section level1">
 <h1><span class="header-section-number">3</span> Loading taxonomy from NCBI</h1>
-<p>Information is downloaded if older than 2 days according to the <code>reDumpThr</code> object.</p>
-<p><strong>Start</strong>: 2020-08-27 12:08:06</p>
+<p>Information is downloaded if older than 200 days according to the <code>reDumpThr</code> object.</p>
+<p><strong>Start</strong>: 2020-12-18 15:57:10</p>
 <pre class="r"><code>BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
+    ddir=&quot;.&quot;,
     orgOfInt=c(
        &quot;Homo sapiens&quot;, &quot;Rattus norvegicus&quot;, &quot;Mus musculus&quot;,
        &quot;Sus scrofa&quot;, &quot;Danio rerio&quot;
       ),
     curDate=curDate
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:08:22</p>
+<p><strong>End</strong>: 2020-12-18 15:57:25</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -565,7 +577,7 @@ if(dbSize!=0){
 <pre class="r"><code>ensembl &lt;- ensembl_Drerio
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;101&quot;
+## [1] &quot;102&quot;
 ## 
 ## $organism
 ## [1] &quot;Danio rerio&quot;
@@ -598,52 +610,55 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;23&quot; &quot;24&quot; &quot;25&quot; &quot;MT&quot;</code></pre>
 <div id="genes-1" class="section level3">
 <h3><span class="header-section-number">4.2.1</span> Genes</h3>
-<p><strong>Start</strong>: 2020-08-27 12:08:22</p>
+<p><strong>Start</strong>: 2020-12-18 15:57:26</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  908537 48.6    4752441 253.9  5940551 317.3
-## Vcells 3717586 28.4   39940320 304.8 51903427 396.0</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:11:05</p>
+## Ncells  894985 47.8    5056102 270.1  6320127 337.6
+## Vcells 5785557 44.2   45420935 346.6 56770622 433.2</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:00:19</p>
 </div>
 <div id="transcripts-1" class="section level3">
 <h3><span class="header-section-number">4.2.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2020-08-27 12:11:05</p>
+<p><strong>Start</strong>: 2020-12-18 16:00:19</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  914570 48.9    4697096 250.9  5940551 317.3
-## Vcells 3730552 28.5   46152048 352.2 57674486 440.1</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:13:43</p>
+## Ncells  898309 48.0    4044882 216.1  6320127 337.6
+## Vcells 5792842 44.2   43668098 333.2 56770622 433.2</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:02:56</p>
 </div>
 <div id="peptides-1" class="section level3">
 <h3><span class="header-section-number">4.2.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2020-08-27 12:13:43</p>
+<p><strong>Start</strong>: 2020-12-18 16:02:56</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells  919982 49.2    3757677 200.7  5940551 317.3
-## Vcells 3742188 28.6   44369966 338.6 57674486 440.1</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:16:17</p>
+## Ncells  901301 48.2    3915087 209.1  6320127 337.6
+## Vcells 5799483 44.3   41985374 320.4 56770622 433.2</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:05:35</p>
 </div>
 </div>
 <div id="homo-sapiens" class="section level2">
@@ -651,7 +666,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Hsapiens
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;101&quot;
+## [1] &quot;102&quot;
 ## 
 ## $organism
 ## [1] &quot;Homo sapiens&quot;
@@ -684,52 +699,55 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-2" class="section level3">
 <h3><span class="header-section-number">4.3.1</span> Genes</h3>
-<p><strong>Start</strong>: 2020-08-27 12:16:17</p>
+<p><strong>Start</strong>: 2020-12-18 16:05:35</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920214 49.2   14091326 752.6  17614157  940.7
-## Vcells 10034279 76.6  116518449 889.0 145639730 1111.2</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:20:15</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  903338 48.3   14486628 773.7  18108285  967.1
+## Vcells 9997420 76.3  121632911 928.0 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:09:29</p>
 </div>
 <div id="transcripts-2" class="section level3">
 <h3><span class="header-section-number">4.3.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2020-08-27 12:20:15</p>
+<p><strong>Start</strong>: 2020-12-18 16:09:29</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells   920566 49.2   12110329  646.8  17614157  940.7
-## Vcells 10034876 76.6  134370052 1025.2 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:25:51</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901221 48.2   11589303 619.0  18108285  967.1
+## Vcells 9993912 76.3  116831595 891.4 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:15:04</p>
 </div>
 <div id="peptides-2" class="section level3">
 <h3><span class="header-section-number">4.3.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2020-08-27 12:25:51</p>
+<p><strong>Start</strong>: 2020-12-18 16:15:04</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   922284 49.3    9688264 517.5  17614157  940.7
-## Vcells 10037800 76.6  129059250 984.7 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:32:00</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901589 48.2    9271443 495.2  18108285  967.1
+## Vcells 9994587 76.3  112222332 856.2 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:21:16</p>
 </div>
 </div>
 <div id="mus-musculus" class="section level2">
@@ -737,7 +755,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Mmusculus
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;101&quot;
+## [1] &quot;102&quot;
 ## 
 ## $organism
 ## [1] &quot;Mus musculus&quot;
@@ -770,52 +788,55 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-3" class="section level3">
 <h3><span class="header-section-number">4.4.1</span> Genes</h3>
-<p><strong>Start</strong>: 2020-08-27 12:32:00</p>
+<p><strong>Start</strong>: 2020-12-18 16:21:16</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920508 49.2    7750612 414.0  17614157  940.7
-## Vcells 10035090 76.6  103247400 787.8 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:35:19</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  902069 48.2    7417155 396.2  18108285  967.1
+## Vcells 9995630 76.3  107797439 822.5 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:24:36</p>
 </div>
 <div id="transcripts-3" class="section level3">
 <h3><span class="header-section-number">4.4.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2020-08-27 12:35:19</p>
+<p><strong>Start</strong>: 2020-12-18 16:24:36</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   921037 49.2    7472588 399.1  17614157  940.7
-## Vcells 10035982 76.6   99181504 756.7 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:40:29</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901500 48.2    7272692 388.5  18108285  967.1
+## Vcells 9994702 76.3   86237952 658.0 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:29:57</p>
 </div>
 <div id="peptides-3" class="section level3">
 <h3><span class="header-section-number">4.4.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2020-08-27 12:40:29</p>
+<p><strong>Start</strong>: 2020-12-18 16:29:57</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920145 49.2    5978071 319.3  17614157  940.7
-## Vcells 10034556 76.6   79345204 605.4 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:44:40</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901502 48.2    7013784 374.6  18108285  967.1
+## Vcells 9994767 76.3   82852434 632.2 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:34:08</p>
 </div>
 </div>
 <div id="rattus-norvegicus" class="section level2">
@@ -823,7 +844,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Rnorvegicus
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;101&quot;
+## [1] &quot;102&quot;
 ## 
 ## $organism
 ## [1] &quot;Rattus norvegicus&quot;
@@ -856,52 +877,55 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-4" class="section level3">
 <h3><span class="header-section-number">4.5.1</span> Genes</h3>
-<p><strong>Start</strong>: 2020-08-27 12:44:40</p>
+<p><strong>Start</strong>: 2020-12-18 16:34:08</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920658 49.2    4782457 255.5  17614157  940.7
-## Vcells 10035662 76.6   63476164 484.3 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:46:15</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901727 48.2    5611028 299.7  18108285  967.1
+## Vcells 9995386 76.3   66281948 505.7 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:35:43</p>
 </div>
 <div id="transcripts-4" class="section level3">
 <h3><span class="header-section-number">4.5.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2020-08-27 12:46:15</p>
+<p><strong>Start</strong>: 2020-12-18 16:35:43</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920656 49.2    4141295 221.2  17614157  940.7
-## Vcells 10035669 76.6   50780932 387.5 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:47:44</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901392 48.2    4568522 244.0  18108285  967.1
+## Vcells 9994848 76.3   53025559 404.6 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:37:11</p>
 </div>
 <div id="peptides-4" class="section level3">
 <h3><span class="header-section-number">4.5.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2020-08-27 12:47:44</p>
+<p><strong>Start</strong>: 2020-12-18 16:37:11</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger (Mb)  max used   (Mb)
-## Ncells   920481 49.2    3313036  177  17614157  940.7
-## Vcells 10035438 76.6   40624746  310 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:49:29</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901550 48.2    3654818 195.2  18108285  967.1
+## Vcells 9995173 76.3   42420448 323.7 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:38:53</p>
 </div>
 </div>
 <div id="sus-scrofa" class="section level2">
@@ -909,7 +933,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Sscrofa
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;101&quot;
+## [1] &quot;102&quot;
 ## 
 ## $organism
 ## [1] &quot;Sus scrofa&quot;
@@ -942,52 +966,55 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-5" class="section level3">
 <h3><span class="header-section-number">4.6.1</span> Genes</h3>
-<p><strong>Start</strong>: 2020-08-27 12:49:29</p>
+<p><strong>Start</strong>: 2020-12-18 16:38:53</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920232 49.2    6474882 345.8  17614157  940.7
-## Vcells 10035267 76.6   46940508 358.2 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:50:23</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901361 48.2    4098340 218.9  18108285  967.1
+## Vcells 9995096 76.3   40787630 311.2 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:39:50</p>
 </div>
 <div id="transcripts-5" class="section level3">
 <h3><span class="header-section-number">4.6.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2020-08-27 12:50:23</p>
+<p><strong>Start</strong>: 2020-12-18 16:39:50</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920263 49.2    5179906 276.7  17614157  940.7
-## Vcells 10035329 76.6   37552407 286.6 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:51:44</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901329 48.2    3730336 199.3  18108285  967.1
+## Vcells 9995063 76.3   39220125 299.3 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:41:22</p>
 </div>
 <div id="peptides-5" class="section level3">
 <h3><span class="header-section-number">4.6.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2020-08-27 12:51:44</p>
+<p><strong>Start</strong>: 2020-12-18 16:41:22</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=&quot;.&quot;,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
 gc()</code></pre>
-<pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   920232 49.2    4143925 221.4  17614157  940.7
-## Vcells 10035338 76.6   43401172 331.2 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:53:42</p>
+<pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  901319 48.2    3613123 193.0  18108285  967.1
+## Vcells 9995108 76.3   37715320 287.8 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:43:35</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -996,10 +1023,14 @@ gc()</code></pre>
 </div>
 <div id="loading-data-from-ncbi" class="section level1">
 <h1><span class="header-section-number">5</span> Loading data from NCBI</h1>
-<p>Information is downloaded if older than 2 days according to the <code>reDumpThr</code> object.</p>
+<p>Information is downloaded if older than 200 days according to the <code>reDumpThr</code> object.</p>
 <div id="register-ncbi-dbs" class="section level2">
 <h2><span class="header-section-number">5.1</span> Register NCBI DBs</h2>
-<pre class="r"><code>BED:::dumpNcbiDb(taxOfInt = c(), reDumpThr=reDumpThr, toLoad=c(), curDate=curDate)</code></pre>
+<pre class="r"><code>BED:::dumpNcbiDb(
+  taxOfInt = c(), reDumpThr=reDumpThr,
+  ddir=&quot;.&quot;,
+  toLoad=c(), curDate=curDate
+)</code></pre>
 <div id="genes-6" class="section level3">
 <h3><span class="header-section-number">5.1.1</span> Genes</h3>
 <pre class="r"><code>BED:::registerBEDB(
@@ -1030,71 +1061,82 @@ gc()</code></pre>
 </div>
 <div id="danio-rerio-data" class="section level2">
 <h2><span class="header-section-number">5.2</span> Danio rerio data</h2>
-<p><strong>Start</strong>: 2020-08-27 12:53:43</p>
+<p><strong>Start</strong>: 2020-12-18 16:43:35</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
-    organism=&quot;Danio rerio&quot;, curDate=curDate
+    organism=&quot;Danio rerio&quot;,
+    ddir=&quot;.&quot;,
+    curDate=curDate
 )
 gc()</code></pre>
 <pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   933508 49.9    3315140 177.1  17614157  940.7
-## Vcells 10062712 76.8   34722267 265.0 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 12:57:01</p>
+## Ncells   907831 48.5    2890499 154.4  18108285  967.1
+## Vcells 10009023 76.4   37724864 287.9 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:47:05</p>
 </div>
 <div id="homo-sapiens-data" class="section level2">
 <h2><span class="header-section-number">5.3</span> Homo sapiens data</h2>
-<p><strong>Start</strong>: 2020-08-27 12:57:01</p>
+<p><strong>Start</strong>: 2020-12-18 16:47:05</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
-    organism=&quot;Homo sapiens&quot;, curDate=curDate
+    organism=&quot;Homo sapiens&quot;,
+    ddir=&quot;.&quot;,
+    curDate=curDate
 )
 gc()</code></pre>
 <pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   933435 49.9    3900365 208.4  17614157  940.7
-## Vcells 10062637 76.8   50842544 387.9 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:03:40</p>
+## Ncells   907911 48.5    4940470 263.9  18108285  967.1
+## Vcells 10009200 76.4   52548944 401.0 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 16:53:53</p>
 </div>
 <div id="mus-musculus-data" class="section level2">
 <h2><span class="header-section-number">5.4</span> Mus musculus data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:03:40</p>
+<p><strong>Start</strong>: 2020-12-18 16:53:53</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
-    organism=&quot;Mus musculus&quot;, curDate=curDate
+    organism=&quot;Mus musculus&quot;,
+    ddir=&quot;.&quot;,
+    curDate=curDate
 )
 gc()</code></pre>
 <pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   933557 49.9    4563620 243.8  17614157  940.7
-## Vcells 10062887 76.8   40679558 310.4 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:09:38</p>
+## Ncells   908087 48.5    4799665 256.4  18108285  967.1
+## Vcells 10009543 76.4   42045417 320.8 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:00:10</p>
 </div>
 <div id="rattus-norvegicus-data" class="section level2">
 <h2><span class="header-section-number">5.5</span> Rattus norvegicus data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:09:38</p>
+<p><strong>Start</strong>: 2020-12-18 17:00:10</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
-    organism=&quot;Rattus norvegicus&quot;, curDate=curDate
+    organism=&quot;Rattus norvegicus&quot;,
+    ddir=&quot;.&quot;,
+    curDate=curDate
 )
 gc()</code></pre>
 <pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   933199 49.9    3650896 195.0  17614157  940.7
-## Vcells 10062339 76.8   32549188 248.4 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:13:21</p>
+## Ncells   907894 48.5    3839732 205.1  18108285  967.1
+## Vcells 10009273 76.4   33636334 256.7 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:04:10</p>
 </div>
 <div id="sus-scrofa-data" class="section level2">
 <h2><span class="header-section-number">5.6</span> Sus scrofa data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:13:21</p>
+<p><strong>Start</strong>: 2020-12-18 17:04:10</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
-    organism=&quot;Sus scrofa&quot;, curDate=curDate
+    organism=&quot;Sus scrofa&quot;,
+    ddir=&quot;.&quot;,
+    curDate=curDate
 )
 gc()</code></pre>
 <pre><code>##            used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells   933345 49.9    2920717 156.0  17614157  940.7
-## Vcells 10062628 76.8   32549188 248.4 167952474 1281.4</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:16:22</p>
+## Ncells   907872 48.5    3071786 164.1  18108285  967.1
+## Vcells 10009284 76.4   33636334 256.7 152032980 1160.0</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:07:13</p>
 </div>
 <div id="direct-cross-references-with-uniprot" class="section level2">
 <h2><span class="header-section-number">5.7</span> Direct cross-references with Uniprot</h2>
-<p><strong>Start</strong>: 2020-08-27 13:16:22</p>
+<p><strong>Start</strong>: 2020-12-18 17:07:13</p>
 <pre class="r"><code>message(&quot;Direct cross-references with Uniprot&quot;)
 BED:::dumpNcbiDb(
   taxOfInt=&quot;&quot;,
   reDumpThr=Inf,
+  ddir=&quot;.&quot;,
   toLoad=&quot;gene_refseq_uniprotkb_collab&quot;,
   curDate=Sys.Date()
 )
@@ -1125,7 +1167,7 @@ for(org in listOrganisms()){
       be=&quot;Peptide&quot;
   )
 }</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:21:45</p>
+<p><strong>End</strong>: 2020-12-18 17:13:24</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -1152,67 +1194,67 @@ BED:::registerBEDB(
 )</code></pre>
 <div id="danio-rerio-data-1" class="section level2">
 <h2><span class="header-section-number">6.1</span> Danio rerio data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:21:47</p>
+<p><strong>Start</strong>: 2020-12-18 17:13:26</p>
 <pre class="r"><code>BED:::getUniprot(
-    organism=&quot;Danio rerio&quot;, release=avRel
+    organism=&quot;Danio rerio&quot;, release=avRel, ddir=&quot;.&quot;
 )
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  84345712 4504.6  143019118 7638.1 136625302 7296.6
-## Vcells 311515058 2376.7  562931118 4294.9 475764224 3629.8</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:24:37</p>
+## Ncells  84315091 4503.0  142949137 7634.4 138920272 7419.2
+## Vcells 311452197 2376.2  562836035 4294.1 492868338 3760.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:16:16</p>
 </div>
 <div id="homo-sapiens-data-1" class="section level2">
 <h2><span class="header-section-number">6.2</span> Homo sapiens data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:24:37</p>
+<p><strong>Start</strong>: 2020-12-18 17:16:16</p>
 <pre class="r"><code>BED:::getUniprot(
-    organism=&quot;Homo sapiens&quot;, release=avRel
+    organism=&quot;Homo sapiens&quot;, release=avRel, ddir=&quot;.&quot;
 )
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  84345495 4504.6  143019118 7638.1 143019118 7638.1
-## Vcells 311514743 2376.7  562931118 4294.9 475764224 3629.8</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:28:54</p>
+## Ncells  84314874 4503.0  142949137 7634.4 142949137 7634.4
+## Vcells 311451884 2376.2  562836035 4294.1 492868338 3760.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:21:09</p>
 </div>
 <div id="mus-musculus-data-1" class="section level2">
 <h2><span class="header-section-number">6.3</span> Mus musculus data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:28:54</p>
+<p><strong>Start</strong>: 2020-12-18 17:21:09</p>
 <pre class="r"><code>BED:::getUniprot(
-    organism=&quot;Mus musculus&quot;, release=avRel
+    organism=&quot;Mus musculus&quot;, release=avRel, ddir=&quot;.&quot;
 )
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  84345797 4504.6  143019118 7638.1 143019118 7638.1
-## Vcells 311515294 2376.7  562931118 4294.9 475764224 3629.8</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:31:01</p>
+## Ncells  84315224 4503.0  142949137 7634.4 142949137 7634.4
+## Vcells 311452516 2376.2  562836035 4294.1 492868338 3760.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:23:25</p>
 </div>
 <div id="rattus-norvegicus-data-1" class="section level2">
 <h2><span class="header-section-number">6.4</span> Rattus norvegicus data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:31:01</p>
+<p><strong>Start</strong>: 2020-12-18 17:23:25</p>
 <pre class="r"><code>BED:::getUniprot(
-    organism=&quot;Rattus norvegicus&quot;, release=avRel
+    organism=&quot;Rattus norvegicus&quot;, release=avRel, ddir=&quot;.&quot;
 )
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  84345700 4504.6  143019118 7638.1 143019118 7638.1
-## Vcells 311515190 2376.7  562931118 4294.9 475764224 3629.8</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:32:02</p>
+## Ncells  84315079 4503.0  142949137 7634.4 142949137 7634.4
+## Vcells 311452325 2376.2  562836035 4294.1 492868338 3760.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:24:35</p>
 </div>
 <div id="sus-scrofa-data-1" class="section level2">
 <h2><span class="header-section-number">6.5</span> Sus scrofa data</h2>
-<p><strong>Start</strong>: 2020-08-27 13:32:02</p>
+<p><strong>Start</strong>: 2020-12-18 17:24:35</p>
 <pre class="r"><code>BED:::getUniprot(
-    organism=&quot;Sus scrofa&quot;, release=avRel
+    organism=&quot;Sus scrofa&quot;, release=avRel, ddir=&quot;.&quot;
 )
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  84345615 4504.6  143019118 7638.1 143019118 7638.1
-## Vcells 311515086 2376.7  562931118 4294.9 475764224 3629.8</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:35:46</p>
+## Ncells  84314994 4503.0  142949137 7634.4 142949137 7634.4
+## Vcells 311452230 2376.2  562836035 4294.1 492868338 3760.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:28:28</p>
 </div>
 <div id="indirect-cross-references-with-entrezgene" class="section level2">
 <h2><span class="header-section-number">6.6</span> Indirect cross-references with EntrezGene</h2>
-<p><strong>Start</strong>: 2020-08-27 13:35:46</p>
+<p><strong>Start</strong>: 2020-12-18 17:28:28</p>
 <pre class="r"><code>message(&quot;Indirect cross-references with Uniprot&quot;)
 dumpDir &lt;- &quot;NCBI-gene-DATA&quot;
 f &lt;- &quot;gene2accession.gz&quot;
@@ -1282,7 +1324,7 @@ for(org in listOrganisms()){
     be=&quot;Gene&quot;
   )
 }</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:44:14</p>
+<p><strong>End</strong>: 2020-12-18 17:38:09</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -1290,7 +1332,7 @@ for(org in listOrganisms()){
 </div>
 <div id="loading-clarivate-analytics-metabase-objects" class="section level1">
 <h1><span class="header-section-number">7</span> Loading Clarivate Analytics MetaBase objects</h1>
-<p><strong>Start</strong>: 2020-08-27 13:44:14</p>
+<p><strong>Start</strong>: 2020-12-18 17:38:09</p>
 <p>The following chunk should be adapted to fit MetaBase installation.</p>
 <pre class="r"><code>library(metabaser)
 metabase.connect(
@@ -1322,8 +1364,8 @@ BED:::registerBEDB(
 <pre><code>## Metabase connection OK</code></pre>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  85772249 4580.8  143019118 7638.1 143019118 7638.1
-## Vcells 370167555 2824.2  562931118 4294.9 556261927 4244.0</code></pre>
+## Ncells  85729140 4578.5  142949137 7634.4 142949137 7634.4
+## Vcells 371052650 2831.0  562836035 4294.1 554862818 4233.3</code></pre>
 </div>
 <div id="mus-musculus-data-2" class="section level2">
 <h2><span class="header-section-number">7.3</span> Mus musculus data</h2>
@@ -1333,8 +1375,8 @@ BED:::registerBEDB(
 <pre><code>## Metabase connection OK</code></pre>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  85771488 4580.7  143019118 7638.1 143019118 7638.1
-## Vcells 370166323 2824.2  562931118 4294.9 556261927 4244.0</code></pre>
+## Ncells  85728232 4578.4  142949137 7634.4 142949137 7634.4
+## Vcells 371051173 2830.9  562836035 4294.1 554862818 4233.3</code></pre>
 </div>
 <div id="rattus-norvegicus-data-2" class="section level2">
 <h2><span class="header-section-number">7.4</span> Rattus norvegicus data</h2>
@@ -1344,9 +1386,9 @@ BED:::registerBEDB(
 <pre><code>## Metabase connection OK</code></pre>
 <pre class="r"><code>gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  85771489 4580.7  143019118 7638.1 143019118 7638.1
-## Vcells 370166363 2824.2  562931118 4294.9 556261927 4244.0</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:48:51</p>
+## Ncells  85728233 4578.4  142949137 7634.4 142949137 7634.4
+## Vcells 371051213 2830.9  562836035 4294.1 554862818 4233.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:41:31</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -1356,7 +1398,7 @@ BED:::registerBEDB(
 <h1><span class="header-section-number">8</span> Loading homologs</h1>
 <div id="orthologs-from-biomart" class="section level2">
 <h2><span class="header-section-number">8.1</span> Orthologs from biomaRt</h2>
-<p><strong>Start</strong>: 2020-08-27 13:48:51</p>
+<p><strong>Start</strong>: 2020-12-18 17:41:31</p>
 <pre class="r"><code>library(biomaRt)
 loadBmHomologs &lt;- function(org1, org2, version){
 
@@ -1410,11 +1452,11 @@ for(i in 1:(length(orgOfInt)-1)){
     )
   }
 }</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:58:34</p>
+<p><strong>End</strong>: 2020-12-18 17:48:19</p>
 </div>
 <div id="orthologs-from-ncbi" class="section level2">
 <h2><span class="header-section-number">8.2</span> Orthologs from NCBI</h2>
-<p><strong>Start</strong>: 2020-08-27 13:58:34</p>
+<p><strong>Start</strong>: 2020-12-18 17:48:19</p>
 <pre class="r"><code>#####################################
 gdbname &lt;- &quot;EntrezGene&quot;
 taxOfInt &lt;- unlist(lapply(
@@ -1428,6 +1470,7 @@ for(i in 1:length(taxOfInt)){
    BED:::dumpNcbiDb(
        taxOfInt=taxOfInt[i],
        reDumpThr=reDumpThr,
+       ddir=&quot;.&quot;,
        toLoad=c(&quot;gene_orthologs&quot;),
        curDate=curDate
    )
@@ -1451,9 +1494,9 @@ for(i in 1:length(taxOfInt)){
 }
 gc()</code></pre>
 <pre><code>##             used   (Mb) gc trigger   (Mb)  max used   (Mb)
-## Ncells  87442599 4670.0  143019118 7638.1 143019118 7638.1
-## Vcells 374195146 2854.9  562931118 4294.9 556261927 4244.0</code></pre>
-<p><strong>End</strong>: 2020-08-27 13:59:56</p>
+## Ncells  87385995 4667.0  142949137 7634.4 142949137 7634.4
+## Vcells 375047915 2861.4  562836035 4294.1 554862818 4233.3</code></pre>
+<p><strong>End</strong>: 2020-12-18 17:49:37</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
@@ -1467,7 +1510,7 @@ gc()</code></pre>
 dir.create(&quot;geo&quot;, showWarnings=FALSE)</code></pre>
 <div id="gpl1708-agilent-012391-whole-human-genome-oligo-microarray-g4112a-feature-number-version" class="section level3">
 <h3><span class="header-section-number">9.1.1</span> GPL1708: Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)</h3>
-<p><strong>Start</strong>: 2020-08-27 13:59:56</p>
+<p><strong>Start</strong>: 2020-12-18 17:49:37</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1708&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1505,11 +1548,11 @@ BED:::loadProbes(
 #     platform=platName,
 #     dbname=dbname
 # )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:00:28</p>
+<p><strong>End</strong>: 2020-12-18 17:49:45</p>
 </div>
 <div id="gpl6480-agilent-014850-whole-human-genome-microarray-4x44k-g4112f-probe-name-version" class="section level3">
 <h3><span class="header-section-number">9.1.2</span> GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)</h3>
-<p><strong>Start</strong>: 2020-08-27 14:00:28</p>
+<p><strong>Start</strong>: 2020-12-18 17:49:45</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6480&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1546,11 +1589,11 @@ BED:::loadProbes(
 #     platform=platName,
 #     dbname=dbname
 # )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:00:57</p>
+<p><strong>End</strong>: 2020-12-18 17:49:54</p>
 </div>
 <div id="gpl570-affymetrix-human-genome-u133-plus-2.0-array" class="section level3">
 <h3><span class="header-section-number">9.1.3</span> GPL570: Affymetrix Human Genome U133 Plus 2.0 Array</h3>
-<p><strong>Start</strong>: 2020-08-27 14:00:57</p>
+<p><strong>Start</strong>: 2020-12-18 17:49:54</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL570&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1577,11 +1620,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:01:59</p>
+<p><strong>End</strong>: 2020-12-18 17:50:10</p>
 </div>
 <div id="gpl571-affymetrix-human-genome-u133a-2.0-array" class="section level3">
 <h3><span class="header-section-number">9.1.4</span> GPL571: Affymetrix Human Genome U133A 2.0 Array</h3>
-<p><strong>Start</strong>: 2020-08-27 14:01:59</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:10</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL571&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1608,11 +1651,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:02:18</p>
+<p><strong>End</strong>: 2020-12-18 17:50:18</p>
 </div>
 <div id="gpl13158-affymetrix-ht-hg-u133-pm-array-plate" class="section level3">
 <h3><span class="header-section-number">9.1.5</span> GPL13158: Affymetrix HT HG-U133+ PM Array Plate</h3>
-<p><strong>Start</strong>: 2020-08-27 14:02:18</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:18</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL13158&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1639,11 +1682,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:03:00</p>
+<p><strong>End</strong>: 2020-12-18 17:50:30</p>
 </div>
 <div id="gpl96-affymetrix-human-genome-u133a-array" class="section level3">
 <h3><span class="header-section-number">9.1.6</span> GPL96: Affymetrix Human Genome U133A Array</h3>
-<p><strong>Start</strong>: 2020-08-27 14:03:00</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:30</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL96&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1670,11 +1713,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:03:50</p>
+<p><strong>End</strong>: 2020-12-18 17:50:38</p>
 </div>
 <div id="gpl1261-affymetrix-mouse-genome-430-2.0-array" class="section level3">
 <h3><span class="header-section-number">9.1.7</span> GPL1261: Affymetrix Mouse Genome 430 2.0 Array</h3>
-<p><strong>Start</strong>: 2020-08-27 14:03:50</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:38</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1261&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1701,11 +1744,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:04:59</p>
+<p><strong>End</strong>: 2020-12-18 17:50:49</p>
 </div>
 <div id="gpl1355-affymetrix-rat-genome-230-2.0-array" class="section level3">
 <h3><span class="header-section-number">9.1.8</span> GPL1355: Affymetrix Rat Genome 230 2.0 Array</h3>
-<p><strong>Start</strong>: 2020-08-27 14:04:59</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:49</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1355&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1732,11 +1775,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:06:01</p>
+<p><strong>End</strong>: 2020-12-18 17:50:57</p>
 </div>
 <div id="gpl10558-illumina-humanht-12-v4.0-expression-beadchip" class="section level3">
 <h3><span class="header-section-number">9.1.9</span> GPL10558: Illumina HumanHT-12 V4.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2020-08-27 14:06:01</p>
+<p><strong>Start</strong>: 2020-12-18 17:50:57</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL10558&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1759,11 +1802,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:07:17</p>
+<p><strong>End</strong>: 2020-12-18 17:51:14</p>
 </div>
 <div id="gpl6947-illumina-humanht-12-v3.0-expression-beadchip" class="section level3">
 <h3><span class="header-section-number">9.1.10</span> GPL6947: Illumina HumanHT-12 V3.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2020-08-27 14:07:17</p>
+<p><strong>Start</strong>: 2020-12-18 17:51:14</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6947&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1786,11 +1829,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:07:55</p>
+<p><strong>End</strong>: 2020-12-18 17:51:25</p>
 </div>
 <div id="gpl6885-illumina-mouseref-8-v2.0-expression-beadchip" class="section level3">
 <h3><span class="header-section-number">9.1.11</span> GPL6885: Illumina MouseRef-8 v2.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2020-08-27 14:07:55</p>
+<p><strong>Start</strong>: 2020-12-18 17:51:25</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6885&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1818,11 +1861,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:08:10</p>
+<p><strong>End</strong>: 2020-12-18 17:51:32</p>
 </div>
 <div id="gpl6887-illumina-mousewg-6-v2.0-expression-beadchip" class="section level3">
 <h3><span class="header-section-number">9.1.12</span> GPL6887: Illumina MouseWG-6 v2.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2020-08-27 14:08:10</p>
+<p><strong>Start</strong>: 2020-12-18 17:51:32</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6887&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1850,11 +1893,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:09:40</p>
+<p><strong>End</strong>: 2020-12-18 17:51:48</p>
 </div>
 <div id="gpl6101-illumina-ratref-12-v1.0-expression-beadchip" class="section level3">
 <h3><span class="header-section-number">9.1.13</span> GPL6101: Illumina ratRef-12 v1.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2020-08-27 14:09:40</p>
+<p><strong>Start</strong>: 2020-12-18 17:51:48</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6101&quot;
 gds &lt;- getGEO(platName, destdir=&quot;geo&quot;)
@@ -1877,7 +1920,7 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:09:52</p>
+<p><strong>End</strong>: 2020-12-18 17:51:54</p>
 <!-- ## Probes from biomaRt -->
 
 <!-- ```{r biomartProbes, message=FALSE} -->
@@ -1926,7 +1969,7 @@ BED:::loadProbes(
 
 <!-- ### Human platforms -->
 
-<!-- **Start**: 2020-08-27 14:09:52 -->
+<!-- **Start**: 2020-12-18 17:51:54 -->
 
 <!-- ```{r illumina_humanht_12_v4, message=FALSE} -->
 <!-- message(Sys.time()) -->
@@ -1948,11 +1991,11 @@ BED:::loadProbes(
 <!-- ) -->
 <!-- ``` -->
 
-<!-- **End**: 2020-08-27 14:09:52 -->
+<!-- **End**: 2020-12-18 17:51:54 -->
 
 <!-- ### Mouse platforms -->
 
-<!-- **Start**: 2020-08-27 14:09:52 -->
+<!-- **Start**: 2020-12-18 17:51:54 -->
 
 <!-- ```{r illumina_mouseref_8_v2, message=FALSE} -->
 <!-- message(Sys.time()) -->
@@ -1974,11 +2017,11 @@ BED:::loadProbes(
 <!-- ) -->
 <!-- ``` -->
 
-<!-- **End**: 2020-08-27 14:09:52 -->
+<!-- **End**: 2020-12-18 17:51:54 -->
 
 <!-- ### Rat platforms -->
 
-<!-- **Start**: 2020-08-27 14:09:52 -->
+<!-- **Start**: 2020-12-18 17:51:54 -->
 
 <!-- ```{r illumina_ratref_12_v1, message=FALSE} -->
 <!-- message(Sys.time()) -->
@@ -2000,7 +2043,7 @@ BED:::loadProbes(
 <!-- ) -->
 <!-- ``` -->
 
-<!-- **End**: 2020-08-27 14:09:52 -->
+<!-- **End**: 2020-12-18 17:51:54 -->
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -2034,9 +2077,9 @@ for(db in names(otherIdURL)){
 </div>
 <div id="load-lucene-indexes" class="section level1">
 <h1><span class="header-section-number">11</span> Load Lucene Indexes</h1>
-<p><strong>Start</strong>: 2020-08-27 14:09:52</p>
+<p><strong>Start</strong>: 2020-12-18 17:51:55</p>
 <pre class="r"><code>BED:::loadLuceneIndexes()</code></pre>
-<p><strong>End</strong>: 2020-08-27 14:09:53</p>
+<p><strong>End</strong>: 2020-12-18 17:51:56</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -2062,36 +2105,36 @@ for(db in names(otherIdURL)){
 ## [8] base     
 ## 
 ## other attached packages:
-##  [1] GEOquery_2.56.0     Biobase_2.48.0      BiocGenerics_0.34.0
-##  [4] biomaRt_2.44.1      metabaser_4.7.0     igraph_1.2.5       
-##  [7] BED_1.4.2           visNetwork_2.0.9    neo2R_2.1.0        
-## [10] knitr_1.29         
+##  [1] GEOquery_2.58.0     Biobase_2.50.0      BiocGenerics_0.36.0
+##  [4] biomaRt_2.46.0      metabaser_4.7.1     igraph_1.2.6       
+##  [7] BED_1.4.3           visNetwork_2.0.9    neo2R_2.1.0        
+## [10] knitr_1.30         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] Rcpp_1.0.5           tidyr_1.1.0          prettyunits_1.1.1   
-##  [4] png_0.1-7            assertthat_0.2.1     digest_0.6.25       
-##  [7] BiocFileCache_1.12.0 mime_0.9             R6_2.4.1            
-## [10] plyr_1.8.6           stats4_4.0.2         RSQLite_2.2.0       
-## [13] evaluate_0.14        httr_1.4.2           pillar_1.4.6        
-## [16] rlang_0.4.7          progress_1.2.2       curl_4.3            
-## [19] data.table_1.13.0    miniUI_0.1.1.1       blob_1.2.1          
-## [22] S4Vectors_0.26.1     DT_0.14              rmarkdown_2.3       
-## [25] readr_1.3.1          stringr_1.4.0        htmlwidgets_1.5.1   
+##  [1] Rcpp_1.0.5           tidyr_1.1.2          prettyunits_1.1.1   
+##  [4] png_0.1-7            assertthat_0.2.1     digest_0.6.27       
+##  [7] BiocFileCache_1.14.0 mime_0.9             R6_2.5.0            
+## [10] plyr_1.8.6           stats4_4.0.2         RSQLite_2.2.1       
+## [13] evaluate_0.14        httr_1.4.2           pillar_1.4.7        
+## [16] rlang_0.4.8          progress_1.2.2       curl_4.3            
+## [19] data.table_1.13.2    miniUI_0.1.1.1       blob_1.2.1          
+## [22] S4Vectors_0.28.0     DT_0.16              rmarkdown_2.5       
+## [25] readr_1.4.0          stringr_1.4.0        htmlwidgets_1.5.2   
 ## [28] RCurl_1.98-1.2       bit_4.0.4            shiny_1.5.0         
-## [31] compiler_4.0.2       httpuv_1.5.4         xfun_0.16           
-## [34] pkgconfig_2.0.3      askpass_1.1          base64enc_0.1-3     
-## [37] htmltools_0.5.0      openssl_1.4.2        tidyselect_1.1.0    
-## [40] tibble_3.0.3         IRanges_2.22.2       XML_3.99-0.5        
-## [43] dbplyr_1.4.4         crayon_1.3.4         dplyr_1.0.1         
-## [46] later_1.1.0.1        rappdirs_0.3.1       bitops_1.0-6        
-## [49] jsonlite_1.7.0       xtable_1.8-4         lifecycle_0.2.0     
-## [52] DBI_1.1.0            magrittr_1.5         RJDBC_0.2-8         
-## [55] stringi_1.4.6        promises_1.1.1       limma_3.44.3        
-## [58] xml2_1.3.2           ellipsis_0.3.1       generics_0.0.2      
-## [61] vctrs_0.3.2          tools_4.0.2          bit64_4.0.2         
-## [64] glue_1.4.1           purrr_0.3.4          hms_0.5.3           
-## [67] fastmap_1.0.1        yaml_2.2.1           AnnotationDbi_1.50.3
-## [70] memoise_1.1.0        rJava_0.9-13</code></pre>
+## [31] compiler_4.0.2       httpuv_1.5.4         xfun_0.19           
+## [34] askpass_1.1          pkgconfig_2.0.3      base64enc_0.1-3     
+## [37] htmltools_0.5.0      openssl_1.4.3        tidyselect_1.1.0    
+## [40] tibble_3.0.4         IRanges_2.24.0       XML_3.99-0.5        
+## [43] withr_2.3.0          dbplyr_2.0.0         crayon_1.3.4        
+## [46] dplyr_1.0.2          later_1.1.0.1        rappdirs_0.3.1      
+## [49] bitops_1.0-6         jsonlite_1.7.1       xtable_1.8-4        
+## [52] lifecycle_0.2.0      DBI_1.1.0            magrittr_2.0.1      
+## [55] RJDBC_0.2-8          stringi_1.5.3        promises_1.1.1      
+## [58] limma_3.46.0         xml2_1.3.2           ellipsis_0.3.1      
+## [61] generics_0.1.0       vctrs_0.3.5          tools_4.0.2         
+## [64] bit64_4.0.5          glue_1.4.2           purrr_0.3.4         
+## [67] hms_0.5.3            fastmap_1.0.1        yaml_2.2.1          
+## [70] AnnotationDbi_1.52.0 memoise_1.1.0        rJava_0.9-13</code></pre>
 </div>
 
 
@@ -2105,7 +2148,7 @@ for(db in names(otherIdURL)){
 
 // add bootstrap table styles to pandoc tables
 function bootstrapStylePandocTables() {
-  $('tr.header').parent('thead').parent('table').addClass('table table-condensed');
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
 }
 $(document).ready(function () {
   bootstrapStylePandocTables();

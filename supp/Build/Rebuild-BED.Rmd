@@ -720,7 +720,9 @@ gc()
 
 ```{r ncbiHsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Homo sapiens", curDate=curDate
+    organism="Homo sapiens",
+    ddir=".",
+    curDate=curDate
 )
 gc()
 ```
