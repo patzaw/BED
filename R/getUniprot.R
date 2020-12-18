@@ -5,10 +5,12 @@
 #' @param organism character vector of 1 element corresponding to the organism
 #' of interest (e.g. "Homo sapiens")
 #' @param release the release of interest (check if already downloaded)
+#' @param ddir path to the directory where the data should be saved
 #'
 getUniprot <- function(
     organism,
-    release
+    release,
+    ddir
 ){
     ################################################@
     ## Organism ----
@@ -19,7 +21,8 @@ getUniprot <- function(
     gene_info <- NULL
     dumpUniprotDb(
         taxOfInt=taxId,
-        release=release
+        release=release,
+        ddir=ddir
     )
 
     ################################################@

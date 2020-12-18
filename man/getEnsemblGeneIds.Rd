@@ -4,7 +4,7 @@
 \alias{getEnsemblGeneIds}
 \title{Feeding BED: Download Ensembl DB and load gene information in BED}
 \usage{
-getEnsemblGeneIds(organism, release, gv, dbCref, dbAss, canChromosomes)
+getEnsemblGeneIds(organism, release, gv, ddir, dbCref, dbAss, canChromosomes)
 }
 \arguments{
 \item{organism}{character vector of 1 element corresponding to the organism
@@ -13,6 +13,8 @@ of interest (e.g. "Homo sapiens")}
 \item{release}{the Ensembl release of interest (e.g. "83")}
 
 \item{gv}{the genome version (e.g. "38")}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{dbCref}{a named vector of characters providing cross-reference DB of
 interest. These DB are also used to find indirect ID associations.}

@@ -1,4 +1,28 @@
 <!----------------------------------------------------------------------------->
+## Version 1.4.3
+
+### Complying with CRAN policies
+
+   - Software names in single quotes ('Neo4j' and 'Docker') in title and
+   description fields of the DESCRIPTION file.
+   - Reference added in the description field of the DESCRIPTION file.
+   - Link to the 'Docker' image of the 'Neo4j' database added in the
+   description field of the DESCRIPTION file.
+   - Author and contribution declared in the Authors@R field of the
+   DESCRIPTION file.
+   - Functions `forgetBedConnection()`, `dumpEnsCore()`, `dumpNcbiDb()`,
+   `dumpNcbiTax()`, `dumpUniprotDb()`, `getEnsemblGeneIds()`,
+   `getEnsemblPeptideIds()`, `getEnsemblTranscriptIds()`,
+   `getNcbiGeneTransPep()`, `getUniprot()`,
+   `loadNCBIEntrezGOFunctions()`,  and `loadNcbiTax()`
+   functions do not write anymore by default in the user's home file space.
+   - As explained in the documentation and in code comments, query results
+   are automatically written on user's home file space if and only if the
+   cache parameter has been set to TRUE when calling the `connectToBed()`
+   function (by default this parameter is set to FALSE). 
+
+
+<!----------------------------------------------------------------------------->
 ## Version 1.4.2
 
 ### Bug fixes

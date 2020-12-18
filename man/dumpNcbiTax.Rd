@@ -6,6 +6,7 @@
 \usage{
 dumpNcbiTax(
   reDumpThr,
+  ddir,
   toDump = c("names.dmp"),
   env = parent.frame(n = 1),
   curDate
@@ -13,6 +14,8 @@ dumpNcbiTax(
 }
 \arguments{
 \item{reDumpThr}{time difference threshold between 2 downloads}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{toDump}{the list of tables to load}
 

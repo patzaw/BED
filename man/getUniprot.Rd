@@ -4,13 +4,15 @@
 \alias{getUniprot}
 \title{Feeding BED: Download Uniprot information in BED}
 \usage{
-getUniprot(organism, release)
+getUniprot(organism, release, ddir)
 }
 \arguments{
 \item{organism}{character vector of 1 element corresponding to the organism
 of interest (e.g. "Homo sapiens")}
 
 \item{release}{the release of interest (check if already downloaded)}
+
+\item{ddir}{path to the directory where the data should be saved}
 }
 \description{
 Not exported to avoid unintended modifications of the DB.

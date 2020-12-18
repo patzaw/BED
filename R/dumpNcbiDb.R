@@ -4,6 +4,7 @@
 #'
 #' @param taxOfInt the organism to download (e.g. "9606").
 #' @param reDumpThr time difference threshold between 2 downloads
+#' @param ddir path to the directory where the data should be saved
 #' @param toLoad the list of tables to load
 #' @param env the R environment in which to load the tables when downloaded
 #' @param curDate current date as given by [Sys.Date]
@@ -11,6 +12,7 @@
 dumpNcbiDb <- function(
     taxOfInt,
     reDumpThr,
+    ddir,
     toLoad=c(
         "gene_info", "gene2ensembl",
         # "gene2unigene", "gene2vega",
@@ -23,7 +25,7 @@ dumpNcbiDb <- function(
 
     ftp <- "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/"
 
-    dumpDir <- "NCBI-gene-DATA"
+    dumpDir <- file.path(ddir, "NCBI-gene-DATA")
     if(file.exists(dumpDir)){
         load(file.path(dumpDir, "dumpDate.rda"))
         message("Last download: ", dumpDate)

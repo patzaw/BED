@@ -4,10 +4,14 @@
 \alias{forgetBedConnection}
 \title{Forget a BED connection}
 \usage{
-forgetBedConnection(connection)
+forgetBedConnection(connection, save = FALSE)
 }
 \arguments{
 \item{connection}{the id of the connection to forget.}
+
+\item{save}{a logical. Should be set to TRUE to save the updated list of
+connections in the file space (default to FALSE to comply with CRAN
+policies).}
 }
 \description{
 Forget a BED connection

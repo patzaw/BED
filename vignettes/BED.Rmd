@@ -123,20 +123,21 @@ library(BED)
 ```
 
 
-```{r, message=FALSE}
-connectToBed(url="localhost:5454", remember=FALSE, useCache=TRUE)
+```{r, message=FALSE, eval=FALSE}
+connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 ```
 
 The `remember` parameter can be set to `TRUE` in order to save connection
 information that will be automatically used the next time the `connectToBed()`
 function is called or the next time the BED library is loaded.
-By default, this parameter is set to `FALSE`.
+By default, this parameter is set to `FALSE` to comply with CRAN policies.
 Saved connection can be managed with the `lsBedConnections()` and
 the `forgetBedConnection()` functions.
 
-The `useCache` parameter is by default set to `FALSE`.
+The `useCache` parameter is by default set to `FALSE` to comply with
+CRAN policies.
 However, it is recommended to set it to `TRUE` to improve the speed
-of recurent queries: the results of some large queries are saved localy
+of recurrent queries: the results of some large queries are saved locally
 in a file.
 
 The connection can be checked the following way.

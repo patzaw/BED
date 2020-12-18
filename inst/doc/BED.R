@@ -12,8 +12,8 @@ knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
 ## ---- message=FALSE, eval=TRUE------------------------------------------------
 library(BED)
 
-## ---- message=FALSE-----------------------------------------------------------
-connectToBed(url="localhost:5454", remember=FALSE, useCache=TRUE)
+## ---- message=FALSE, eval=FALSE-----------------------------------------------
+#  connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 
 ## ---- message=TRUE------------------------------------------------------------
 checkBedConn(verbose=TRUE)

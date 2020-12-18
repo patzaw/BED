@@ -6,11 +6,13 @@
 #' @param organism character vector of 1 element corresponding to the organism
 #' of interest (e.g. "Homo sapiens")
 #' @param reDumpThr time difference threshold between 2 downloads
+#' @param ddir path to the directory where the data should be saved
 #' @param curDate current date as given by [Sys.Date]
 #'
 getNcbiGeneTransPep <- function(
    organism,
    reDumpThr=100000,
+   ddir,
    curDate
 ){
 
@@ -28,6 +30,7 @@ getNcbiGeneTransPep <- function(
    dumpNcbiDb(
       taxOfInt=taxId,
       reDumpThr=reDumpThr,
+      ddir=ddir,
       toLoad=c(
          "gene_info", "gene2ensembl",
          # "gene2unigene", "gene2vega",

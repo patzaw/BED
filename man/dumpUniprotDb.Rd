@@ -4,13 +4,15 @@
 \alias{dumpUniprotDb}
 \title{Feeding BED: Dump and preprocess flat dat files fro Uniprot}
 \usage{
-dumpUniprotDb(taxOfInt, release, env = parent.frame(n = 1))
+dumpUniprotDb(taxOfInt, release, ddir, env = parent.frame(n = 1))
 }
 \arguments{
 \item{taxOfInt}{the organism of interest. Only human ("9606"),
 mouse ("10090") and rat ("10116") are supported}
 
 \item{release}{the release of interest (check if already downloaded)}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{env}{the R environment in which to load the tables when built}
 }

@@ -7,6 +7,7 @@
 dumpNcbiDb(
   taxOfInt,
   reDumpThr,
+  ddir,
   toLoad = c("gene_info", "gene2ensembl", "gene_group", "gene_orthologs",
     "gene_history", "gene2refseq"),
   env = parent.frame(n = 1),
@@ -17,6 +18,8 @@ dumpNcbiDb(
 \item{taxOfInt}{the organism to download (e.g. "9606").}
 
 \item{reDumpThr}{time difference threshold between 2 downloads}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{toLoad}{the list of tables to load}
 

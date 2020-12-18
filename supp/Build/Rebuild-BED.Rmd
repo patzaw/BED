@@ -287,6 +287,7 @@ according to the `reDumpThr` object.
 ```{r ncbiTax, message=FALSE}
 BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
+    ddir=".",
     orgOfInt=c(
        "Homo sapiens", "Rattus norvegicus", "Mus musculus",
        "Sus scrofa", "Danio rerio"
@@ -353,6 +354,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -371,6 +373,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -388,6 +391,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -412,6 +416,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -430,6 +435,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -447,6 +453,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -471,6 +478,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -489,6 +497,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -506,6 +515,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -530,6 +540,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -548,6 +559,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -565,6 +577,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -589,6 +602,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -607,6 +621,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -624,6 +639,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
+    ddir=".",
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -643,7 +659,11 @@ according to the `reDumpThr` object.
 ## Register NCBI DBs
 
 ```{r dumpNcbi, message=FALSE}
-BED:::dumpNcbiDb(taxOfInt = c(), reDumpThr=reDumpThr, toLoad=c(), curDate=curDate)
+BED:::dumpNcbiDb(
+  taxOfInt = c(), reDumpThr=reDumpThr,
+  ddir=".",
+  toLoad=c(), curDate=curDate
+)
 ```
 
 ### Genes
@@ -685,7 +705,9 @@ BED:::registerBEDB(
 
 ```{r ncbiDrData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Danio rerio", curDate=curDate
+    organism="Danio rerio",
+    ddir=".",
+    curDate=curDate
 )
 gc()
 ```
@@ -711,7 +733,9 @@ gc()
 
 ```{r ncbiMmData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Mus musculus", curDate=curDate
+    organism="Mus musculus",
+    ddir=".",
+    curDate=curDate
 )
 gc()
 ```
@@ -724,7 +748,9 @@ gc()
 
 ```{r ncbiRnData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Rattus norvegicus", curDate=curDate
+    organism="Rattus norvegicus",
+    ddir=".",
+    curDate=curDate
 )
 gc()
 ```
@@ -737,7 +763,9 @@ gc()
 
 ```{r ncbiSsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
-    organism="Sus scrofa", curDate=curDate
+    organism="Sus scrofa",
+    ddir=".",
+    curDate=curDate
 )
 gc()
 ```
@@ -753,6 +781,7 @@ message("Direct cross-references with Uniprot")
 BED:::dumpNcbiDb(
   taxOfInt="",
   reDumpThr=Inf,
+  ddir=".",
   toLoad="gene_refseq_uniprotkb_collab",
   curDate=Sys.Date()
 )
@@ -821,7 +850,7 @@ BED:::registerBEDB(
 
 ```{r uniprotDrData, message=FALSE}
 BED:::getUniprot(
-    organism="Danio rerio", release=avRel
+    organism="Danio rerio", release=avRel, ddir="."
 )
 gc()
 ```
@@ -834,7 +863,7 @@ gc()
 
 ```{r uniprotHsData, message=FALSE}
 BED:::getUniprot(
-    organism="Homo sapiens", release=avRel
+    organism="Homo sapiens", release=avRel, ddir="."
 )
 gc()
 ```
@@ -847,7 +876,7 @@ gc()
 
 ```{r uniprotMmData, message=FALSE}
 BED:::getUniprot(
-    organism="Mus musculus", release=avRel
+    organism="Mus musculus", release=avRel, ddir="."
 )
 gc()
 ```
@@ -860,7 +889,7 @@ gc()
 
 ```{r uniprotRnData, message=FALSE}
 BED:::getUniprot(
-    organism="Rattus norvegicus", release=avRel
+    organism="Rattus norvegicus", release=avRel, ddir="."
 )
 gc()
 ```
@@ -873,7 +902,7 @@ gc()
 
 ```{r uniprotSsData, message=FALSE}
 BED:::getUniprot(
-    organism="Sus scrofa", release=avRel
+    organism="Sus scrofa", release=avRel, ddir="."
 )
 gc()
 ```
@@ -1113,6 +1142,7 @@ for(i in 1:length(taxOfInt)){
    BED:::dumpNcbiDb(
        taxOfInt=taxOfInt[i],
        reDumpThr=reDumpThr,
+       ddir=".",
        toLoad=c("gene_orthologs"),
        curDate=curDate
    )

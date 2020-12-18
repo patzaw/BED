@@ -11,6 +11,8 @@ cacheBedResult <- function(
    value,
    name
 ){
+   ## Write cache in the user file space only if the "useCache" parameter
+   ## is set to TRUE when calling `connectToBed()` (default: useCache=FALSE)
    if(!get("useCache", bedEnv)){
       invisible(NULL)
    }else{

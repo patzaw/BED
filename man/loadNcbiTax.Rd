@@ -4,10 +4,12 @@
 \alias{loadNcbiTax}
 \title{Feeding BED: Load taxonomic information from NCBI}
 \usage{
-loadNcbiTax(reDumpThr, orgOfInt = c("human", "rat", "mouse"), curDate)
+loadNcbiTax(reDumpThr, ddir, orgOfInt = c("human", "rat", "mouse"), curDate)
 }
 \arguments{
 \item{reDumpThr}{time difference threshold between 2 downloads}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{orgOfInt}{organisms of interest: a character vector}
 

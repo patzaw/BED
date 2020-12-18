@@ -13,6 +13,8 @@ checkBedCache <- function(newCon=FALSE){
    if(!checkBedConn()){
       stop("Not connected to BED")
    }
+   ## Write cache in the user file space only if the "useCache" parameter
+   ## is set to TRUE when calling `connectToBed()` (default: useCache=FALSE)
    if(!get("useCache", bedEnv)){
       invisible(NULL)
    }else{

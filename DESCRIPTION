@@ -1,10 +1,15 @@
 Package: BED
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 1.4.2
-Author: Patrice Godard
-Maintainer: Patrice Godard <patrice.godard@gmail.com>
-Description: An interface for the neo4j database providing
+Version: 1.4.3
+Authors@R: c(
+    person(
+        "Patrice", "Godard",
+        role = c("aut", "cre","cph"),
+        email = "patrice.godard@gmail.com"
+    )
+    )
+Description: An interface for the 'Neo4j' database providing
     mapping between different identifiers of biological entities.
     This Biological Entity Dictionary (BED)
     has been developed to address three main challenges.
@@ -26,6 +31,10 @@ Description: An interface for the neo4j database providing
     the same way than between two scopes regarding gene ID.
     Also, converting identifiers from different organisms should be possible
     using gene orthologs information.
+    A ready to use database is provided as
+    a 'Docker' image <https://hub.docker.com/r/patzaw/bed-ucb-human/>.
+    The method has been published by
+    Godard and van Eyll (2018) <doi:10.12688/f1000research.13925.3>.
 URL: https://github.com/patzaw/BED
 BugReports: https://github.com/patzaw/BED/issues
 License: GPL-3

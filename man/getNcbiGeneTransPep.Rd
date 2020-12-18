@@ -5,13 +5,15 @@
 \title{Feeding BED: Download NCBI gene DATA and load gene, transcript and peptide
 information in BED}
 \usage{
-getNcbiGeneTransPep(organism, reDumpThr = 1e+05, curDate)
+getNcbiGeneTransPep(organism, reDumpThr = 1e+05, ddir, curDate)
 }
 \arguments{
 \item{organism}{character vector of 1 element corresponding to the organism
 of interest (e.g. "Homo sapiens")}
 
 \item{reDumpThr}{time difference threshold between 2 downloads}
+
+\item{ddir}{path to the directory where the data should be saved}
 
 \item{curDate}{current date as given by \link{Sys.Date}}
 }

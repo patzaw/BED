@@ -3,17 +3,19 @@
 #' Not exported to avoid unintended modifications of the DB.
 #'
 #' @param reDumpThr time difference threshold between 2 downloads
+#' @param ddir path to the directory where the data should be saved
 #' @param toDump the list of tables to load
 #' @param env the R environment in which to load the tables when downloaded
 #' @param curDate current date as given by [Sys.Date]
 #'
 dumpNcbiTax <- function(
     reDumpThr,
+    ddir,
     toDump=c("names.dmp"),
     env=parent.frame(n=1),
     curDate
 ){
-    dumpDir <- "taxdump"
+    dumpDir <- file.path(ddir, "taxdump")
     if(file.exists(dumpDir)){
         load(file.path(dumpDir, "dumpDate.rda"))
         message("Last download: ", dumpDate)

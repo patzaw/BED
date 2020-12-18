@@ -5,6 +5,7 @@
 #' @param organism the organism to download (e.g. "Homo sapiens").
 #' @param release Ensembl release (e.g. "83")
 #' @param gv version of the genome (e.g. "38")
+#' @param ddir path to the directory where the data should be saved
 #' @param toDump the list of tables to download
 #' @param env the R environment in which to load the tables when downloaded
 #'
@@ -12,6 +13,7 @@ dumpEnsCore <- function(
     organism,
     release,
     gv,
+    ddir,
     toDump=c(
         "attrib_type", "gene_attrib", "transcript",
         "external_db", "gene", "translation",
@@ -20,11 +22,11 @@ dumpEnsCore <- function(
     ),
     env=parent.frame(n=1)
 ){
-    dumpDir <- paste(
+    dumpDir <- file.path(ddir, paste(
         gsub(" ", "_", tolower(organism)),
         "core", release, gv,
         sep="_"
-    )
+    ))
     dir.create(dumpDir, showWarnings = F)
     ftp <- paste0(
         "ftp://ftp.ensembl.org/pub/release-", release,

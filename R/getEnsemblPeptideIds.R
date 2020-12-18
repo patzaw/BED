@@ -6,6 +6,7 @@
 #' of interest (e.g. "Homo sapiens")
 #' @param release the Ensembl release of interest (e.g. "83")
 #' @param gv the genome version (e.g. "38")
+#' @param ddir path to the directory where the data should be saved
 #' @param dbCref a named vector of characters providing cross-reference DB of
 #' interest. These DB are also used to find indirect ID associations.
 #' @param canChromosomes canonical chromosmomes to be considered as preferred
@@ -15,6 +16,7 @@ getEnsemblPeptideIds <- function(
    organism, # (e.g. "Homo sapiens")
    release, # (e.g. "81")
    gv, # Version of the genome (e.g. "38")
+   ddir,
    dbCref,
    canChromosomes
 ){
@@ -35,7 +37,7 @@ getEnsemblPeptideIds <- function(
       "stable_id_event", "mapping_session",
       "seq_region", "coord_system"
    )
-   dumpEnsCore(organism, release, gv, toDump)
+   dumpEnsCore(organism, release, gv, ddir, toDump)
 
    ################################################@
    ## Current Ensembl database and organism ----
