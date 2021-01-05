@@ -1,8 +1,9 @@
 -   [Introduction](#introduction)
 -   [Installation](#installation)
+    -   [From CRAN](#from-cran)
     -   [Dependencies](#dependencies)
     -   [Installation from github](#installation-from-github)
-    -   [Possible issue when updating from releases &lt;=
+    -   [Possible issue when updating from releases \<=
         1.3.0](#possible-issue-when-updating-from-releases-1.3.0)
 -   [R package in normal use](#r-package-in-normal-use)
 -   [Citing BED](#citing-bed)
@@ -26,8 +27,14 @@
     -   [Managing
         containers/images/volumes](#managing-containersimagesvolumes)
 
+------------------------------------------------------------------------
+
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
+[![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
+
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 Introduction
 ============
 
@@ -39,8 +46,16 @@ recorded.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 Installation
 ============
+
+From CRAN
+---------
+
+``` r
+install.packages("BED")
+```
 
 Dependencies
 ------------
@@ -81,8 +96,8 @@ If you get an error like the following…
 file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 ```
 
-Possible issue when updating from releases &lt;= 1.3.0
-------------------------------------------------------
+Possible issue when updating from releases \<= 1.3.0
+----------------------------------------------------
 
 If you get an error like the following…
 
@@ -99,6 +114,7 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 R package in normal use
 =======================
 
@@ -107,6 +123,7 @@ vignette.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 Citing BED
 ==========
 
@@ -120,6 +137,7 @@ approved). F1000Research, 7:195. </a>
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 BED database instance available as a docker image
 =================================================
 
@@ -145,7 +163,7 @@ to get a running container with a BED database instance.
 ``` sh
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2020.05.03
+export BED_VERSION=2020.08.27
 
 docker run -d \
     --name bed \
@@ -162,6 +180,7 @@ docker run -d \
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 Build a BED database instance
 =============================
 
@@ -172,12 +191,14 @@ Run a neo4j docker images
 -------------------------
 
 <!------------------------->
+
 Using the S01-NewBED-Container.sh script.
 
 Build and feed BED
 ------------------
 
 <!------------------>
+
 Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd
 document.
 
@@ -185,22 +206,26 @@ Create a docker image with BED database
 ---------------------------------------
 
 <!--------------------------------------->
+
 Using the S03-NewBED-image.sh script
 
 Push the image on docker hub
 ----------------------------
 
 <!---------------------------->
+
 Using the S04-Push-on-docker-hub.sh script
 
 Run the new image
 -----------------
 
 <!------------------>
+
 Using the S05-BED-Container.sh script
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
+
 Notes about Docker
 ==================
 
@@ -208,6 +233,7 @@ Start docker
 ------------
 
 <!------------>
+
 ``` sh
 sudo systemctl start docker
 sudo systemctl enable docker
@@ -217,6 +243,7 @@ Building a Docker image
 -----------------------
 
 <!----------------------->
+
 -   <a href="https://docs.docker.com/get-started/" class="uri">https://docs.docker.com/get-started/</a>
 -   <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="uri">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a>
 
@@ -224,6 +251,7 @@ Saving and loading an image archive
 -----------------------------------
 
 <!----------------------------------->
+
 You can save the created image:
 
 ``` sh
@@ -240,18 +268,21 @@ Push a Docker image on docker hub
 ---------------------------------
 
 <!--------------------------------->
+
 -   <a href="https://docs.docker.com/docker-cloud/builds/push-images/" class="uri">https://docs.docker.com/docker-cloud/builds/push-images/</a>
 
 Run a docker image
 ------------------
 
 <!------------------>
+
 -   <a href="https://docs.docker.com/engine/reference/commandline/run/" class="uri">https://docs.docker.com/engine/reference/commandline/run/</a>
 
 Managing containers/images/volumes
 ----------------------------------
 
 <!---------------------------------->
+
 ### List created containers
 
 ``` sh

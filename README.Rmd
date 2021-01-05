@@ -20,6 +20,10 @@ cranRef <- function(x){
 }
 ```
 
+----
+
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
+[![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -34,6 +38,12 @@ relationships between the identifiers from different sources are recorded.
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 # Installation
+
+## From CRAN
+
+```{r, eval=FALSE}
+install.packages("BED")
+```
 
 ## Dependencies
 
