@@ -1,8 +1,8 @@
-Meta
-doc
-.Rproj.user
-.Rhistory
-.RData
+/Meta
+/doc
+/.Rproj.user
+/.Rhistory
+/.RData
 vignettes/*.html
 vignettes/BED.R
 inst/Documentation/BED-F1000-Article/*.log
