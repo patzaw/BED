@@ -29,14 +29,13 @@
 
 ------------------------------------------------------------------------
 
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
 [![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-Introduction
-============
+# Introduction
 
 The aim of the BED (Biological Entity Dictionary) R package is to get
 and explore mapping between identifiers of biological entities (BE).
@@ -47,18 +46,15 @@ recorded.
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-Installation
-============
+# Installation
 
-From CRAN
----------
+## From CRAN
 
 ``` r
 install.packages("BED")
 ```
 
-Dependencies
-------------
+## Dependencies
 
 This package depends on the following R packages available in the CRAN
 repository:
@@ -76,8 +72,7 @@ repository:
 
 They can be easily installed with the `install.packages()` function.
 
-Installation from github
-------------------------
+## Installation from github
 
 ``` r
 devtools::install_github("patzaw/BED")
@@ -96,8 +91,7 @@ If you get an error like the following…
 file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 ```
 
-Possible issue when updating from releases \<= 1.3.0
-----------------------------------------------------
+## Possible issue when updating from releases \<= 1.3.0
 
 If you get an error like the following…
 
@@ -115,8 +109,7 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-R package in normal use
-=======================
+# R package in normal use
 
 It’s described in the [BED](https://patzaw.github.io/BED/BED.html)
 vignette.
@@ -124,8 +117,7 @@ vignette.
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-Citing BED
-==========
+# Citing BED
 
 This package and the underlying research has been published in this peer
 reviewed article:
@@ -138,13 +130,11 @@ approved). F1000Research, 7:195. </a>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-BED database instance available as a docker image
-=================================================
+# BED database instance available as a docker image
 
 An instance of the BED database (UCB-Human) has been built using the
 script provided in the BED R package and made available in a Docker
-image available here:
-<a href="https://hub.docker.com/r/patzaw/bed-ucb-human/" class="uri">https://hub.docker.com/r/patzaw/bed-ucb-human/</a>
+image available here: <https://hub.docker.com/r/patzaw/bed-ucb-human/>
 
 This instance is focused on *Homo sapiens*, *Mus musculus*, *Rattus
 norvegicus*, *Sus scrofa* and *Danio rerio* organisms and it has been
@@ -163,7 +153,7 @@ to get a running container with a BED database instance.
 ``` sh
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2020.08.27
+export BED_VERSION=2021.03.02
 
 docker run -d \
     --name bed \
@@ -181,43 +171,37 @@ docker run -d \
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-Build a BED database instance
-=============================
+# Build a BED database instance
 
 Building and feeding a BED database instance is achieved using scripts
 available in the “supp/Build” folder.
 
-Run a neo4j docker images
--------------------------
+## Run a neo4j docker images
 
 <!------------------------->
 
 Using the S01-NewBED-Container.sh script.
 
-Build and feed BED
-------------------
+## Build and feed BED
 
 <!------------------>
 
 Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd
 document.
 
-Create a docker image with BED database
----------------------------------------
+## Create a docker image with BED database
 
 <!--------------------------------------->
 
 Using the S03-NewBED-image.sh script
 
-Push the image on docker hub
-----------------------------
+## Push the image on docker hub
 
 <!---------------------------->
 
 Using the S04-Push-on-docker-hub.sh script
 
-Run the new image
------------------
+## Run the new image
 
 <!------------------>
 
@@ -226,11 +210,9 @@ Using the S05-BED-Container.sh script
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
-Notes about Docker
-==================
+# Notes about Docker
 
-Start docker
-------------
+## Start docker
 
 <!------------>
 
@@ -239,16 +221,14 @@ sudo systemctl start docker
 sudo systemctl enable docker
 ```
 
-Building a Docker image
------------------------
+## Building a Docker image
 
 <!----------------------->
 
--   <a href="https://docs.docker.com/get-started/" class="uri">https://docs.docker.com/get-started/</a>
--   <a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="uri">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a>
+-   <https://docs.docker.com/get-started/>
+-   <https://docs.docker.com/develop/develop-images/dockerfile_best-practices/>
 
-Saving and loading an image archive
------------------------------------
+## Saving and loading an image archive
 
 <!----------------------------------->
 
@@ -264,22 +244,19 @@ And the image archive can be loaded with the following command:
 cat docker-bed-ucb-human-$BED_VERSION.tar | docker load
 ```
 
-Push a Docker image on docker hub
----------------------------------
+## Push a Docker image on docker hub
 
 <!--------------------------------->
 
--   <a href="https://docs.docker.com/docker-cloud/builds/push-images/" class="uri">https://docs.docker.com/docker-cloud/builds/push-images/</a>
+-   <https://docs.docker.com/docker-cloud/builds/push-images/>
 
-Run a docker image
-------------------
+## Run a docker image
 
 <!------------------>
 
--   <a href="https://docs.docker.com/engine/reference/commandline/run/" class="uri">https://docs.docker.com/engine/reference/commandline/run/</a>
+-   <https://docs.docker.com/engine/reference/commandline/run/>
 
-Managing containers/images/volumes
-----------------------------------
+## Managing containers/images/volumes
 
 <!---------------------------------->
 
