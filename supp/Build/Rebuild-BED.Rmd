@@ -39,10 +39,17 @@ data sources should not be re-downloaded.
 library(knitr)
 library(BED)
 ##
-if("metabaser" %in% rownames(installed.packages())){
-   source("helpers/loadMBObjects.R")
+# if("metabaser" %in% rownames(installed.packages())){
+#    source("helpers/loadMBObjects.R")
+# }else{
+#    stop("The Clarivate analytics metabaser package is not installed.")
+# }
+library(TKCat)
+k <- chTKCat("bel040344", password="")
+if("MetaBase" %in% list_MDBs(k)$name){
+   source("helpers/loadMBObjects_fromTKCat.R")
 }else{
-   stop("The Clarivate analytics metabaser package is not installed.")
+   stop("MetaBase is not available in this TKCat instance.")
 }
 ##
 workingDirectory <- "../../../working"
@@ -56,7 +63,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "102"
+ensembl_release <- "103"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -93,7 +100,7 @@ ensembl_Hsapiens <- list(
 ensembl_Mmusculus <- list(
     release=ensembl_release,
     organism="Mus musculus",
-    gv="38",                        # genome version
+    gv="39",                        # genome version
     gdbCref=c(                      # Gene cross-references DBs
         "MGI"="MGI",
         "EntrezGene"="EntrezGene",
@@ -218,7 +225,7 @@ ensembl_Drerio <- list(
     canChromosomes=c(1:25, "MT")
 )
 ## General config
-reDumpThr <- as.difftime(2, units="days")
+reDumpThr <- as.difftime(4, units="days")
 curDate <- Sys.Date()
 ```
 
@@ -992,40 +999,47 @@ for(org in listOrganisms()){
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
-# Loading Clarivate Analytics MetaBase objects
+# Loading Clarivate Analytics MetaBase objects from TKCat
 
 **Start**: `r Sys.time()`
 
-```{r, echo=FALSE}
-options(java.parameters="-Xmx2g")
-source("~/opt/MetaBase/metabaseConnection.R")
+
+<!-- ```{r, echo=FALSE} -->
+<!-- options(java.parameters="-Xmx16g") -->
+<!-- source("~/opt/MetaBase/metabaseConnection.R") -->
+<!-- ``` -->
+
+<!-- The following chunk should be adapted to fit MetaBase installation. -->
+
+<!-- ```{r MetaBaseConnection, eval=FALSE} -->
+<!-- library(metabaser) -->
+<!-- metabase.connect( -->
+<!--     driver = "jdbc", -->
+<!--     jdbc.url ="jdbc:oracle:thin:@//HOSTURL", -->
+<!--     uid = "USER", pwd = "PASSWORD" -->
+<!-- ) -->
+<!-- ``` -->
+
+```{r}
+db_reconnect(k)
+tkmb <- get_MDB(k, "MetaBase")
 ```
 
-The following chunk should be adapted to fit MetaBase installation.
-
-```{r MetaBaseConnection, eval=FALSE}
-library(metabaser)
-metabase.connect(
-    driver = "jdbc",
-    jdbc.url ="jdbc:oracle:thin:@//HOSTURL",
-    uid = "USER", pwd = "PASSWORD"
-)
-```
 
 ## Register MetaBase DB
 
 ```{r MetaBase, message=FALSE}
-mbInfo <- mbquery("select * from zzz_System")
+# mbInfo <- mbquery("select * from zzz_System")
 BED:::registerBEDB(
     name="MetaBase_gene",
     description="Clarivate Analytics MetaBase",
-    currentVersion=mbInfo$VERSION,
+    currentVersion=tkmb$MetaBase_sourceDatabases$current,
     idURL='https://portal.genego.com/cgi/entity_page.cgi?term=20&id=%s'
 )
 BED:::registerBEDB(
     name="MetaBase_object",
     description="Clarivate Analytics MetaBase",
-    currentVersion=mbInfo$VERSION,
+    currentVersion=tkmb$MetaBase_sourceDatabases$current,
     idURL='https://portal.genego.com/cgi/entity_page.cgi?term=100&id=%s'
 )
 ```
@@ -1033,8 +1047,10 @@ BED:::registerBEDB(
 ## Homo sapiens data
 
 ```{r MetaBaseHs}
-loadMBObjects(
-    orgOfInt=c("Homo sapiens")
+db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Homo sapiens"),
+    tkmb=tkmb
 )
 gc()
 ```
@@ -1042,8 +1058,10 @@ gc()
 ## Mus musculus data
 
 ```{r MetaBaseMm, message=FALSE}
-loadMBObjects(
-    orgOfInt=c("Mus musculus")
+db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Mus musculus"),
+    tkmb=tkmb
 )
 gc()
 ```
@@ -1051,8 +1069,10 @@ gc()
 ## Rattus norvegicus data
 
 ```{r MetaBaseRn, message=FALSE}
-loadMBObjects(
-    orgOfInt=c("Rattus norvegicus")
+db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Rattus norvegicus"),
+    tkmb=tkmb
 )
 gc()
 ```
