@@ -15,6 +15,8 @@
 #' during search. This option will only affect the conversion from "Symbol"
 #' (default: caseSensitive=FALSE).
 #' All the other conversion will be case sensitive.
+#' @param canonical if TRUE, only returns the canonical "Symbol".
+#' (default: FALSE)
 #' @param prefFilter boolean indicating if the results should be filter
 #' to keep only preferred BEID of BE when they exist (default: FALSE).
 #' If there are several
@@ -84,6 +86,7 @@ convBeIds <- function(
    to.source,
    to.org,
    caseSensitive=FALSE,
+   canonical=FALSE,
    prefFilter=FALSE,
    restricted=TRUE,
    recache=FALSE,
@@ -149,6 +152,7 @@ convBeIds <- function(
             from, from.source,
             to, to.source,
             getTaxId(from.org), getTaxId(to.org),
+            ifelse(canonical, "canonical", "all"),
             ifelse(restricted, "restricted", "full"),
             sep="_"
          )
@@ -173,6 +177,7 @@ convBeIds <- function(
             to.source=to.source,
             organism=from.org,
             caseSensitive=caseSensitive,
+            canonical=canonical,
             restricted=restricted,
             entity=TRUE,
             filter=filter
@@ -209,6 +214,7 @@ convBeIds <- function(
             to.source=fgs,
             organism=from.org,
             caseSensitive=caseSensitive,
+            canonical=canonical,
             restricted=restricted,
             entity=FALSE,
             filter=filter
@@ -257,6 +263,7 @@ convBeIds <- function(
                   to.source=to.source,
                   organism=to.org,
                   caseSensitive=caseSensitive,
+                  canonical=canonical,
                   restricted=restricted,
                   entity=TRUE,
                   filter=filter

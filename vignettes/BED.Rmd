@@ -731,7 +731,19 @@ In the example above, when the query is run for each identifier independently,
 the association to the "Snca" symbol is reported for both.
 However, when running the same query with the 2 identifiers at the same time,
 the "Snca" symbol is reported only for one gene corresponding to the canonical
-association. Finally, as show below, when running the query the other way,
+association. An additional filter can be used to only keep canonical
+symbols:
+
+```{r}
+convBeIds(
+   sncaEid$id,
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol",
+   canonical=TRUE
+)
+```
+
+Finally, as shown below, when running the query the other way,
 "Snca" is only associated to the gene for which it is the canonical symbol.
 
 ```{r}

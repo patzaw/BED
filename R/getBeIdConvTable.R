@@ -13,6 +13,8 @@
 #' This option will only affect the conversion from "Symbol"
 #' (default: caseSensitive=FALSE).
 #' All the other conversion will be case sensitive.
+#' @param canonical if TRUE, only returns the canonical "Symbol".
+#' (default: FALSE)
 #' @param restricted boolean indicating if the results should be restricted to
 #' current version of to BEID db. If FALSE former BEID are also returned:
 #' \strong{Depending on history it can take a very long time to return
@@ -55,6 +57,7 @@ getBeIdConvTable <- function(
     to.source,
     organism,
     caseSensitive=FALSE,
+    canonical=FALSE,
     restricted=TRUE,
     entity=TRUE,
     verbose=FALSE,
@@ -110,6 +113,10 @@ getBeIdConvTable <- function(
     }
     if(!"canonical" %in% colnames(fbeid)){
         fbeid$canonical <- NA
+    }else{
+        if(canonical){
+            fbeid <- fbeid[which(fbeid$canonical),]
+        }
     }
     fbeid <- dplyr::rename(
         fbeid,
@@ -192,6 +199,10 @@ getBeIdConvTable <- function(
     }
     if(!"canonical" %in% colnames(tbeid)){
         tbeid$canonical <- NA
+    }else{
+        if(canonical){
+            tbeid <- tbeid[which(tbeid$canonical),]
+        }
     }
     tbeid <- dplyr::rename(
         tbeid,

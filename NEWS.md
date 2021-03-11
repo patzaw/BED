@@ -1,6 +1,12 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.4.4
 
+### Improvements
+ 
+   - `convBeIds()` and `getBeIdConvTable()` have an additional parameter
+   "canonical" to only keep canonical symbols of BE when converting from or
+   to symbols.
+
 ### Rebuild BED
 
    - `dumpUniprotDb()` uses less memory
