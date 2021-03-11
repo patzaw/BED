@@ -3,6 +3,21 @@ library(knitr)
 ## The following line is to avoid building errors on CRAN
 knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
 
+vn_as_png <- function(vn){
+  html_file <- tempfile(fileext = ".html")
+  png_file <- tempfile(fileext = ".png")
+  visSave(vn, html_file)
+  invisible(webshot::webshot(
+    html_file, file=png_file, selector=".visNetwork", vwidth="100%"
+  ))
+  im <- base64enc::dataURI(file=png_file, mime="image/png")
+  invisible(file.remove(c(html_file,png_file)))
+  htmltools::div(
+     width="100%",
+     htmltools::img(src=im, alt="visNetwork", width="100%")
+  )
+}
+
 ## ---- eval=FALSE--------------------------------------------------------------
 #  devtools::install_github("patzaw/BED")
 
@@ -91,7 +106,8 @@ sort(table(table(beids$Gene)), decreasing = TRUE)
 eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
-   visPhysics(solver="repulsion")
+   visPhysics(solver="repulsion") %>% 
+   vn_as_png()
 
 ## -----------------------------------------------------------------------------
 mapt <- convBeIds(
@@ -102,7 +118,8 @@ exploreBe(
    mapt[1, "to"],
    source="Ens_gene",
    be="Gene"
-)
+) %>% 
+   vn_as_png()
 getBeIds(
    be="Gene", source="Ens_gene", organism="human",
    restricted=TRUE,
@@ -253,7 +270,8 @@ res
 exploreConvPath(
    from.id=from.id, from="Probe", from.source="GPL6885",
    to.id=res$to[1], to="Peptide", to.source="Uniprot"
-)
+) %>% 
+   vn_as_png()
 
 ## -----------------------------------------------------------------------------
 compMap <- getBeIdSymbolTable(
@@ -289,6 +307,14 @@ convBeIds(
    sncaEid$id,
    from="Gene", from.source="Ens_gene", from.org="rat",
    to.source="Symbol"
+)
+
+## -----------------------------------------------------------------------------
+convBeIds(
+   sncaEid$id,
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol",
+   canonical=TRUE
 )
 
 ## -----------------------------------------------------------------------------

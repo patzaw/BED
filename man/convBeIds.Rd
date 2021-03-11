@@ -13,6 +13,7 @@ convBeIds(
   to.source,
   to.org,
   caseSensitive = FALSE,
+  canonical = FALSE,
   prefFilter = FALSE,
   restricted = TRUE,
   recache = FALSE,
@@ -42,6 +43,9 @@ is taken into account
 during search. This option will only affect the conversion from "Symbol"
 (default: caseSensitive=FALSE).
 All the other conversion will be case sensitive.}
+
+\item{canonical}{if TRUE, only returns the canonical "Symbol".
+(default: FALSE)}
 
 \item{prefFilter}{boolean indicating if the results should be filter
 to keep only preferred BEID of BE when they exist (default: FALSE).

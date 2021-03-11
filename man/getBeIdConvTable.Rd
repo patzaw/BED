@@ -11,6 +11,7 @@ getBeIdConvTable(
   to.source,
   organism,
   caseSensitive = FALSE,
+  canonical = FALSE,
   restricted = TRUE,
   entity = TRUE,
   verbose = FALSE,
@@ -38,6 +39,9 @@ during the conversion and selection.
 This option will only affect the conversion from "Symbol"
 (default: caseSensitive=FALSE).
 All the other conversion will be case sensitive.}
+
+\item{canonical}{if TRUE, only returns the canonical "Symbol".
+(default: FALSE)}
 
 \item{restricted}{boolean indicating if the results should be restricted to
 current version of to BEID db. If FALSE former BEID are also returned:

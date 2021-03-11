@@ -27,6 +27,21 @@ editor_options:
 library(knitr)
 ## The following line is to avoid building errors on CRAN
 knitr::opts_chunk$set(eval=Sys.getenv("USER") %in% c("pgodard"))
+
+vn_as_png <- function(vn){
+  html_file <- tempfile(fileext = ".html")
+  png_file <- tempfile(fileext = ".png")
+  visSave(vn, html_file)
+  invisible(webshot::webshot(
+    html_file, file=png_file, selector=".visNetwork", vwidth="100%"
+  ))
+  im <- base64enc::dataURI(file=png_file, mime="image/png")
+  invisible(file.remove(c(html_file,png_file)))
+  htmltools::div(
+     width="100%",
+     htmltools::img(src=im, alt="visNetwork", width="100%")
+  )
+}
 ```
 
 <!----------------------------------------------------------------------------->
@@ -368,7 +383,8 @@ from the 2019.10.11 version of the BED-UCB-Human database.
 eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
-   visPhysics(solver="repulsion")
+   visPhysics(solver="repulsion") %>% 
+   vn_as_png()
 ```
 </div>
 <br>
@@ -415,7 +431,8 @@ exploreBe(
    mapt[1, "to"],
    source="Ens_gene",
    be="Gene"
-)
+) %>% 
+   vn_as_png()
 getBeIds(
    be="Gene", source="Ens_gene", organism="human",
    restricted=TRUE,
@@ -649,7 +666,8 @@ res
 exploreConvPath(
    from.id=from.id, from="Probe", from.source="GPL6885",
    to.id=res$to[1], to="Peptide", to.source="Uniprot"
-)
+) %>% 
+   vn_as_png()
 ```
 </div>
 
@@ -731,7 +749,19 @@ In the example above, when the query is run for each identifier independently,
 the association to the "Snca" symbol is reported for both.
 However, when running the same query with the 2 identifiers at the same time,
 the "Snca" symbol is reported only for one gene corresponding to the canonical
-association. Finally, as show below, when running the query the other way,
+association. An additional filter can be used to only keep canonical
+symbols:
+
+```{r}
+convBeIds(
+   sncaEid$id,
+   from="Gene", from.source="Ens_gene", from.org="rat",
+   to.source="Symbol",
+   canonical=TRUE
+)
+```
+
+Finally, as shown below, when running the query the other way,
 "Snca" is only associated to the gene for which it is the canonical symbol.
 
 ```{r}

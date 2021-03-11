@@ -57,7 +57,9 @@ Suggests:
     knitr,
     rmarkdown,
     biomaRt,
-    GEOquery
+    GEOquery,
+    base64enc,
+    webshot
 Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
