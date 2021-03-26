@@ -129,11 +129,11 @@ BED:::loadCodesFor(
 idtargets <- ctar$CortellisTAR_IDTargets
 toImport <- idtargets %>%
    filter(cortellisTAR %in% prtargets$id, cortellisID %in% targets$id) %>%
-   select(id1=cortellisTAR, id2=cortellisID)
+   select(id1=cortellisID, id2=cortellisTAR)
 BED:::loadIsAssociatedTo(
    d=toImport,
-   db1="Cortellis_target",
-   db2="Cortellis_idtarget",
+   db1="Cortellis_idtarget",
+   db2="Cortellis_target",
    be="Object"
 )
 
