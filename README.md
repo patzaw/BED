@@ -168,6 +168,12 @@ docker run -d \
     patzaw/bed-ucb-human:$BED_VERSION
 ```
 
+[Sergio Espeso-Gil](https://github.com/sespesogil) has reported
+stability issues with this image running on Docker in Windows. It’s
+mainly solved by checking the “Use the WSL2 based engine” options in
+docker settings. More information are provided here:
+<https://docs.docker.com/docker-for-windows/wsl/>
+
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
