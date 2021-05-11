@@ -63,7 +63,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "103"
+ensembl_release <- "104"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1090,37 +1090,24 @@ gc()
 
 ```{r homolog_biomart, message=FALSE}
 library(biomaRt)
-loadBmHomologs <- function(org1, org2, version){
+loadBmHomologs <- function(mart, org2){
 
-    #########################################
-    ## The mart
-    bm <- "ENSEMBL_MART_ENSEMBL"
-    marts <-listMarts()
-    if(
-        grep(
-            sprintf(" %s$", version),
-            marts[which(marts$biomart==bm), "version"]
-        )==1
-    ){
-        version <- NULL
-    }
-    mart <- useEnsembl(
-        biomart=bm,
-        dataset=paste0(org1, "_gene_ensembl"),
-        version=version
-    )
     #mattr <- listAttributes(mart)
     
     toImport <- getBM(
         mart=mart,
         attributes=c(
             "ensembl_gene_id",
-            paste0(org2, "_homolog_ensembl_gene")
+            paste0(
+              org2,
+              c("_homolog_ensembl_gene", "_homolog_orthology_confidence")
+            )
         )
     )
-    colnames(toImport) <- c("id1", "id2")
+    colnames(toImport) <- c("id1", "id2", "cs")
     toImport <- unique(toImport[
-        which(toImport$id1 != "" & toImport$id2 != ""),
+        which(toImport$id1 != "" & toImport$id2 != "" & toImport$cs==1),
+        c("id1", "id2")
     ])
     
     BED:::loadIsHomologOf(
@@ -1133,12 +1120,30 @@ loadBmHomologs <- function(org1, org2, version){
 
 #########################################
 orgOfInt <- c("hsapiens", "mmusculus", "rnorvegicus", "sscrofa", "drerio")
+marts <-listMarts()
+bm <- "ENSEMBL_MART_ENSEMBL"
+version <- ensembl_release
+if(
+  grep(
+    sprintf(" %s$", version),
+    marts[which(marts$biomart==bm), "version"]
+  )==1
+){
+    version <- NULL
+}
 for(i in 1:(length(orgOfInt)-1)){
+  #########################################
+  ## The mart
+  org1 <- orgOfInt[i]
+  mart <- useEnsembl(
+      biomart=bm,
+      dataset=paste0(org1, "_gene_ensembl"),
+      version=version
+  )
   for(j in (i+1):length(orgOfInt)){
     loadBmHomologs(
-      org1=orgOfInt[i],
-      org2=orgOfInt[j],
-      version=ensembl_release
+      mart=mart,
+      org2=orgOfInt[j]
     )
   }
 }
