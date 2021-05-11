@@ -44,9 +44,10 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
     # }
     # loadBENames(d=toImport, be="Object", dbname=odbname)
     colnames(toImport) <- c("id", "symbol")
-    if(any(table(toImport$symbol)>4)){
-        stop("Verify object symbol for NA or blank values")
-    }
+    toImport <- dplyr::filter(toImport, !is.na(symbol) & symbol!="")
+    # if(any(table(toImport$symbol)>4)){
+    #     stop("Verify object symbol for NA or blank values")
+    # }
     toImport$canonical <- TRUE
     BED:::loadBESymbols(d=toImport, be="Object", dbname=odbname)
 
@@ -115,9 +116,10 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
         colnames(gSyn) <- c("id", "symbol", "canonical")
         toImport <- unique(rbind(gSymb, gSyn))
         toImport <- toImport[which(!duplicated(toImport[,c("id", "symbol")])),]
-        if(any(table(toImport$symbol)>14)){
-            stop("Verify gene symbols for NA or blank values")
-        }
+        toImport <- dplyr::filter(toImport, !is.na(symbol) & symbol!="")
+        # if(any(table(toImport$symbol)>14)){
+        #     stop("Verify gene symbols for NA or blank values")
+        # }
         BED:::loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
@@ -125,9 +127,10 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
         message(Sys.time(), " --> Importing gene names")
         toImport <- takenGenes[, c("id", "name")]
         colnames(toImport) <- c("id", "name")
-        if(any(table(toImport$name)>22)){
-            stop("Verify gene names for NA or blank values")
-        }
+        toImport <- dplyr::filter(toImport, !is.na(name) & name!="")
+        # if(any(table(toImport$name)>22)){
+        #     stop("Verify gene names for NA or blank values")
+        # }
         BED:::loadBENames(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
