@@ -37,12 +37,12 @@ dumpNcbiTax <- function(
         }
         dir.create(dumpDir)
         utils::download.file(
-            "ftp://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdump.tar.gz",
-            file.path(dumpDir, "taxdump.tar.gz"),
+            "https://ftp.ncbi.nlm.nih.gov/pub/taxonomy/taxdmp.zip",
+            file.path(dumpDir, "taxdmp.zip"),
             quiet=TRUE
         )
         system(
-            sprintf('cd %s ; tar xzf taxdump.tar.gz ; cd -', dumpDir),
+            sprintf('cd %s ; unzip taxdmp.zip ; cd -', dumpDir),
             ignore.stdout=TRUE
         )
         dumpDate <- curDate

@@ -1,4 +1,13 @@
 <!----------------------------------------------------------------------------->
+## Version 1.4.5
+
+### Improvements
+
+   - Use https protocol for getting NCBI data
+   - `dumpNcbiTax`: using the zip archive instead of the tar.gz because
+   of internal issue with firewall.
+
+<!----------------------------------------------------------------------------->
 ## Version 1.4.4
 
 ### Improvements

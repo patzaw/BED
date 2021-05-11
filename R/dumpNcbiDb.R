@@ -23,7 +23,7 @@ dumpNcbiDb <- function(
     curDate
 ){
 
-    ftp <- "ftp://ftp.ncbi.nlm.nih.gov/gene/DATA/"
+    ftp <- "https://ftp.ncbi.nlm.nih.gov/gene/DATA/"
 
     dumpDir <- file.path(ddir, "NCBI-gene-DATA")
     if(file.exists(dumpDir)){
