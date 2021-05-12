@@ -101,7 +101,7 @@ getEnsemblPeptideIds <- function(
          as.character
       ),
       by=c("canonical_translation_id"="translation_id")
-   )[,2:3]
+   )[,c("stable_id.x", "stable_id.y")]
    colnames(canTrans) <- c("tid", "pid")
    canTrans$canonical <- TRUE
    ##
@@ -109,7 +109,7 @@ getEnsemblPeptideIds <- function(
       transcript[,c("transcript_id", "stable_id")],
       translation[,c("translation_id", "stable_id", "transcript_id")],
       by=c("transcript_id"="transcript_id")
-   )[,c(2,4)]
+   )[,c("stable_id.x", "stable_id.y")]
    colnames(expTrans) <- c("tid", "pid")
    expTrans$canonical <- FALSE
    expTrans <- expTrans[which(

@@ -88,7 +88,7 @@ getEnsemblTranscriptIds <- function(
         gene[,c("stable_id", "canonical_transcript_id")],
         transcript[,c("transcript_id", "stable_id")],
         by=c("canonical_transcript_id"="transcript_id")
-    )[,2:3]
+    )[,c("stable_id.x", "stable_id.y")]
     colnames(canTrans) <- c("gid", "tid")
     canTrans$canonical <- TRUE
     ##
@@ -96,7 +96,7 @@ getEnsemblTranscriptIds <- function(
         gene[,c("gene_id", "stable_id")],
         transcript[,c("transcript_id", "stable_id", "gene_id")],
         by=c("gene_id"="gene_id")
-    )[,c(2,4)]
+    )[,c("stable_id.x", "stable_id.y")]
     colnames(expTrans) <- c("gid", "tid")
     expTrans$canonical <- FALSE
     expTrans <- expTrans[which(
