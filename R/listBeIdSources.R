@@ -103,7 +103,7 @@ listBeIdSources <- function(
     if(direct){
         cql <- c(cql, sprintf(
             'MATCH (beid:%s)-[:identifies]->(be)',
-            beid, be
+            beid
         ))
     }else{
         cql <- c(cql, sprintf(
@@ -116,7 +116,7 @@ listBeIdSources <- function(
                 ),
                 '(:%s)-[:identifies]->(be)'
             ),
-            beid, beid, be
+            beid, beid
         ))
     }
     cql <- c(
