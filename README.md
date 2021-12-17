@@ -1,32 +1,3 @@
--   [Introduction](#introduction)
--   [Installation](#installation)
-    -   [From CRAN](#from-cran)
-    -   [Dependencies](#dependencies)
-    -   [Installation from github](#installation-from-github)
-    -   [Possible issue when updating from releases \<=
-        1.3.0](#possible-issue-when-updating-from-releases-1.3.0)
--   [R package in normal use](#r-package-in-normal-use)
--   [Citing BED](#citing-bed)
--   [BED database instance available as a docker
-    image](#bed-database-instance-available-as-a-docker-image)
--   [Build a BED database instance](#build-a-bed-database-instance)
-    -   [Run a neo4j docker images](#run-a-neo4j-docker-images)
-    -   [Build and feed BED](#build-and-feed-bed)
-    -   [Create a docker image with BED
-        database](#create-a-docker-image-with-bed-database)
-    -   [Push the image on docker hub](#push-the-image-on-docker-hub)
-    -   [Run the new image](#run-the-new-image)
--   [Notes about Docker](#notes-about-docker)
-    -   [Start docker](#start-docker)
-    -   [Building a Docker image](#building-a-docker-image)
-    -   [Saving and loading an image
-        archive](#saving-and-loading-an-image-archive)
-    -   [Push a Docker image on docker
-        hub](#push-a-docker-image-on-docker-hub)
-    -   [Run a docker image](#run-a-docker-image)
-    -   [Managing
-        containers/images/volumes](#managing-containersimagesvolumes)
-
 ------------------------------------------------------------------------
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
@@ -153,7 +124,7 @@ to get a running container with a BED database instance.
 ``` sh
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2021.05.12
+export BED_VERSION=2021.12.16
 
 docker run -d \
     --name bed \

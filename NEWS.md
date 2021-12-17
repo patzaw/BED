@@ -3,7 +3,7 @@
 
 ### Neo4j changes
 
-   - "CREATE UNIQUE" replace by "MERGE"
+   - "CREATE UNIQUE" replaced by "MERGE" in neo4j queries
    
 <!----------------------------------------------------------------------------->
 ## Version 1.4.6

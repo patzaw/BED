@@ -11,3 +11,5 @@ Build/BED-images
 supp/Tmp-tests
 doc
 Meta
+/doc/
+/Meta/
