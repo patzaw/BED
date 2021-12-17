@@ -63,7 +63,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "104"
+ensembl_release <- "105"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -132,7 +132,7 @@ ensembl_Mmusculus <- list(
 ensembl_Rnorvegicus <- list(
     release=ensembl_release,
     organism="Rattus norvegicus",
-    gv="6",                         # genome version
+    gv="72",                         # genome version
     gdbCref=c(                      # Gene cross-references DBs
         "RGD"="RGD",
         "EntrezGene"="EntrezGene",

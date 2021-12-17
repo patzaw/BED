@@ -3,7 +3,7 @@
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
 
-export BED_VERSION=2021.05.12
+export BED_VERSION=2021.12.16
 
 # zcat ~/Shared/Data-Science/BED/docker-bed-ucb-human-internal-$BED_VERSION.tar.gz | docker load
 
