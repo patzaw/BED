@@ -21,6 +21,9 @@
 #' it exists or it is set to FALSE.
 #' @param importPath the path to the import folder for loading information
 #' in BED (used only when feeding the database ==> default: NULL)
+#' @param .opts a named list or CURLOptions object identifying the curl
+#' options for the handle (see [RCurl::curlPerform()]).
+#' (for example: `.opts = list(ssl.verifypeer = FALSE)`)
 #'
 #' @return This function does not return any value. It prepares the BED
 #' environment to allow transparent DB calls.
@@ -41,7 +44,8 @@
 connectToBed <- function(
    url=NULL, username=NULL, password=NULL, connection=1,
    remember=FALSE, useCache=NA,
-   importPath=NULL
+   importPath=NULL,
+   .opts=list()
 ){
    stopifnot(
       is.logical(remember), length(remember)==1, !is.na(remember),
@@ -87,16 +91,34 @@ connectToBed <- function(
       )
    }
    ## The graph DB
-   try(assign(
+   e1 <- try(assign(
       "graph",
       neo2R::startGraph(
-         url=url,
+         url=paste0("https://", url),
          username=username,
          password=password,
-         importPath=importPath
+         importPath=importPath,
+         .opts=.opts
       ),
       bedEnv
-   ))
+   ), silent=TRUE)
+   if(inherits(e1, "try-error")){
+      e2 <- try(assign(
+         "graph",
+         neo2R::startGraph(
+            url=paste0("http://", url),
+            username=username,
+            password=password,
+            importPath=importPath,
+            .opts=.opts
+         ),
+         bedEnv
+      ), silent=TRUE)
+      if(inherits(e2, "try-error")){
+         message(e1)
+         message(e2)
+      }
+   }
    assign("useCache", useCache, bedEnv)
    corrConn <- checkBedConn(verbose=TRUE)
    if(!corrConn){

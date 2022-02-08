@@ -11,7 +11,8 @@ connectToBed(
   connection = 1,
   remember = FALSE,
   useCache = NA,
-  importPath = NULL
+  importPath = NULL,
+  .opts = list()
 )
 }
 \arguments{
@@ -41,6 +42,10 @@ it exists or it is set to FALSE.}
 
 \item{importPath}{the path to the import folder for loading information
 in BED (used only when feeding the database ==> default: NULL)}
+
+\item{.opts}{a named list or CURLOptions object identifying the curl
+options for the handle (see \code{\link[RCurl:curlPerform]{RCurl::curlPerform()}}).
+(for example: \code{.opts = list(ssl.verifypeer = FALSE)})}
 }
 \value{
 This function does not return any value. It prepares the BED
