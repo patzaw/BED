@@ -73,6 +73,10 @@ connectToBed <- function(
             connections[[connection]][["cache"]],
             useCache
          )
+         .opts <- c(
+            .opts,
+            connections[[connection]][[".opts"]]
+         )
       }
       connections <- c(connections[connection], connections[-connection])
    }else{
@@ -85,7 +89,8 @@ connectToBed <- function(
       }
       connections <- c(
          list(list(
-            url=url, username=username, password=password, cache=useCache
+            url=url, username=username, password=password, cache=useCache,
+            .opts=.opts
          )),
          connections
       )
