@@ -1,6 +1,6 @@
 #/bin/bash
 
-export BED_VERSION=2021.12.16
+export BED_VERSION=2022.04.25
 export DOCKER_ID_USER="patzaw"
 
 docker login

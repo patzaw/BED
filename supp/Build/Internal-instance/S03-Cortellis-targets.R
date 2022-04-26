@@ -9,7 +9,10 @@ connectToBed(
 )
 
 library(TKCat)
-k <- chTKCat("bel040344", password="")
+k <- chTKCat(
+   "bel040344",
+   user="techadmin", password=readLines("~/etc/tkcat_techadmin")
+)
 
 ## CortellisTAR targets "Cortellis_target" coded by genes ----
 ctar <- get_MDB(k, "CortellisTAR")

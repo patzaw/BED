@@ -1,7 +1,7 @@
 #/bin/bash
 
-export BED_VERSION=2021.12.16
-export NJ_VERSION=3.5.30
+export BED_VERSION=2022.04.25
+export NJ_VERSION=3.5.32
 export BED_DATA=`pwd`/../../../../working/neo4jDataInt
 export BED_IMAGES=`pwd`/../../../../BED-images
 
