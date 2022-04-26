@@ -3,6 +3,7 @@
 /.Rproj.user
 /.Rhistory
 /.RData
+README.html
 vignettes/*.html
 vignettes/BED.R
 inst/Documentation/BED-F1000-Article/*.log

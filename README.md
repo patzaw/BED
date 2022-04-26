@@ -1,3 +1,35 @@
+README
+================
+
+-   [Introduction](#introduction)
+-   [Installation](#installation)
+    -   [From CRAN](#from-cran)
+    -   [Dependencies](#dependencies)
+    -   [Installation from github](#installation-from-github)
+    -   [Possible issue when updating from releases \<=
+        1.3.0](#possible-issue-when-updating-from-releases--130)
+-   [R package in normal use](#r-package-in-normal-use)
+-   [Citing BED](#citing-bed)
+-   [BED database instance available as a docker
+    image](#bed-database-instance-available-as-a-docker-image)
+-   [Build a BED database instance](#build-a-bed-database-instance)
+    -   [Run a neo4j docker images](#run-a-neo4j-docker-images)
+    -   [Build and feed BED](#build-and-feed-bed)
+    -   [Create a docker image with BED
+        database](#create-a-docker-image-with-bed-database)
+    -   [Push the image on docker hub](#push-the-image-on-docker-hub)
+    -   [Run the new image](#run-the-new-image)
+-   [Notes about Docker](#notes-about-docker)
+    -   [Start docker](#start-docker)
+    -   [Building a Docker image](#building-a-docker-image)
+    -   [Saving and loading an image
+        archive](#saving-and-loading-an-image-archive)
+    -   [Push a Docker image on docker
+        hub](#push-a-docker-image-on-docker-hub)
+    -   [Run a docker image](#run-a-docker-image)
+    -   [Managing
+        containers/images/volumes](#managing-containersimagesvolumes)
+
 ------------------------------------------------------------------------
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
@@ -27,21 +59,44 @@ install.packages("BED")
 
 ## Dependencies
 
-This package depends on the following R packages available in the CRAN
-repository:
+The following R packages available on CRAN are required:
 
--   **neo2R**
--   **visNetwork**
--   **dplyr**
--   **readr**
--   **stringr**
--   **shiny**
--   **DT**
--   **htmltools**
--   **miniUI**
--   **rstudioapi**
+-   [neo2R](https://CRAN.R-project.org/package=neo2R): Neo4j to R
+-   [visNetwork](https://CRAN.R-project.org/package=visNetwork): Network
+    Visualization using ‘vis.js’ Library
+-   [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+    Manipulation
+-   [readr](https://CRAN.R-project.org/package=readr): Read Rectangular
+    Text Data
+-   [stringr](https://CRAN.R-project.org/package=stringr): Simple,
+    Consistent Wrappers for Common String Operations
+-   [utils](https://CRAN.R-project.org/package=utils): The R Utils
+    Package
+-   [shiny](https://CRAN.R-project.org/package=shiny): Web Application
+    Framework for R
+-   [DT](https://CRAN.R-project.org/package=DT): A Wrapper of the
+    JavaScript Library ‘DataTables’
+-   [miniUI](https://CRAN.R-project.org/package=miniUI): Shiny UI
+    Widgets for Small Screens
+-   [rstudioapi](https://CRAN.R-project.org/package=rstudioapi): Safely
+    Access the RStudio API
 
-They can be easily installed with the `install.packages()` function.
+And those are suggested:
+
+-   [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+    Package for Dynamic Report Generation in R
+-   [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+    Documents for R
+-   [biomaRt](https://CRAN.R-project.org/package=biomaRt): Interface to
+    BioMart databases (i.e. Ensembl)
+-   [GEOquery](https://CRAN.R-project.org/package=GEOquery): Get data
+    from NCBI Gene Expression Omnibus (GEO)
+-   [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
+    base64 encoding
+-   [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
+    HTML
+-   [webshot](https://CRAN.R-project.org/package=webshot): Take
+    Screenshots of Web Pages
 
 ## Installation from github
 
@@ -124,7 +179,7 @@ to get a running container with a BED database instance.
 ``` sh
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2021.12.16
+export BED_VERSION=2022.04.25
 
 docker run -d \
     --name bed \

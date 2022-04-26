@@ -18,6 +18,7 @@
 #' @importFrom shiny fluidPage reactiveValues observe renderUI uiOutput runGadget dialogViewer fluidRow column tags req isolate
 #' @importFrom DT datatable renderDT DTOutput
 #' @importFrom miniUI gadgetTitleBar
+#' @import rstudioapi
 #' @export
 #'
 findBeids <- function(toGene=TRUE, ...){

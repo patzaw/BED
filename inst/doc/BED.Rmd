@@ -96,9 +96,9 @@ repository:
 - **dplyr**
 - **readr**
 - **stringr**
+- **utils**
 - **shiny**
 - **DT**
-- **htmltools**
 - **miniUI**
 - **rstudioapi**
 

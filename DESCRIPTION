@@ -38,7 +38,6 @@ Description: An interface for the 'Neo4j' database providing
 URL: https://github.com/patzaw/BED
 BugReports: https://github.com/patzaw/BED/issues
 License: GPL-3
-LazyData: TRUE
 Depends:
     R (>= 3.6),
     neo2R (>= 2.1.0),
@@ -50,7 +49,6 @@ Imports:
     utils,
     shiny (>= 0.13),
     DT,
-    htmltools,
     miniUI (>= 0.1.1),
     rstudioapi (>= 0.5)
 Suggests:
@@ -59,6 +57,7 @@ Suggests:
     biomaRt,
     GEOquery,
     base64enc,
+    htmltools,
     webshot
 Encoding: UTF-8
 VignetteBuilder: knitr

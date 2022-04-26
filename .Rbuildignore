@@ -5,6 +5,7 @@
 ^Meta$
 ^README.Rmd$
 ^README.md$
+^README.html$
 ^NEWS.md$
 ^LICENSE$
 ^doc$

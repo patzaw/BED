@@ -245,7 +245,8 @@ exploreConvPath <- function(
    ))
    tpNodes <- nodes
    colnames(tpNodes) <- c(
-      "id", "type", "label", "database", "preferred", "platform", "url", "symbol"
+      "id", "type", "label", "database", "preferred",
+      "platform", "url", "symbol"
    )
    tpNodes$source <- paste0(tpNodes$database, tpNodes$platform)
    tpNodes$title <- paste0(
@@ -348,7 +349,6 @@ exploreConvPath <- function(
    toRet <- visNetwork::visOptions(
       graph=toRet,
       highlightNearest = TRUE
-      # nodesIdSelection=list(selected=tpNodes$id[which(tpNodes$label==from.id)])
    )
    toRet <-  visNetwork::visLegend(
       graph=toRet,
