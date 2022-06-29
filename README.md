@@ -30,7 +30,7 @@ README
     -   [Managing
         containers/images/volumes](#managing-containersimagesvolumes)
 
-------------------------------------------------------------------------
+<img src="https://github.com/patzaw/TKCat/raw/master/supp/logo/BED.png" width="100px"/>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
 [![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
@@ -40,11 +40,11 @@ README
 
 # Introduction
 
-The aim of the BED (Biological Entity Dictionary) R package is to get
-and explore mapping between identifiers of biological entities (BE).
-This package provides a way to connect to a BED Neo4j database in which
-the relationships between the identifiers from different sources are
-recorded.
+The aim of the [BED](https://patzaw.github.io/BED/) (Biological Entity
+Dictionary) R package is to get and explore mapping between identifiers
+of biological entities (BE). This package provides a way to connect to a
+BED Neo4j database in which the relationships between the identifiers
+from different sources are recorded.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -137,8 +137,8 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 
 # R package in normal use
 
-It’s described in the [BED](https://patzaw.github.io/BED/BED.html)
-vignette.
+Documentation is provided in the
+[BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

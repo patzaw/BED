@@ -9,3 +9,5 @@
 ^NEWS.md$
 ^LICENSE$
 ^doc$
+^_pkgdown\.yml$
+^pkgdown$

@@ -1,0 +1,11 @@
+url: https://patzaw.github.io/BED/
+
+template:
+  bootstrap: 5
+
+authors:
+  Patrice Godard:
+    href: https://github.com/patzaw
+
+deploy:
+  install_metadata: true
