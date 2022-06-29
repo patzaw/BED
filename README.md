@@ -30,7 +30,7 @@ README
     -   [Managing
         containers/images/volumes](#managing-containersimagesvolumes)
 
-<img src="https://github.com/patzaw/TKCat/raw/master/supp/logo/BED.png" width="100px"/>
+<img src="https://github.com/patzaw/BED/raw/master/supp/logo/BED.png" width="100px"/>
 
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
 [![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
