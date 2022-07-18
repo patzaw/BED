@@ -6,12 +6,14 @@
 #' mouse ("10090") and rat ("10116") are supported
 #' @param release the release of interest (check if already downloaded)
 #' @param ddir path to the directory where the data should be saved
+#' @param ftp location of the ftp site
 #' @param env the R environment in which to load the tables when built
 #'
 dumpUniprotDb <- function(
     taxOfInt,
     release,
     ddir,
+    ftp='ftp://ftp.expasy.org/databases/uniprot',
     env=parent.frame(n=1)
 ){
 
@@ -31,7 +33,7 @@ dumpUniprotDb <- function(
     )
 
     ## Download files if necessary ----
-    ftp <- "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions"
+    ftp <- sprintf("%s/current_release/knowledgebase/taxonomic_divisions", ftp)
     dumpDir <- file.path(ddir, "Uniprot-DATA")
     if(file.exists(dumpDir)){
         load(file.path(dumpDir, "dumpRelease.rda"))

@@ -4,7 +4,15 @@
 \alias{dumpUniprotDb}
 \title{Feeding BED: Dump and preprocess flat dat files fro Uniprot}
 \usage{
-dumpUniprotDb(taxOfInt, release, ddir, env = parent.frame(n = 1))
+dumpUniprotDb(
+  taxOfInt,
+  release,
+  ddir,
+  ftp = c("ftp://ftp.expasy.org/databases/uniprot",
+    "https://ftp.ebi.ac.uk/pub/databases/uniprot",
+    "https://ftp.uniprot.org/pub/databases/uniprot"),
+  env = parent.frame(n = 1)
+)
 }
 \arguments{
 \item{taxOfInt}{the organism of interest. Only human ("9606"),
@@ -13,6 +21,8 @@ mouse ("10090") and rat ("10116") are supported}
 \item{release}{the release of interest (check if already downloaded)}
 
 \item{ddir}{path to the directory where the data should be saved}
+
+\item{ftp}{location of ftp site}
 
 \item{env}{the R environment in which to load the tables when built}
 }

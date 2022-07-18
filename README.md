@@ -179,7 +179,6 @@ to get a running container with a BED database instance.
 ``` sh
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
-export BED_VERSION=2022.04.25
 
 docker run -d \
     --name bed \
@@ -191,7 +190,7 @@ docker run -d \
    --env=NEO4J_dbms_read__only=true \
     --env=NEO4J_AUTH=none \
    --restart=always \
-    patzaw/bed-ucb-human:$BED_VERSION
+    patzaw/bed-ucb-human
 ```
 
 [Sergio Espeso-Gil](https://github.com/sespesogil) has reported
