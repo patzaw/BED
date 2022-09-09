@@ -62,6 +62,7 @@ BEIDList <- function(
    if(!".lname" %in% colnames(metadata)){
       metadata <- dplyr::mutate(metadata, .lname=rownames(!!metadata))
    }
+   metadata$.lname <- as.character(metadata$.lname)
    stopifnot(
       is.list(l),
       all(names(l) %in% metadata$.lname),

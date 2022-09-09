@@ -8,9 +8,7 @@ dumpUniprotDb(
   taxOfInt,
   release,
   ddir,
-  ftp = c("ftp://ftp.expasy.org/databases/uniprot",
-    "https://ftp.ebi.ac.uk/pub/databases/uniprot",
-    "https://ftp.uniprot.org/pub/databases/uniprot"),
+  ftp = "ftp://ftp.expasy.org/databases/uniprot",
   env = parent.frame(n = 1)
 )
 }
@@ -22,7 +20,7 @@ mouse ("10090") and rat ("10116") are supported}
 
 \item{ddir}{path to the directory where the data should be saved}
 
-\item{ftp}{location of ftp site}
+\item{ftp}{location of the ftp site}
 
 \item{env}{the R environment in which to load the tables when built}
 }

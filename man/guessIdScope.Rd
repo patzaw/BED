@@ -45,9 +45,9 @@ of identifiers.
 }
 \section{Functions}{
 \itemize{
-\item \code{guessIdOrigin}: Deprecated version of guessIdScope
-}}
+\item \code{guessIdOrigin()}: Deprecated version of guessIdScope
 
+}}
 \examples{
 \dontrun{
 guessIdScope(ids=c("10", "100"))

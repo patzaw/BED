@@ -8,8 +8,8 @@ dumpNcbiDb(
   taxOfInt,
   reDumpThr,
   ddir,
-  toLoad = c("gene_info", "gene2ensembl", "gene_group", "gene_orthologs",
-    "gene_history", "gene2refseq"),
+  toLoad = c("gene_info", "gene2ensembl", "gene_group", "gene_orthologs", "gene_history",
+    "gene2refseq"),
   env = parent.frame(n = 1),
   curDate
 )

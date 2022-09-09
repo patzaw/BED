@@ -53,9 +53,9 @@ Shiny module for searching BEIDs
 }
 \section{Functions}{
 \itemize{
-\item \code{beidsUI}: 
-}}
+\item \code{beidsUI()}: 
 
+}}
 \examples{
 \dontrun{
 library(shiny)

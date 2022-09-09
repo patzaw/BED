@@ -1,6 +1,10 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.4.9
 
+### Bug fix
+
+- Make sure that `is.character(metadata(BEIDList)$.lname)`
+
 ### Rebuild BED
 
    - Chose ftp site for `dumpUniprotDb()`
