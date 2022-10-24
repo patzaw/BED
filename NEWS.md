@@ -1,9 +1,16 @@
 <!----------------------------------------------------------------------------->
+## Version 1.4.10
+
+### Improvements
+
+- Improved display of `beidsModule` and of `findBeids()` interfaces
+
+<!----------------------------------------------------------------------------->
 ## Version 1.4.9
 
 ### Bug fix
 
-- Make sure that `is.character(metadata(BEIDList)$.lname)`
+   - Make sure that `is.character(metadata(BEIDList)$.lname)`
 
 ### Rebuild BED
 

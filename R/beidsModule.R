@@ -485,5 +485,10 @@ beidsServer <- function(
 #' @export
 #'
 beidsUI <- function(id) {
-   shiny::uiOutput(outputId=NS(id, "mainUI"))
+   shiny::tagList(
+      shiny::tags$head(shiny::tags$style(shiny::HTML(
+         'table.dataTable tr.selected td a {background-color: white !important;}'
+      ))),
+      shiny::uiOutput(outputId=NS(id, "mainUI"))
+   )
 }

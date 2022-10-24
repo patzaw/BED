@@ -95,6 +95,7 @@ findBeids <- function(toGene=TRUE, ...){
          req(conv)
          conv$be <- as.factor(conv$be)
          conv$organism <- as.factor(conv$organism)
+         conv$source <- as.factor(conv$source)
          DT::datatable(
             conv,
             rownames=FALSE,
@@ -102,7 +103,8 @@ findBeids <- function(toGene=TRUE, ...){
             filter="top",
             options=list(
                pageLength=5,
-               dom="tip"
+               dom="tip",
+               autoWidth=TRUE
             )
          )
       })
