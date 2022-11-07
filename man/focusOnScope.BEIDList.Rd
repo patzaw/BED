@@ -6,9 +6,9 @@
 \usage{
 \method{focusOnScope}{BEIDList}(
   x,
-  be,
-  source,
-  organism,
+  be = NULL,
+  source = NULL,
+  organism = NULL,
   scope = NULL,
   force = FALSE,
   restricted = TRUE,
@@ -20,12 +20,15 @@
 \item{x}{the BEIDList to be converted}
 
 \item{be}{the type of biological entity to focus on.
+If NULL (default), it's taken from \code{scope(x)}.
 Used if \code{is.null(scope)}}
 
 \item{source}{the source of BEID to focus on.
+If NULL (default), it's taken from \code{scope(x)}.
 Used if \code{is.null(scope)}}
 
 \item{organism}{the organism of BEID to focus on.
+If NULL (default), it's taken from \code{scope(x)}.
 Used if \code{is.null(scope)}}
 
 \item{scope}{a list with the following element:

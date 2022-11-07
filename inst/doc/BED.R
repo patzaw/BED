@@ -103,7 +103,7 @@ dim(beids)
 sort(table(table(beids$Gene)), decreasing = TRUE)
 
 ## -----------------------------------------------------------------------------
-eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
+eid <- beids$id[which(beids$Gene %in% names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
    visPhysics(solver="repulsion") %>% 
@@ -244,6 +244,21 @@ humanEnsPeptides <- convBeIdLists(
 )
 unlist(lapply(humanEnsPeptides, length))
 lapply(humanEnsPeptides, head)
+
+## -----------------------------------------------------------------------------
+entrezGenes <- BEIDList(
+   list(a=oriId[1:5], b=oriId[-c(1:5)]),
+   scope=list(be="Gene", source="EntrezGene", organism="Mus musculus"),
+   metadata=data.frame(
+      .lname=c("a", "b"),
+      description=c("Identifiers in a", "Identifiers in b"),
+      stringsAsFactors=FALSE
+   )
+)
+entrezGenes
+entrezGenes$a
+ensemblGenes <- focusOnScope(entrezGenes, source="Ens_gene")
+ensemblGenes$a
 
 ## -----------------------------------------------------------------------------
 toConv <- data.frame(a=1:25, b=runif(25))

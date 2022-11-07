@@ -1,34 +1,49 @@
 README
 ================
 
--   [Introduction](#introduction)
--   [Installation](#installation)
-    -   [From CRAN](#from-cran)
-    -   [Dependencies](#dependencies)
-    -   [Installation from github](#installation-from-github)
-    -   [Possible issue when updating from releases \<=
-        1.3.0](#possible-issue-when-updating-from-releases--130)
--   [R package in normal use](#r-package-in-normal-use)
--   [Citing BED](#citing-bed)
--   [BED database instance available as a docker
-    image](#bed-database-instance-available-as-a-docker-image)
--   [Build a BED database instance](#build-a-bed-database-instance)
-    -   [Run a neo4j docker images](#run-a-neo4j-docker-images)
-    -   [Build and feed BED](#build-and-feed-bed)
-    -   [Create a docker image with BED
-        database](#create-a-docker-image-with-bed-database)
-    -   [Push the image on docker hub](#push-the-image-on-docker-hub)
-    -   [Run the new image](#run-the-new-image)
--   [Notes about Docker](#notes-about-docker)
-    -   [Start docker](#start-docker)
-    -   [Building a Docker image](#building-a-docker-image)
-    -   [Saving and loading an image
-        archive](#saving-and-loading-an-image-archive)
-    -   [Push a Docker image on docker
-        hub](#push-a-docker-image-on-docker-hub)
-    -   [Run a docker image](#run-a-docker-image)
-    -   [Managing
-        containers/images/volumes](#managing-containersimagesvolumes)
+-   <a href="#introduction" id="toc-introduction">Introduction</a>
+-   <a href="#installation" id="toc-installation">Installation</a>
+    -   <a href="#from-cran" id="toc-from-cran">From CRAN</a>
+    -   <a href="#dependencies" id="toc-dependencies">Dependencies</a>
+    -   <a href="#installation-from-github"
+        id="toc-installation-from-github">Installation from github</a>
+    -   <a href="#possible-issue-when-updating-from-releases--130"
+        id="toc-possible-issue-when-updating-from-releases--130">Possible issue
+        when updating from releases &lt;= 1.3.0</a>
+-   <a href="#r-package-in-normal-use" id="toc-r-package-in-normal-use">R
+    package in normal use</a>
+-   <a href="#citing-bed" id="toc-citing-bed">Citing BED</a>
+-   <a href="#docker_image" id="toc-docker_image">BED database instance
+    available as a docker image</a>
+-   <a href="#build-a-bed-database-instance"
+    id="toc-build-a-bed-database-instance">Build a BED database instance</a>
+    -   <a href="#run-a-neo4j-docker-images"
+        id="toc-run-a-neo4j-docker-images">Run a neo4j docker images</a>
+    -   <a href="#build-and-feed-bed" id="toc-build-and-feed-bed">Build and feed
+        BED</a>
+    -   <a href="#create-a-docker-image-with-bed-database"
+        id="toc-create-a-docker-image-with-bed-database">Create a docker image
+        with BED database</a>
+    -   <a href="#push-the-image-on-docker-hub"
+        id="toc-push-the-image-on-docker-hub">Push the image on docker hub</a>
+    -   <a href="#run-the-new-image" id="toc-run-the-new-image">Run the new
+        image</a>
+-   <a href="#notes-about-docker" id="toc-notes-about-docker">Notes about
+    Docker</a>
+    -   <a href="#start-docker" id="toc-start-docker">Start docker</a>
+    -   <a href="#building-a-docker-image"
+        id="toc-building-a-docker-image">Building a Docker image</a>
+    -   <a href="#saving-and-loading-an-image-archive"
+        id="toc-saving-and-loading-an-image-archive">Saving and loading an image
+        archive</a>
+    -   <a href="#push-a-docker-image-on-docker-hub"
+        id="toc-push-a-docker-image-on-docker-hub">Push a Docker image on docker
+        hub</a>
+    -   <a href="#run-a-docker-image" id="toc-run-a-docker-image">Run a docker
+        image</a>
+    -   <a href="#managing-containersimagesvolumes"
+        id="toc-managing-containersimagesvolumes">Managing
+        containers/images/volumes</a>
 
 <img src="https://github.com/patzaw/BED/raw/master/supp/logo/BED.png" width="100px"/>
 
@@ -104,19 +119,6 @@ And those are suggested:
 devtools::install_github("patzaw/BED")
 ```
 
-If you get an error like the following…
-
-    Error: package or namespace load failed for ‘BED’:
-     .onLoad failed in loadNamespace() for 'BED', details:
-      call: connections[[connection]][["cache"]]
-      error: subscript out of bounds
-
-… remove the BED folder located here:
-
-``` r
-file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
-```
-
 ## Possible issue when updating from releases \<= 1.3.0
 
 If you get an error like the following…
@@ -139,6 +141,15 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 
 Documentation is provided in the
 [BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
+
+A public instance of the [BED Neo4j database](#docker_image) is provided
+for convenience and can be reached as follows:
+
+``` r
+library(BED)
+connectToBed("https://genodesy.org/BED/", remember=TRUE, useCache=TRUE)
+findBeids()
+```
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->

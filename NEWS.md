@@ -4,6 +4,8 @@
 ### Improvements
 
 - Improved display of `beidsModule` and of `findBeids()` interfaces
+- Default values for `focusOnScope()` parameters
+- Minor adjustments in the vignette
 
 <!----------------------------------------------------------------------------->
 ## Version 1.4.9

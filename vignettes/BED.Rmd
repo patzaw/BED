@@ -2,19 +2,17 @@
 title: "Biological Entity Dictionary (BED): exploring and converting identifiers of biological entities such as genes, transcripts or peptides"
 author: "Patrice Godard"
 date: "`r format(Sys.time(), '%B %d %Y')`"
+package: "BED (version `r packageVersion('BED')`)"
 always_allow_html: true
 output:
    html_document:
-      keep_md: no
       number_sections: yes
       self_contained: yes
       theme: cerulean
       toc: yes
       toc_float: yes
-   pdf_document:
-      toc: yes
-      number_sections: yes
-package: "BED (version `r packageVersion('BED')`)"
+      fig_width: 7
+      fig_height: 5
 vignette: >
    %\VignetteIndexEntry{BED - Tutorial}
    %\VignetteEncoding{UTF-8}
@@ -384,7 +382,7 @@ from the 2019.10.11 version of the BED-UCB-Human database.
 
 <div style="border:solid;overflow:hidden;">
 ```{r}
-eid <- beids$id[which(beids$Gene==names(which(table(beids$Gene)>=3)))][1]
+eid <- beids$id[which(beids$Gene %in% names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
    visPhysics(solver="repulsion") %>% 
@@ -630,6 +628,31 @@ humanEnsPeptides <- convBeIdLists(
 )
 unlist(lapply(humanEnsPeptides, length))
 lapply(humanEnsPeptides, head)
+```
+
+### BEIDList
+
+`BEIDList` objects are used to manage lists of BEID with
+an attached explicit scope,
+and metadata provided in a data frame.
+The `focusOnScope()` function is used to easily convert such object to another
+scope. For example, in the code below, Entrez gene identifiers are converted
+in Ensembl identifiers.
+
+```{r}
+entrezGenes <- BEIDList(
+   list(a=oriId[1:5], b=oriId[-c(1:5)]),
+   scope=list(be="Gene", source="EntrezGene", organism="Mus musculus"),
+   metadata=data.frame(
+      .lname=c("a", "b"),
+      description=c("Identifiers in a", "Identifiers in b"),
+      stringsAsFactors=FALSE
+   )
+)
+entrezGenes
+entrezGenes$a
+ensemblGenes <- focusOnScope(entrezGenes, source="Ens_gene")
+ensemblGenes$a
 ```
 
 ## Converting data frames

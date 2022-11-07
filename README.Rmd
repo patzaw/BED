@@ -74,21 +74,6 @@ for(p in wdeps$package){
 devtools::install_github("patzaw/BED")
 ```
 
-If you get an error like the following...
-
-```
-Error: package or namespace load failed for ‘BED’:
- .onLoad failed in loadNamespace() for 'BED', details:
-  call: connections[[connection]][["cache"]]
-  error: subscript out of bounds
-```
-
-... remove the BED folder located here:
-
-```{r, echo=TRUE, eval=FALSE}
-file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
-```
-
 ## Possible issue when updating from releases <= 1.3.0
 
 If you get an error like the following...
@@ -113,6 +98,14 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 Documentation is provided in
 the [BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
 
+A public instance of the [BED Neo4j database](#docker_image)
+is provided for convenience and can be reached as follows:
+
+```{r, eval=FALSE}
+library(BED)
+connectToBed("https://genodesy.org/BED/", remember=TRUE, useCache=TRUE)
+findBeids()
+```
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -127,7 +120,7 @@ this peer reviewed article:
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-# BED database instance available as a docker image
+# BED database instance available as a docker image {#docker_image}
 
 An instance of the BED database (UCB-Human)
 has been built using the script provided
