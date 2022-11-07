@@ -112,6 +112,8 @@ And those are suggested:
     HTML
 -   [webshot](https://CRAN.R-project.org/package=webshot): Take
     Screenshots of Web Pages
+-   [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
+    (HTTP/FTP/…) Client Interface for R
 
 ## Installation from github
 
