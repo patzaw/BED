@@ -21,9 +21,8 @@
 #' it exists or it is set to FALSE.
 #' @param importPath the path to the import folder for loading information
 #' in BED (used only when feeding the database ==> default: NULL)
-#' @param .opts a named list or CURLOptions object identifying the curl
-#' options for the handle (see [RCurl::curlPerform()]).
-#' (for example: `.opts = list(ssl.verifypeer = FALSE)`)
+#' @param .opts a named list identifying the curl
+#' options for the handle (see [neo2R::startGraph()]).
 #'
 #' @return This function does not return any value. It prepares the BED
 #' environment to allow transparent DB calls.
