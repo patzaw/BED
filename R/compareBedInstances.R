@@ -102,15 +102,15 @@ compareBedInstances <- function(connections){
    )
 
    ## Platforms comparison
-   plOnlyInV1 <- be.V1[setdiff(rownames(pl.V1), rownames(pl.V2)),]
-   plOnlyInV2 <- be.V2[setdiff(rownames(pl.V2), rownames(pl.V1)),]
+   plOnlyInV1 <- pl.V1[setdiff(rownames(pl.V1), rownames(pl.V2)),]
+   plOnlyInV2 <- pl.V2[setdiff(rownames(pl.V2), rownames(pl.V1)),]
    commPl <- intersect(rownames(pl.V1), rownames(pl.V2))
    commPl <- cbind(
       pl.V1[commPl,],
       pl.V2[commPl,],
       identical=all(
-         apply(pl.V1, 1, paste, collapse="||")==
-            apply(pl.V2, 1, paste, collapse="||")
+         apply(pl.V1[commPl,], 1, paste, collapse="||")==
+            apply(pl.V2[commPl,], 1, paste, collapse="||")
       )
    )
    colnames(commPl) <- c(

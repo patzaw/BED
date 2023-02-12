@@ -1,7 +1,7 @@
 Package: BED
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 1.4.11
+Version: 1.4.12
 Authors@R: c(
     person(
         "Patrice", "Godard",
@@ -63,4 +63,4 @@ Suggests:
 Encoding: UTF-8
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.2
+RoxygenNote: 7.2.3
