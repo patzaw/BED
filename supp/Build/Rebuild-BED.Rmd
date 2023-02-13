@@ -63,7 +63,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "108"
+ensembl_release <- "109"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1674,129 +1674,78 @@ BED:::loadProbes(
 
 **End**: `r Sys.time()`
 
-<!-- ## Probes from biomaRt -->
+## Probes from biomaRt
 
-<!-- ```{r biomartProbes, message=FALSE} -->
-<!-- library(biomaRt) -->
-<!-- loadBmProbes <- function(dataset, platName, trDb, version){ -->
 
-<!--     ######################################### -->
-<!--     ## The platform -->
-<!--     bm <- "ENSEMBL_MART_ENSEMBL" -->
-<!--     marts <-listMarts() -->
-<!--     if( -->
-<!--         grep( -->
-<!--             sprintf(" %s$", version), -->
-<!--             marts[which(marts$biomart==bm), "version"] -->
-<!--         )==1 -->
-<!--     ){ -->
-<!--         version <- NULL -->
-<!--     } -->
-<!--     mart <- useEnsembl(biomart=bm, dataset=dataset, version=version) -->
-<!--     mattr <- listAttributes(mart) -->
+**Start**: `r Sys.time()`
 
-<!--     ######################################### -->
-<!--     ## The platform -->
-<!--     message("Loading the platform") -->
-<!--     description <- mattr[which(mattr$name==platName),"description"] -->
-<!--     BED:::loadPlf(name=platName, description=description, be="Transcript") -->
+```{r}
+library(biomaRt)
+bm <- "ENSEMBL_MART_ENSEMBL"
+marts <-listMarts()
+version <- ensembl_release
+if(grep(
+   sprintf(" %s$", version),
+   marts[which(marts$biomart==bm), "version"]
+) == 1) {
+   version <- NULL
+}
+orgOfInt <- c("hsapiens", "mmusculus", "rnorvegicus", "sscrofa", "drerio")
+for(org in orgOfInt){
+   message(org)
+   mart <- useEnsembl(
+      biomart = bm,
+      dataset = paste0(org, "_gene_ensembl"),
+      version = version
+   )
+   at <- listAttributes(mart) %>%
+      dplyr::filter(
+         stringr::str_detect(
+            description, stringr::regex("probe", ignore_case=TRUE)
+         )
+      ) %>%
+      dplyr::filter(
+         !name %in%
+            c(
+               "affy_huex_1_0_st_v2",
+               "affy_moex_1_0_st_v1",
+               "affy_raex_1_0_st_v1"
+            )
+      )
+   for(i in 1:nrow(at)){
+      message("   ", i, "/", nrow(at), " platforms")
+      message("      ", Sys.time())
+      platName <- at$name[i]
+      platDesc <- paste(at$description[i], "(Ensembl BioMart mapping)")
+      be <- "Transcript"
+      ##
+      BED:::loadPlf(name=platName, description=platDesc, be=be)
+      ## Import mapping with Ens_transcript
+      toImport <- getBM(
+         mart=mart,
+         attributes=c(
+            "ensembl_transcript_id",
+            platName
+         )
+      ) %>%
+         dplyr::as_tibble() %>%
+         magrittr::set_colnames(c("id", "probeID")) %>%
+         dplyr::filter(!is.na(probeID) & probeID!="" & !is.na(id) & id!="") %>%
+         dplyr::select(probeID, id) %>%
+         dplyr::distinct()
+      dbname <- "Ens_transcript"
+      ##
+      BED:::loadProbes(
+         d=toImport,
+         be=be,
+         platform=platName,
+         dbname=dbname
+      )
+   }
+}
+```
 
-<!--     ######################################### -->
-<!--     ## The probes -->
-<!--     message("Getting the biomaRt data") -->
-<!--     toImport <- getBM( -->
-<!--         mart=mart, attributes=c("ensembl_transcript_id", platName) -->
-<!--     ) -->
-<!--     toImport <- unique(toImport[which(toImport[,platName]!=""),]) -->
-<!--     colnames(toImport) <- c("id", "probeID") -->
-<!--     message("Loading the probes") -->
-<!--     BED:::loadProbes( -->
-<!--         d=toImport, -->
-<!--         be="Transcript", -->
-<!--         platform=platName, -->
-<!--         dbname=trDb -->
-<!--     ) -->
-
-<!-- } -->
-<!-- ``` -->
-
-<!-- ### Human platforms -->
-
-<!-- **Start**: `r Sys.time()` -->
-
-<!-- ```{r illumina_humanht_12_v4, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="hsapiens_gene_ensembl", -->
-<!--     platName="illumina_humanht_12_v4", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ```{r affy_hg_u133_plus_2, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="hsapiens_gene_ensembl", -->
-<!--     platName="affy_hg_u133_plus_2", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- **End**: `r Sys.time()` -->
-
-<!-- ### Mouse platforms -->
-
-<!-- **Start**: `r Sys.time()` -->
-
-<!-- ```{r illumina_mouseref_8_v2, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="mmusculus_gene_ensembl", -->
-<!--     platName="illumina_mouseref_8_v2", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ```{r affy_mouse430_2, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="mmusculus_gene_ensembl", -->
-<!--     platName="affy_mouse430_2", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- **End**: `r Sys.time()` -->
-
-<!-- ### Rat platforms -->
-
-<!-- **Start**: `r Sys.time()` -->
-
-<!-- ```{r illumina_ratref_12_v1, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="rnorvegicus_gene_ensembl", -->
-<!--     platName="illumina_ratref_12_v1", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- ```{r affy_rat230_2, message=FALSE} -->
-<!-- message(Sys.time()) -->
-<!-- loadBmProbes( -->
-<!--     dataset="rnorvegicus_gene_ensembl", -->
-<!--     platName="affy_rat230_2", -->
-<!--     trDb="Ens_transcript", -->
-<!--     version=ensembl_release -->
-<!-- ) -->
-<!-- ``` -->
-
-<!-- **End**: `r Sys.time()` -->
+**End**: `r Sys.time()`
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->

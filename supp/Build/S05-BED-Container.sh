@@ -3,7 +3,7 @@
 export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
 
-export BED_VERSION=2022.11.06
+export BED_VERSION=2023.02.11
 
 # Stop and remove the former container
 docker stop bed
