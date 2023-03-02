@@ -234,6 +234,3 @@ forgetBedConnection <- function(connection, save=FALSE){
 
 ###############################################################################@
 bedEnv <- new.env(hash=TRUE, parent=emptyenv())
-.onLoad <- function(libname, pkgname){
-   connectToBed()
-}

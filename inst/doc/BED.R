@@ -27,6 +27,9 @@ vn_as_png <- function(vn){
 ## ---- message=FALSE, eval=TRUE------------------------------------------------
 library(BED)
 
+## ---- message=FALSE, eval=TRUE, echo=FALSE------------------------------------
+connectToBed()
+
 ## ---- message=FALSE, eval=FALSE-----------------------------------------------
 #  connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 

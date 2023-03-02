@@ -1,4 +1,13 @@
 <!----------------------------------------------------------------------------->
+## Version 1.4.13
+
+### Changes
+
+- Need to explicitly call `connectToBed()` after loading the package
+(this function is not automatically called on package load anymore
+to avoid warning message during CRAN checks)
+
+<!----------------------------------------------------------------------------->
 ## Version 1.4.12
 
 ### Bug fix

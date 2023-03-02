@@ -139,6 +139,9 @@ underlying Neo4j DB.
 library(BED)
 ```
 
+```{r, message=FALSE, eval=TRUE, echo=FALSE}
+connectToBed()
+```
 
 ```{r, message=FALSE, eval=FALSE}
 connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
@@ -146,7 +149,7 @@ connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 
 The `remember` parameter can be set to `TRUE` in order to save connection
 information that will be automatically used the next time the `connectToBed()`
-function is called or the next time the BED library is loaded.
+function is called.
 By default, this parameter is set to `FALSE` to comply with CRAN policies.
 Saved connection can be managed with the `lsBedConnections()` and
 the `forgetBedConnection()` functions.

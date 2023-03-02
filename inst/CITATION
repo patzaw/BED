@@ -1,9 +1,9 @@
-citEntry(
-   entry="Article",
+bibentry(
+   bibtype="Article",
    title="BED: a Biological Entity Dictionary based on a graph data model",
-   author=personList(
-      as.person("Patrice Godard"),
-      as.person("Jonathan van Eyll")
+   author=c(
+      person("Patrice Godard"),
+      person("Jonathan van Eyll")
    ),
    journal="F1000Research",
    year=2018,
@@ -16,5 +16,5 @@ citEntry(
       "BED: a Biological Entity Dictionary based on a graph data model",
       "[version 3; peer review: 2 approved].",
       "F1000Research, 7:195."
-      )
+   )
 )
