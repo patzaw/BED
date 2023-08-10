@@ -44,9 +44,35 @@ library(BED)
 # }else{
 #    stop("The Clarivate analytics metabaser package is not installed.")
 # }
+# library(TKCat)
+# k <- chTKCat("bel040344", password="")
+.get_tk_headers <- do.call(function(){
+   ## Choose the relevant credentials
+   credentials <- readRDS("~/etc/kmt_authorization.rds")
+   credentials$refresh()
+   return(function(){
+      if(!credentials$validate()){
+         credentials$refresh()
+      }
+      list(
+         "Authorization"=paste("Bearer", credentials$credentials$access_token)
+      )
+   })
+}, list())
 library(TKCat)
-k <- chTKCat("bel040344", password="")
-if("MetaBase" %in% list_MDBs(k)$name){
+.tkcon <- chTKCat(
+   "tkcat.ucb.com",
+   password="",
+   port=443, https=TRUE,
+   extended_headers=.get_tk_headers()
+)
+.db_reconnect <- function(x){
+   xn <- deparse(substitute(x))
+   nv <- db_reconnect(x, extended_headers=.get_tk_headers())
+   assign(xn, nv, envir=parent.frame(n=1))
+   invisible(nv)
+}
+if("MetaBase" %in% list_MDBs(.tkcon)$name){
    source("helpers/loadMBObjects_fromTKCat.R")
 }else{
    stop("MetaBase is not available in this TKCat instance.")
@@ -63,7 +89,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "109"
+ensembl_release <- "110"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -1021,8 +1047,8 @@ for(org in listOrganisms()){
 <!-- ``` -->
 
 ```{r}
-db_reconnect(k)
-tkmb <- get_MDB(k, "MetaBase")
+.db_reconnect(.tkcon)
+tkmb <- get_MDB(.tkcon, "MetaBase")
 ```
 
 
@@ -1047,7 +1073,7 @@ BED:::registerBEDB(
 ## Homo sapiens data
 
 ```{r MetaBaseHs}
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Homo sapiens"),
     tkmb=tkmb
@@ -1058,7 +1084,7 @@ gc()
 ## Mus musculus data
 
 ```{r MetaBaseMm, message=FALSE}
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Mus musculus"),
     tkmb=tkmb
@@ -1069,7 +1095,7 @@ gc()
 ## Rattus norvegicus data
 
 ```{r MetaBaseRn, message=FALSE}
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Rattus norvegicus"),
     tkmb=tkmb

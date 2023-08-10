@@ -1,7 +1,7 @@
 ---
 title: "Biological Entity Dictionary (BED): Feeding the DB"
 author: "Patrice Godard"
-date: "February 11 2023"
+date: "August 09 2023"
 abstract: "Dump source identifiers related information and integrate content in BED"
 output:
   html_document:
@@ -45,9 +45,35 @@ library(BED)
 # }else{
 #    stop("The Clarivate analytics metabaser package is not installed.")
 # }
+# library(TKCat)
+# k <- chTKCat("bel040344", password="")
+.get_tk_headers <- do.call(function(){
+   ## Choose the relevant credentials
+   credentials <- readRDS("~/etc/kmt_authorization.rds")
+   credentials$refresh()
+   return(function(){
+      if(!credentials$validate()){
+         credentials$refresh()
+      }
+      list(
+         "Authorization"=paste("Bearer", credentials$credentials$access_token)
+      )
+   })
+}, list())
 library(TKCat)
-k <- chTKCat("bel040344", password="")
-if("MetaBase" %in% list_MDBs(k)$name){
+.tkcon <- chTKCat(
+   "tkcat.ucb.com",
+   password="",
+   port=443, https=TRUE,
+   extended_headers=.get_tk_headers()
+)
+.db_reconnect <- function(x){
+   xn <- deparse(substitute(x))
+   nv <- db_reconnect(x, extended_headers=.get_tk_headers())
+   assign(xn, nv, envir=parent.frame(n=1))
+   invisible(nv)
+}
+if("MetaBase" %in% list_MDBs(.tkcon)$name){
    source("helpers/loadMBObjects_fromTKCat.R")
 }else{
    stop("MetaBase is not available in this TKCat instance.")
@@ -64,7 +90,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "109"
+ensembl_release <- "110"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -300,7 +326,7 @@ print(bedVersion)
 ```
 
 ```
-## [1] "2023.02.11"
+## [1] "2023.08.09"
 ```
 
 ```r
@@ -309,14 +335,14 @@ BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
 
 ## Load Data model
 
-**Start**: 2023-02-11 13:47:02
+**Start**: 2023-08-09 16:54:18.232244
 
 
 ```r
 BED:::loadBedModel()
 ```
 
-**End**: 2023-02-11 13:47:08
+**End**: 2023-08-09 16:54:26.723324
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -326,7 +352,7 @@ BED:::loadBedModel()
 Information is downloaded if older than 4 days
 according to the `reDumpThr` object.
 
-**Start**: 2023-02-11 13:47:08
+**Start**: 2023-08-09 16:54:26.724561
 
 
 ```r
@@ -341,7 +367,7 @@ BED:::loadNcbiTax(
 )
 ```
 
-**End**: 2023-02-11 13:47:26
+**End**: 2023-08-09 16:55:17.213482
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -396,7 +422,7 @@ print(ensembl)
 
 ```
 ## $release
-## [1] "109"
+## [1] "110"
 ## 
 ## $organism
 ## [1] "Danio rerio"
@@ -431,7 +457,7 @@ print(ensembl)
 
 ### Genes
 
-**Start**: 2023-02-11 13:47:26
+**Start**: 2023-08-09 16:55:17.489155
 
 
 ```r
@@ -448,16 +474,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 2626462 140.3    9701330 518.2 12126662 647.7
-## Vcells 8708716  66.5   62929648 480.2 78650470 600.1
+##           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+## Ncells 2675368 142.9   14240172 760.6  17800214 950.7
+## Vcells 8807724  67.2   81973800 625.5 128081948 977.2
 ```
 
-**End**: 2023-02-11 13:49:58
+**End**: 2023-08-09 16:59:18.44798
 
 ### Transcripts
 
-**Start**: 2023-02-11 13:49:58
+**Start**: 2023-08-09 16:59:18.448443
 
 
 ```r
@@ -473,16 +499,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 2632495 140.6    7817588 417.6 12126662 647.7
-## Vcells 8721693  66.6   50343719 384.1 78650470 600.1
+##           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+## Ncells 2678707 143.1   11392138 608.5  17800214 950.7
+## Vcells 8815033  67.3   65579040 500.4 128081948 977.2
 ```
 
-**End**: 2023-02-11 13:52:21
+**End**: 2023-08-09 17:01:58.144515
 
 ### Peptides
 
-**Start**: 2023-02-11 13:52:21
+**Start**: 2023-08-09 17:01:58.14496
 
 
 ```r
@@ -498,12 +524,12 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 2637947 140.9    7817588 417.6 12126662 647.7
-## Vcells 8733398  66.7   48393970 369.3 78650470 600.1
+##           used  (Mb) gc trigger  (Mb)  max used  (Mb)
+## Ncells 2681694 143.3    9113711 486.8  17800214 950.7
+## Vcells 8821663  67.4   52463232 400.3 128081948 977.2
 ```
 
-**End**: 2023-02-11 13:54:46
+**End**: 2023-08-09 17:04:42.648849
 
 ## Homo sapiens
 
@@ -515,7 +541,7 @@ print(ensembl)
 
 ```
 ## $release
-## [1] "109"
+## [1] "110"
 ## 
 ## $organism
 ## [1] "Homo sapiens"
@@ -550,7 +576,7 @@ print(ensembl)
 
 ### Genes
 
-**Start**: 2023-02-11 13:54:46
+**Start**: 2023-08-09 17:04:42.657035
 
 
 ```r
@@ -567,16 +593,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638352 141.0   13728284 733.2  17160354  916.5
-## Vcells 8734307  66.7  111589476 851.4 139475971 1064.2
+##            used  (Mb) gc trigger   (Mb)  max used   (Mb)
+## Ncells  2681835 143.3   14597024  779.6  18246279  974.5
+## Vcells 13016445  99.4  212754936 1623.2 265740570 2027.5
 ```
 
-**End**: 2023-02-11 13:58:30
+**End**: 2023-08-09 17:14:09.033694
 
 ### Transcripts
 
-**Start**: 2023-02-11 13:58:30
+**Start**: 2023-08-09 17:14:09.034201
 
 
 ```r
@@ -592,16 +618,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638083 140.9   10982628 586.6  17160354  916.5
-## Vcells 8733879  66.7  107189897 817.8 139475971 1064.2
+##            used  (Mb) gc trigger   (Mb)  max used   (Mb)
+## Ncells  2681899 143.3   12481296  666.6  18246279  974.5
+## Vcells 13016573  99.4  170203949 1298.6 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:03:55
+**End**: 2023-08-09 17:19:56.655175
 
 ### Peptides
 
-**Start**: 2023-02-11 14:03:55
+**Start**: 2023-08-09 17:19:56.65571
 
 
 ```r
@@ -617,12 +643,12 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638115 140.9   10575323 564.8  17160354  916.5
-## Vcells 8733995  66.7  102966301 785.6 139475971 1064.2
+##            used  (Mb) gc trigger   (Mb)  max used   (Mb)
+## Ncells  2681718 143.3    9985037  533.3  18246279  974.5
+## Vcells 13016334  99.4  136163160 1038.9 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:09:50
+**End**: 2023-08-09 17:27:03.348397
 
 ## Mus musculus
 
@@ -634,7 +660,7 @@ print(ensembl)
 
 ```
 ## $release
-## [1] "109"
+## [1] "110"
 ## 
 ## $organism
 ## [1] "Mus musculus"
@@ -669,7 +695,7 @@ print(ensembl)
 
 ### Genes
 
-**Start**: 2023-02-11 14:09:50
+**Start**: 2023-08-09 17:27:03.356942
 
 
 ```r
@@ -686,16 +712,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638271 140.9    8460259 451.9  17160354  916.5
-## Vcells 8734498  66.7   82373041 628.5 139475971 1064.2
+##            used  (Mb) gc trigger   (Mb)  max used   (Mb)
+## Ncells  2681949 143.3    9617636  513.7  18246279  974.5
+## Vcells 13016963  99.4  157000760 1197.9 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:12:16
+**End**: 2023-08-09 17:33:05.56222
 
 ### Transcripts
 
-**Start**: 2023-02-11 14:12:16
+**Start**: 2023-08-09 17:33:05.562761
 
 
 ```r
@@ -711,16 +737,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638086 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734210  66.7   79142120 603.9 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681713 143.3    7694109 411.0  18246279  974.5
+## Vcells 13016591  99.4  125600608 958.3 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:15:47
+**End**: 2023-08-09 17:36:24.561842
 
 ### Peptides
 
-**Start**: 2023-02-11 14:15:47
+**Start**: 2023-08-09 17:36:24.562372
 
 
 ```r
@@ -736,12 +762,12 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638244 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734536  66.7   76040436 580.2 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681766 143.3    7418344 396.2  18246279  974.5
+## Vcells 13016742  99.4  100480487 766.7 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:19:11
+**End**: 2023-08-09 17:39:27.578029
 
 ## Rattus norvegicus
 
@@ -753,7 +779,7 @@ print(ensembl)
 
 ```
 ## $release
-## [1] "109"
+## [1] "110"
 ## 
 ## $organism
 ## [1] "Rattus norvegicus"
@@ -788,7 +814,7 @@ print(ensembl)
 
 ### Genes
 
-**Start**: 2023-02-11 14:19:11
+**Start**: 2023-08-09 17:39:27.585655
 
 
 ```r
@@ -805,16 +831,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638019 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734405  66.7   60832349 464.2 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681664 143.3    7418344 396.2  18246279  974.5
+## Vcells 13016804  99.4   80384390 613.3 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:21:06
+**End**: 2023-08-09 17:42:53.341053
 
 ### Transcripts
 
-**Start**: 2023-02-11 14:21:06
+**Start**: 2023-08-09 17:42:53.341566
 
 
 ```r
@@ -830,16 +856,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638065 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734502  66.7   48665880 371.3 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681644 143.3    7418344 396.2  18246279  974.5
+## Vcells 13016792  99.4   64307512 490.7 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:22:42
+**End**: 2023-08-09 17:44:25.003394
 
 ### Peptides
 
-**Start**: 2023-02-11 14:22:42
+**Start**: 2023-08-09 17:44:25.003982
 
 
 ```r
@@ -855,12 +881,12 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638016 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734483  66.7   38932704 297.1 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681691 143.3    7418344 396.2  18246279  974.5
+## Vcells 13016933  99.4   51446010 392.6 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:24:13
+**End**: 2023-08-09 17:46:15.73512
 
 ## Sus scrofa
 
@@ -872,7 +898,7 @@ print(ensembl)
 
 ```
 ## $release
-## [1] "109"
+## [1] "110"
 ## 
 ## $organism
 ## [1] "Sus scrofa"
@@ -907,7 +933,7 @@ print(ensembl)
 
 ### Genes
 
-**Start**: 2023-02-11 14:24:13
+**Start**: 2023-08-09 17:46:15.742546
 
 
 ```r
@@ -924,16 +950,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638040 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734761  66.7   37615520 287.0 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681688 143.3    7418344 396.2  18246279  974.5
+## Vcells 13017167  99.4   59406604 453.3 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:24:59
+**End**: 2023-08-09 17:48:15.562748
 
 ### Transcripts
 
-**Start**: 2023-02-11 14:24:59
+**Start**: 2023-08-09 17:48:15.563196
 
 
 ```r
@@ -949,16 +975,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638098 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734878  66.7   36174900 276.0 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681617 143.3    7418344 396.2  18246279  974.5
+## Vcells 13017070  99.4   47525284 362.6 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:26:17
+**End**: 2023-08-09 17:49:23.884223
 
 ### Peptides
 
-**Start**: 2023-02-11 14:26:17
+**Start**: 2023-08-09 17:49:23.884698
 
 
 ```r
@@ -974,12 +1000,12 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2638082 140.9    8153848 435.5  17160354  916.5
-## Vcells 8734914  66.7   34791904 265.5 139475971 1064.2
+##            used  (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells  2681658 143.3    7418344 396.2  18246279  974.5
+## Vcells 13017201  99.4   45688272 348.6 265740570 2027.5
 ```
 
-**End**: 2023-02-11 14:28:00
+**End**: 2023-08-09 17:50:55.922581
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -1038,7 +1064,7 @@ BED:::registerBEDB(
 
 ## Danio rerio data
 
-**Start**: 2023-02-11 14:28:01
+**Start**: 2023-08-09 17:50:56.075854
 
 
 ```r
@@ -1051,16 +1077,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2651281 141.6    8153848 435.5  17160354  916.5
-## Vcells 8762187  66.9   27843940 212.5 139475971 1064.2
+##             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells   2688857  143.7  453949054 24243.5  445391260 23786.5
+## Vcells 273079189 2083.5 3396819172 25915.7 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 14:30:48
+**End**: 2023-08-09 19:09:42.726727
 
 ## Homo sapiens data
 
-**Start**: 2023-02-11 14:30:48
+**Start**: 2023-08-09 19:09:42.727325
 
 
 ```r
@@ -1073,16 +1099,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2651292 141.6    9770964 521.9  17160354  916.5
-## Vcells 8762255  66.9   69895626 533.3 139475971 1064.2
+##             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells   2688562  143.6  363159244 19394.8  453949054 24243.5
+## Vcells 273078749 2083.5 2758820610 21048.2 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 14:37:51
+**End**: 2023-08-09 19:35:39.88117
 
 ## Mus musculus data
 
-**Start**: 2023-02-11 14:37:51
+**Start**: 2023-08-09 19:35:39.881632
 
 
 ```r
@@ -1095,16 +1121,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2651225 141.6    7816772 417.5  17160354  916.5
-## Vcells 8762193  66.9   55921217 426.7 139475971 1064.2
+##             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells   2688678  143.6  232421917 12412.7  453949054 24243.5
+## Vcells 273078994 2083.5 1765645191 13470.9 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 14:42:28
+**End**: 2023-08-09 19:56:53.935304
 
 ## Rattus norvegicus data
 
-**Start**: 2023-02-11 14:42:28
+**Start**: 2023-08-09 19:56:53.935843
 
 
 ```r
@@ -1117,16 +1143,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2651188 141.6    7816772 417.5  17160354  916.5
-## Vcells 8762183  66.9   44736974 341.4 139475971 1064.2
+##             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells   2688464  143.6  401350628 21434.5  453949054 24243.5
+## Vcells 273078689 2083.5 1702083957 12985.9 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 14:46:08
+**End**: 2023-08-09 20:19:53.221418
 
 ## Sus scrofa data
 
-**Start**: 2023-02-11 14:46:08
+**Start**: 2023-08-09 20:19:53.221975
 
 
 ```r
@@ -1139,16 +1165,16 @@ gc()
 ```
 
 ```
-##           used  (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 2651220 141.6    7816772 417.5  17160354  916.5
-## Vcells 8762284  66.9   35789580 273.1 139475971 1064.2
+##             used   (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells   2688646  143.6  422959348 22588.5  453949054 24243.5
+## Vcells 273079045 2083.5 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 14:48:30
+**End**: 2023-08-09 20:41:36.105746
 
 ## Direct cross-references with Uniprot
 
-**Start**: 2023-02-11 14:48:30
+**Start**: 2023-08-09 20:41:36.106295
 
 
 ```r
@@ -1189,7 +1215,7 @@ for(org in listOrganisms()){
 }
 ```
 
-**End**: 2023-02-11 15:02:53
+**End**: 2023-08-09 20:59:00.060223
 
 
 <!----------------------------------------------------------------->
@@ -1222,7 +1248,7 @@ BED:::registerBEDB(
 
 ## Danio rerio data
 
-**Start**: 2023-02-11 15:02:56
+**Start**: 2023-08-09 20:59:04.803069
 
 
 ```r
@@ -1233,16 +1259,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252549436 13487.6  480265451 25649.0  349936908 18688.7
-## Vcells 953766442  7276.7 1616147420 12330.3 1604029336 12237.8
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254034955 13567  422959348 22588.5  453949054 24243.5
+## Vcells 1068885129  8155 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:07:13
+**End**: 2023-08-09 21:02:39.226946
 
 ## Homo sapiens data
 
-**Start**: 2023-02-11 15:07:13
+**Start**: 2023-08-09 21:02:39.227428
 
 
 ```r
@@ -1253,16 +1279,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252549495 13487.6  480265451 25649.0  349936908 18688.7
-## Vcells 953766590  7276.7 1616147420 12330.3 1604029336 12237.8
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254034936 13567  422959348 22588.5  453949054 24243.5
+## Vcells 1068885147  8155 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:11:54
+**End**: 2023-08-09 21:06:57.985456
 
 ## Mus musculus data
 
-**Start**: 2023-02-11 15:11:54
+**Start**: 2023-08-09 21:06:57.985965
 
 
 ```r
@@ -1273,16 +1299,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252549416 13487.6  480265451 25649.0  349936908 18688.7
-## Vcells 953766508  7276.7 1616147420 12330.3 1604029336 12237.8
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254034902 13567  422959348 22588.5  453949054 24243.5
+## Vcells 1068885140  8155 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:14:19
+**End**: 2023-08-09 21:09:14.990926
 
 ## Rattus norvegicus data
 
-**Start**: 2023-02-11 15:14:19
+**Start**: 2023-08-09 21:09:14.991794
 
 
 ```r
@@ -1293,16 +1319,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252549463 13487.6  480265451 25649.0  349936908 18688.7
-## Vcells 953766638  7276.7 1616147420 12330.3 1604029336 12237.8
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254034895 13567  422959348 22588.5  453949054 24243.5
+## Vcells 1068885178  8155 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:16:10
+**End**: 2023-08-09 21:11:34.041939
 
 ## Sus scrofa data
 
-**Start**: 2023-02-11 15:16:10
+**Start**: 2023-08-09 21:11:34.042398
 
 
 ```r
@@ -1313,16 +1339,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252549399 13487.6  480265451 25649.0  480265451 25649.0
-## Vcells 953766580  7276.7 1616147420 12330.3 1604029336 12237.8
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254034867 13567  422959348 22588.5  453949054 24243.5
+## Vcells 1068885182  8155 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:28:48
+**End**: 2023-08-09 21:23:19.799993
 
 ## Indirect cross-references with EntrezGene
 
-**Start**: 2023-02-11 15:28:48
+**Start**: 2023-08-09 21:23:19.800496
 
 
 ```r
@@ -1397,14 +1423,14 @@ for(org in listOrganisms()){
 }
 ```
 
-**End**: 2023-02-11 15:40:09
+**End**: 2023-08-09 21:43:06.291949
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
 # Loading Clarivate Analytics MetaBase objects from TKCat
 
-**Start**: 2023-02-11 15:40:09
+**Start**: 2023-08-09 21:43:06.292837
 
 
 <!-- ```{r, echo=FALSE} -->
@@ -1425,8 +1451,8 @@ for(org in listOrganisms()){
 
 
 ```r
-db_reconnect(k)
-tkmb <- get_MDB(k, "MetaBase")
+.db_reconnect(.tkcon)
+tkmb <- get_MDB(.tkcon, "MetaBase")
 ```
 
 
@@ -1453,7 +1479,7 @@ BED:::registerBEDB(
 
 
 ```r
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Homo sapiens"),
     tkmb=tkmb
@@ -1462,16 +1488,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252662263 13493.7  480265451 25649.0  480265451 25649.0
-## Vcells 978147034  7462.7 1616147420 12330.3 1604029336 12237.8
+##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254205880 13576.1  422959348 22588.5  453949054 24243.5
+## Vcells 1095861975  8360.8 1972792330 15051.3 4233038320 32295.6
 ```
 
 ## Mus musculus data
 
 
 ```r
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Mus musculus"),
     tkmb=tkmb
@@ -1480,16 +1506,16 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252657657 13493.4  480265451 25649.0  480265451 25649.0
-## Vcells 977592197  7458.5 1616147420 12330.3 1604029336 12237.8
+##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254200162 13575.8  422959348 22588.5  453949054 24243.5
+## Vcells 1095292593  8356.5 1972792330 15051.3 4233038320 32295.6
 ```
 
 ## Rattus norvegicus data
 
 
 ```r
-db_reconnect(tkmb)
+.db_reconnect(tkmb)
 loadMBObjects_fromTKCat(
     orgOfInt=c("Rattus norvegicus"),
     tkmb=tkmb
@@ -1498,12 +1524,12 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 252657658 13493.4  480265451 25649.0  480265451 25649.0
-## Vcells 977592239  7458.5 1616147420 12330.3 1604029336 12237.8
+##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  254200163 13575.8  422959348 22588.5  453949054 24243.5
+## Vcells 1095292633  8356.5 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:44:31
+**End**: 2023-08-09 21:48:05.90633
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -1512,7 +1538,7 @@ gc()
 
 ## Orthologs from biomaRt
 
-**Start**: 2023-02-11 15:44:31
+**Start**: 2023-08-09 21:48:05.907005
 
 
 ```r
@@ -1576,11 +1602,11 @@ for(i in 1:(length(orgOfInt)-1)){
 }
 ```
 
-**End**: 2023-02-11 15:48:38
+**End**: 2023-08-09 21:52:31.50735
 
 ## Orthologs from NCBI
 
-**Start**: 2023-02-11 15:48:38
+**Start**: 2023-08-09 21:52:31.50861
 
 
 ```r
@@ -1623,12 +1649,12 @@ gc()
 ```
 
 ```
-##             used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells 255638978 13652.6  480265451 25649.0  480265451 25649.0
-## Vcells 961656090  7336.9 1616147420 12330.3 1604029336 12237.8
+##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  257237437 13738.0  422959348 22588.5  453949054 24243.5
+## Vcells 1077557647  8221.2 1972792330 15051.3 4233038320 32295.6
 ```
 
-**End**: 2023-02-11 15:51:08
+**End**: 2023-08-09 21:54:39.971296
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -1645,7 +1671,7 @@ dir.create("geo", showWarnings=FALSE)
 
 ### GPL1708: 	Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)
 
-**Start**: 2023-02-11 15:51:08
+**Start**: 2023-08-09 21:54:40.425633
 
 
 ```r
@@ -1688,11 +1714,11 @@ BED:::loadProbes(
 # )
 ```
 
-**End**: 2023-02-11 15:51:16
+**End**: 2023-08-09 21:54:51.049109
 
 ### GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)
 
-**Start**: 2023-02-11 15:51:16
+**Start**: 2023-08-09 21:54:51.050111
 
 
 ```r
@@ -1734,11 +1760,11 @@ BED:::loadProbes(
 # )
 ```
 
-**End**: 2023-02-11 15:51:25
+**End**: 2023-08-09 21:55:00.803126
 
 ### GPL570: Affymetrix Human Genome U133 Plus 2.0 Array
 
-**Start**: 2023-02-11 15:51:25
+**Start**: 2023-08-09 21:55:00.804045
 
 
 ```r
@@ -1770,11 +1796,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:51:40
+**End**: 2023-08-09 21:55:18.130326
 
 ### GPL571: Affymetrix Human Genome U133A 2.0 Array
 
-**Start**: 2023-02-11 15:51:40
+**Start**: 2023-08-09 21:55:18.130943
 
 
 ```r
@@ -1806,11 +1832,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:51:47
+**End**: 2023-08-09 21:55:27.391098
 
 ### GPL13158: Affymetrix HT HG-U133+ PM Array Plate
 
-**Start**: 2023-02-11 15:51:47
+**Start**: 2023-08-09 21:55:27.392382
 
 
 ```r
@@ -1842,11 +1868,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:51:58
+**End**: 2023-08-09 21:55:43.246305
 
 ### GPL96: Affymetrix Human Genome U133A Array
 
-**Start**: 2023-02-11 15:51:58
+**Start**: 2023-08-09 21:55:43.247053
 
 
 ```r
@@ -1878,11 +1904,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:05
+**End**: 2023-08-09 21:55:52.172971
 
 ### GPL1261: Affymetrix Mouse Genome 430 2.0 Array
 
-**Start**: 2023-02-11 15:52:05
+**Start**: 2023-08-09 21:55:52.173522
 
 
 ```r
@@ -1914,11 +1940,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:15
+**End**: 2023-08-09 21:56:09.566804
 
 ### GPL1355: Affymetrix Rat Genome 230 2.0 Array
 
-**Start**: 2023-02-11 15:52:15
+**Start**: 2023-08-09 21:56:09.567395
 
 
 ```r
@@ -1950,11 +1976,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:22
+**End**: 2023-08-09 21:56:18.467928
 
 ### GPL10558: Illumina HumanHT-12 V4.0 expression beadchip
 
-**Start**: 2023-02-11 15:52:22
+**Start**: 2023-08-09 21:56:18.469008
 
 
 ```r
@@ -1982,11 +2008,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:35
+**End**: 2023-08-09 21:56:34.187848
 
 ### GPL6947: Illumina HumanHT-12 V3.0 expression beadchip
 
-**Start**: 2023-02-11 15:52:35
+**Start**: 2023-08-09 21:56:34.188923
 
 
 ```r
@@ -2014,11 +2040,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:45
+**End**: 2023-08-09 21:56:45.169499
 
 ### GPL6885: Illumina MouseRef-8 v2.0 expression beadchip
 
-**Start**: 2023-02-11 15:52:45
+**Start**: 2023-08-09 21:56:45.170087
 
 
 ```r
@@ -2051,11 +2077,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:51
+**End**: 2023-08-09 21:56:52.69024
 
 ### GPL6887: Illumina MouseWG-6 v2.0 expression beadchip
 
-**Start**: 2023-02-11 15:52:51
+**Start**: 2023-08-09 21:56:52.691792
 
 
 ```r
@@ -2088,11 +2114,11 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:52:59
+**End**: 2023-08-09 21:57:07.172913
 
 ### GPL6101: Illumina ratRef-12 v1.0 expression beadchip
 
-**Start**: 2023-02-11 15:52:59
+**Start**: 2023-08-09 21:57:07.173792
 
 
 ```r
@@ -2120,12 +2146,12 @@ BED:::loadProbes(
 )
 ```
 
-**End**: 2023-02-11 15:53:05
+**End**: 2023-08-09 21:57:14.369364
 
 ## Probes from biomaRt
 
 
-**Start**: 2023-02-11 15:53:05
+**Start**: 2023-08-09 21:57:14.370009
 
 
 ```r
@@ -2194,7 +2220,7 @@ for(org in orgOfInt){
 }
 ```
 
-**End**: 2023-02-11 16:13:49
+**End**: 2023-08-09 23:42:29.187714
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -2227,14 +2253,14 @@ for(db in names(otherIdURL)){
 
 # Load Lucene Indexes
 
-**Start**: 2023-02-11 16:13:51
+**Start**: 2023-08-09 23:42:29.730429
 
 
 ```r
 BED:::loadLuceneIndexes()
 ```
 
-**End**: 2023-02-11 16:13:51
+**End**: 2023-08-09 23:42:30.773977
 
 
 <!----------------------------------------------------------------->
@@ -2243,12 +2269,12 @@ BED:::loadLuceneIndexes()
 
 
 ```
-## R version 4.2.0 (2022-04-22)
+## R version 4.3.0 (2023-04-21)
 ## Platform: x86_64-pc-linux-gnu (64-bit)
 ## Running under: Red Hat Enterprise Linux
 ## 
 ## Matrix products: default
-## BLAS/LAPACK: /usr/lib64/libopenblasp-r0.3.3.so
+## BLAS/LAPACK: /usr/lib64/libopenblasp-r0.3.3.so;  LAPACK version 3.8.0
 ## 
 ## locale:
 ##  [1] LC_CTYPE=en_GB.UTF-8       LC_NUMERIC=C              
@@ -2258,50 +2284,54 @@ BED:::loadLuceneIndexes()
 ##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
 ## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
 ## 
+## time zone: Europe/Brussels
+## tzcode source: system (glibc)
+## 
 ## attached base packages:
 ## [1] stats     graphics  grDevices utils     datasets  methods   base     
 ## 
 ## other attached packages:
-##  [1] GEOquery_2.66.0     Biobase_2.58.0      BiocGenerics_0.44.0
-##  [4] biomaRt_2.54.0      TKCat_1.0.7         DBI_1.1.3          
-##  [7] ReDaMoR_0.7.1       magrittr_2.0.3      dplyr_1.0.10       
-## [10] BED_1.4.11          visNetwork_2.1.2    neo2R_2.4.1        
-## [13] knitr_1.41         
+##  [1] GEOquery_2.68.0     Biobase_2.60.0      BiocGenerics_0.46.0
+##  [4] biomaRt_2.56.1      TKCat_1.1.2         DBI_1.1.3          
+##  [7] ReDaMoR_0.7.2       magrittr_2.0.3      dplyr_1.1.2        
+## [10] BED_1.4.13          visNetwork_2.1.2    neo2R_2.4.1        
+## [13] knitr_1.43         
 ## 
 ## loaded via a namespace (and not attached):
-##   [1] bitops_1.0-7           bit64_4.0.5            filelock_1.0.2        
-##   [4] progress_1.2.2         httr_1.4.4             GenomeInfoDb_1.34.6   
-##   [7] tools_4.2.0            bslib_0.4.2            utf8_1.2.2            
-##  [10] R6_2.5.1               DT_0.26                withr_2.5.0           
-##  [13] prettyunits_1.1.1      tidyselect_1.2.0       bit_4.0.5             
-##  [16] curl_4.3.3             compiler_4.2.0         cli_3.5.0             
-##  [19] xml2_1.3.3             shinyjs_2.1.0          colourpicker_1.2.0    
-##  [22] sass_0.4.4             arrow_10.0.1           readr_2.1.3           
-##  [25] rappdirs_0.3.3         stringr_1.5.0          digest_0.6.31         
-##  [28] R.utils_2.12.2         rmarkdown_2.19         XVector_0.38.0        
-##  [31] base64enc_0.1-3        pkgconfig_2.0.3        htmltools_0.5.4       
-##  [34] parallelly_1.33.0      limma_3.54.0           dbplyr_2.2.1          
-##  [37] fastmap_1.1.0          jsonvalidate_1.3.2     htmlwidgets_1.6.1     
-##  [40] rlang_1.0.6            rstudioapi_0.14        RSQLite_2.2.20        
-##  [43] shiny_1.7.4            jquerylib_0.1.4        generics_0.1.3        
-##  [46] jsonlite_1.8.4         R.oo_1.25.0            RCurl_1.98-1.9        
-##  [49] GenomeInfoDbData_1.2.9 Matrix_1.5-3           Rcpp_1.0.9            
-##  [52] S4Vectors_0.36.1       fansi_1.0.3            R.methodsS3_1.8.2     
-##  [55] lifecycle_1.0.3        stringi_1.7.8          yaml_2.3.6            
-##  [58] rintrojs_0.3.2         zlibbioc_1.44.0        BiocFileCache_2.6.0   
-##  [61] grid_4.2.0             blob_1.2.3             parallel_4.2.0        
-##  [64] listenv_0.9.0          promises_1.2.0.1       shinydashboard_0.7.2  
-##  [67] crayon_1.5.2           miniUI_0.1.1.1         lattice_0.20-45       
-##  [70] Biostrings_2.66.0      hms_1.1.2              KEGGREST_1.38.0       
-##  [73] pillar_1.8.1           uuid_1.1-0             markdown_1.4          
-##  [76] codetools_0.2-18       stats4_4.2.0           XML_3.99-0.13         
-##  [79] glue_1.6.2             evaluate_0.19          getPass_0.2-2         
-##  [82] V8_4.2.2               data.table_1.14.6      ClickHouseHTTP_0.3.0  
-##  [85] vctrs_0.5.1            png_0.1-8              tzdb_0.3.0            
-##  [88] httpuv_1.6.7           tidyr_1.2.1            purrr_1.0.0           
-##  [91] future_1.30.0          assertthat_0.2.1       cachem_1.0.6          
-##  [94] xfun_0.36              mime_0.12              xtable_1.8-4          
-##  [97] later_1.3.0            tibble_3.1.8           AnnotationDbi_1.60.0  
-## [100] memoise_2.0.1          IRanges_2.32.0         globals_0.16.2        
-## [103] ellipsis_0.3.2
+##   [1] bitops_1.0-7            rlang_1.1.1             shinydashboard_0.7.2   
+##   [4] compiler_4.3.0          RSQLite_2.3.1           getPass_0.2-2          
+##   [7] roxygen2_7.2.3          png_0.1-8               vctrs_0.6.3            
+##  [10] stringr_1.5.0           pkgconfig_2.0.3         crayon_1.5.2           
+##  [13] fastmap_1.1.1           dbplyr_2.3.3            XVector_0.40.0         
+##  [16] ellipsis_0.3.2          utf8_1.2.3              promises_1.2.0.1       
+##  [19] rmarkdown_2.23          markdown_1.7            tzdb_0.4.0             
+##  [22] ClickHouseHTTP_0.3.2    purrr_1.0.1             bit_4.0.5              
+##  [25] xfun_0.39               zlibbioc_1.46.0         cachem_1.0.8           
+##  [28] GenomeInfoDb_1.36.1     jsonlite_1.8.7          progress_1.2.2         
+##  [31] blob_1.2.4              later_1.3.1             uuid_1.1-0             
+##  [34] prettyunits_1.1.1       parallel_4.3.0          R6_2.5.1               
+##  [37] bslib_0.5.0             stringi_1.7.12          limma_3.56.2           
+##  [40] parallelly_1.36.0       jquerylib_0.1.4         Rcpp_1.0.11            
+##  [43] assertthat_0.2.1        R.utils_2.12.2          base64enc_0.1-3        
+##  [46] readr_2.1.4             IRanges_2.34.1          httpuv_1.6.11          
+##  [49] Matrix_1.6-0            tidyselect_1.2.0        rstudioapi_0.15.0      
+##  [52] yaml_2.3.7              codetools_0.2-19        miniUI_0.1.1.1         
+##  [55] curl_5.0.1              listenv_0.9.0           lattice_0.21-8         
+##  [58] tibble_3.2.1            KEGGREST_1.40.0         shiny_1.7.4.1          
+##  [61] withr_2.5.0             askpass_1.1             evaluate_0.21          
+##  [64] future_1.33.0           BiocFileCache_2.8.0     xml2_1.3.5             
+##  [67] Biostrings_2.68.1       filelock_1.0.2          pillar_1.9.0           
+##  [70] DT_0.28                 stats4_4.3.0            shinyjs_2.1.0          
+##  [73] generics_0.1.3          RCurl_1.98-1.12         hms_1.1.3              
+##  [76] S4Vectors_0.38.1        globals_0.16.2          xtable_1.8-4           
+##  [79] glue_1.6.2              tools_4.3.0             data.table_1.14.8      
+##  [82] colourpicker_1.2.0      XML_3.99-0.14           grid_4.3.0             
+##  [85] jsonvalidate_1.3.2      tidyr_1.3.0             AnnotationDbi_1.62.2   
+##  [88] GenomeInfoDbData_1.2.10 cli_3.6.1               rappdirs_0.3.3         
+##  [91] AzureAuth_1.3.3         fansi_1.0.4             arrow_12.0.1.1         
+##  [94] V8_4.3.3                R.methodsS3_1.8.2       rintrojs_0.3.2         
+##  [97] sass_0.4.7              digest_0.6.33           htmlwidgets_1.6.2      
+## [100] R.oo_1.25.0             memoise_2.0.1           htmltools_0.5.5        
+## [103] lifecycle_1.0.3         httr_1.4.6              jose_1.2.0             
+## [106] mime_0.12               openssl_2.1.0           bit64_4.0.5
 ```
