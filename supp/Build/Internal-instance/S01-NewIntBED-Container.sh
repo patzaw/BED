@@ -16,7 +16,7 @@ if test -e $BED_PUB_DATA; then
    cp -R $BED_PUB_DATA $BED_DATA
 else
    echo "$BED_PUB_DATA directory does not exist ==> abort - Create public instance before proceeding with internal" >&2
-   # exit
+   exit
 fi
 
 export CONTAINER=new_int_bed
