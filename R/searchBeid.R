@@ -102,7 +102,7 @@ searchBeid <- function(x, clean_id_search=TRUE, clean_name_search=TRUE){
    # 'CALL db.index.fulltext.queryNodes("bename", "%s")',
    # 'YIELD node WITH collect(node) as l2, l1',
    # 'UNWIND l1+l2 as mn WITH DISTINCT mn limit 50',
-   # 'MATCH (mn)-[r:targets|is_named|:is_known_as*0..1]-(beid:BEID)',
+   # 'MATCH (mn)-[r:targets|is_named|is_known_as*0..1]-(beid:BEID)',
 
    queries <- c(
       id=sprintf(
@@ -117,7 +117,7 @@ searchBeid <- function(x, clean_id_search=TRUE, clean_name_search=TRUE){
          paste(
             'CALL db.index.fulltext.queryNodes("bename", "%s")',
             'YIELD node WITH DISTINCT node as mn limit 50',
-            'MATCH (mn)-[r:is_named|:is_known_as]-(beid:BEID)'
+            'MATCH (mn)-[r:is_named|is_known_as]-(beid:BEID)'
          ),
          vn
       )

@@ -1,12 +1,13 @@
-Package: BED
+Package: BED.5
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 1.4.13
+Version: 1.5.0
 Authors@R: c(
     person(
         "Patrice", "Godard",
         role = c("aut", "cre","cph"),
-        email = "patrice.godard@gmail.com"
+        email = "patrice.godard@gmail.com",
+        comment = c(ORCID = "0000-0001-6257-9730")
     )
     )
 Description: An interface for the 'Neo4j' database providing

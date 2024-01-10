@@ -133,6 +133,18 @@ connectToBed <- function(
          as.character(attr(checkBedConn(), "dbVersion")[1,])
       connections[[1]]["cache"] <- useCache
    }
+   nmv <- bedEnv$graph$version[1]
+   if(nmv == "3"){
+      neo4j_syntax <- list(
+         upper = "upper"
+      )
+   }
+   if(nmv == "5"){
+      neo4j_syntax <- list(
+         upper = "toUpper"
+      )
+   }
+   assign("neo4j_syntax", neo4j_syntax, bedEnv)
    ##
    if(remember){
       connections <- connections[which(

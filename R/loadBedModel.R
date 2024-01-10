@@ -5,9 +5,17 @@
 #'
 loadBedModel <- function(){
     pkgname <- utils::packageName()
+    nmv <- bedEnv$graph$version[1]
+    if(nmv == "3"){
+       mfile <- "BED-model-v3.cql"
+    }
+    if(nmv == "5"){
+       mfile <- "BED-model-v5.cql"
+    }
     ## Model
     cqlFile <- system.file(
-        "Documentation", "BED-Model", "BED-model.cql",
+        "Documentation", "BED-Model",
+        mfile,
         package=pkgname
     )
     queries <- neo2R::readCql(cqlFile)

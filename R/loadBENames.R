@@ -22,7 +22,10 @@ loadBENames <- function(d, be="Gene", dbname){
 
     ################################################
     cql <- c(
-        'MERGE (n:BEName {value:row.name, value_up:upper(row.name)})'
+        sprintf(
+           'MERGE (n:BEName {value:row.name, value_up:%s(row.name)})',
+           bedEnv$neo4j_syntax$upper
+        )
     )
     bedImport(cql, unique(d[,"name", drop=FALSE]))
 

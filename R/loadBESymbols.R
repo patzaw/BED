@@ -23,7 +23,10 @@ loadBESymbols <- function(d, be="Gene", dbname){
 
     ################################################
     cql <- c(
-        'MERGE (s:BESymbol {value:row.symbol, value_up:upper(row.symbol)})'
+        sprintf(
+           'MERGE (s:BESymbol {value:row.symbol, value_up:%s(row.symbol)})',
+           bedEnv$neo4j_syntax$upper
+        )
     )
     bedImport(cql, unique(d[,"symbol", drop=FALSE]))
 

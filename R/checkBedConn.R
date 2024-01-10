@@ -22,6 +22,11 @@ checkBedConn <- function(verbose=FALSE){
       )
       return(FALSE)
    }
+   nmv <- bedEnv$graph$version[1]
+   if(! nmv %in% c("3", "5")){
+      message(sprintf("The version %s of Neo4j is not supported", nmv))
+      return(FALSE)
+   }
    if(verbose) message(get("graph", bedEnv)$url)
    dbVersion <- try(bedCall(
       f=neo2R::cypher,

@@ -18,7 +18,10 @@ loadOrganisms <- function(d){
     toImport <- d
     cql <- c(
         'MERGE (o:TaxID {value: row.tax_id})',
-        'MERGE (on:OrganismName {value: row.name_txt, value_up:upper(row.name_txt)})',
+        sprintf(
+           'MERGE (on:OrganismName {value: row.name_txt, value_up:%s(row.name_txt)})',
+           bedEnv$neo4j_syntax$upper
+        ),
         'MERGE (o)-[:is_named {nameClass: row.name_class}]->(on)'
     )
     bedImport(cql, toImport)
