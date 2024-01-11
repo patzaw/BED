@@ -136,7 +136,7 @@ underlying Neo4j DB.
 `url`, `username` and `password` should be adapted.
 
 ```{r, message=FALSE, eval=TRUE}
-library(BED.5)
+library(BED)
 ```
 
 ```{r, message=FALSE, eval=TRUE, echo=FALSE}
@@ -168,6 +168,8 @@ checkBedConn(verbose=TRUE)
 
 If the `verbose` parameter is set to TRUE, the URL and the content version
 are displayed as messages.
+
+The following function list saved connections.
 
 ```{r, eval=FALSE}
 lsBedConnections()

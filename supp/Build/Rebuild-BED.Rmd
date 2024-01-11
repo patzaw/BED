@@ -25,7 +25,7 @@ This document shows how to feed the Biological Entity Dictionary (BED).
 It can be adapted according to specific needs and DB access.
 The BED functions used to feed the DB are not exported to avoid
 unintended modifications of the DB. To call them, they are preceded
-by `BED.5:::`.
+by `BED:::`.
 
 In this example several source databases are dumped and their content
 is integrated in BED.
@@ -36,10 +36,8 @@ data sources should not be re-downloaded.
 
 ```{r config, message=FALSE}
 ##
-warning("change: BED.5 (in helpers and vignette also), reDumpThr=4")
-##
 library(knitr)
-library(BED.5)
+library(BED)
 ##
 # if("metabaser" %in% rownames(installed.packages())){
 #    source("helpers/loadMBObjects.R")
@@ -253,7 +251,7 @@ ensembl_Drerio <- list(
     canChromosomes=c(1:25, "MT")
 )
 ## General config
-reDumpThr <- as.difftime(400, units="days")
+reDumpThr <- as.difftime(4, units="days")
 curDate <- Sys.Date()
 ```
 
@@ -296,7 +294,7 @@ if(dbSize!=0){
 ```{r bedVersion, message=FALSE}
 print(bedInstance)
 print(bedVersion)
-BED.5:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
+BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
 ```
 
 ## Load Data model
@@ -304,7 +302,7 @@ BED.5:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
 **Start**: `r Sys.time()`
 
 ```{r dataModel, message=FALSE}
-BED.5:::loadBedModel()
+BED:::loadBedModel()
 ```
 
 **End**: `r Sys.time()`
@@ -320,7 +318,7 @@ according to the `reDumpThr` object.
 **Start**: `r Sys.time()`
 
 ```{r ncbiTax, message=FALSE}
-BED.5:::loadNcbiTax(
+BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
     ddir=".",
     orgOfInt=c(
@@ -343,7 +341,7 @@ BED.5:::loadNcbiTax(
 ### Genes
 
 ```{r Ens_gene_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="Ens_gene",
     description="Ensembl gene",
     currentVersion=ensembl_release,
@@ -354,7 +352,7 @@ BED.5:::registerBEDB(
 ### Transcripts
 
 ```{r Ens_transcript_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="Ens_transcript",
     description="Ensembl transcript",
     currentVersion=ensembl_release,
@@ -365,7 +363,7 @@ BED.5:::registerBEDB(
 ### Peptides
 
 ```{r Ens_translation_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="Ens_translation",
     description="Ensembl peptides",
     currentVersion=ensembl_release,
@@ -385,7 +383,7 @@ print(ensembl)
 **Start**: `r Sys.time()`
 
 ```{r ensDr_genes, message=FALSE}
-BED.5:::getEnsemblGeneIds(
+BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -404,7 +402,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensDr_transcripts, message=FALSE}
-BED.5:::getEnsemblTranscriptIds(
+BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -422,7 +420,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensDr_peptides, message=FALSE}
-BED.5:::getEnsemblPeptideIds(
+BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -447,7 +445,7 @@ print(ensembl)
 **Start**: `r Sys.time()`
 
 ```{r ensHs_genes, message=FALSE}
-BED.5:::getEnsemblGeneIds(
+BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -466,7 +464,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensHs_transcripts, message=FALSE}
-BED.5:::getEnsemblTranscriptIds(
+BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -484,7 +482,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensHs_peptides, message=FALSE}
-BED.5:::getEnsemblPeptideIds(
+BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -509,7 +507,7 @@ print(ensembl)
 **Start**: `r Sys.time()`
 
 ```{r ensMm_genes, message=FALSE}
-BED.5:::getEnsemblGeneIds(
+BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -528,7 +526,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensMm_transcripts, message=FALSE}
-BED.5:::getEnsemblTranscriptIds(
+BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -546,7 +544,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensMm_peptides, message=FALSE}
-BED.5:::getEnsemblPeptideIds(
+BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -571,7 +569,7 @@ print(ensembl)
 **Start**: `r Sys.time()`
 
 ```{r ensRn_genes, message=FALSE}
-BED.5:::getEnsemblGeneIds(
+BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -590,7 +588,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensRn_transcripts, message=FALSE}
-BED.5:::getEnsemblTranscriptIds(
+BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -608,7 +606,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensRn_peptides, message=FALSE}
-BED.5:::getEnsemblPeptideIds(
+BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -633,7 +631,7 @@ print(ensembl)
 **Start**: `r Sys.time()`
 
 ```{r ensSs_genes, message=FALSE}
-BED.5:::getEnsemblGeneIds(
+BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -652,7 +650,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensSs_transcripts, message=FALSE}
-BED.5:::getEnsemblTranscriptIds(
+BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -670,7 +668,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ensSs_peptides, message=FALSE}
-BED.5:::getEnsemblPeptideIds(
+BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
@@ -694,7 +692,7 @@ according to the `reDumpThr` object.
 ## Register NCBI DBs
 
 ```{r dumpNcbi, message=FALSE}
-BED.5:::dumpNcbiDb(
+BED:::dumpNcbiDb(
   taxOfInt = c(), reDumpThr=reDumpThr,
   ddir=".",
   toLoad=c(), curDate=curDate
@@ -704,7 +702,7 @@ BED.5:::dumpNcbiDb(
 ### Genes
 
 ```{r EntrezGene_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="EntrezGene",
     description="NCBI gene",
     currentVersion=format(dumpDate, "%Y%m%d"),
@@ -715,7 +713,7 @@ BED.5:::registerBEDB(
 ### Transcripts
 
 ```{r RefSeq_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="RefSeq",
     description="NCBI nucleotide",
     currentVersion=format(dumpDate, "%Y%m%d"),
@@ -726,7 +724,7 @@ BED.5:::registerBEDB(
 ### Peptides
 
 ```{r RefSeq_peptide_DB, message=FALSE}
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="RefSeq_peptide",
     description="NCBI protein",
     currentVersion=format(dumpDate, "%Y%m%d"),
@@ -739,7 +737,7 @@ BED.5:::registerBEDB(
 **Start**: `r Sys.time()`
 
 ```{r ncbiDrData, message=FALSE}
-BED.5:::getNcbiGeneTransPep(
+BED:::getNcbiGeneTransPep(
     organism="Danio rerio",
     ddir=".",
     curDate=curDate
@@ -754,7 +752,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ncbiHsData, message=FALSE}
-BED.5:::getNcbiGeneTransPep(
+BED:::getNcbiGeneTransPep(
     organism="Homo sapiens",
     ddir=".",
     curDate=curDate
@@ -769,7 +767,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ncbiMmData, message=FALSE}
-BED.5:::getNcbiGeneTransPep(
+BED:::getNcbiGeneTransPep(
     organism="Mus musculus",
     ddir=".",
     curDate=curDate
@@ -784,7 +782,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ncbiRnData, message=FALSE}
-BED.5:::getNcbiGeneTransPep(
+BED:::getNcbiGeneTransPep(
     organism="Rattus norvegicus",
     ddir=".",
     curDate=curDate
@@ -799,7 +797,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r ncbiSsData, message=FALSE}
-BED.5:::getNcbiGeneTransPep(
+BED:::getNcbiGeneTransPep(
     organism="Sus scrofa",
     ddir=".",
     curDate=curDate
@@ -815,7 +813,7 @@ gc()
 
 ```{r}
 message("Direct cross-references with Uniprot")
-BED.5:::dumpNcbiDb(
+BED:::dumpNcbiDb(
   taxOfInt="",
   reDumpThr=Inf,
   ddir=".",
@@ -834,7 +832,7 @@ for(org in listOrganisms()){
   ## External DB IDs
   toImport <- unique(toAdd[, "UniProtKB_protein_accession", drop=F])
   colnames(toImport) <- "id"
-  BED.5:::loadBE(
+  BED:::loadBE(
       d=toImport, be="Peptide",
       dbname="Uniprot",
       taxId=NA
@@ -842,7 +840,7 @@ for(org in listOrganisms()){
   ## The cross references
   toImport <- toAdd
   colnames(toImport) <- c("id1", "id2")
-  BED.5:::loadCorrespondsTo(
+  BED:::loadCorrespondsTo(
       d=toImport,
       db1="RefSeq_peptide",
       db2="Uniprot",
@@ -873,7 +871,7 @@ if(is.na(as.Date(paste0(avRel, "_01"), format="%Y_%m_%d"))){
     print(avRel)
     stop(sprintf("Check reldate.txt file on %s", ftp))
 }
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="Uniprot",
     description="Uniprot",
     currentVersion=avRel,
@@ -886,7 +884,7 @@ BED.5:::registerBEDB(
 **Start**: `r Sys.time()`
 
 ```{r uniprotDrData, message=FALSE}
-BED.5:::getUniprot(
+BED:::getUniprot(
     organism="Danio rerio", release=avRel, ddir="."
 )
 gc()
@@ -899,7 +897,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r uniprotHsData, message=FALSE}
-BED.5:::getUniprot(
+BED:::getUniprot(
     organism="Homo sapiens", release=avRel, ddir="."
 )
 gc()
@@ -912,7 +910,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r uniprotMmData, message=FALSE}
-BED.5:::getUniprot(
+BED:::getUniprot(
     organism="Mus musculus", release=avRel, ddir="."
 )
 gc()
@@ -925,7 +923,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r uniprotRnData, message=FALSE}
-BED.5:::getUniprot(
+BED:::getUniprot(
     organism="Rattus norvegicus", release=avRel, ddir="."
 )
 gc()
@@ -938,7 +936,7 @@ gc()
 **Start**: `r Sys.time()`
 
 ```{r uniprotSsData, message=FALSE}
-BED.5:::getUniprot(
+BED:::getUniprot(
     organism="Sus scrofa", release=avRel, ddir="."
 )
 gc()
@@ -1014,7 +1012,7 @@ for(org in listOrganisms()){
   toAdd$from <- as.character(toAdd$from)
   toAdd$GeneID <- as.character(toAdd$GeneID)
   colnames(toAdd) <- c("id1", "id2")
-  BED.5:::loadIsAssociatedTo(
+  BED:::loadIsAssociatedTo(
     d=toAdd,
     db1="BEDTech_gene", db2="EntrezGene",
     be="Gene"
@@ -1058,13 +1056,13 @@ tkmb <- get_MDB(.tkcon, "MetaBase")
 
 ```{r MetaBase, message=FALSE}
 # mbInfo <- mbquery("select * from zzz_System")
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="MetaBase_gene",
     description="Clarivate Analytics MetaBase",
     currentVersion=tkmb$MetaBase_sourceDatabases$current,
     idURL='https://portal.genego.com/cgi/entity_page.cgi?term=20&id=%s'
 )
-BED.5:::registerBEDB(
+BED:::registerBEDB(
     name="MetaBase_object",
     description="Clarivate Analytics MetaBase",
     currentVersion=tkmb$MetaBase_sourceDatabases$current,
@@ -1138,7 +1136,7 @@ loadBmHomologs <- function(mart, org2){
         c("id1", "id2")
     ])
     
-    BED.5:::loadIsHomologOf(
+    BED:::loadIsHomologOf(
         d=toImport,
         db1="Ens_gene", db2="Ens_gene",
         be="Gene"
@@ -1194,7 +1192,7 @@ taxOfInt <- unlist(lapply(
     getTaxId
 ))
 for(i in 1:length(taxOfInt)){
-   BED.5:::dumpNcbiDb(
+   BED:::dumpNcbiDb(
        taxOfInt=taxOfInt[i],
        reDumpThr=reDumpThr,
        ddir=".",
@@ -1212,7 +1210,7 @@ for(i in 1:length(taxOfInt)){
    if(nrow(toImport)>0){
       colnames(toImport) <- c("id1", "id2")
       toImport <- dplyr::mutate_all(toImport, as.character)
-      BED.5:::loadIsHomologOf(
+      BED:::loadIsHomologOf(
           d=toImport,
           db1=gdbname, db2=gdbname,
           be="Gene"
@@ -1247,7 +1245,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping with Entrez
 d <- Table(gds)
 toImport <- d[which(!is.na(d$SPOT_ID)), c("SPOT_ID", "GENE")]
@@ -1258,7 +1256,7 @@ toImport <- toImport[which(!is.na(toImport$id)),]
 toImport <- unique(toImport)
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1272,7 +1270,7 @@ BED.5:::loadProbes(
 # toImport <- toImport[which(!is.na(toImport$id) & toImport$id!=""),]
 # dbname <- "UniGene"
 # ##
-# BED.5:::loadProbes(
+# BED:::loadProbes(
 #     d=toImport,
 #     be=be,
 #     platform=platName,
@@ -1293,7 +1291,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping with Entrez
 d <- Table(gds)
 toImport <- d[which(!is.na(d$ID)), c("ID", "GENE")]
@@ -1303,7 +1301,7 @@ toImport$id <- as.character(toImport$id)
 toImport <- toImport[which(!is.na(toImport$id)),]
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1317,7 +1315,7 @@ BED.5:::loadProbes(
 # toImport <- toImport[which(!is.na(toImport$id)),]
 # dbname <- "UniGene"
 # ##
-# BED.5:::loadProbes(
+# BED:::loadProbes(
 #     d=toImport,
 #     be=be,
 #     platform=platName,
@@ -1338,7 +1336,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1352,7 +1350,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1373,7 +1371,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1387,7 +1385,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1408,7 +1406,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1422,7 +1420,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1443,7 +1441,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1457,7 +1455,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1478,7 +1476,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1492,7 +1490,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1513,7 +1511,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- strsplit(
@@ -1527,7 +1525,7 @@ toImport[,2] <- as.character(toImport[,2])
 colnames(toImport) <- c("id", "probeID")
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1548,7 +1546,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- d[,c("Entrez_Gene_ID", "ID")]
@@ -1558,7 +1556,7 @@ colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1579,7 +1577,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- d[,c("Entrez_Gene_ID", "ID")]
@@ -1589,7 +1587,7 @@ colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1615,7 +1613,7 @@ d <- Table(gds)
 # sum(d$Entrez_Gene_ID %in% e$id) < sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
 be <- "Transcript"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 toImport <- d[,c("RefSeq_ID", "ID")]
 toImport[,1] <- as.character(toImport[,1])
@@ -1625,7 +1623,7 @@ colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "RefSeq"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1651,7 +1649,7 @@ d <- Table(gds)
 # sum(d$Entrez_Gene_ID %in% e$id) > sum(sub("[.].*$", "", d$RefSeq_ID) %in% f$id)
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 toImport <- d[,c("Entrez_Gene_ID", "ID")]
 toImport[,1] <- as.character(toImport[,1])
@@ -1661,7 +1659,7 @@ colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1682,7 +1680,7 @@ gds <- getGEO(platName, destdir="geo")
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
-BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+BED:::loadPlf(name=platName, description=platDesc, be=be)
 ## Import mapping
 d <- Table(gds)
 toImport <- d[,c("Entrez_Gene_ID", "ID")]
@@ -1692,7 +1690,7 @@ colnames(toImport) <- c("id", "probeID")
 toImport <- toImport[which(!is.na(toImport$id) & toImport$id != ""),]
 dbname <- "EntrezGene"
 ##
-BED.5:::loadProbes(
+BED:::loadProbes(
     d=toImport,
     be=be,
     platform=platName,
@@ -1747,7 +1745,7 @@ for(org in orgOfInt){
       platDesc <- paste(at$description[i], "(Ensembl BioMart mapping)")
       be <- "Transcript"
       ##
-      BED.5:::loadPlf(name=platName, description=platDesc, be=be)
+      BED:::loadPlf(name=platName, description=platDesc, be=be)
       ## Import mapping with Ens_transcript
       toImport <- getBM(
          mart=mart,
@@ -1763,7 +1761,7 @@ for(org in orgOfInt){
          dplyr::distinct()
       dbname <- "Ens_transcript"
       ##
-      BED.5:::loadProbes(
+      BED:::loadProbes(
          d=toImport,
          be=be,
          platform=platName,
@@ -1796,7 +1794,7 @@ otherIdURL <- list(
     "ZFIN_gene"='http://zfin.org/%s'
 )
 for(db in names(otherIdURL)){
-    BED.5:::registerBEDB(
+    BED:::registerBEDB(
         name=db,
         idURL=otherIdURL[[db]]
     )   
@@ -1808,7 +1806,7 @@ for(db in names(otherIdURL)){
 **Start**: `r Sys.time()`
 
 ```{r LuceneIndexes, message=FALSE}
-BED.5:::loadLuceneIndexes()
+BED:::loadLuceneIndexes()
 ```
 
 **End**: `r Sys.time()`

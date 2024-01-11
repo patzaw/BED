@@ -27,7 +27,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
     message(Sys.time(), " --> Importing objects")
     toImport <- objects[which(objects$id %in% geneObj$object_id), "id", drop=F]
     colnames(toImport) <- "id"
-    BED.5:::loadBE(
+    BED:::loadBE(
         d=toImport, be="Object",
         dbname=odbname,
         version=NA,
@@ -49,7 +49,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
     #     stop("Verify object symbol for NA or blank values")
     # }
     toImport$canonical <- TRUE
-    BED.5:::loadBESymbols(d=toImport, be="Object", dbname=odbname)
+    BED:::loadBESymbols(d=toImport, be="Object", dbname=odbname)
 
     ################################################
     taxOfInt <- unlist(lapply(orgOfInt, getTaxId))
@@ -65,7 +65,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
             ]
         toImport <- unique(takenGenes[, "id", drop=F])
         colnames(toImport) <- "id"
-        BED.5:::loadBE(
+        BED:::loadBE(
             d=toImport, be="Gene",
             dbname=gdbname,
             version=NA,
@@ -83,7 +83,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
             drop=F
         ])
         colnames(toImport) <- "id"
-        BED.5:::loadBE(
+        BED:::loadBE(
             d=toImport, be="Gene",
             dbname=db,
             taxId=NA,
@@ -95,7 +95,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
             drop=F
         ])
         colnames(toImport) <- c("id2", "id1")
-        BED.5:::loadIsAssociatedTo(
+        BED:::loadIsAssociatedTo(
             d=toImport,
             db2=db,
             db1=gdbname,
@@ -120,7 +120,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
         # if(any(table(toImport$symbol)>14)){
         #     stop("Verify gene symbols for NA or blank values")
         # }
-        BED.5:::loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
+        BED:::loadBESymbols(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
         ## Add gene names
@@ -131,7 +131,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
         # if(any(table(toImport$name)>22)){
         #     stop("Verify gene names for NA or blank values")
         # }
-        BED.5:::loadBENames(d=toImport, be="Gene", dbname=gdbname)
+        BED:::loadBENames(d=toImport, be="Gene", dbname=gdbname)
 
         ################################################
         ## Add "codes_for" edges
@@ -140,7 +140,7 @@ loadMBObjects_fromTKCat <- function(orgOfInt, tkmb){
             c("gene_id", "object_id")
         ]
         colnames(toImport) <- c("gid", "oid")
-        BED.5:::loadCodesFor(
+        BED:::loadCodesFor(
             d=toImport,
             gdb=gdbname,
             odb=odbname
