@@ -51,7 +51,7 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
    if(be=="Probe"){
       showProbes <- TRUE
    }
-   net <- bedCall(
+   netRows1 <- bedCall(
       f=neo2R::cypher,
       query=neo2R::prepCql(
          sprintf(
@@ -63,61 +63,108 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          '-[:identifies]->(be)',
          'WITH DISTINCT be',
          'MATCH (be)<-[ir:identifies]-(di)',
-         'OPTIONAL MATCH (di)<-[iir:is_replaced_by|is_associated_to*0..]-(ii)',
-         'OPTIONAL MATCH (di)-[cr:corresponds_to]-()',
-         'OPTIONAL MATCH (di)-[dkr:is_known_as {canonical:$can}]->(dis:BESymbol)',
-         'OPTIONAL MATCH (ii)-[ikr:is_known_as {canonical:$can}]->(iis:BESymbol)',
-         'OPTIONAL MATCH (di)<-[dtr:targets]-(dip:ProbeID)',
-         'OPTIONAL MATCH (ii)<-[itr:targets]-(iip:ProbeID)',
-         'RETURN DISTINCT be, di, ii, dis, iis, dip, iip, ir, iir, cr, dkr, ikr, dtr, itr'
+         'RETURN DISTINCT',
+         'id(ir) as id, type(ir) as type,',
+         'id(di) as start,',
+         'id(be) as end'
       ),
-      result="graph",
+      result="row",
       parameters=list(id=id, db=source, can=TRUE)
    )
-   if(length(net$nodes)==0){
+   if(nrow(netRows1)==0){
       stop(sprintf(
          '"%s" (id) not found as a "%s" (be) in "%s" database (source).',
          id, be, source
       ))
    }
-   nodes <- unique(do.call(
-      rbind,
-      lapply(
-         net$nodes,
-         function(n){
-            toRet <- data.frame(
-               "id"=n$id,
-               "label"=setdiff(unlist(n$labels), "BEID"),
-               "value"=paste(n$properties$value, collapse=""),
-               "database"=paste(n$properties$database, collapse=""),
-               "preferred"=paste(n$properties$preferred, collapse=""),
-               "platform"=paste(n$properties$platform, collapse=""),
-               "url"=getBeIdURL(
-                  ids=paste(n$properties$value, collapse=""),
-                  databases=paste(n$properties$database, collapse="")
-               ),
-               stringsAsFactors=FALSE
-            )
-            return(toRet)
-         }
+   netRows2 <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (di) WHERE id(di) IN $ids',
+         'MATCH (di)-[cr:corresponds_to]->(di2)',
+         'RETURN DISTINCT',
+         'id(cr) as id, type(cr) as type,',
+         'id(di) as start,',
+         'id(di2) as end'
+      ),
+      result="row",
+      parameters=list(ids=unique(netRows1$start))
+   )
+   netRows3 <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (di) WHERE id(di) IN $ids',
+         'MATCH (di)<-[iir:is_replaced_by|is_associated_to*0..]-(ii)',
+         'UNWIND iir as iirr',
+         'MATCH (i1)-[iirr]->(i2)',
+         'RETURN DISTINCT',
+         'id(iirr) as id, type(iirr) as type,',
+         'id(i1) as start,',
+         'id(i2) as end'
+      ),
+      result="row",
+      parameters=list(ids=unique(netRows1$start))
+   )
+   netRows4 <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (ai) WHERE id(ai) IN $ids',
+         'MATCH (ai)-[r:is_known_as {canonical:$can}]->(as:BESymbol)',
+         'RETURN DISTINCT',
+         'id(r) as id, type(r) as type,',
+         'id(ai) as start,',
+         'id(as) as end'
+      ),
+      result="row",
+      parameters=list(
+         ids=unique(c(
+            netRows1$start,
+            netRows2$start, netRows2$end,
+            netRows3$start, netRows3$end
+         )),
+         can=TRUE
       )
-   ))
-   edges <- unique(do.call(
-      rbind,
-      lapply(
-         net$relationships,
-         function(r){
-            toRet <- data.frame(
-               "id"=r$id,
-               "type"=r$type,
-               "start"=r$startNode,
-               "end"=r$endNode,
-               stringsAsFactors=FALSE
-            )
-            return(toRet)
-         }
+   )
+   netRows5 <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (ai) WHERE id(ai) IN $ids',
+         'MATCH (ai)<-[r:targets]-(ap:ProbeID)',
+         'RETURN DISTINCT',
+         'id(r) as id, type(r) as type,',
+         'id(ai) as start,',
+         'id(ap) as end'
+      ),
+      result="row",
+      parameters=list(
+         ids=unique(c(
+            netRows1$start,
+            netRows2$start, netRows2$end,
+            netRows3$start, netRows3$end
+         )),
+         can=TRUE
       )
-   ))
+   )
+   edges <- rbind(
+      netRows1, netRows2, netRows3, netRows4, netRows5
+   )
+   nodes <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (n) WHERE id(n) IN $ids',
+         'RETURN DISTINCT',
+         'id(n) as id, labels(n) as label,',
+         'n.value as value, n.database as database, n.platform as platform,',
+         'n.preferred as preferred'
+      ),
+      result="row",
+      parameters=list(ids=unique(c(edges$start, edges$end)))
+   )
+   nodes$label <- gsub(" [|][|] ", "", gsub("BEID", "", nodes$label))
+   nodes$url <- getBeIdURL(
+      ids=nodes$value,
+      databases=nodes$database
+   )
    if(!showProbes){
       toRm <- nodes$id[which(nodes$label=="ProbeID")]
       nodes <- nodes[which(!nodes$id %in% toRm),]
@@ -132,9 +179,14 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          edges <- edges[which(!edges$start %in% toRm & !edges$end %in% toRm),]
       }
    }
+   for(cn in colnames(nodes)){
+      if(is.character(nodes[[cn]])){
+         nodes[[cn]] <- ifelse(is.na(nodes[[cn]]), "", nodes[[cn]])
+      }
+   }
    tpNodes <- nodes
    colnames(tpNodes) <- c(
-      "id", "type", "label", "database", "preferred", "platform", "url"
+      "id", "type", "label", "database", "platform", "preferred", "url"
    )
    tpNodes$source <- paste0(tpNodes$database, tpNodes$platform)
    tpNodes$title <- paste0(
@@ -145,7 +197,7 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
       ifelse(
          tpNodes$label!="",
          ifelse(
-            !is.na(tpNodes$url),
+            tpNodes$url!="",
             paste0(
                sprintf(
                   '<a href="%s" target="_blank">',
@@ -258,14 +310,14 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
             }
          ),
          # if(showProbes){
-            lapply(
-               setdiff(names(ncolors), c("", be, names(nshapes))),
-               function(x){
-                  return(list(
-                     label=x, shape="dot", color=as.character(ncolors[x])
-                  ))
-               }
-            )
+         lapply(
+            setdiff(names(ncolors), c("", be, names(nshapes))),
+            function(x){
+               return(list(
+                  label=x, shape="dot", color=as.character(ncolors[x])
+               ))
+            }
+         )
          # }else{
          #    list()
          # }

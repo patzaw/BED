@@ -28,43 +28,23 @@ genBePath <- function(from, to, onlyR=FALSE){
             to
          ),
          'MATCH p=shortestPath((f)-[:produces*1..]-(t))',
-         'RETURN p'
+         'UNWIND relationships(p) as r',
+         'MATCH (s)-[r]->(e)',
+         'RETURN id(r) as id, r.how as how,',
+         'id(s) as s_id, s.value, id(e) as e_id, e.value'
       )),
-      result="graph"
+      result="row"
    )
-   if(length(cqRes$relationships)==0){
+   if(is.null(cqRes) || nrow(cqRes)==0){
       stop("Cannot find any paths between from and to.")
    }
-   n <- cqRes$nodes
-   ntable <- do.call(
-      rbind,
-      lapply(
-         n,
-         function(x){
-            data.frame(
-               id=x$id,
-               value=x$properties$value,
-               stringsAsFactors=FALSE
-            )
-         }
-      )
-   )
-   r <- cqRes$relationships
-   rtable <- do.call(
-      rbind,
-      lapply(
-         r,
-         function(x){
-            data.frame(
-               id=x$id,
-               start=x$startNode,
-               end=x$endNode,
-               how=x$properties$how,
-               stringsAsFactors=FALSE
-            )
-         }
-      )
-   )
+   rtable <- cqRes[,c("id", "s_id", "e_id", "how")]
+   colnames(rtable) <- c("id", "start", "end", "how")
+
+   stable <- cqRes[, c("s_id", "s.value")]
+   etable <- cqRes[, c("e_id", "e.value")]
+   colnames(stable) <- colnames(etable) <- c("id", "value")
+   ntable <- unique(rbind(stable, etable))
 
    ##################################
    genCypher <- function(fid, usedR, onlyR){
