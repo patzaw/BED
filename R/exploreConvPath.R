@@ -29,14 +29,14 @@
 #' @export
 #'
 exploreConvPath <- function(
-   from.id,
-   to.id,
-   from,
-   from.source,
-   to,
-   to.source,
-   edgeDirection=FALSE,
-   verbose=FALSE
+      from.id,
+      to.id,
+      from,
+      from.source,
+      to,
+      to.source,
+      edgeDirection=FALSE,
+      verbose=FALSE
 ){
 
    ## Verifications
@@ -158,9 +158,15 @@ exploreConvPath <- function(
    )
 
    ## Final query
-   qs <- neo2R::prepCql(c(fqs, tqs, pqs, "RETURN DISTINCT p"))
+   rqs <- c(
+      'UNWIND relationships(p) as r',
+      'MATCH (s)-[r]->(e)',
+      'RETURN id(r) as id, type(r) as type,',
+      'id(s) as start, id(e) as end'
+   )
+   qs <- neo2R::prepCql(c(fqs, tqs, pqs, rqs))
    if(verbose) cat(qs, fill=T)
-   net <- bedCall(
+   netRes <- bedCall(
       neo2R::cypher,
       query=qs,
       parameters=list(
@@ -169,35 +175,36 @@ exploreConvPath <- function(
          inPath=as.list(inPath)
          # notInPath=as.list(notInPath)
       ),
-      result="graph"
+      result="row"
    )
 
    ## Plot the graph
-   if(length(net$nodes)==0){
+   if(is.null(netRes) || nrow(netRes)==0){
       stop("Could not find any path between the two provided identifiers")
    }
-   nodes <- unique(do.call(
-      rbind,
-      lapply(
-         net$nodes,
-         function(n){
-            toRet <- data.frame(
-               "id"=n$id,
-               "label"=setdiff(unlist(n$labels), "BEID"),
-               "value"=paste(n$properties$value, collapse=""),
-               "database"=paste(n$properties$database, collapse=""),
-               "preferred"=paste(n$properties$preferred, collapse=""),
-               "platform"=paste(n$properties$platform, collapse=""),
-               "url"=getBeIdURL(
-                  ids=paste(n$properties$value, collapse=""),
-                  databases=paste(n$properties$database, collapse="")
-               ),
-               stringsAsFactors=FALSE
-            )
-            return(toRet)
-         }
-      )
-   ))
+   nodes <- bedCall(
+      f=neo2R::cypher,
+      query=neo2R::prepCql(
+         'MATCH (n) WHERE id(n) IN $ids',
+         'RETURN DISTINCT',
+         'id(n) as id, labels(n) as label,',
+         'n.value as value, n.database as database,',
+         'n.preferred as preferred,',
+         'n.platform as platform'
+      ),
+      result="row",
+      parameters=list(ids=unique(c(netRes$start, netRes$end)))
+   )
+   nodes$label <- gsub(" [|][|] ", "", gsub("BEID", "", nodes$label))
+   for(cn in colnames(nodes)){
+      if(is.character(nodes[[cn]])){
+         nodes[[cn]] <- ifelse(is.na(nodes[[cn]]), "", nodes[[cn]])
+      }
+   }
+   nodes$url <- getBeIdURL(
+      ids=nodes$value,
+      databases=nodes$database
+   )
    nodesSymbol <- c()
    for(i in 1:nrow(nodes)){
       if(
@@ -227,22 +234,7 @@ exploreConvPath <- function(
       }
    }
    nodes$symbol <- nodesSymbol
-   edges <- unique(do.call(
-      rbind,
-      lapply(
-         net$relationships,
-         function(r){
-            toRet <- data.frame(
-               "id"=r$id,
-               "type"=r$type,
-               "start"=r$startNode,
-               "end"=r$endNode,
-               stringsAsFactors=FALSE
-            )
-            return(toRet)
-         }
-      )
-   ))
+   edges <- netRes
    tpNodes <- nodes
    colnames(tpNodes) <- c(
       "id", "type", "label", "database", "preferred",

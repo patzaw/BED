@@ -36,7 +36,7 @@ data sources should not be re-downloaded.
 
 ```{r config, message=FALSE}
 ##
-warning("change: BED.5 (in helpers also), reDumpThr=4")
+warning("change: BED.5 (in helpers and vignette also), reDumpThr=4")
 ##
 library(knitr)
 library(BED.5)

@@ -169,7 +169,7 @@ checkBedConn(verbose=TRUE)
 If the `verbose` parameter is set to TRUE, the URL and the content version
 are displayed as messages.
 
-```{r}
+```{r, eval=FALSE}
 lsBedConnections()
 ```
 
