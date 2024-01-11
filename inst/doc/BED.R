@@ -18,31 +18,31 @@ vn_as_png <- function(vn){
   )
 }
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  devtools::install_github("patzaw/BED")
 
-## ---- echo=TRUE, eval=FALSE---------------------------------------------------
+## ----echo=TRUE, eval=FALSE----------------------------------------------------
 #  file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 
-## ---- message=FALSE, eval=TRUE------------------------------------------------
+## ----message=FALSE, eval=TRUE-------------------------------------------------
 library(BED)
 
-## ---- message=FALSE, eval=TRUE, echo=FALSE------------------------------------
+## ----message=FALSE, eval=TRUE, echo=FALSE-------------------------------------
 connectToBed()
 
-## ---- message=FALSE, eval=FALSE-----------------------------------------------
+## ----message=FALSE, eval=FALSE------------------------------------------------
 #  connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 
-## ---- message=TRUE------------------------------------------------------------
+## ----message=TRUE-------------------------------------------------------------
 checkBedConn(verbose=TRUE)
 
-## -----------------------------------------------------------------------------
-lsBedConnections()
+## ----eval=FALSE---------------------------------------------------------------
+#  lsBedConnections()
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  showBedDataModel()
 
-## ---- echo=FALSE, eval=TRUE---------------------------------------------------
+## ----echo=FALSE, eval=TRUE----------------------------------------------------
 htmltools::includeHTML(system.file(
    "Documentation", "BED-Model", "BED.html",
    package="BED"
@@ -351,10 +351,10 @@ relIds <- geneIDsToAllScopes(
   organism=searched$organism[toTake]
 )
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  relIds <- findBeids()
 
-## ---- eval=FALSE--------------------------------------------------------------
+## ----eval=FALSE---------------------------------------------------------------
 #  library(shiny)
 #  library(BED)
 #  library(DT)
@@ -382,6 +382,6 @@ relIds <- geneIDsToAllScopes(
 #  
 #  shinyApp(ui = ui, server = server)
 
-## ---- echo=FALSE, eval=TRUE---------------------------------------------------
+## ----echo=FALSE, eval=TRUE----------------------------------------------------
 sessionInfo()
 

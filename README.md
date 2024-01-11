@@ -1,49 +1,33 @@
 README
 ================
 
--   <a href="#introduction" id="toc-introduction">Introduction</a>
--   <a href="#installation" id="toc-installation">Installation</a>
-    -   <a href="#from-cran" id="toc-from-cran">From CRAN</a>
-    -   <a href="#dependencies" id="toc-dependencies">Dependencies</a>
-    -   <a href="#installation-from-github"
-        id="toc-installation-from-github">Installation from github</a>
-    -   <a href="#possible-issue-when-updating-from-releases--130"
-        id="toc-possible-issue-when-updating-from-releases--130">Possible issue
-        when updating from releases &lt;= 1.3.0</a>
--   <a href="#r-package-in-normal-use" id="toc-r-package-in-normal-use">R
-    package in normal use</a>
--   <a href="#citing-bed" id="toc-citing-bed">Citing BED</a>
--   <a href="#docker_image" id="toc-docker_image">BED database instance
-    available as a docker image</a>
--   <a href="#build-a-bed-database-instance"
-    id="toc-build-a-bed-database-instance">Build a BED database instance</a>
-    -   <a href="#run-a-neo4j-docker-images"
-        id="toc-run-a-neo4j-docker-images">Run a neo4j docker images</a>
-    -   <a href="#build-and-feed-bed" id="toc-build-and-feed-bed">Build and feed
-        BED</a>
-    -   <a href="#create-a-docker-image-with-bed-database"
-        id="toc-create-a-docker-image-with-bed-database">Create a docker image
-        with BED database</a>
-    -   <a href="#push-the-image-on-docker-hub"
-        id="toc-push-the-image-on-docker-hub">Push the image on docker hub</a>
-    -   <a href="#run-the-new-image" id="toc-run-the-new-image">Run the new
-        image</a>
--   <a href="#notes-about-docker" id="toc-notes-about-docker">Notes about
-    Docker</a>
-    -   <a href="#start-docker" id="toc-start-docker">Start docker</a>
-    -   <a href="#building-a-docker-image"
-        id="toc-building-a-docker-image">Building a Docker image</a>
-    -   <a href="#saving-and-loading-an-image-archive"
-        id="toc-saving-and-loading-an-image-archive">Saving and loading an image
-        archive</a>
-    -   <a href="#push-a-docker-image-on-docker-hub"
-        id="toc-push-a-docker-image-on-docker-hub">Push a Docker image on docker
-        hub</a>
-    -   <a href="#run-a-docker-image" id="toc-run-a-docker-image">Run a docker
-        image</a>
-    -   <a href="#managing-containersimagesvolumes"
-        id="toc-managing-containersimagesvolumes">Managing
-        containers/images/volumes</a>
+- [Introduction](#introduction)
+- [Installation](#installation)
+  - [From CRAN](#from-cran)
+  - [Dependencies](#dependencies)
+  - [Installation from github](#installation-from-github)
+  - [Possible issue when updating from releases \<=
+    1.3.0](#possible-issue-when-updating-from-releases--130)
+- [R package in normal use](#r-package-in-normal-use)
+- [Citing BED](#citing-bed)
+- [BED database instance available as a docker image](#docker_image)
+- [Build a BED database instance](#build-a-bed-database-instance)
+  - [Run a neo4j docker images](#run-a-neo4j-docker-images)
+  - [Build and feed BED](#build-and-feed-bed)
+  - [Create a docker image with BED
+    database](#create-a-docker-image-with-bed-database)
+  - [Push the image on docker hub](#push-the-image-on-docker-hub)
+  - [Run the new image](#run-the-new-image)
+- [Notes about Docker](#notes-about-docker)
+  - [Start docker](#start-docker)
+  - [Building a Docker image](#building-a-docker-image)
+  - [Saving and loading an image
+    archive](#saving-and-loading-an-image-archive)
+  - [Push a Docker image on docker
+    hub](#push-a-docker-image-on-docker-hub)
+  - [Run a docker image](#run-a-docker-image)
+  - [Managing
+    containers/images/volumes](#managing-containersimagesvolumes)
 
 <img src="https://github.com/patzaw/BED/raw/master/supp/logo/BED.png" width="100px"/>
 
@@ -76,44 +60,43 @@ install.packages("BED")
 
 The following R packages available on CRAN are required:
 
--   [neo2R](https://CRAN.R-project.org/package=neo2R): Neo4j to R
--   [visNetwork](https://CRAN.R-project.org/package=visNetwork): Network
-    Visualization using ‘vis.js’ Library
--   [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
-    Manipulation
--   [readr](https://CRAN.R-project.org/package=readr): Read Rectangular
-    Text Data
--   [stringr](https://CRAN.R-project.org/package=stringr): Simple,
-    Consistent Wrappers for Common String Operations
--   [utils](https://CRAN.R-project.org/package=utils): The R Utils
-    Package
--   [shiny](https://CRAN.R-project.org/package=shiny): Web Application
-    Framework for R
--   [DT](https://CRAN.R-project.org/package=DT): A Wrapper of the
-    JavaScript Library ‘DataTables’
--   [miniUI](https://CRAN.R-project.org/package=miniUI): Shiny UI
-    Widgets for Small Screens
--   [rstudioapi](https://CRAN.R-project.org/package=rstudioapi): Safely
-    Access the RStudio API
+- [neo2R](https://CRAN.R-project.org/package=neo2R): Neo4j to R
+- [visNetwork](https://CRAN.R-project.org/package=visNetwork): Network
+  Visualization using ‘vis.js’ Library
+- [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+  Manipulation
+- [readr](https://CRAN.R-project.org/package=readr): Read Rectangular
+  Text Data
+- [stringr](https://CRAN.R-project.org/package=stringr): Simple,
+  Consistent Wrappers for Common String Operations
+- [utils](https://CRAN.R-project.org/package=utils): The R Utils Package
+- [shiny](https://CRAN.R-project.org/package=shiny): Web Application
+  Framework for R
+- [DT](https://CRAN.R-project.org/package=DT): A Wrapper of the
+  JavaScript Library ‘DataTables’
+- [miniUI](https://CRAN.R-project.org/package=miniUI): Shiny UI Widgets
+  for Small Screens
+- [rstudioapi](https://CRAN.R-project.org/package=rstudioapi): Safely
+  Access the RStudio API
 
 And those are suggested:
 
--   [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
-    Package for Dynamic Report Generation in R
--   [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
-    Documents for R
--   [biomaRt](https://CRAN.R-project.org/package=biomaRt): Interface to
-    BioMart databases (i.e. Ensembl)
--   [GEOquery](https://CRAN.R-project.org/package=GEOquery): Get data
-    from NCBI Gene Expression Omnibus (GEO)
--   [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
-    base64 encoding
--   [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
-    HTML
--   [webshot](https://CRAN.R-project.org/package=webshot): Take
-    Screenshots of Web Pages
--   [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
-    (HTTP/FTP/…) Client Interface for R
+- [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+  Package for Dynamic Report Generation in R
+- [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+  Documents for R
+- [biomaRt](https://CRAN.R-project.org/package=biomaRt): Interface to
+  BioMart databases (i.e. Ensembl)
+- [GEOquery](https://CRAN.R-project.org/package=GEOquery): Get data from
+  NCBI Gene Expression Omnibus (GEO)
+- [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
+  base64 encoding
+- [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
+  HTML
+- [webshot](https://CRAN.R-project.org/package=webshot): Take
+  Screenshots of Web Pages
+- [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
+  (HTTP/FTP/…) Client Interface for R
 
 ## Installation from github
 
@@ -179,12 +162,12 @@ This instance is focused on *Homo sapiens*, *Mus musculus*, *Rattus
 norvegicus*, *Sus scrofa* and *Danio rerio* organisms and it has been
 built from the following resources:
 
--   Ensembl
--   NCBI
--   Uniprot
--   biomaRt
--   GEOquery
--   Clarivate Analytics MetaBase
+- Ensembl
+- NCBI
+- Uniprot
+- biomaRt
+- GEOquery
+- Clarivate Analytics MetaBase
 
 The following commands can be adapted according to user needs and called
 to get a running container with a BED database instance.
@@ -269,8 +252,8 @@ sudo systemctl enable docker
 
 <!----------------------->
 
--   <https://docs.docker.com/get-started/>
--   <https://docs.docker.com/develop/develop-images/dockerfile_best-practices/>
+- <https://docs.docker.com/get-started/>
+- <https://docs.docker.com/develop/develop-images/dockerfile_best-practices/>
 
 ## Saving and loading an image archive
 
@@ -292,13 +275,13 @@ cat docker-bed-ucb-human-$BED_VERSION.tar | docker load
 
 <!--------------------------------->
 
--   <https://docs.docker.com/docker-cloud/builds/push-images/>
+- <https://docs.docker.com/docker-cloud/builds/push-images/>
 
 ## Run a docker image
 
 <!------------------>
 
--   <https://docs.docker.com/engine/reference/commandline/run/>
+- <https://docs.docker.com/engine/reference/commandline/run/>
 
 ## Managing containers/images/volumes
 
