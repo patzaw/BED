@@ -89,7 +89,7 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
-ensembl_release <- "110"
+ensembl_release <- "111"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
@@ -820,6 +820,12 @@ BED:::dumpNcbiDb(
   toLoad="gene_refseq_uniprotkb_collab",
   curDate=Sys.Date()
 )
+gene_refseq_uniprotkb_collab <- gene_refseq_uniprotkb_collab[
+   gene_refseq_uniprotkb_collab$method %in% c("uniprot", "identical"),
+]
+gene_refseq_uniprotkb_collab$NCBI_protein_accession <- sub(
+   "[.].*$", "", gene_refseq_uniprotkb_collab$NCBI_protein_accession
+)
 for(org in listOrganisms()){
   message("   ", org)
   curRS <- getBeIds(
@@ -827,7 +833,9 @@ for(org in listOrganisms()){
     restricted=TRUE
   )
   toAdd <- gene_refseq_uniprotkb_collab[
-    which(gene_refseq_uniprotkb_collab$NCBI_protein_accession %in% curRS$id),
+      which(
+         gene_refseq_uniprotkb_collab$NCBI_protein_accession %in% curRS$id
+      ),
   ]
   ## External DB IDs
   toImport <- unique(toAdd[, "UniProtKB_protein_accession", drop=F])
@@ -838,7 +846,9 @@ for(org in listOrganisms()){
       taxId=NA
   )
   ## The cross references
-  toImport <- toAdd
+  toImport <- toAdd[
+    , c("NCBI_protein_accession", "UniProtKB_protein_accession")
+  ]
   colnames(toImport) <- c("id1", "id2")
   BED:::loadCorrespondsTo(
       d=toImport,
