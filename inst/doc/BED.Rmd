@@ -1,25 +1,23 @@
 ---
 title: "Biological Entity Dictionary (BED): exploring and converting identifiers of biological entities such as genes, transcripts or peptides"
-author: "Patrice Godard"
-date: "`r format(Sys.time(), '%B %d %Y')`"
 package: "BED (version `r packageVersion('BED')`)"
-always_allow_html: true
 output:
-   html_document:
+   rmarkdown::html_document:
       number_sections: yes
-      self_contained: yes
+      self_contained: true
       theme: cerulean
       toc: yes
       toc_float: yes
       fig_width: 7
       fig_height: 5
 vignette: >
-   %\VignetteIndexEntry{BED - Tutorial}
+   %\VignetteIndexEntry{BED}
    %\VignetteEncoding{UTF-8}
    %\VignetteEngine{knitr::rmarkdown}
 editor_options:
    chunk_output_type: console
 ---
+
 
 ```{r setup, echo=FALSE}
 library(knitr)
