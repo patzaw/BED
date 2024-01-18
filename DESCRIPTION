@@ -32,8 +32,6 @@ Description: An interface for the 'Neo4j' database providing
     the same way than between two scopes regarding gene ID.
     Also, converting identifiers from different organisms should be possible
     using gene orthologs information.
-    A ready to use database is provided as
-    a 'Docker' image <https://hub.docker.com/r/patzaw/bed-ucb-human/>.
     The method has been published by
     Godard and van Eyll (2018) <doi:10.12688/f1000research.13925.3>.
 URL: https://patzaw.github.io/BED/, https://github.com/patzaw/BED
@@ -41,7 +39,7 @@ BugReports: https://github.com/patzaw/BED/issues
 License: GPL-3
 Depends:
     R (>= 3.6),
-    neo2R (>= 2.1.0),
+    neo2R (>= 2.4.1),
     visNetwork
 Imports:
     dplyr,

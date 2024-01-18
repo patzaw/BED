@@ -27,8 +27,6 @@
     the same way than between two scopes regarding gene ID.
     Also, converting identifiers from different organisms should be possible
     using gene orthologs information.
-    A ready to use database is provided as
-    a Docker image &lt;https://hub.docker.com/r/patzaw/bed-ucb-human/&gt;.
     The method has been published by
     Godard and van Eyll (2018) &lt;doi:10.12688/f1000research.13925.3&gt;.">
 <title>Biological Entity Dictionary (BED) • BED</title>
@@ -65,8 +63,6 @@
     the same way than between two scopes regarding gene ID.
     Also, converting identifiers from different organisms should be possible
     using gene orthologs information.
-    A ready to use database is provided as
-    a Docker image &lt;https://hub.docker.com/r/patzaw/bed-ucb-human/&gt;.
     The method has been published by
     Godard and van Eyll (2018) &lt;doi:10.12688/f1000research.13925.3&gt;.">
 <!-- mathjax --><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js" integrity="sha256-nvJJv9wWKEm88qvoQl9ekL2J+k/RWIsaSScxxlsrv8k=" crossorigin="anonymous"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/config/TeX-AMS-MML_HTMLorMML.js" integrity="sha256-84DKXVJXs0/F8OTMzX4UR909+jtl4G7SPypPavF+GfA=" crossorigin="anonymous"></script><!--[if lt IE 9]>
@@ -128,66 +124,26 @@
   <main id="main" class="col-md-9"><div class="section level1">
 <div class="page-header"><h1 id="readme">README<a class="anchor" aria-label="anchor" href="#readme"></a>
 </h1></div>
-<ul>
-<li><a href="#introduction">Introduction</a></li>
-<li>
-<a href="#installation">Installation</a>
-<ul>
-<li><a href="#from-cran">From CRAN</a></li>
-<li><a href="#dependencies">Dependencies</a></li>
-<li><a href="#installation-from-github">Installation from github</a></li>
-<li><a href="#possible-issue-when-updating-from-releases--130">Possible issue when updating from releases &lt;= 1.3.0</a></li>
-</ul>
-</li>
-<li><a href="#r-package-in-normal-use">R package in normal use</a></li>
-<li><a href="#citing-bed">Citing BED</a></li>
-<li><a href="#docker_image">BED database instance available as a docker image</a></li>
-<li>
-<a href="#build-a-bed-database-instance">Build a BED database instance</a>
-<ul>
-<li><a href="#run-a-neo4j-docker-images">Run a neo4j docker images</a></li>
-<li><a href="#build-and-feed-bed">Build and feed BED</a></li>
-<li><a href="#create-a-docker-image-with-bed-database">Create a docker image with BED database</a></li>
-<li><a href="#push-the-image-on-docker-hub">Push the image on docker hub</a></li>
-<li><a href="#run-the-new-image">Run the new image</a></li>
-</ul>
-</li>
-<li>
-<a href="#notes-about-docker">Notes about Docker</a>
-<ul>
-<li><a href="#start-docker">Start docker</a></li>
-<li><a href="#building-a-docker-image">Building a Docker image</a></li>
-<li><a href="#saving-and-loading-an-image-archive">Saving and loading an image archive</a></li>
-<li><a href="#push-a-docker-image-on-docker-hub">Push a Docker image on docker hub</a></li>
-<li><a href="#run-a-docker-image">Run a docker image</a></li>
-<li><a href="#managing-containersimagesvolumes">Managing containers/images/volumes</a></li>
-</ul>
-</li>
-</ul>
-<p><img src="https://github.com/patzaw/BED/raw/master/supp/logo/BED.png" width="100px"></p>
+</div>
+<div class="section level1">
+<h1 id="biological-entity-dictionary-">Biological Entity Dictionary <img src="reference/figures/BED.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#biological-entity-dictionary-"></a>
+</h1>
 <p><a href="https://cran.r-project.org/package=BED" class="external-link"><img src="http://www.r-pkg.org/badges/version/BED" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=BED" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/BED"></a></p>
+<p>Render SVG as interactive figures to display contextual information, with selectable and clickable user interface elements. These figures can be seamlessly integrated into ‘rmarkdown’ and ‘Quarto’ documents, as well as ‘shiny’ applications, allowing manipulation of elements and reporting actions performed on them. Additional features include pan, zoom in/out functionality, and the ability to export the figures in SVG or PNG formats.</p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-</div>
-<div class="section level1">
-<h1 id="introduction">Introduction<a class="anchor" aria-label="anchor" href="#introduction"></a>
-</h1>
-<p>The aim of the <a href="https://patzaw.github.io/BED/">BED</a> (Biological Entity Dictionary) R package is to get and explore mapping between identifiers of biological entities (BE). This package provides a way to connect to a BED Neo4j database in which the relationships between the identifiers from different sources are recorded.</p>
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-</div>
-<div class="section level1">
-<h1 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
-</h1>
 <div class="section level2">
-<h2 id="from-cran">From CRAN<a class="anchor" aria-label="anchor" href="#from-cran"></a>
+<h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
+<div class="section level3">
+<h3 id="from-cran">From CRAN<a class="anchor" aria-label="anchor" href="#from-cran"></a>
+</h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"BED"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
-</h2>
+<div class="section level3">
+<h3 id="dependencies">Dependencies<a class="anchor" aria-label="anchor" href="#dependencies"></a>
+</h3>
 <p>The following R packages available on CRAN are required:</p>
 <ul>
 <li>
@@ -231,15 +187,15 @@
 <a href="https://CRAN.R-project.org/package=RCurl" class="external-link">RCurl</a>: General Network (HTTP/FTP/…) Client Interface for R</li>
 </ul>
 </div>
-<div class="section level2">
-<h2 id="installation-from-github">Installation from github<a class="anchor" aria-label="anchor" href="#installation-from-github"></a>
-</h2>
+<div class="section level3">
+<h3 id="installation-from-github">Installation from github<a class="anchor" aria-label="anchor" href="#installation-from-github"></a>
+</h3>
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu"><a href="https://remotes.r-lib.org/reference/install_github.html" class="external-link">install_github</a></span><span class="op">(</span><span class="st">"patzaw/BED"</span><span class="op">)</span></span></code></pre></div>
 </div>
-<div class="section level2">
-<h2 id="possible-issue-when-updating-from-releases--130">Possible issue when updating from releases &lt;= 1.3.0<a class="anchor" aria-label="anchor" href="#possible-issue-when-updating-from-releases--130"></a>
-</h2>
+<div class="section level3">
+<h3 id="possible-issue-when-updating-from-releases--130">Possible issue when updating from releases &lt;= 1.3.0<a class="anchor" aria-label="anchor" href="#possible-issue-when-updating-from-releases--130"></a>
+</h3>
 <p>If you get an error like the following…</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode R"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a>Error<span class="sc">:</span> package or namespace load failed <span class="cf">for</span> ‘BED’<span class="sc">:</span></span>
 <span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a> .onLoad failed <span class="cf">in</span> <span class="fu">loadNamespace</span>() <span class="cf">for</span> <span class="st">'BED'</span>, details<span class="sc">:</span></span>
@@ -252,11 +208,11 @@
 <!----------------------------------------------------------------------------->
 </div>
 </div>
-<div class="section level1">
-<h1 id="r-package-in-normal-use">R package in normal use<a class="anchor" aria-label="anchor" href="#r-package-in-normal-use"></a>
-</h1>
+<div class="section level2">
+<h2 id="documentation">Documentation<a class="anchor" aria-label="anchor" href="#documentation"></a>
+</h2>
 <p>Documentation is provided in the <a href="https://patzaw.github.io/BED/articles/BED.html">BED</a> vignette.</p>
-<p>A public instance of the <a href="#docker_image">BED Neo4j database</a> is provided for convenience and can be reached as follows:</p>
+<p>A public instance of the <a href="#bed_db">BED Neo4j database</a> is provided for convenience and can be reached as follows:</p>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://patzaw.github.io/BED/">BED</a></span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/connectToBed.html">connectToBed</a></span><span class="op">(</span><span class="st">"https://genodesy.org/BED/"</span>, remember<span class="op">=</span><span class="cn">TRUE</span>, useCache<span class="op">=</span><span class="cn">TRUE</span><span class="op">)</span></span>
@@ -264,19 +220,19 @@
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
-<div class="section level1">
-<h1 id="citing-bed">Citing BED<a class="anchor" aria-label="anchor" href="#citing-bed"></a>
-</h1>
+<div class="section level2">
+<h2 id="citing-bed">Citing BED<a class="anchor" aria-label="anchor" href="#citing-bed"></a>
+</h2>
 <p>This package and the underlying research has been published in this peer reviewed article:</p>
 <p><a href="https://doi.org/10.12688/f1000research.13925.3" target="_blank" class="external-link"> Patrice Godard and Jonathan van Eyll (2018). BED: a Biological Entity Dictionary based on a graph data model (version 3; peer review: 2 approved). F1000Research, 7:195. </a></p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
-<div class="section level1">
-<h1 id="bed-database-instance-available-as-a-docker-image">BED database instance available as a docker image<a class="anchor" aria-label="anchor" href="#bed-database-instance-available-as-a-docker-image"></a>
-</h1>
-<p>An instance of the BED database (UCB-Human) has been built using the script provided in the BED R package and made available in a Docker image available here: <a href="https://hub.docker.com/r/patzaw/bed-ucb-human/" class="external-link uri">https://hub.docker.com/r/patzaw/bed-ucb-human/</a></p>
-<p>This instance is focused on <em>Homo sapiens</em>, <em>Mus musculus</em>, <em>Rattus norvegicus</em>, <em>Sus scrofa</em> and <em>Danio rerio</em> organisms and it has been built from the following resources:</p>
+<div class="section level2">
+<h2 id="available-bed-database-instance">Available BED database instance<a class="anchor" aria-label="anchor" href="#available-bed-database-instance"></a>
+</h2>
+<p>An instance of the BED database (UCB-Human) has been built using the script provided in the BED R package.</p>
+<p>This instance is focused on <em>Homo sapiens</em>, <em>Mus musculus</em>, <em>Rattus norvegicus</em>, <em>Sus scrofa</em> and <em>Danio rerio</em> organisms. It has been built from the following resources:</p>
 <ul>
 <li>Ensembl</li>
 <li>NCBI</li>
@@ -285,136 +241,85 @@
 <li>GEOquery</li>
 <li>Clarivate Analytics MetaBase</li>
 </ul>
-<p>The following commands can be adapted according to user needs and called to get a running container with a BED database instance.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_HTTP_PORT</span><span class="op">=</span>5454</span>
-<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_BOLT_PORT</span><span class="op">=</span>5687</span>
-<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a></span>
-<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>    <span class="at">--name</span> bed <span class="dt">\</span></span>
-<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>    <span class="at">--publish</span><span class="op">=</span><span class="va">$BED_HTTP_PORT</span>:7474 <span class="dt">\</span></span>
-<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>    <span class="at">--publish</span><span class="op">=</span><span class="va">$BED_BOLT_PORT</span>:7687 <span class="dt">\</span></span>
-<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a>    <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
-<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a>    <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_max__size=4G <span class="dt">\</span></span>
-<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a>    <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_pagecache_size=4G <span class="dt">\</span></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_read__only=true <span class="dt">\</span></span>
-<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>    <span class="at">--env</span><span class="op">=</span>NEO4J_AUTH=none <span class="dt">\</span></span>
-<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
-<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a>    patzaw/bed-ucb-human</span></code></pre></div>
-<p><a href="https://github.com/sespesogil" class="external-link">Sergio Espeso-Gil</a> has reported stability issues with this image running on Docker in Windows. It’s mainly solved by checking the “Use the WSL2 based engine” options in docker settings. More information are provided here: <a href="https://docs.docker.com/docker-for-windows/wsl/" class="external-link uri">https://docs.docker.com/docker-for-windows/wsl/</a></p>
+<p>The following shell commands can be adapted according to user needs and called to get a running container with a BED database instance.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a><span class="co">## Config ----</span></span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_VERSION</span><span class="op">=</span>2024.01.14</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a><span class="bu">export</span> <span class="va">NJ_VERSION</span><span class="op">=</span>5.15.0</span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_HTTP_PORT</span><span class="op">=</span>5454</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_BOLT_PORT</span><span class="op">=</span>5687</span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="bu">export</span> <span class="va">CONTAINER</span><span class="op">=</span>bed</span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://genodesy.org/shared-files/BED-dumps/</span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_DUMPS</span><span class="op">=</span>~/.cache/BED/neo4jDump</span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_DATA</span><span class="op">=</span>~/.cache/BED/neo4jData</span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">## Check folders ----</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="at">-e</span> <span class="va">$BED_DATA</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a>   <span class="bu">echo</span> <span class="st">"</span><span class="va">$BED_DATA</span><span class="st"> directory exists ==&gt; abort - Remove it before proceeding"</span> <span class="op">&gt;&amp;</span><span class="dv">2</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a>   <span class="bu">exit</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$BED_DATA</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="at">-e</span> <span class="va">$BED_DUMPS</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>   <span class="bu">echo</span> <span class="st">"</span><span class="va">$BED_DUMPS</span><span class="st"> directory exists ==&gt; abort - Remove it before proceeding"</span> <span class="op">&gt;&amp;</span><span class="dv">2</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>   <span class="bu">exit</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> <span class="va">$BED_DUMPS</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">## Download data ----</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump-bed-ucb-human-<span class="va">$BED_VERSION</span>.dump <span class="at">-O</span> <span class="va">$BED_DUMPS</span>/neo4j.dump</span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">## Import data ----</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--interactive</span> <span class="at">--tty</span> <span class="at">--rm</span> <span class="dt">\</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span><span class="va">$BED_DATA</span>/data:/data <span class="dt">\</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span><span class="va">$BED_DUMPS</span>:/backups <span class="dt">\</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>    neo4j/neo4j-admin:<span class="va">$NJ_VERSION</span> <span class="dt">\</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>neo4j-admin database load neo4j <span class="at">--from-path</span><span class="op">=</span>/backups</span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">## Start neo4j ----</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>   <span class="at">--name</span> <span class="va">$CONTAINER</span> <span class="dt">\</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span><span class="va">$BED_HTTP_PORT</span>:7474 <span class="dt">\</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span><span class="va">$BED_BOLT_PORT</span>:7687 <span class="dt">\</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_max__size=4G <span class="dt">\</span></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_pagecache_size=4G <span class="dt">\</span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_read__only=true <span class="dt">\</span></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_AUTH=none <span class="dt">\</span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>   <span class="at">--volume</span> <span class="va">$BED_DATA</span>/data:/data <span class="dt">\</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>   neo4j:<span class="va">$NJ_VERSION</span></span></code></pre></div>
+<p><a href="https://github.com/sespesogil" class="external-link">Sergio Espeso-Gil</a> has reported stability issues with Docker images in Windows. It’s mainly solved by checking the “Use the WSL2 based engine” options in docker settings. More information is provided here: <a href="https://docs.docker.com/docker-for-windows/wsl/" class="external-link uri">https://docs.docker.com/docker-for-windows/wsl/</a></p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
-<div class="section level1">
-<h1 id="build-a-bed-database-instance">Build a BED database instance<a class="anchor" aria-label="anchor" href="#build-a-bed-database-instance"></a>
-</h1>
-<p>Building and feeding a BED database instance is achieved using scripts available in the “supp/Build” folder.</p>
 <div class="section level2">
-<h2 id="run-a-neo4j-docker-images">Run a neo4j docker images<a class="anchor" aria-label="anchor" href="#run-a-neo4j-docker-images"></a>
+<h2 id="build-a-bed-database-instance">Build a BED database instance<a class="anchor" aria-label="anchor" href="#build-a-bed-database-instance"></a>
 </h2>
-<!------------------------->
+<p>Building and feeding a BED database instance is achieved using scripts available in the “supp/Build” folder.</p>
+<div class="section level3">
+<h3 id="run-a-neo4j-docker-images">Run a neo4j docker images<a class="anchor" aria-label="anchor" href="#run-a-neo4j-docker-images"></a>
+</h3>
 <p>Using the S01-NewBED-Container.sh script.</p>
 </div>
-<div class="section level2">
-<h2 id="build-and-feed-bed">Build and feed BED<a class="anchor" aria-label="anchor" href="#build-and-feed-bed"></a>
-</h2>
-<!------------------>
+<div class="section level3">
+<h3 id="build-and-feed-bed">Build and feed BED<a class="anchor" aria-label="anchor" href="#build-and-feed-bed"></a>
+</h3>
 <p>Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd document.</p>
 </div>
-<div class="section level2">
-<h2 id="create-a-docker-image-with-bed-database">Create a docker image with BED database<a class="anchor" aria-label="anchor" href="#create-a-docker-image-with-bed-database"></a>
-</h2>
-<!--------------------------------------->
-<p>Using the S03-NewBED-image.sh script</p>
 </div>
 <div class="section level2">
-<h2 id="push-the-image-on-docker-hub">Push the image on docker hub<a class="anchor" aria-label="anchor" href="#push-the-image-on-docker-hub"></a>
+<h2 id="dump-the-graph-db-content-for-sharing">Dump the graph DB content for sharing<a class="anchor" aria-label="anchor" href="#dump-the-graph-db-content-for-sharing"></a>
 </h2>
-<!---------------------------->
-<p>Using the S04-Push-on-docker-hub.sh script</p>
-</div>
-<div class="section level2">
-<h2 id="run-the-new-image">Run the new image<a class="anchor" aria-label="anchor" href="#run-the-new-image"></a>
-</h2>
-<!------------------>
-<p>Using the S05-BED-Container.sh script</p>
-<!----------------------------------------------------------------------------->
-<!----------------------------------------------------------------------------->
-</div>
-</div>
-<div class="section level1">
-<h1 id="notes-about-docker">Notes about Docker<a class="anchor" aria-label="anchor" href="#notes-about-docker"></a>
-</h1>
-<div class="section level2">
-<h2 id="start-docker">Start docker<a class="anchor" aria-label="anchor" href="#start-docker"></a>
-</h2>
-<!------------>
-<div class="sourceCode" id="cb7"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="fu">sudo</span> systemctl start docker</span>
-<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a><span class="fu">sudo</span> systemctl enable docker</span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="building-a-docker-image">Building a Docker image<a class="anchor" aria-label="anchor" href="#building-a-docker-image"></a>
-</h2>
-<!----------------------->
-<ul>
-<li><a href="https://docs.docker.com/get-started/" class="external-link uri">https://docs.docker.com/get-started/</a></li>
-<li><a href="https://docs.docker.com/develop/develop-images/dockerfile_best-practices/" class="external-link uri">https://docs.docker.com/develop/develop-images/dockerfile_best-practices/</a></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="saving-and-loading-an-image-archive">Saving and loading an image archive<a class="anchor" aria-label="anchor" href="#saving-and-loading-an-image-archive"></a>
-</h2>
-<!----------------------------------->
-<p>You can save the created image:</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="ex">docker</span> save bed-ucb-human:<span class="va">$BED_VERSION</span> <span class="op">&gt;</span> docker-bed-ucb-human-<span class="va">$BED_VERSION</span>.tar</span></code></pre></div>
-<p>And the image archive can be loaded with the following command:</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="fu">cat</span> docker-bed-ucb-human-<span class="va">$BED_VERSION</span>.tar <span class="kw">|</span> <span class="ex">docker</span> load</span></code></pre></div>
-</div>
-<div class="section level2">
-<h2 id="push-a-docker-image-on-docker-hub">Push a Docker image on docker hub<a class="anchor" aria-label="anchor" href="#push-a-docker-image-on-docker-hub"></a>
-</h2>
-<!--------------------------------->
-<ul>
-<li><a href="https://docs.docker.com/docker-cloud/builds/push-images/" class="external-link uri">https://docs.docker.com/docker-cloud/builds/push-images/</a></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="run-a-docker-image">Run a docker image<a class="anchor" aria-label="anchor" href="#run-a-docker-image"></a>
-</h2>
-<!------------------>
-<ul>
-<li><a href="https://docs.docker.com/engine/reference/commandline/run/" class="external-link uri">https://docs.docker.com/engine/reference/commandline/run/</a></li>
-</ul>
-</div>
-<div class="section level2">
-<h2 id="managing-containersimagesvolumes">Managing containers/images/volumes<a class="anchor" aria-label="anchor" href="#managing-containersimagesvolumes"></a>
-</h2>
-<!---------------------------------->
-<div class="section level3">
-<h3 id="list-created-containers">List created containers<a class="anchor" aria-label="anchor" href="#list-created-containers"></a>
-</h3>
-<div class="sourceCode" id="cb10"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="ex">docker</span> ps <span class="co"># list running containers</span></span>
-<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="ex">docker</span> ps <span class="at">-a</span> <span class="co"># list all containers</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="remove-container">Remove container<a class="anchor" aria-label="anchor" href="#remove-container"></a>
-</h3>
-<div class="sourceCode" id="cb11"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="ex">docker</span> rm CONTAINER</span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="remove-image">Remove image<a class="anchor" aria-label="anchor" href="#remove-image"></a>
-</h3>
-<div class="sourceCode" id="cb12"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb12-1"><a href="#cb12-1" tabindex="-1"></a><span class="ex">docker</span> rmi IMAGE <span class="co"># only if no corresponding container</span></span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="list-volumes">List volumes<a class="anchor" aria-label="anchor" href="#list-volumes"></a>
-</h3>
-<div class="sourceCode" id="cb13"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb13-1"><a href="#cb13-1" tabindex="-1"></a><span class="ex">docker</span> volume ls</span></code></pre></div>
-</div>
-<div class="section level3">
-<h3 id="remove-unused-volumes">Remove unused volumes<a class="anchor" aria-label="anchor" href="#remove-unused-volumes"></a>
-</h3>
-<div class="sourceCode" id="cb14"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb14-1"><a href="#cb14-1" tabindex="-1"></a><span class="ex">docker</span> volume prune</span></code></pre></div>
-</div>
+<p>Using the S03-Dump-BED.sh script</p>
 </div>
 </div>
 

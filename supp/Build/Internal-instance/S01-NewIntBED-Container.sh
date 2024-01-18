@@ -11,7 +11,7 @@ export BED_BACKUPS=`pwd`/../../../../working/neo4jDump
 export BED_DATA=`pwd`/../../../../working/neo4jDataInt
 if test -e $BED_DATA; then
    echo "$BED_DATA directory exists ==> abort - Remove it before proceeding" >&2
-   # exit
+   exit
 fi
 mkdir $BED_DATA
 if test -e $BED_BACKUPS/neo4j.dmp; then
@@ -19,7 +19,7 @@ if test -e $BED_BACKUPS/neo4j.dmp; then
    echo "Found neo4j.dmp file"
 else
    echo "$BED_BACKUPS/neo4j.dmp file does not exist ==> abort - Create public instance before proceeding with internal" >&2
-   # exit
+   exit
 fi
 
 docker run --interactive --tty --rm \
