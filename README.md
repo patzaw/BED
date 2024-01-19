@@ -151,7 +151,7 @@ export BED_HTTP_PORT=5454
 export BED_BOLT_PORT=5687
 export CONTAINER=bed
 
-export BED_REP_URL=https://genodesy.org/shared-files/BED-dumps/
+export BED_REP_URL=https://zenodo.org/records/10521413/files/
 
 export BED_DUMPS=~/.cache/BED/neo4jDump
 export BED_DATA=~/.cache/BED/neo4jData
