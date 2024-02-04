@@ -57,7 +57,7 @@ Suggests:
     GEOquery,
     base64enc,
     htmltools,
-    webshot,
+    webshot2,
     RCurl
 Encoding: UTF-8
 VignetteBuilder: knitr

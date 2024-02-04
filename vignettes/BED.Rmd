@@ -28,8 +28,8 @@ vn_as_png <- function(vn){
   html_file <- tempfile(fileext = ".html")
   png_file <- tempfile(fileext = ".png")
   visSave(vn, html_file)
-  invisible(webshot::webshot(
-    html_file, file=png_file, selector=".visNetwork", vwidth="100%"
+  invisible(webshot2::webshot(
+    html_file, file=png_file, selector=".visNetwork"#, vwidth="100%"
   ))
   im <- base64enc::dataURI(file=png_file, mime="image/png")
   invisible(file.remove(c(html_file,png_file)))
@@ -185,7 +185,7 @@ the following command.
 showBedDataModel()
 ```
 
-```{r, echo=FALSE, eval=TRUE}
+```{r, echo=FALSE, eval=TRUE, warning=FALSE}
 htmltools::includeHTML(system.file(
    "Documentation", "BED-Model", "BED.html",
    package="BED"

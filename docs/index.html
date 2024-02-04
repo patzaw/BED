@@ -129,7 +129,7 @@
 <h1 id="biological-entity-dictionary-">Biological Entity Dictionary <img src="reference/figures/BED.png" align="right" alt="" width="120"><a class="anchor" aria-label="anchor" href="#biological-entity-dictionary-"></a>
 </h1>
 <p><a href="https://cran.r-project.org/package=BED" class="external-link"><img src="http://www.r-pkg.org/badges/version/BED" alt="CRAN_Status_Badge"></a> <a href="https://cran.r-project.org/package=BED" class="external-link"><img src="http://cranlogs.r-pkg.org/badges/BED"></a></p>
-<p>Render SVG as interactive figures to display contextual information, with selectable and clickable user interface elements. These figures can be seamlessly integrated into ‘rmarkdown’ and ‘Quarto’ documents, as well as ‘shiny’ applications, allowing manipulation of elements and reporting actions performed on them. Additional features include pan, zoom in/out functionality, and the ability to export the figures in SVG or PNG formats.</p>
+<p>An interface for the ‘Neo4j’ database providing mapping between different identifiers of biological entities. This Biological Entity Dictionary (BED) has been developed to address three main challenges. The first one is related to the completeness of identifier mappings. Indeed, direct mapping information provided by the different systems are not always complete and can be enriched by mappings provided by other resources. More interestingly, direct mappings not identified by any of these resources can be indirectly inferred by using mappings to a third reference. For example, many human Ensembl gene ID are not directly mapped to any Entrez gene ID but such mappings can be inferred using respective mappings to HGNC ID. The second challenge is related to the mapping of deprecated identifiers. Indeed, entity identifiers can change from one resource release to another. The identifier history is provided by some resources, such as Ensembl or the NCBI, but it is generally not used by mapping tools. The third challenge is related to the automation of the mapping process according to the relationships between the biological entities of interest. Indeed, mapping between gene and protein ID scopes should not be done the same way than between two scopes regarding gene ID. Also, converting identifiers from different organisms should be possible using gene orthologs information. The method has been published by Godard and van Eyll (2018) <a href="doi:10.12688/f1000research.13925.3" class="uri">doi:10.12688/f1000research.13925.3</a>.</p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 <div class="section level2">
@@ -182,7 +182,7 @@
 <li>
 <a href="https://CRAN.R-project.org/package=htmltools" class="external-link">htmltools</a>: Tools for HTML</li>
 <li>
-<a href="https://CRAN.R-project.org/package=webshot" class="external-link">webshot</a>: Take Screenshots of Web Pages</li>
+<a href="https://CRAN.R-project.org/package=webshot2" class="external-link">webshot2</a>: Take Screenshots of Web Pages</li>
 <li>
 <a href="https://CRAN.R-project.org/package=RCurl" class="external-link">RCurl</a>: General Network (HTTP/FTP/…) Client Interface for R</li>
 </ul>
@@ -241,7 +241,8 @@
 <li>GEOquery</li>
 <li>Clarivate Analytics MetaBase</li>
 </ul>
-<p>The following shell commands can be adapted according to user needs and called to get a running container with a BED database instance.</p>
+<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/10521413" class="external-link">Zenodo</a>.</p>
+<p>The following shell commands can be adapted according to user needs and called to get a running Neo4j container with a BED database instance.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a><span class="co">####################################################@</span></span>
@@ -297,7 +298,6 @@
 <span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>   <span class="at">--volume</span> <span class="va">$BED_DATA</span>/data:/data <span class="dt">\</span></span>
 <span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
 <span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>   neo4j:<span class="va">$NJ_VERSION</span></span></code></pre></div>
-<p><a href="https://github.com/sespesogil" class="external-link">Sergio Espeso-Gil</a> has reported stability issues with Docker images in Windows. It’s mainly solved by checking the “Use the WSL2 based engine” options in docker settings. More information is provided here: <a href="https://docs.docker.com/docker-for-windows/wsl/" class="external-link uri">https://docs.docker.com/docker-for-windows/wsl/</a></p>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
@@ -320,6 +320,13 @@
 <h2 id="dump-the-graph-db-content-for-sharing">Dump the graph DB content for sharing<a class="anchor" aria-label="anchor" href="#dump-the-graph-db-content-for-sharing"></a>
 </h2>
 <p>Using the S03-Dump-BED.sh script</p>
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+</div>
+<div class="section level2">
+<h2 id="docker-notes">Docker notes<a class="anchor" aria-label="anchor" href="#docker-notes"></a>
+</h2>
+<p><a href="https://github.com/sespesogil" class="external-link">Sergio Espeso-Gil</a> has reported stability issues with Docker images in Windows. It’s mainly solved by checking the “Use the WSL2 based engine” options in docker settings. More information is provided here: <a href="https://docs.docker.com/docker-for-windows/wsl/" class="external-link uri">https://docs.docker.com/docker-for-windows/wsl/</a></p>
 </div>
 </div>
 

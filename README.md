@@ -6,13 +6,28 @@ README
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
 [![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
 
-Render SVG as interactive figures to display contextual information,
-with selectable and clickable user interface elements. These figures can
-be seamlessly integrated into ‘rmarkdown’ and ‘Quarto’ documents, as
-well as ‘shiny’ applications, allowing manipulation of elements and
-reporting actions performed on them. Additional features include pan,
-zoom in/out functionality, and the ability to export the figures in SVG
-or PNG formats.
+An interface for the ‘Neo4j’ database providing mapping between
+different identifiers of biological entities. This Biological Entity
+Dictionary (BED) has been developed to address three main challenges.
+The first one is related to the completeness of identifier mappings.
+Indeed, direct mapping information provided by the different systems are
+not always complete and can be enriched by mappings provided by other
+resources. More interestingly, direct mappings not identified by any of
+these resources can be indirectly inferred by using mappings to a third
+reference. For example, many human Ensembl gene ID are not directly
+mapped to any Entrez gene ID but such mappings can be inferred using
+respective mappings to HGNC ID. The second challenge is related to the
+mapping of deprecated identifiers. Indeed, entity identifiers can change
+from one resource release to another. The identifier history is provided
+by some resources, such as Ensembl or the NCBI, but it is generally not
+used by mapping tools. The third challenge is related to the automation
+of the mapping process according to the relationships between the
+biological entities of interest. Indeed, mapping between gene and
+protein ID scopes should not be done the same way than between two
+scopes regarding gene ID. Also, converting identifiers from different
+organisms should be possible using gene orthologs information. The
+method has been published by Godard and van Eyll (2018)
+<doi:10.12688/f1000research.13925.3>.
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -62,7 +77,7 @@ And those are suggested:
   base64 encoding
 - [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
   HTML
-- [webshot](https://CRAN.R-project.org/package=webshot): Take
+- [webshot2](https://CRAN.R-project.org/package=webshot2): Take
   Screenshots of Web Pages
 - [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
   (HTTP/FTP/…) Client Interface for R
@@ -137,8 +152,11 @@ from the following resources:
 - GEOquery
 - Clarivate Analytics MetaBase
 
+The Neo4j graph database is available as a dump file shared in
+[Zenodo](https://zenodo.org/records/10521413).
+
 The following shell commands can be adapted according to user needs and
-called to get a running container with a BED database instance.
+called to get a running Neo4j container with a BED database instance.
 
 ``` sh
 #!/bin/sh
@@ -198,12 +216,6 @@ docker run -d \
    neo4j:$NJ_VERSION
 ```
 
-[Sergio Espeso-Gil](https://github.com/sespesogil) has reported
-stability issues with Docker images in Windows. It’s mainly solved by
-checking the “Use the WSL2 based engine” options in docker settings.
-More information is provided here:
-<https://docs.docker.com/docker-for-windows/wsl/>
-
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 
@@ -224,3 +236,14 @@ document.
 ## Dump the graph DB content for sharing
 
 Using the S03-Dump-BED.sh script
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+
+## Docker notes
+
+[Sergio Espeso-Gil](https://github.com/sespesogil) has reported
+stability issues with Docker images in Windows. It’s mainly solved by
+checking the “Use the WSL2 based engine” options in docker settings.
+More information is provided here:
+<https://docs.docker.com/docker-for-windows/wsl/>

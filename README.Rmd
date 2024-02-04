@@ -28,7 +28,7 @@ cranRef <- function(x){
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
 [![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
 
-`r packageDescription("bscui")$Description`
+`r packageDescription("BED")$Description`
 
 
 <!----------------------------------------------------------------------------->
@@ -131,9 +131,12 @@ It has been built from the following resources:
    - biomaRt
    - GEOquery
    - Clarivate Analytics MetaBase
-   
+
+The Neo4j graph database is available as a dump file shared
+in [Zenodo](https://zenodo.org/records/10521413).
+
 The following shell commands can be adapted according to user needs and called
-to get a running container with a BED database instance.
+to get a running Neo4j container with a BED database instance.
 
 ```{r, echo=FALSE, results='asis'}
 ec <- readLines(here("supp/Build/SXX-Importing-BED-DB.sh"))
@@ -141,12 +144,6 @@ cat('```sh', sep="\n")
 cat(ec, sep="\n")
 cat('```', sep="\n")
 ```
-
-[Sergio Espeso-Gil](https://github.com/sespesogil) has reported stability
-issues with Docker images in Windows. It's mainly solved by
-checking the "Use the WSL2 based engine" options in docker settings.
-More information is provided
-here: https://docs.docker.com/docker-for-windows/wsl/
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
@@ -166,3 +163,13 @@ Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd document.
 ## Dump the graph DB content for sharing
 
 Using the S03-Dump-BED.sh script
+
+<!----------------------------------------------------------------------------->
+<!----------------------------------------------------------------------------->
+## Docker notes
+
+[Sergio Espeso-Gil](https://github.com/sespesogil) has reported stability
+issues with Docker images in Windows. It's mainly solved by
+checking the "Use the WSL2 based engine" options in docker settings.
+More information is provided
+here: https://docs.docker.com/docker-for-windows/wsl/
