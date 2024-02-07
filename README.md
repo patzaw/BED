@@ -25,8 +25,10 @@ of the mapping process according to the relationships between the
 biological entities of interest. Indeed, mapping between gene and
 protein ID scopes should not be done the same way than between two
 scopes regarding gene ID. Also, converting identifiers from different
-organisms should be possible using gene orthologs information. The
-method has been published by Godard and van Eyll (2018)
+organisms should be possible using gene orthologs information. A ready
+to use database is provided as a ‘Docker’ image
+<https://hub.docker.com/r/patzaw/bed-ucb-human/>. The method has been
+published by Godard and van Eyll (2018)
 <doi:10.12688/f1000research.13925.3>.
 
 <!----------------------------------------------------------------------------->
@@ -212,6 +214,7 @@ docker run -d \
    --env=NEO4J_dbms_read__only=true \
    --env=NEO4J_AUTH=none \
    --volume $BED_DATA/data:/data \
+   --volume $BED_DATA/logs:/var/lib/neo4j/logs \
    --restart=always \
    neo4j:$NJ_VERSION
 ```

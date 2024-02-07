@@ -51,6 +51,7 @@ docker run -d \
    --env=NEO4J_dbms_read__only=true \
    --env=NEO4J_AUTH=none \
    --volume $BED_DATA/data:/data \
+   --volume $BED_DATA/logs:/var/lib/neo4j/logs \
    --restart=always \
    neo4j:$NJ_VERSION
 
