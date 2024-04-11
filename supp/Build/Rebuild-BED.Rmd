@@ -89,7 +89,16 @@ opts_chunk$set(
 ## Specific config
 bedInstance <- "UCB-Human"
 bedVersion <- format(Sys.Date(), "%Y.%m.%d")
+
+## Identify the latest ensembl release here: https://www.ensembl.org/
+
 ensembl_release <- "111"
+
+## https://ftp.ensembl.org/pub/release-111/mysql/ (use the latest release)
+## Search for species_core (e.g. mus_musculus_core)
+## get the gv (genome version) just after the release number
+## in the directory name
+
 ensembl_Hsapiens <- list(
     release=ensembl_release,
     organism="Homo sapiens",
