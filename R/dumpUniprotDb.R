@@ -1,4 +1,4 @@
-#' Feeding BED: Dump and preprocess flat dat files fro Uniprot
+#' Feeding BED: Dump and preprocess flat data files from Uniprot
 #'
 #' Not exported to avoid unintended modifications of the DB.
 #'
