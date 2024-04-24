@@ -1,0 +1,26 @@
+{
+   "ROOT": "___HOME___",
+   "BED_WORKING": "___ROOT___/tmp/BED/working",
+   "BED_IMPORT": "___ROOT___/tmp/BED/working/neo4jImport",
+   "BED_DATA": "___ROOT___/tmp/BED/working/neo4jData",
+   "BED_DUMPS": "___ROOT___/tmp/BED/BED-dumps",
+   "BED_BACKUPS": "___ROOT___/tmp/BED/working/neo4jDump",
+
+   "ZENODO_RECORD": "10521413",
+
+   "CONTAINER": "new_bed",
+   "NJ_VERSION": "5.19.0",
+
+   "NJ_HTTP_PORT": "5410",
+   "NJ_BOLT_PORT": "5610",
+
+   "NJ_INIT_HEAP": "16G",
+   "NJ_MAX_HEAP": "16G",
+   "NJ_PAGE_CACHE": "8G",
+   "NJ_QUERY_CACHE": "0",
+   "NJ_REPLAN_INT": "100000000ms",
+   "NJ_DIV_THR": "1",
+
+   "BED_INSTANCE": "Genodesy-Human",
+   "BED_VERSION": "2024.04.21"
+}

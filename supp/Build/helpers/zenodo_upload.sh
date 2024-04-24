@@ -1,11 +1,20 @@
 #!/bin/bash
-#
-# Taken from: https://github.com/jhpoelen/zenodo-upload
-#
-# Upload big files to Zenodo.
-#
-# usage: ./zenodo_upload.sh [deposition id] [filename] [--verbose|-v]
-#
+##
+## Taken from https://github.com/jhpoelen/zenodo-upload
+##
+## Upload big files to Zenodo.
+##
+## Relies on https://jqlang.github.io/jq/:
+##    apt-get install jq
+##
+## OR:
+##    wget https://github.com/jqlang/jq/releases/download/jq-1.7.1/jq-linux-amd64 -O ~/Downloads/jq-linux-amd64
+##    chmod u+x ~/Downloads/jq-linux-amd64
+##    ln -s ~/Downloads/jq-linux-amd64 ~/bin/jq
+##
+##
+## usage: ./zenodo_upload.sh [deposition id] [filename] [--verbose|-v]
+##
 
 set -e
 
