@@ -22,18 +22,19 @@ dumpEnsCore <- function(
     ),
     env=parent.frame(n=1)
 ){
-    dumpDir <- file.path(ddir, paste(
+    bn <- paste(
         gsub(" ", "_", tolower(organism)),
         "core", release, gv,
         sep="_"
-    ))
+    )
+    dumpDir <- file.path(ddir, bn)
     dir.create(dumpDir, showWarnings = F)
     ftp <- paste0(
         "ftp://ftp.ensembl.org/pub/release-", release,
-        "/mysql/", dumpDir, "/"
+        "/mysql/", bn, "/"
     )
     ## SQL file
-    f <- paste0(dumpDir, ".sql.gz")
+    f <- paste0(bn, ".sql.gz")
     message(f)
     sqlf <- lf <- file.path(dumpDir, f)
     if(!file.exists(lf)){
