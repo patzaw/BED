@@ -41,7 +41,7 @@ docker run -d \
    --volume $BED_DATA/logs:/var/lib/neo4j/logs \
 	neo4j:$NJ_VERSION
 
-sleep 10
+sleep 20
 uid=`id -u`
 gid=`id -g`
 sudo chown $uid:$gid $BED_IMPORT
