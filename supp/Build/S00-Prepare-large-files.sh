@@ -21,7 +21,8 @@ if ! test -e $PREPARE_FILE; then
    exit
 fi
 
-## Add quarto and pandoc to your path; for example (or in your .bashrc):
-## export PATH=$PATH:/usr/lib/rstudio-server/bin/quarto/bin:/usr/lib/rstudio-server/bin/quarto/bin/tools
+export WF_ROOT=`echo $(jq -r '.ROOT' $CONFIG_FILE) | sed s#___HOME___#$HOME#`
+export BED_WORKING=`echo $(jq -r '.BED_WORKING' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
+mkdir -p $BED_WORKING
 
 R -e "config_file='$CONFIG_FILE'; source('$PREPARE_FILE')";
