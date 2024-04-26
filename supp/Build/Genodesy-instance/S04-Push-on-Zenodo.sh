@@ -15,5 +15,6 @@ export BED_DUMPS=`echo $(jq -r '.BED_DUMPS' build_config.json) | sed s#___ROOT__
 export ZENODO_RECORD==$(jq -r '.ZENODO_RECORD' build_config.json)
 export ZENODO_TOKEN=$(cat ~/.zenodo.token)
 
-../helpers/zenodo_upload.sh $ZENODO_RECORD $BED_DUMPS/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump -v
+export H_DIR=$(dirname $0)/../helpers
+$H_DIR/zenodo_upload.sh $ZENODO_RECORD $BED_DUMPS/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump -v
 
