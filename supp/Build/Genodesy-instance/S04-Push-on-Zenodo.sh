@@ -14,7 +14,7 @@ export BED_VERSION=$(jq -r '.BED_VERSION' build_config.json)
 export WF_ROOT=`echo $(jq -r '.ROOT' build_config.json) | sed s#___HOME___#$HOME#`
 export BED_DUMPS=`echo $(jq -r '.BED_DUMPS' build_config.json) | sed s#___ROOT___#$WF_ROOT#`
 
-export ZENODO_RECORD==$(jq -r '.ZENODO_RECORD' build_config.json)
+export ZENODO_RECORD=$(jq -r '.ZENODO_RECORD' build_config.json)
 export ZENODO_TOKEN=$(cat ~/.zenodo.token)
 
 export H_DIR=$(dirname $0)/../helpers
