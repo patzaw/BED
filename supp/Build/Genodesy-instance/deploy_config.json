@@ -1,0 +1,20 @@
+{
+   "ROOT": "___HOME___",
+   "BED_DUMPS": "___ROOT___/.cache/BED/neo4jDump",
+   "BED_DATA": "___ROOT___/.cache/BED/neo4jData",
+
+   "ZENODO_RECORD": "11069701",
+
+   "CONTAINER": "bed",
+   "NJ_VERSION": "5.19.0",
+
+   "NJ_HTTP_PORT": "5454",
+   "NJ_BOLT_PORT": "5687",
+
+   "NJ_INIT_HEAP": "4G",
+   "NJ_MAX_HEAP": "4G",
+   "NJ_PAGE_CACHE": "4G",
+
+   "BED_INSTANCE": "Genodesy-Human",
+   "BED_VERSION": "2024.04.21"
+}

@@ -30,7 +30,7 @@ export BED_DUMPS=`echo $(jq -r '.BED_DUMPS' $CONFIG_FILE) | sed s#___ROOT___#$WF
 
 export ZENODO_RECORD=$(jq -r '.ZENODO_RECORD' $CONFIG_FILE)
 
-if test "$ZENODO_RECORD"=="null"; then
+if test "$ZENODO_RECORD" = "null"; then
    echo "No Zenodo record in the $CONFIG_FILE file" >&2
    exit
 fi
