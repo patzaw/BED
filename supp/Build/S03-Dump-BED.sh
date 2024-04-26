@@ -1,22 +1,44 @@
 #/bin/bash
 
-export BED_VERSION=2024.01.14
-export NJ_VERSION=5.15.0
-export BED_DATA=`pwd`/../../../working/neo4jData
-export BED_DUMPS=`pwd`/../../../BED-dumps
+### usage: sh S03-Dump-BED.sh [instance_folder]
 
-# Stop container
-export CONTAINER=new_bed
+if test -z "$1"; then
+   echo "Provide a directory with build_config.json file" >&2
+   exit
+fi
+
+export CONFIG_FILE=$1/build_config.json
+
+if ! test -e $CONFIG_FILE; then
+   echo "Cannot find $CONFIG_FILE file" >&2
+   exit
+fi
+
+export BED_INSTANCE=$(jq -r '.BED_INSTANCE' $CONFIG_FILE)
+export BED_VERSION=$(jq -r '.BED_VERSION' $CONFIG_FILE)
+
+export NJ_VERSION=$(jq -r '.NJ_VERSION' $CONFIG_FILE)
+
+export CONTAINER=$(jq -r '.CONTAINER' $CONFIG_FILE)
+
+export WF_ROOT=`echo $(jq -r '.ROOT' $CONFIG_FILE) | sed s#___HOME___#$HOME#`
+export BED_DATA=`echo $(jq -r '.BED_DATA' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
+export BED_DUMPS=`echo $(jq -r '.BED_DUMPS' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
+export BED_BACKUPS=`echo $(jq -r '.BED_BACKUPS' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
+
+## Stop container
 docker stop $CONTAINER
 
-export BED_BACKUPS=`pwd`/../../../working/neo4jDump
 mkdir -p $BED_BACKUPS
+chmod a+w $BED_BACKUPS
 
+## Create the backup
 docker run --interactive --tty --rm \
    --volume=$BED_DATA/data:/data \
    --volume=$BED_BACKUPS:/backups \
-   neo4j/neo4j-admin:$NJ_VERSION \
+   neo4j:$NJ_VERSION \
 neo4j-admin database dump neo4j --to-path=/backups
 
-# sudo chown -R pgodard:pgodard ../../../working/neo4jDump/
-cp ../../../working/neo4jDump/neo4j.dump $BED_DUMPS/dump-bed-ucb-human-$BED_VERSION.dump
+## Copy and rename
+mkdir -p $BED_DUMPS
+cp $BED_BACKUPS/neo4j.dump $BED_DUMPS/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump

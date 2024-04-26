@@ -4,6 +4,7 @@
 ### Changes
 
 - Correction of a bug in dumping Ensembl data
+- Generalization of the function to download uniprot data
 
 <!----------------------------------------------------------------------------->
 ## Version 1.5.0

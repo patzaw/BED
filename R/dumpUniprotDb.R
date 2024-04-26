@@ -2,8 +2,10 @@
 #'
 #' Not exported to avoid unintended modifications of the DB.
 #'
-#' @param taxOfInt the organism of interest. Only human ("9606"),
-#' mouse ("10090") and rat ("10116") are supported
+#' @param taxOfInt the organism of interest (e.g., "9606" for human,
+#' "10090" for mouse or "10116" for rat)
+#' @param divOfInt the taxonomic division to which the organism belong
+#' (e.g., "human", "rodents", "mammals", "vertebrates")
 #' @param release the release of interest (check if already downloaded)
 #' @param ddir path to the directory where the data should be saved
 #' @param ftp location of the ftp site
@@ -11,6 +13,7 @@
 #'
 dumpUniprotDb <- function(
     taxOfInt,
+    divOfInt,
     release,
     ddir,
     ftp='ftp://ftp.expasy.org/databases/uniprot',
@@ -18,15 +21,15 @@ dumpUniprotDb <- function(
 ){
 
     ## Defining taxonomic division of interest ----
-    taxDiv <- c(
-        "9606"="human",
-        "10090"="rodents",
-        "10116"="rodents",
-        "9823"="mammals",
-        "7955"="vertebrates"
-    )
-    taxOfInt <- match.arg(taxOfInt, names(taxDiv))
-    divOfInt <- taxDiv[taxOfInt]
+    # taxDiv <- c(
+    #     "9606"="human",
+    #     "10090"="rodents",
+    #     "10116"="rodents",
+    #     "9823"="mammals",
+    #     "7955"="vertebrates"
+    # )
+    # taxOfInt <- match.arg(taxOfInt, names(taxDiv))
+    # divOfInt <- taxDiv[taxOfInt]
     toDl <- c(
         sprintf("uniprot_sprot_%s.dat.gz", divOfInt),
         sprintf("uniprot_trembl_%s.dat.gz", divOfInt)

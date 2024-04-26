@@ -4,11 +4,14 @@
 \alias{getUniprot}
 \title{Feeding BED: Download Uniprot information in BED}
 \usage{
-getUniprot(organism, release, ddir)
+getUniprot(organism, taxDiv, release, ddir)
 }
 \arguments{
 \item{organism}{character vector of 1 element corresponding to the organism
 of interest (e.g. "Homo sapiens")}
+
+\item{taxDiv}{the taxonomic division to which the organism belong
+(e.g., "human", "rodents", "mammals", "vertebrates")}
 
 \item{release}{the release of interest (check if already downloaded)}
 

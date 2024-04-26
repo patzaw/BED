@@ -38,71 +38,74 @@ data sources should not be re-downloaded.
 ##
 library(knitr)
 library(BED)
+library(jsonlite)
+library(rvest)
 ##
-# if("metabaser" %in% rownames(installed.packages())){
-#    source("helpers/loadMBObjects.R")
-# }else{
-#    stop("The Clarivate analytics metabaser package is not installed.")
-# }
-# library(TKCat)
-# k <- chTKCat("bel040344", password="")
-.get_tk_headers <- do.call(function(){
-   ## Choose the relevant credentials
-   credentials <- readRDS("~/etc/kmt_authorization.rds")
-   credentials$refresh()
-   return(function(){
-      if(!credentials$validate()){
-         credentials$refresh()
-      }
-      list(
-         "Authorization"=paste("Bearer", credentials$credentials$access_token)
-      )
-   })
-}, list())
-library(TKCat)
-.tkcon <- chTKCat(
-   "tkcat.ucb.com",
-   password="",
-   port=443, https=TRUE,
-   extended_headers=.get_tk_headers()
+config <- jsonlite::read_json("build_config.json")
+config <- lapply(
+  config, function(x){
+     if(!is.character(x)){
+        return(x)
+     }else{
+        sub(pattern="___HOME___", replacement=Sys.getenv("HOME"), x = x)
+     }
+  }
 )
-.db_reconnect <- function(x){
-   xn <- deparse(substitute(x))
-   nv <- db_reconnect(x, extended_headers=.get_tk_headers())
-   assign(xn, nv, envir=parent.frame(n=1))
-   invisible(nv)
-}
-if("MetaBase" %in% list_MDBs(.tkcon)$name){
-   source("helpers/loadMBObjects_fromTKCat.R")
-}else{
-   stop("MetaBase is not available in this TKCat instance.")
-}
+config <- lapply(
+  config, function(x){
+     if(!is.character(x)){
+        return(x)
+     }else{
+        sub(pattern="___ROOT___", replacement=config$ROOT, x = x)
+     }
+  }
+)
 ##
-workingDirectory <- "../../../working"
+wd <- config$BED_WORKING
+
 ##
-opts_knit$set(root.dir=workingDirectory)
+# opts_knit$set(root.dir=wd)
 opts_chunk$set(
    eval=TRUE,
-   message=FALSE,
-   root.dir=workingDirectory
+   message=FALSE
+   # root.dir=wd
 )
 ## Specific config
-bedInstance <- "UCB-Human"
-bedVersion <- format(Sys.Date(), "%Y.%m.%d")
+bedInstance <- config$BED_INSTANCE
+bedVersion <- config$BED_VERSION
 
 ## Identify the latest ensembl release here: https://www.ensembl.org/
+ensembl_org_dir <- grep(
+  "_core_",
+  rvest::html_table(
+    rvest::read_html("https://ftp.ensembl.org/pub/current/mysql/")
+  )[[1]]$Name,
+  value=TRUE
+)
+ensembl_org_table <- do.call(rbind, lapply(
+  strsplit(ensembl_org_dir, split="_"),
+  function(x){
+    gv <- sub("/", "", x[length(x)])
+    e <- x[length(x)-1]
+    core <- which(x=="core")
+    org <- paste(x[1:(core-1)], collapse=" ")
+    substr(org, 1, 1) <- toupper(substr(org, 1,1))
+    return(data.frame(
+       organism=org,
+       release=e,
+       genome_version=gv
+    ))
+  }
+))
 
-ensembl_release <- "111"
+ensembl_release <- unique(ensembl_org_table$release)
+stopifnot(length(ensembl_release)==1)
 
-## https://ftp.ensembl.org/pub/release-111/mysql/ (use the latest release)
-## Search for species_core (e.g. mus_musculus_core)
-## get the gv (genome version) just after the release number
-## in the directory name
-
+org <-"Homo sapiens"
 ensembl_Hsapiens <- list(
     release=ensembl_release,
-    organism="Homo sapiens",
-    gv="38",                        # genome version
+    organism=org,
+    gv=ensembl_org_table$genome_version[which(ensembl_org_table$organism==org)],
     gdbCref=c(                      # Gene cross-references DBs
         "HGNC"="HGNC",
         "EntrezGene"="EntrezGene",
@@ -132,10 +135,11 @@ ensembl_Hsapiens <- list(
     ),
     canChromosomes=c(1:22, "X", "Y", "MT")
 )
+org <- "Mus musculus"
 ensembl_Mmusculus <- list(
     release=ensembl_release,
-    organism="Mus musculus",
-    gv="39",                        # genome version
+    organism=org,
+    gv=ensembl_org_table$genome_version[which(ensembl_org_table$organism==org)],
     gdbCref=c(                      # Gene cross-references DBs
         "MGI"="MGI",
         "EntrezGene"="EntrezGene",
@@ -164,10 +168,11 @@ ensembl_Mmusculus <- list(
     ),
     canChromosomes=c(1:19, "X", "Y", "MT")
 )
+org <- "Rattus norvegicus"
 ensembl_Rnorvegicus <- list(
     release=ensembl_release,
-    organism="Rattus norvegicus",
-    gv="72",                         # genome version
+    organism=org,
+    gv=ensembl_org_table$genome_version[which(ensembl_org_table$organism==org)],
     gdbCref=c(                      # Gene cross-references DBs
         "RGD"="RGD",
         "EntrezGene"="EntrezGene",
@@ -196,10 +201,11 @@ ensembl_Rnorvegicus <- list(
     ),
     canChromosomes=c(1:20, "X", "Y", "MT")
 )
+org <- "Sus scrofa"
 ensembl_Sscrofa <- list(
     release=ensembl_release,
-    organism="Sus scrofa",
-    gv="111",                         # genome version
+    organism=org,
+    gv=ensembl_org_table$genome_version[which(ensembl_org_table$organism==org)],
     gdbCref=c(                      # Gene cross-references DBs
         "EntrezGene"="EntrezGene",
         "Vega_gene"="Vega_gene",
@@ -227,10 +233,11 @@ ensembl_Sscrofa <- list(
     ),
     canChromosomes=c(1:18, "X", "Y", "MT")
 )
+org <- "Danio rerio"
 ensembl_Drerio <- list(
     release=ensembl_release,
-    organism="Danio rerio",
-    gv="11",                         # genome version
+    organism=org,
+    gv=ensembl_org_table$genome_version[which(ensembl_org_table$organism==org)],
     gdbCref=c(                      # Gene cross-references DBs
         "EntrezGene"="EntrezGene",
         "ZFIN_ID"="ZFIN_gene",
@@ -260,7 +267,7 @@ ensembl_Drerio <- list(
     canChromosomes=c(1:25, "MT")
 )
 ## General config
-reDumpThr <- as.difftime(4, units="days")
+reDumpThr <- as.difftime(config$SOURCE_REDUMP_THR, units="days")
 curDate <- Sys.Date()
 ```
 
@@ -280,10 +287,10 @@ neo4j authentication is disabled.
 
 ```{r bedConnect, message=FALSE}
 connectToBed(
-   url="localhost:5410",
+   url=sprintf("localhost:%s", config$NJ_HTTP_PORT),
    remember=FALSE,
    useCache=TRUE,
-   importPath=file.path(getwd(), "neo4jImport")
+   importPath=config$BED_IMPORT
 )
 ```
 
@@ -329,7 +336,7 @@ according to the `reDumpThr` object.
 ```{r ncbiTax, message=FALSE}
 BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
-    ddir=".",
+    ddir=wd,
     orgOfInt=c(
        "Homo sapiens", "Rattus norvegicus", "Mus musculus",
        "Sus scrofa", "Danio rerio"
@@ -396,7 +403,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -415,7 +422,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -433,7 +440,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -458,7 +465,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -477,7 +484,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -495,7 +502,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -520,7 +527,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -539,7 +546,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -557,7 +564,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -582,7 +589,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -601,7 +608,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -619,7 +626,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -644,7 +651,7 @@ BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$gdbCref,
     dbAss=ensembl$gdbAss,
     canChromosomes=ensembl$canChromosomes
@@ -663,7 +670,7 @@ BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$tdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -681,7 +688,7 @@ BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
     gv=ensembl$gv,
-    ddir=".",
+    ddir=wd,
     dbCref=ensembl$pdbCref,
     canChromosomes=ensembl$canChromosomes
 )
@@ -703,7 +710,7 @@ according to the `reDumpThr` object.
 ```{r dumpNcbi, message=FALSE}
 BED:::dumpNcbiDb(
   taxOfInt = c(), reDumpThr=reDumpThr,
-  ddir=".",
+  ddir=wd,
   toLoad=c(), curDate=curDate
 )
 ```
@@ -748,7 +755,7 @@ BED:::registerBEDB(
 ```{r ncbiDrData, message=FALSE}
 BED:::getNcbiGeneTransPep(
     organism="Danio rerio",
-    ddir=".",
+    ddir=wd,
     curDate=curDate
 )
 gc()
@@ -763,7 +770,7 @@ gc()
 ```{r ncbiHsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
     organism="Homo sapiens",
-    ddir=".",
+    ddir=wd,
     curDate=curDate
 )
 gc()
@@ -778,7 +785,7 @@ gc()
 ```{r ncbiMmData, message=FALSE}
 BED:::getNcbiGeneTransPep(
     organism="Mus musculus",
-    ddir=".",
+    ddir=wd,
     curDate=curDate
 )
 gc()
@@ -793,7 +800,7 @@ gc()
 ```{r ncbiRnData, message=FALSE}
 BED:::getNcbiGeneTransPep(
     organism="Rattus norvegicus",
-    ddir=".",
+    ddir=wd,
     curDate=curDate
 )
 gc()
@@ -808,7 +815,7 @@ gc()
 ```{r ncbiSsData, message=FALSE}
 BED:::getNcbiGeneTransPep(
     organism="Sus scrofa",
-    ddir=".",
+    ddir=wd,
     curDate=curDate
 )
 gc()
@@ -825,7 +832,7 @@ message("Direct cross-references with Uniprot")
 BED:::dumpNcbiDb(
   taxOfInt="",
   reDumpThr=Inf,
-  ddir=".",
+  ddir=wd,
   toLoad="gene_refseq_uniprotkb_collab",
   curDate=Sys.Date()
 )
@@ -904,7 +911,7 @@ BED:::registerBEDB(
 
 ```{r uniprotDrData, message=FALSE}
 BED:::getUniprot(
-    organism="Danio rerio", release=avRel, ddir="."
+    organism="Danio rerio", taxDiv="vertebrates", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -917,7 +924,7 @@ gc()
 
 ```{r uniprotHsData, message=FALSE}
 BED:::getUniprot(
-    organism="Homo sapiens", release=avRel, ddir="."
+    organism="Homo sapiens", taxDiv="human", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -930,7 +937,7 @@ gc()
 
 ```{r uniprotMmData, message=FALSE}
 BED:::getUniprot(
-    organism="Mus musculus", release=avRel, ddir="."
+    organism="Mus musculus", taxDiv="rodents", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -943,7 +950,7 @@ gc()
 
 ```{r uniprotRnData, message=FALSE}
 BED:::getUniprot(
-    organism="Rattus norvegicus", release=avRel, ddir="."
+    organism="Rattus norvegicus", taxDiv="rodents", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -956,7 +963,7 @@ gc()
 
 ```{r uniprotSsData, message=FALSE}
 BED:::getUniprot(
-    organism="Sus scrofa", release=avRel, ddir="."
+    organism="Sus scrofa", taxDiv="mammals", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -969,7 +976,7 @@ gc()
 
 ```{r}
 message("Indirect cross-references with Uniprot")
-dumpDir <- "NCBI-gene-DATA"
+dumpDir <- file.path(wd, "NCBI-gene-DATA")
 f <- "gene2accession.gz"
 if(file.exists(dumpDir)){
   load(file.path(dumpDir, "dumpDate.rda"))
@@ -1041,88 +1048,6 @@ for(org in listOrganisms()){
 
 **End**: `r Sys.time()`
 
-<!----------------------------------------------------------------->
-<!----------------------------------------------------------------->
-
-# Loading Clarivate Analytics MetaBase objects from TKCat
-
-**Start**: `r Sys.time()`
-
-
-<!-- ```{r, echo=FALSE} -->
-<!-- options(java.parameters="-Xmx16g") -->
-<!-- source("~/opt/MetaBase/metabaseConnection.R") -->
-<!-- ``` -->
-
-<!-- The following chunk should be adapted to fit MetaBase installation. -->
-
-<!-- ```{r MetaBaseConnection, eval=FALSE} -->
-<!-- library(metabaser) -->
-<!-- metabase.connect( -->
-<!--     driver = "jdbc", -->
-<!--     jdbc.url ="jdbc:oracle:thin:@//HOSTURL", -->
-<!--     uid = "USER", pwd = "PASSWORD" -->
-<!-- ) -->
-<!-- ``` -->
-
-```{r}
-.db_reconnect(.tkcon)
-tkmb <- get_MDB(.tkcon, "MetaBase")
-```
-
-
-## Register MetaBase DB
-
-```{r MetaBase, message=FALSE}
-# mbInfo <- mbquery("select * from zzz_System")
-BED:::registerBEDB(
-    name="MetaBase_gene",
-    description="Clarivate Analytics MetaBase",
-    currentVersion=tkmb$MetaBase_sourceDatabases$current,
-    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=20&id=%s'
-)
-BED:::registerBEDB(
-    name="MetaBase_object",
-    description="Clarivate Analytics MetaBase",
-    currentVersion=tkmb$MetaBase_sourceDatabases$current,
-    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=100&id=%s'
-)
-```
-
-## Homo sapiens data
-
-```{r MetaBaseHs}
-.db_reconnect(tkmb)
-loadMBObjects_fromTKCat(
-    orgOfInt=c("Homo sapiens"),
-    tkmb=tkmb
-)
-gc()
-```
-
-## Mus musculus data
-
-```{r MetaBaseMm, message=FALSE}
-.db_reconnect(tkmb)
-loadMBObjects_fromTKCat(
-    orgOfInt=c("Mus musculus"),
-    tkmb=tkmb
-)
-gc()
-```
-
-## Rattus norvegicus data
-
-```{r MetaBaseRn, message=FALSE}
-.db_reconnect(tkmb)
-loadMBObjects_fromTKCat(
-    orgOfInt=c("Rattus norvegicus"),
-    tkmb=tkmb
-)
-gc()
-```
-
-**End**: `r Sys.time()`
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -1214,7 +1139,7 @@ for(i in 1:length(taxOfInt)){
    BED:::dumpNcbiDb(
        taxOfInt=taxOfInt[i],
        reDumpThr=reDumpThr,
-       ddir=".",
+       ddir=wd,
        toLoad=c("gene_orthologs"),
        curDate=curDate
    )
@@ -1250,7 +1175,8 @@ gc()
 
 ```{r  geoQueries, message=FALSE, warning=FALSE}
 library(GEOquery)
-dir.create("geo", showWarnings=FALSE)
+geoPath <- file.path(wd, "geo")
+dir.create(geoPath, showWarnings=FALSE)
 ```
 
 ### GPL1708: 	Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)
@@ -1260,7 +1186,7 @@ dir.create("geo", showWarnings=FALSE)
 ```{r GPL1708, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1708"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1306,7 +1232,7 @@ BED:::loadProbes(
 ```{r GPL6480, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6480"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1351,7 +1277,7 @@ BED:::loadProbes(
 ```{r GPL570, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL570"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1386,7 +1312,7 @@ BED:::loadProbes(
 ```{r GPL571, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL571"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1421,7 +1347,7 @@ BED:::loadProbes(
 ```{r GPL13158, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL13158"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1456,7 +1382,7 @@ BED:::loadProbes(
 ```{r GPL96, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL96"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1491,7 +1417,7 @@ BED:::loadProbes(
 ```{r GPL1261, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1261"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1526,7 +1452,7 @@ BED:::loadProbes(
 ```{r GPL1355, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1355"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1561,7 +1487,7 @@ BED:::loadProbes(
 ```{r GPL10558, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL10558"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1592,7 +1518,7 @@ BED:::loadProbes(
 ```{r GPL6947, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6947"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1623,7 +1549,7 @@ BED:::loadProbes(
 ```{r GPL6885, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6885"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 d <- Table(gds)
 # e <- getBeIds(
@@ -1659,7 +1585,7 @@ BED:::loadProbes(
 ```{r GPL6887, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6887"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 d <- Table(gds)
 # e <- getBeIds(
@@ -1695,7 +1621,7 @@ BED:::loadProbes(
 ```{r GPL6101, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6101"
-gds <- getGEO(platName, destdir="geo")
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1791,6 +1717,265 @@ for(org in orgOfInt){
 ```
 
 **End**: `r Sys.time()`
+
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading Clarivate Analytics data from TKCat
+
+```{r tkcat}
+library(TKCat)
+.get_tk_headers <- do.call(function(){
+   ## Choose the relevant credentials
+   credentials <- readRDS("~/etc/kmt_authorization.rds")
+   credentials$refresh()
+   return(function(){
+      if(!credentials$validate()){
+         credentials$refresh()
+      }
+      list(
+         "Authorization"=paste("Bearer", credentials$credentials$access_token)
+      )
+   })
+}, list())
+.tkcon <- chTKCat(
+   "tkcat.ucb.com",
+   password="",
+   port=443, https=TRUE,
+   extended_headers=.get_tk_headers()
+)
+.db_reconnect <- function(x){
+   xn <- deparse(substitute(x))
+   nv <- db_reconnect(x, extended_headers=.get_tk_headers())
+   assign(xn, nv, envir=parent.frame(n=1))
+   invisible(nv)
+}
+```
+
+## MetaBase
+
+
+**Start**: `r Sys.time()`
+
+
+```{r mbCheck}
+.db_reconnect(.tkcon)
+if("MetaBase" %in% list_MDBs(.tkcon)$name){
+   source("helpers/loadMBObjects_fromTKCat.R")
+}else{
+   stop("MetaBase is not available in this TKCat instance.")
+}
+tkmb <- get_MDB(.tkcon, "MetaBase")
+```
+
+
+### Register MetaBase DB
+
+```{r MetaBase, message=FALSE}
+# mbInfo <- mbquery("select * from zzz_System")
+BED:::registerBEDB(
+    name="MetaBase_gene",
+    description="Clarivate Analytics MetaBase",
+    currentVersion=tkmb$MetaBase_sourceDatabases$current,
+    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=20&id=%s'
+)
+BED:::registerBEDB(
+    name="MetaBase_object",
+    description="Clarivate Analytics MetaBase",
+    currentVersion=tkmb$MetaBase_sourceDatabases$current,
+    idURL='https://portal.genego.com/cgi/entity_page.cgi?term=100&id=%s'
+)
+```
+
+### Homo sapiens data
+
+```{r MetaBaseHs}
+.db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Homo sapiens"),
+    tkmb=tkmb
+)
+gc()
+```
+
+### Mus musculus data
+
+```{r MetaBaseMm, message=FALSE}
+.db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Mus musculus"),
+    tkmb=tkmb
+)
+gc()
+```
+
+### Rattus norvegicus data
+
+```{r MetaBaseRn, message=FALSE}
+.db_reconnect(tkmb)
+loadMBObjects_fromTKCat(
+    orgOfInt=c("Rattus norvegicus"),
+    tkmb=tkmb
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+
+## Cortellis
+
+```{r cortellis}
+###############################################################################@
+## CortellisTAR targets "Cortellis_target" coded by genes ----
+
+# ctar <- get_MDB(.tkcon, "CortellisTAR")
+# ctarv <- as.character(ctar$CortellisTAR_APIdump$date)
+# targets <- ctar$CortellisTAR_targets %>%
+#    filter(organism %in% listOrganisms())
+# prtargets <- targets %>% filter(type!="Nonspecified") %>%
+#    select(id, nameMain)
+# xref <- ctar$CortellisTAR_externalIdentifiers
+# entXref <- xref %>%
+#    filter(be=="Gene", source=="EntrezGene", targetId %in% prtargets$id)
+# stopifnot(all(prtargets$id %in% entXref$targetId))
+# allent <- getBeIds(be="Gene", source="EntrezGene", restricted=FALSE)
+# entXref <- entXref %>% filter(externalId %in% allent$id)
+#
+# ### Add Cortellis_target database ----
+# ddName <- "Cortellis_target"
+# BED:::registerBEDB(
+#    name=ddName,
+#    description="Clarivate Analytics Cortellis Targets",
+#    currentVersion=ctarv,
+#    idURL=NA
+# )
+#
+# ### Add CortellisTAR targets ----
+# toImport <- prtargets[, "id", drop=F]
+# colnames(toImport) <- "id"
+# BED:::loadBE(
+#    d=toImport, be="Object",
+#    dbname=ddName,
+#    version=NA,
+#    taxId=NA
+# )
+#
+# ### Add CortellisTAR target names ----
+# toImport <- prtargets
+# colnames(toImport) <- c("id", "name")
+# BED:::loadBENames(d=toImport, be="Object", dbname=ddName)
+#
+#
+# ### Add "codes_for" edges ----
+# toImport <- entXref %>%
+#    select(externalId, targetId)
+# colnames(toImport) <- c("gid", "oid")
+# BED:::loadCodesFor(
+#    d=toImport,
+#    gdb="EntrezGene",
+#    odb=ddName
+# )
+
+###############################################################################@
+## CortellisId targets "Cortellis_idtarget" coded by genes ----
+
+cid <- get_MDB(.tkcon, "CortellisID")
+cidv <- as.character(cid$CortellisID_APIdump$date)
+alltargets <- cid$CortellisID_targets
+up <- cid$CortellisID_targetUniprot
+
+### Get uniprot entrez gene identifiers ----
+upEntrez <- c()
+for(org in listOrganisms()){
+   message(org)
+   toAdd <- convBeIds(
+      unique(up$uniprot),
+      from="Peptide", from.source="Uniprot", from.org=org,
+      to="Gene", to.source="EntrezGene",
+      prefFilter=TRUE, restricted=FALSE
+   )
+   upEntrez <- bind_rows(
+      upEntrez,
+      toAdd %>%
+         as_tibble() %>%
+         filter(!is.na(to)) %>%
+         select("uniprot"=from, "entrez"=to) %>%
+         mutate(organism=!!org)
+   )
+}
+fup <- left_join(upEntrez, up, by="uniprot", relationship = "many-to-many")
+
+### Add Cortellis_idtarget database ----
+ddName <- "Cortellis_idtarget"
+BED:::registerBEDB(
+   name=ddName,
+   description="Clarivate Analytics Cortellis Investigational Drugs",
+   currentVersion=cidv,
+   idURL=NA
+)
+
+### Add CortellisID targets ----
+targets <- alltargets # %>%
+   # filter(id %in% fup$target)
+toImport <- targets[, "id", drop=F]
+colnames(toImport) <- "id"
+BED:::loadBE(
+   d=toImport, be="Object",
+   dbname=ddName,
+   version=NA,
+   taxId=NA
+)
+
+### Add CortellisID target names ----
+toImport <- targets
+colnames(toImport) <- c("id", "name")
+BED:::loadBENames(d=toImport, be="Object", dbname=ddName)
+
+### Add "codes_for" edges ----
+toImport <- fup %>%
+   select(entrez, target)
+colnames(toImport) <- c("gid", "oid")
+BED:::loadCodesFor(
+   d=toImport,
+   gdb="EntrezGene",
+   odb=ddName
+)
+
+# ## CortellisTAR ID targets "Cortellis_idtarget" related to "Cortellis_target"
+# idtargets <- ctar$CortellisTAR_IDTargets
+# idtargets2 <- cid$CortellisID_targetXref %>%
+#    filter(source=="Cortellis_target") %>%
+#    select(cortellisTAR=xref, cortellisID=targetId)
+# idtargets <- bind_rows(idtargets, idtargets2) %>%
+#    distinct(cortellisTAR, cortellisID)
+# toImport <- idtargets %>%
+#    filter(cortellisTAR %in% prtargets$id, cortellisID %in% targets$id) %>%
+#    select(id1=cortellisID, id2=cortellisTAR)
+# BED:::loadIsAssociatedTo(
+#    d=toImport,
+#    db1="Cortellis_idtarget",
+#    db2="Cortellis_target",
+#    be="Object"
+# )
+
+## CortellisID targets "Cortellis_idtarget" related to "MetaBase_object"
+idObjects <- cid$CortellisID_targetXref %>%
+   filter(source=="MetaBase_object") %>%
+   select(metabase=xref, cortellisID=targetId)
+mbo <- getBeIds(be="Object", source="MetaBase_object", restricted=FALSE)
+toImport <- idObjects %>%
+   filter(metabase %in% mbo$id, cortellisID %in% targets$id) %>%
+   select(id1=cortellisID, id2=metabase)
+BED:::loadIsAssociatedTo(
+   d=toImport,
+   db1="Cortellis_idtarget",
+   db2="MetaBase_object",
+   be="Object"
+)
+```
+
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->

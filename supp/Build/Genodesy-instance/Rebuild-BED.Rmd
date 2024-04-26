@@ -43,10 +43,22 @@ library(rvest)
 ##
 config <- jsonlite::read_json("build_config.json")
 config <- lapply(
-  config, sub, pattern="___HOME___", replacement=Sys.getenv("HOME")
+  config, function(x){
+     if(!is.character(x)){
+        return(x)
+     }else{
+        sub(pattern="___HOME___", replacement=Sys.getenv("HOME"), x = x)
+     }
+  }
 )
 config <- lapply(
-  config, sub, pattern="___ROOT___", replacement=config$ROOT
+  config, function(x){
+     if(!is.character(x)){
+        return(x)
+     }else{
+        sub(pattern="___ROOT___", replacement=config$ROOT, x = x)
+     }
+  }
 )
 ##
 wd <- config$BED_WORKING
@@ -88,11 +100,6 @@ ensembl_org_table <- do.call(rbind, lapply(
 
 ensembl_release <- unique(ensembl_org_table$release)
 stopifnot(length(ensembl_release)==1)
-
-## https://ftp.ensembl.org/pub/release-111/mysql/ (use the latest release)
-## Search for species_core (e.g. mus_musculus_core)
-## get the gv (genome version) just after the release number
-## in the directory name
 
 org <-"Homo sapiens"
 ensembl_Hsapiens <- list(
@@ -260,7 +267,7 @@ ensembl_Drerio <- list(
     canChromosomes=c(1:25, "MT")
 )
 ## General config
-reDumpThr <- as.difftime(4, units="days")
+reDumpThr <- as.difftime(config$SOURCE_REDUMP_THR, units="days")
 curDate <- Sys.Date()
 ```
 
@@ -904,7 +911,7 @@ BED:::registerBEDB(
 
 ```{r uniprotDrData, message=FALSE}
 BED:::getUniprot(
-    organism="Danio rerio", release=avRel, ddir=wd
+    organism="Danio rerio", taxDiv="vertebrates", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -917,7 +924,7 @@ gc()
 
 ```{r uniprotHsData, message=FALSE}
 BED:::getUniprot(
-    organism="Homo sapiens", release=avRel, ddir=wd
+    organism="Homo sapiens", taxDiv="human", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -930,7 +937,7 @@ gc()
 
 ```{r uniprotMmData, message=FALSE}
 BED:::getUniprot(
-    organism="Mus musculus", release=avRel, ddir=wd
+    organism="Mus musculus", taxDiv="rodents", release=avRel, ddir=wd
 )
 gc()
 ```
@@ -943,7 +950,20 @@ gc()
 
 ```{r uniprotRnData, message=FALSE}
 BED:::getUniprot(
-    organism="Rattus norvegicus", release=avRel, ddir=wd
+    organism="Rattus norvegicus", taxDiv="rodents", release=avRel, ddir=wd
+)
+gc()
+```
+
+**End**: `r Sys.time()`
+
+## Sus scrofa data
+
+**Start**: `r Sys.time()`
+
+```{r uniprotSsData, message=FALSE}
+BED:::getUniprot(
+    organism="Sus scrofa", taxDiv="mammals", release=avRel, ddir=wd
 )
 gc()
 ```

@@ -2,10 +2,11 @@
 % Please edit documentation in R/dumpUniprotDb.R
 \name{dumpUniprotDb}
 \alias{dumpUniprotDb}
-\title{Feeding BED: Dump and preprocess flat dat files fro Uniprot}
+\title{Feeding BED: Dump and preprocess flat data files from Uniprot}
 \usage{
 dumpUniprotDb(
   taxOfInt,
+  divOfInt,
   release,
   ddir,
   ftp = "ftp://ftp.expasy.org/databases/uniprot",
@@ -13,8 +14,11 @@ dumpUniprotDb(
 )
 }
 \arguments{
-\item{taxOfInt}{the organism of interest. Only human ("9606"),
-mouse ("10090") and rat ("10116") are supported}
+\item{taxOfInt}{the organism of interest (e.g., "9606" for human,
+"10090" for mouse or "10116" for rat)}
+
+\item{divOfInt}{the taxonomic division to which the organism belong
+(e.g., "human", "rodents", "mammals", "vertebrates")}
 
 \item{release}{the release of interest (check if already downloaded)}
 
