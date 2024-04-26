@@ -3,16 +3,7 @@
 export BED_INSTANCE=$(jq -r '.BED_INSTANCE' build_config.json)
 export BED_VERSION=$(jq -r '.BED_VERSION' build_config.json)
 
-export NJ_VERSION=$(jq -r '.NJ_VERSION' build_config.json)
-export NJ_HTTP_PORT=$(jq -r '.NJ_HTTP_PORT' build_config.json)
-export NJ_BOLT_PORT=$(jq -r '.NJ_BOLT_PORT' build_config.json)
-
-export NJ_INIT_HEAP=$(jq -r '.NJ_INIT_HEAP' build_config.json)
-export NJ_MAX_HEAP=$(jq -r '.NJ_MAX_HEAP' build_config.json)
-export NJ_PAGE_CACHE=$(jq -r '.NJ_PAGE_CACHE' build_config.json)
-export NJ_QUERY_CACHE=$(jq -r '.NJ_QUERY_CACHE' build_config.json)
-export NJ_REPLAN_INT=$(jq -r '.NJ_REPLAN_INT' build_config.json)
-export NJ_DIV_THR=$(jq -r '.NJ_DIV_THR' build_config.json)
+export NJ_ADM_VERSION=$(jq -r '.NJ_ADM_VERSION' build_config.json)
 
 export CONTAINER=$(jq -r '.CONTAINER' build_config.json)
 
@@ -30,7 +21,7 @@ mkdir -p $BED_BACKUPS
 docker run --interactive --tty --rm \
    --volume=$BED_DATA/data:/data \
    --volume=$BED_BACKUPS:/backups \
-   neo4j/neo4j-admin:$NJ_VERSION \
+   neo4j/neo4j-admin:$NJ_ADM_VERSION \
 neo4j-admin database dump neo4j --to-path=/backups
 
 ## Copy and rename

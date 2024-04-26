@@ -6,10 +6,11 @@
    "BED_DUMPS": "___ROOT___/tmp/BED/BED-dumps",
    "BED_BACKUPS": "___ROOT___/tmp/BED/working/neo4jDump",
 
-   "ZENODO_RECORD": "10521413",
+   "ZENODO_RECORD": "11069701",
 
    "CONTAINER": "new_bed",
    "NJ_VERSION": "5.19.0",
+   "NJ_ADM_VERSION": "5.19.0-arm",
 
    "NJ_HTTP_PORT": "5410",
    "NJ_BOLT_PORT": "5610",
