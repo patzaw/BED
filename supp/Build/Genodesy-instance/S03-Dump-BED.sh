@@ -3,7 +3,7 @@
 export BED_INSTANCE=$(jq -r '.BED_INSTANCE' build_config.json)
 export BED_VERSION=$(jq -r '.BED_VERSION' build_config.json)
 
-export NJ_ADM_VERSION=$(jq -r '.NJ_ADM_VERSION' build_config.json)
+export NJ_VERSION=$(jq -r '.NJ_VERSION' build_config.json)
 
 export CONTAINER=$(jq -r '.CONTAINER' build_config.json)
 
@@ -16,13 +16,15 @@ export BED_BACKUPS=`echo $(jq -r '.BED_BACKUPS' build_config.json) | sed s#___RO
 docker stop $CONTAINER
 
 mkdir -p $BED_BACKUPS
+chmod a+w $BED_BACKUPS
 
 ## Create the backup
 docker run --interactive --tty --rm \
    --volume=$BED_DATA/data:/data \
    --volume=$BED_BACKUPS:/backups \
-   neo4j/neo4j-admin:$NJ_ADM_VERSION \
+   neo4j:$NJ_VERSION \
 neo4j-admin database dump neo4j --to-path=/backups
 
 ## Copy and rename
+mkdir -p $BED_DUMPS
 cp $BED_BACKUPS/neo4j.dump $BED_DUMPS/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump

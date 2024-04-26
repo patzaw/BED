@@ -10,7 +10,6 @@
 
    "CONTAINER": "new_bed",
    "NJ_VERSION": "5.19.0",
-   "NJ_ADM_VERSION": "5.19.0-arm",
 
    "NJ_HTTP_PORT": "5410",
    "NJ_BOLT_PORT": "5610",
