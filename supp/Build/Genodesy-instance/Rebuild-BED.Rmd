@@ -1168,7 +1168,8 @@ gc()
 
 ```{r  geoQueries, message=FALSE, warning=FALSE}
 library(GEOquery)
-dir.create("geo", showWarnings=FALSE)
+geoPath <- file.path(wd, "geo")
+dir.create(geoPath, showWarnings=FALSE)
 ```
 
 ### GPL1708: 	Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)
@@ -1178,7 +1179,7 @@ dir.create("geo", showWarnings=FALSE)
 ```{r GPL1708, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1708"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1224,7 +1225,7 @@ BED:::loadProbes(
 ```{r GPL6480, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6480"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1269,7 +1270,7 @@ BED:::loadProbes(
 ```{r GPL570, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL570"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1304,7 +1305,7 @@ BED:::loadProbes(
 ```{r GPL571, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL571"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1339,7 +1340,7 @@ BED:::loadProbes(
 ```{r GPL13158, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL13158"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1374,7 +1375,7 @@ BED:::loadProbes(
 ```{r GPL96, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL96"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1409,7 +1410,7 @@ BED:::loadProbes(
 ```{r GPL1261, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1261"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1444,7 +1445,7 @@ BED:::loadProbes(
 ```{r GPL1355, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL1355"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1479,7 +1480,7 @@ BED:::loadProbes(
 ```{r GPL10558, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL10558"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1510,7 +1511,7 @@ BED:::loadProbes(
 ```{r GPL6947, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6947"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
@@ -1541,7 +1542,7 @@ BED:::loadProbes(
 ```{r GPL6885, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6885"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 d <- Table(gds)
 # e <- getBeIds(
@@ -1577,7 +1578,7 @@ BED:::loadProbes(
 ```{r GPL6887, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6887"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 d <- Table(gds)
 # e <- getBeIds(
@@ -1613,7 +1614,7 @@ BED:::loadProbes(
 ```{r GPL6101, warning=FALSE, message=FALSE}
 ## Import plateform
 platName <- "GPL6101"
-gds <- getGEO(platName, destdir=file.path(wd, "geo"))
+gds <- getGEO(platName, destdir=geoPath)
 platDesc <- Meta(gds)$title
 be <- "Gene"
 ##
