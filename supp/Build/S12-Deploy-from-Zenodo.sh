@@ -2,6 +2,9 @@
 
 ### usage: sh S12-Deploy-from-Zenodo.sh [instance_folder]
 
+####################################################@
+## Config ----
+
 if test -z "$1"; then
    echo "Provide a directory with deploy_config.json file" >&2
    exit
@@ -34,8 +37,6 @@ if test "$ZENODO_RECORD" = "null"; then
    exit
 fi
 
-export BED_REP_URL=https://zenodo.org/records/$ZENODO_RECORD/files/
-
 export WF_ROOT=`echo $(jq -r '.ROOT' $CONFIG_FILE) | sed s#___HOME___#$HOME#`
 export BED_DUMPS=`echo $(jq -r '.BED_DUMPS' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
 export BED_DATA=`echo $(jq -r '.BED_DATA' $CONFIG_FILE) | sed s#___ROOT___#$WF_ROOT#`
@@ -56,6 +57,7 @@ mkdir -p $BED_DUMPS
 
 ####################################################@
 ## Download data ----
+export BED_REP_URL=https://zenodo.org/records/$ZENODO_RECORD/files/
 wget $BED_REP_URL/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump -O $BED_DUMPS/neo4j.dump
 # wget $BED_REP_URL/dump-bed-${BED_INSTANCE}-${BED_VERSION}.dump -O $BED_DUMPS/neo4j.dump
 
@@ -71,8 +73,8 @@ neo4j-admin database load neo4j --from-path=/backups
 ## Start neo4j ----
 docker run -d \
    --name $CONTAINER \
-   --publish=$BED_HTTP_PORT:7474 \
-   --publish=$BED_BOLT_PORT:7687 \
+   --publish=$NJ_HTTP_PORT:7474 \
+   --publish=$NJ_BOLT_PORT:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=$NJ_INIT_HEAP \
    --env=NEO4J_dbms_memory_heap_max__size=$NJ_MAX_HEAP \
    --env=NEO4J_dbms_memory_pagecache_size=$NJ_PAGE_CACHE \
