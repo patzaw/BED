@@ -970,19 +970,6 @@ gc()
 
 **End**: `r Sys.time()`
 
-## Sus scrofa data
-
-**Start**: `r Sys.time()`
-
-```{r uniprotSsData, message=FALSE}
-BED:::getUniprot(
-    organism="Sus scrofa", release=avRel, ddir=wd
-)
-gc()
-```
-
-**End**: `r Sys.time()`
-
 ## Indirect cross-references with EntrezGene
 
 **Start**: `r Sys.time()`
