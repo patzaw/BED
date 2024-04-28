@@ -59,7 +59,6 @@ mkdir -p $BED_DUMPS
 ## Download data ----
 export BED_REP_URL=https://zenodo.org/records/$ZENODO_RECORD/files/
 wget $BED_REP_URL/dump_bed_${BED_INSTANCE}_${BED_VERSION}.dump -O $BED_DUMPS/neo4j.dump
-# wget $BED_REP_URL/dump-bed-${BED_INSTANCE}-${BED_VERSION}.dump -O $BED_DUMPS/neo4j.dump
 
 ####################################################@
 ## Import data ----
@@ -72,7 +71,7 @@ neo4j-admin database load neo4j --from-path=/backups
 ####################################################@
 ## Start neo4j ----
 docker run -d \
-   --name $CONTAINER \
+   --name ${CONTAINER}_${BED_VERSION} \
    --publish=$NJ_HTTP_PORT:7474 \
    --publish=$NJ_BOLT_PORT:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=$NJ_INIT_HEAP \

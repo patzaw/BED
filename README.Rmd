@@ -92,7 +92,7 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 Documentation is provided in
 the [BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
 
-A public instance of the [BED Neo4j database](#bed_db)
+A public instance of the [BED Neo4j database](#available-bed-database-instance)
 is provided for convenience and can be reached as follows:
 
 ```{r, eval=FALSE}
@@ -114,7 +114,7 @@ this peer reviewed article:
 
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
-## Available BED database instance {#bed_db}
+## Available BED database instance
 
 An instance of the BED database (UCB-Human)
 has been built using the script provided
@@ -130,16 +130,40 @@ It has been built from the following resources:
    - Uniprot
    - biomaRt
    - GEOquery
-   - Clarivate Analytics MetaBase
+   
+```{r, echo=FALSE}
+config <- jsonlite::read_json(
+  here("supp/Build/Genodesy-instance/deploy_config.json")
+)
+zr <- config$ZENODO_RECORD
+```
+
 
 The Neo4j graph database is available as a dump file shared
-in [Zenodo](https://zenodo.org/records/10521413).
+in [Zenodo](https://zenodo.org/records/`r zr`).
 
 The following shell commands can be adapted according to user needs and called
 to get a running Neo4j container with a BED database instance.
 
 ```{r, echo=FALSE, results='asis'}
-ec <- readLines(here("supp/Build/SXX-Importing-BED-DB.sh"))
+ec <- readLines(here("supp/Build/S21-Deploy-from-Zenodo.sh"))
+torm <- grep("^### usage: ", ec, value=FALSE)
+stopifnot(length(torm) == 1)
+torm <- c(torm, torm+1)
+clines <- grep("## Config ----", ec)
+stopifnot(length(clines) == 1)
+clines <- seq(
+  clines,
+  grep("#+@", ec)[which(grep("#+@", ec) > clines)][1],
+  by = 1
+)
+torm <- c(torm, clines)
+ec <- ec[-torm]
+for(n in names(config)){
+  ec <- gsub(paste0("[$][{]?", n, "[}]?"), config[[n]], ec)
+}
+ec <- gsub("___ROOT___", "~", ec)
+##
 cat('```sh', sep="\n")
 cat(ec, sep="\n")
 cat('```', sep="\n")
