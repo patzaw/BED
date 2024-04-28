@@ -7,8 +7,8 @@ vn_as_png <- function(vn){
   html_file <- tempfile(fileext = ".html")
   png_file <- tempfile(fileext = ".png")
   visSave(vn, html_file)
-  invisible(webshot::webshot(
-    html_file, file=png_file, selector=".visNetwork", vwidth="100%"
+  invisible(webshot2::webshot(
+    html_file, file=png_file, selector=".visNetwork"#, vwidth="100%"
   ))
   im <- base64enc::dataURI(file=png_file, mime="image/png")
   invisible(file.remove(c(html_file,png_file)))
@@ -41,12 +41,6 @@ checkBedConn(verbose=TRUE)
 
 ## ----eval=FALSE---------------------------------------------------------------
 #  showBedDataModel()
-
-## ----echo=FALSE, eval=TRUE----------------------------------------------------
-htmltools::includeHTML(system.file(
-   "Documentation", "BED-Model", "BED.html",
-   package="BED"
-))
 
 ## -----------------------------------------------------------------------------
 results <- bedCall(
@@ -109,8 +103,7 @@ sort(table(table(beids$Gene)), decreasing = TRUE)
 eid <- beids$id[which(beids$Gene %in% names(which(table(beids$Gene)>=3)))][1]
 print(eid)
 exploreBe(id=eid, source="EntrezGene", be="Gene") %>%
-   visPhysics(solver="repulsion") %>% 
-   vn_as_png()
+   visPhysics(solver="repulsion")
 
 ## -----------------------------------------------------------------------------
 mapt <- convBeIds(
@@ -121,8 +114,7 @@ exploreBe(
    mapt[1, "to"],
    source="Ens_gene",
    be="Gene"
-) %>% 
-   vn_as_png()
+)
 getBeIds(
    be="Gene", source="Ens_gene", organism="human",
    restricted=TRUE,
@@ -288,8 +280,7 @@ res
 exploreConvPath(
    from.id=from.id, from="Probe", from.source="GPL6885",
    to.id=res$to[1], to="Peptide", to.source="Uniprot"
-) %>% 
-   vn_as_png()
+)
 
 ## -----------------------------------------------------------------------------
 compMap <- getBeIdSymbolTable(

@@ -25,10 +25,8 @@ of the mapping process according to the relationships between the
 biological entities of interest. Indeed, mapping between gene and
 protein ID scopes should not be done the same way than between two
 scopes regarding gene ID. Also, converting identifiers from different
-organisms should be possible using gene orthologs information. A ready
-to use database is provided as a ‘Docker’ image
-<https://hub.docker.com/r/patzaw/bed-ucb-human/>. The method has been
-published by Godard and van Eyll (2018)
+organisms should be possible using gene orthologs information. The
+method has been published by Godard and van Eyll (2018)
 <doi:10.12688/f1000research.13925.3>.
 
 <!----------------------------------------------------------------------------->
@@ -113,8 +111,9 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 Documentation is provided in the
 [BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
 
-A public instance of the [BED Neo4j database](#bed_db) is provided for
-convenience and can be reached as follows:
+A public instance of the [BED Neo4j
+database](#available-bed-database-instance) is provided for convenience
+and can be reached as follows:
 
 ``` r
 library(BED)
@@ -152,10 +151,9 @@ from the following resources:
 - Uniprot
 - biomaRt
 - GEOquery
-- Clarivate Analytics MetaBase
 
 The Neo4j graph database is available as a dump file shared in
-[Zenodo](https://zenodo.org/records/10521413).
+[Zenodo](https://zenodo.org/records/11069701).
 
 The following shell commands can be adapted according to user needs and
 called to get a running Neo4j container with a BED database instance.
@@ -164,59 +162,47 @@ called to get a running Neo4j container with a BED database instance.
 #!/bin/sh
 
 ####################################################@
-## Config ----
-export BED_VERSION=2024.01.14
-export NJ_VERSION=5.15.0
-export BED_HTTP_PORT=5454
-export BED_BOLT_PORT=5687
-export CONTAINER=bed
-
-export BED_REP_URL=https://zenodo.org/records/10521413/files/
-
-export BED_DUMPS=~/.cache/BED/neo4jDump
-export BED_DATA=~/.cache/BED/neo4jData
-
-####################################################@
 ## Check folders ----
-if test -e $BED_DATA; then
-   echo "$BED_DATA directory exists ==> abort - Remove it before proceeding" >&2
+if test -e ~/.cache/BED/neo4jData; then
+   echo "~/.cache/BED/neo4jData directory exists ==> abort - Remove it before proceeding" >&2
    exit
 fi
-mkdir -p $BED_DATA
+mkdir -p ~/.cache/BED/neo4jData
 
-if test -e $BED_DUMPS; then
-   echo "$BED_DUMPS directory exists ==> abort - Remove it before proceeding" >&2
+if test -e ~/.cache/BED/neo4jDump; then
+   echo "~/.cache/BED/neo4jDump directory exists ==> abort - Remove it before proceeding" >&2
    exit
 fi
-mkdir -p $BED_DUMPS
+mkdir -p ~/.cache/BED/neo4jDump
 
 ####################################################@
 ## Download data ----
-wget $BED_REP_URL/dump-bed-ucb-human-$BED_VERSION.dump -O $BED_DUMPS/neo4j.dump
+export BED_REP_URL=https://zenodo.org/records/11069701/files/
+wget $BED_REP_URL/dump_bed_Genodesy-Human_2024.04.27.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
 
 ####################################################@
 ## Import data ----
 docker run --interactive --tty --rm \
-   --volume=$BED_DATA/data:/data \
-   --volume=$BED_DUMPS:/backups \
-    neo4j/neo4j-admin:$NJ_VERSION \
+   --volume=~/.cache/BED/neo4jData/data:/data \
+   --volume=~/.cache/BED/neo4jDump:/backups \
+    neo4j:5.19.0 \
 neo4j-admin database load neo4j --from-path=/backups
 
 ####################################################@
 ## Start neo4j ----
 docker run -d \
-   --name $CONTAINER \
-   --publish=$BED_HTTP_PORT:7474 \
-   --publish=$BED_BOLT_PORT:7687 \
+   --name bed_2024.04.27 \
+   --publish=5454:7474 \
+   --publish=5687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=4G \
    --env=NEO4J_dbms_memory_heap_max__size=4G \
    --env=NEO4J_dbms_memory_pagecache_size=4G \
    --env=NEO4J_dbms_read__only=true \
    --env=NEO4J_AUTH=none \
-   --volume $BED_DATA/data:/data \
-   --volume $BED_DATA/logs:/var/lib/neo4j/logs \
+   --volume ~/.cache/BED/neo4jData/data:/data \
+   --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
    --restart=always \
-   neo4j:$NJ_VERSION
+   neo4j:5.19.0
 ```
 
 <!----------------------------------------------------------------------------->
