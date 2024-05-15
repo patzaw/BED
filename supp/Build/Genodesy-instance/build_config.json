@@ -8,7 +8,7 @@
 
    "SOURCE_REDUMP_THR": 4,
 
-   "ZENODO_RECORD": "11069701",
+   "ZENODO_RECORD": "11196534",
 
    "CONTAINER": "new_bed",
    "NJ_VERSION": "5.19.0",
@@ -24,5 +24,5 @@
    "NJ_DIV_THR": "1",
 
    "BED_INSTANCE": "Genodesy-Human",
-   "BED_VERSION": "2024.04.27"
+   "BED_VERSION": "2024.05.15"
 }
