@@ -97,6 +97,12 @@ ensembl_org_table <- do.call(rbind, lapply(
     ))
   }
 ))
+ensembl_org_table <- ensembl_org_table[
+  order(as.numeric(ensembl_org_table$genome_version), decreasing=T),
+]
+ensembl_org_table <- ensembl_org_table[
+  which(!duplicated(ensembl_org_table$organism)),
+]
 
 ensembl_release <- unique(ensembl_org_table$release)
 stopifnot(length(ensembl_release)==1)
