@@ -3,7 +3,7 @@
    "BED_DUMPS": "___ROOT___/.cache/BED/neo4jDump",
    "BED_DATA": "___ROOT___/.cache/BED/neo4jData",
 
-   "ZENODO_RECORD": "11069701",
+   "ZENODO_RECORD": "11196534",
 
    "CONTAINER": "bed",
    "NJ_VERSION": "5.19.0",
@@ -16,5 +16,5 @@
    "NJ_PAGE_CACHE": "4G",
 
    "BED_INSTANCE": "Genodesy-Human",
-   "BED_VERSION": "2024.04.27"
+   "BED_VERSION": "2024.05.15"
 }
