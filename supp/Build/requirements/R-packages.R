@@ -1,6 +1,7 @@
 install.packages("BiocManager")
 BiocManager::install(ask = FALSE)
-BiocManager::install(c(
+BiocManager::install(
+   c(
    "BED",
    "knitr",
    "rmarkdown",
@@ -11,7 +12,8 @@ BiocManager::install(c(
    "RCurl",
    "magrittr",
    "devtools",
-   "rvest",
+   "rvest"
+   ),
    ask = FALSE
-))
+)
 devtools::install_github("patzaw/BED")
