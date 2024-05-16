@@ -7,7 +7,8 @@ sudo apt-get dist-upgrade -y
 
 ## R
 sudo apt install -y --no-install-recommends software-properties-common dirmngr
-wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d_ubuntu_key.asc
+# wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d_ubuntu_key.asc
+wget -qO- https://cloud.r-project.org/bin/linux/ubuntu/marutter_pubkey.asc | sudo tee -a /etc/apt/trusted.gpg.d/cran_ubuntu_key.asc
 sudo add-apt-repository "deb https://cloud.r-project.org/bin/linux/ubuntu $(lsb_release -cs)-cran40/"
 sudo apt-get update -y
 sudo apt install -y --no-install-recommends r-base
