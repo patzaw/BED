@@ -153,7 +153,7 @@ from the following resources:
 - GEOquery
 
 The Neo4j graph database is available as a dump file shared in
-[Zenodo](https://zenodo.org/records/11069701).
+[Zenodo](https://zenodo.org/records/11196534).
 
 The following shell commands can be adapted according to user needs and
 called to get a running Neo4j container with a BED database instance.
@@ -177,8 +177,8 @@ mkdir -p ~/.cache/BED/neo4jDump
 
 ####################################################@
 ## Download data ----
-export BED_REP_URL=https://zenodo.org/records/11069701/files/
-wget $BED_REP_URL/dump_bed_Genodesy-Human_2024.04.27.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
+export BED_REP_URL=https://zenodo.org/records/11196534/files/
+wget $BED_REP_URL/dump_bed_Genodesy-Human_2024.05.15.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
 
 ####################################################@
 ## Import data ----
@@ -191,7 +191,7 @@ neo4j-admin database load neo4j --from-path=/backups
 ####################################################@
 ## Start neo4j ----
 docker run -d \
-   --name bed_2024.04.27 \
+   --name bed_2024.05.15 \
    --publish=5454:7474 \
    --publish=5687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=4G \

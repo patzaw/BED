@@ -194,7 +194,7 @@
 <li>biomaRt</li>
 <li>GEOquery</li>
 </ul>
-<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/11069701" class="external-link">Zenodo</a>.</p>
+<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/11196534" class="external-link">Zenodo</a>.</p>
 <p>The following shell commands can be adapted according to user needs and called to get a running Neo4j container with a BED database instance.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
@@ -214,8 +214,8 @@
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
 <span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">## Download data ----</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/11069701/files/</span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2024.04.27.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/11196534/files/</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2024.05.15.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
 <span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
 <span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">## Import data ----</span></span>
@@ -228,7 +228,7 @@
 <span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">## Start neo4j ----</span></span>
 <span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>   <span class="at">--name</span> bed_2024.04.27 <span class="dt">\</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>   <span class="at">--name</span> bed_2024.05.15 <span class="dt">\</span></span>
 <span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
 <span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
 <span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
