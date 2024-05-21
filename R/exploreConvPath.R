@@ -333,6 +333,7 @@ exploreConvPath <- function(
       "red",
       "black"
    )
+   tpEdges <- unique(tpEdges)
    toRet <- visNetwork::visNetwork(
       nodes=tpNodes,
       edges=tpEdges

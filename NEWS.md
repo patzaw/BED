@@ -1,4 +1,10 @@
 <!----------------------------------------------------------------------------->
+## Version 1.5.2
+
+- Correction of a bug in `exploreBe()` function
+- Correction of a bug in `exploreConvPath()` function
+
+<!----------------------------------------------------------------------------->
 ## Version 1.5.1
 
 ### Changes

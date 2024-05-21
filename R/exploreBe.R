@@ -160,6 +160,7 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
       result="row",
       parameters=list(ids=unique(c(edges$start, edges$end)))
    )
+   nodes$platform <- as.character(nodes$platform)
    nodes$label <- gsub(" [|][|] ", "", gsub("BEID", "", nodes$label))
    nodes$url <- getBeIdURL(
       ids=nodes$value,
