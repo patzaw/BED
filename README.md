@@ -3,8 +3,8 @@ README
 
 # Biological Entity Dictionary <img src="man/figures/BED.png" align="right" alt="" width="120" />
 
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
-[![](http://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
+[![](https://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
 
 An interface for the ‘Neo4j’ database providing mapping between
 different identifiers of biological entities. This Biological Entity
