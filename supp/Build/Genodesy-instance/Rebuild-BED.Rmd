@@ -1733,7 +1733,8 @@ for(org in orgOfInt){
 
 ```{r otherIdURL}
 otherIdURL <- list(
-    "HGNC"='http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=%s',
+    # "HGNC"='http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=%s',
+    "HGNC"='https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:%s',
     "miRBase"='http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=%s',
     "Vega_gene"='http://vega.sanger.ac.uk/id/%s',
     "UniGene"='https://www.ncbi.nlm.nih.gov/unigene?term=%s',
