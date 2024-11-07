@@ -29,6 +29,7 @@ following fields:
 \item \strong{symbol}: the BE symbol
 \item \strong{canonical}: true if the symbol is canonical for the direct BE ID
 \item \strong{direct}: false if the symbol is not directly associated to the BE ID
+\item \strong{preferred}: true if the id is the preferred identifier for the BE
 \item \strong{entity}: (optional) the technical ID of to BE
 }
 }

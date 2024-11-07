@@ -71,6 +71,7 @@ following fields:
 \item \strong{from}: the from BE ID
 \item \strong{to}: the to BE ID
 \item \strong{entity}: (optional) the technical ID of to BE
+\item \strong{preferred}: true if "to" is the preferred identifier for the entity
 }
 }
 \description{

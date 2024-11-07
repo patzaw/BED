@@ -60,6 +60,7 @@ a data.frame mapping BE IDs with the
 following fields:
 \itemize{
 \item \strong{id}: the BE ID
+\item \strong{preferred}: true if the id is the preferred identifier for the BE
 \item \strong{BE}: IF entity is TRUE the technical ID of BE
 \item \strong{db.version}: IF be is not "Probe" and source not "Symbol"
 the version of the DB

@@ -6,7 +6,11 @@ moduleServer <- function(id, module){
    shiny::callModule(module, id)
 }
 
-highlightText <- function(text, value){
+highlightText <- function(
+   text, value,
+   style = "background-color:yellow; font-weight:bold;",
+   class = "bed-search"
+){
    value <- sub('^"', '', sub('"$', '', value))
    value <- gsub("[[:punct:]]", ".?", value)
    return(unlist(lapply(
@@ -21,7 +25,10 @@ highlightText <- function(text, value){
             for(i in 1:length(p)){
                toRet <- c(
                   toRet,
-                  '<mark style="background-color:yellow;font-weight:bold;">',
+                  sprintf(
+                     '<mark class="%s" style="%s">',
+                     class, style
+                  ),
                   substr(x, p[i], p[i]+attr(p, "match.length")[i]-1),
                   '</mark>',
                   substr(
@@ -58,6 +65,8 @@ highlightText <- function(text, value){
 #' @param orgOfInt organism to consider (default=NULL ==> all)
 #' @param selectOrg display an interface for selecting organisms
 #' @param tableHeight height of the result table (default: 150)
+#' @param highlightStyle style to apply to the text to highlight
+#' @param highlightClass class to apply to the text to highlight
 #'
 #' @return A reactive data.frame with the following columns:
 #' - **beid**: the BE identifier
@@ -107,7 +116,9 @@ beidsServer <- function(
    multiple=FALSE,
    beOfInt=NULL, selectBe=TRUE,
    orgOfInt=NULL, selectOrg=TRUE,
-   tableHeight=150
+   tableHeight=150,
+   highlightStyle = "background-color:yellow; font-weight:bold;",
+   highlightClass = "bed-search"
 ){
    if(toGene){
       selectBe <- FALSE
@@ -287,7 +298,8 @@ beidsServer <- function(
                            .data$GeneID,
                            ifelse(.data$preferred_gene, "</strong></u>", "")
                         ),
-                        !!v
+                        !!v,
+                        style = highlightStyle, class = highlightClass
                      )
                   )[order(.data$preferred_gene, decreasing=T)]), collapse=","),
                   Gene_symbol=paste(
@@ -359,10 +371,22 @@ beidsServer <- function(
             toShow <- dplyr::select(
                dplyr::mutate(
                   toShow,
-                  Match=highlightText(.data$match, !!v),
-                  From=highlightText(.data$from, !!v),
-                  Symbol=highlightText(.data$Gene_symbol, !!v),
-                  Name=highlightText(.data$Gene_name, !!v),
+                  Match=highlightText(
+                     .data$match, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  From=highlightText(
+                     .data$from, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  Symbol=highlightText(
+                     .data$Gene_symbol, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  Name=highlightText(
+                     .data$Gene_name, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
                   Organism=as.factor(.data$organism)
                ),
                "Match", # "From",
@@ -374,15 +398,30 @@ beidsServer <- function(
             toShow <- dplyr::select(
                dplyr::mutate(
                   toShow,
-                  Match=highlightText(.data$match, !!v),
-                  From=highlightText(.data$from, !!v),
-                  Symbol=highlightText(.data$symbol, !!v),
-                  Name=highlightText(.data$name, !!v),
+                  Match=highlightText(
+                     .data$match, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  From=highlightText(
+                     .data$from, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  Symbol=highlightText(
+                     .data$symbol, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
+                  Name=highlightText(
+                     .data$name, !!v,
+                     style = highlightStyle, class = highlightClass
+                  ),
                   Organism=as.factor(.data$organism),
                   ID=sprintf(
                      '<a href="%s" target="_blank">%s</a>',
                      getBeIdURL(.data$beid, .data$source),
-                     highlightText(.data$beid, !!v)
+                     highlightText(
+                        .data$beid, !!v,
+                        style = highlightStyle, class = highlightClass
+                     )
                   )
                ),
                "Match", # "From",

@@ -27,7 +27,10 @@ following fields:
 \itemize{
 \item \strong{id}: the BE ID
 \item \strong{name}: the corresponding name
+\item \strong{canonical}: true if the name is canonical for the direct BE ID
+(often FALSE for backward compatibility)
 \item \strong{direct}: true if the name is directly related to the BE ID
+\item \strong{preferred}: true if the id is the preferred identifier for the BE
 \item \strong{entity}: (optional) the technical ID of to BE
 }
 }

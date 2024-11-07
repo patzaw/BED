@@ -3,9 +3,9 @@
 
 - Slight and backward compatible change of the data model to support multiple
 and canonical names for one BEID.
+- Custom style of highlighted text in beidsServer 
 
 TODO
-   - Custom highlighted text in beidsServer 
    - Other customization of beidsServer
    - Correct crash of beidsServer when wrong neo4j search expression
    - Correct bug in `exploreBe()` (and `exploreConvPath()`?) when no entity name

@@ -13,7 +13,9 @@ beidsServer(
   selectBe = TRUE,
   orgOfInt = NULL,
   selectOrg = TRUE,
-  tableHeight = 150
+  tableHeight = 150,
+  highlightStyle = "background-color:yellow; font-weight:bold;",
+  highlightClass = "bed-search"
 )
 
 beidsUI(id)
@@ -35,6 +37,10 @@ BE are converted to genes.}
 \item{selectOrg}{display an interface for selecting organisms}
 
 \item{tableHeight}{height of the result table (default: 150)}
+
+\item{highlightStyle}{style to apply to the text to highlight}
+
+\item{highlightClass}{class to apply to the text to highlight}
 }
 \value{
 A reactive data.frame with the following columns:

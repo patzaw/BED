@@ -8,7 +8,8 @@ loadBENames(d, be = "Gene", dbname)
 }
 \arguments{
 \item{d}{a data.frame with information about the names
-to be loaded. It should contain the following fields: "id", "name".}
+to be loaded. It should contain the following fields: "id", "name"
+and "canonical" (optional).}
 
 \item{be}{a character corresponding to the BE type (default: "Gene")}
 
