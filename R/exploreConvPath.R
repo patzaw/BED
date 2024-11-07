@@ -15,6 +15,7 @@
 #' **Guessed if not provided**
 #' @param edgeDirection a logical value indicating if the direction of the
 #' edges should be drawn.
+#' @param showLegend boolean. If TRUE the legend is displayed.
 #' @param verbose if TRUE the cypher query is shown
 #'
 #' @examples \dontrun{
@@ -36,6 +37,7 @@ exploreConvPath <- function(
       to,
       to.source,
       edgeDirection=FALSE,
+      showLegend = TRUE,
       verbose=FALSE
 ){
 
@@ -193,7 +195,7 @@ exploreConvPath <- function(
          'n.platform as platform'
       ),
       result="row",
-      parameters=list(ids=unique(c(netRes$start, netRes$end)))
+      parameters=list(ids=I(unique(c(netRes$start, netRes$end))))
    )
    nodes$label <- gsub(" [|][|] ", "", gsub("BEID", "", nodes$label))
    for(cn in colnames(nodes)){
@@ -343,33 +345,35 @@ exploreConvPath <- function(
       graph=toRet,
       highlightNearest = TRUE
    )
-   toRet <-  visNetwork::visLegend(
-      graph=toRet,
-      addNodes=c(
-         lapply(
-            names(nshapes),
-            function(x){
-               return(list(
-                  label=x,
-                  shape=as.character(nshapes[x]),
-                  color=as.character(ncolors[x])
-               ))
-            }
+   if(showLegend){
+      toRet <-  visNetwork::visLegend(
+         graph=toRet,
+         addNodes=c(
+            lapply(
+               names(nshapes),
+               function(x){
+                  return(list(
+                     label=x,
+                     shape=as.character(nshapes[x]),
+                     color=as.character(ncolors[x])
+                  ))
+               }
+            ),
+            lapply(
+               setdiff(names(ncolors), c("", names(nshapes))),
+               function(x){
+                  return(list(
+                     label=x, shape="dot", color=as.character(ncolors[x])
+                  ))
+               }
+            )
          ),
-         lapply(
-            setdiff(names(ncolors), c("", names(nshapes))),
-            function(x){
-               return(list(
-                  label=x, shape="dot", color=as.character(ncolors[x])
-               ))
-            }
-         )
-      ),
-      ncol=3,
-      width=0.3,
-      position="left",
-      useGroups = FALSE
-   )
+         ncol=3,
+         width=0.3,
+         position="left",
+         useGroups = FALSE
+      )
+   }
    return(toRet)
 
 }

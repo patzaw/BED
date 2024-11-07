@@ -12,6 +12,7 @@ exploreConvPath(
   to,
   to.source,
   edgeDirection = FALSE,
+  showLegend = TRUE,
   verbose = FALSE
 )
 }
@@ -34,6 +35,8 @@ exploreConvPath(
 
 \item{edgeDirection}{a logical value indicating if the direction of the
 edges should be drawn.}
+
+\item{showLegend}{boolean. If TRUE the legend is displayed.}
 
 \item{verbose}{if TRUE the cypher query is shown}
 }

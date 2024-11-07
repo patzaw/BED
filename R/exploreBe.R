@@ -10,6 +10,7 @@
 #' @param showBE boolean. If TRUE the Biological Entity corresponding to the
 #' id is shown. If id is isolated (not mapped to any other ID or symbol)
 #' BE is shown anyway.
+#' @param showLegend boolean. If TRUE the legend is displayed.
 #'
 #' @examples \dontrun{
 #' exploreBe("Gene", "100", "EntrezGene")
@@ -17,7 +18,9 @@
 #'
 #' @export
 #'
-exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
+exploreBe <- function(
+   id, source, be, showBE=FALSE, showProbes=FALSE, showLegend=TRUE
+){
    id <- as.character(id)
    stopifnot(length(id)==1)
    ##
@@ -88,7 +91,7 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          'id(di2) as end'
       ),
       result="row",
-      parameters=list(ids=unique(netRows1$start))
+      parameters=list(ids=I(unique(netRows1$start)))
    )
    netRows3 <- bedCall(
       f=neo2R::cypher,
@@ -103,7 +106,7 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          'id(i2) as end'
       ),
       result="row",
-      parameters=list(ids=unique(netRows1$start))
+      parameters=list(ids=I(unique(netRows1$start)))
    )
    netRows4 <- bedCall(
       f=neo2R::cypher,
@@ -117,11 +120,11 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
       ),
       result="row",
       parameters=list(
-         ids=unique(c(
+         ids=I(unique(c(
             netRows1$start,
             netRows2$start, netRows2$end,
             netRows3$start, netRows3$end
-         )),
+         ))),
          can=TRUE
       )
    )
@@ -137,11 +140,11 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
       ),
       result="row",
       parameters=list(
-         ids=unique(c(
+         ids=I(unique(c(
             netRows1$start,
             netRows2$start, netRows2$end,
             netRows3$start, netRows3$end
-         )),
+         ))),
          can=TRUE
       )
    )
@@ -297,36 +300,38 @@ exploreBe <- function(id, source, be, showBE=FALSE, showProbes=FALSE){
          )]
       )
    )
-   toRet <-  visNetwork::visLegend(
-      graph=toRet,
-      addNodes=c(
-         lapply(
-            names(nshapes),
-            function(x){
-               return(list(
-                  label=x,
-                  shape=as.character(nshapes[x]),
-                  color=as.character(ncolors[x])
-               ))
-            }
+   if(showLegend){
+      toRet <-  visNetwork::visLegend(
+         graph=toRet,
+         addNodes=c(
+            lapply(
+               names(nshapes),
+               function(x){
+                  return(list(
+                     label=x,
+                     shape=as.character(nshapes[x]),
+                     color=as.character(ncolors[x])
+                  ))
+               }
+            ),
+            # if(showProbes){
+            lapply(
+               setdiff(names(ncolors), c("", be, names(nshapes))),
+               function(x){
+                  return(list(
+                     label=x, shape="dot", color=as.character(ncolors[x])
+                  ))
+               }
+            )
+            # }else{
+            #    list()
+            # }
          ),
-         # if(showProbes){
-         lapply(
-            setdiff(names(ncolors), c("", be, names(nshapes))),
-            function(x){
-               return(list(
-                  label=x, shape="dot", color=as.character(ncolors[x])
-               ))
-            }
-         )
-         # }else{
-         #    list()
-         # }
-      ),
-      ncol=ifelse(showProbes, 3, 2),
-      width=ifelse(showProbes, 0.3, 0.2),
-      position="left",
-      useGroups = FALSE
-   )
+         ncol=ifelse(showProbes, 3, 2),
+         width=ifelse(showProbes, 0.3, 0.2),
+         position="left",
+         useGroups = FALSE
+      )
+   }
    return(toRet)
 }

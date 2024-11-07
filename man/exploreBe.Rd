@@ -4,7 +4,14 @@
 \alias{exploreBe}
 \title{Explore BE identifiers}
 \usage{
-exploreBe(id, source, be, showBE = FALSE, showProbes = FALSE)
+exploreBe(
+  id,
+  source,
+  be,
+  showBE = FALSE,
+  showProbes = FALSE,
+  showLegend = TRUE
+)
 }
 \arguments{
 \item{id}{one ID for the BE}
@@ -18,6 +25,8 @@ id is shown. If id is isolated (not mapped to any other ID or symbol)
 BE is shown anyway.}
 
 \item{showProbes}{boolean. If TRUE, probes targeting any BEID are shown.}
+
+\item{showLegend}{boolean. If TRUE the legend is displayed.}
 }
 \description{
 This function uses visNetwork to draw all the identifiers
