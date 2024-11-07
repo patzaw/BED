@@ -9,6 +9,8 @@
 #' @param toDump the list of tables to download
 #' @param env the R environment in which to load the tables when downloaded
 #'
+#' @importFrom stringr str_replace_all
+#'
 dumpEnsCore <- function(
     organism,
     release,
@@ -81,8 +83,10 @@ dumpEnsCore <- function(
         if(!file.exists(df)){
             # tmp <- readLines(lf, encoding="UTF-8")
             tmp <- readr::read_file(lf)
-            tmp <- gsub("\r\n", " ", tmp)
-            tmp <- gsub("\r\\\\n", "", tmp)
+            # tmp <- gsub("\r\n", " ", tmp)
+            tmp <- stringr::str_replace_all(tmp, "\r\n", " ")
+            # tmp <- gsub("\r\\\\n", "", tmp)
+            tmp <- stringr::str_replace_all(tmp, "\r\\\\n", "")
             tmp <- strsplit(tmp, split="\n")[[1]]
             toRm <- which(tmp=="\\")
             if(length(toRm)>0){
