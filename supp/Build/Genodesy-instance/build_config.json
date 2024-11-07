@@ -8,10 +8,10 @@
 
    "SOURCE_REDUMP_THR": 4,
 
-   "ZENODO_RECORD": "11196534",
+   "ZENODO_RECORD": "14048653",
 
    "CONTAINER": "new_bed",
-   "NJ_VERSION": "5.19.0",
+   "NJ_VERSION": "5.25.1",
 
    "NJ_HTTP_PORT": "5410",
    "NJ_BOLT_PORT": "5610",
@@ -24,5 +24,5 @@
    "NJ_DIV_THR": "1",
 
    "BED_INSTANCE": "Genodesy-Human",
-   "BED_VERSION": "2024.05.15"
+   "BED_VERSION": "2024.11.07"
 }

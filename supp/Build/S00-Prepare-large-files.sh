@@ -1,6 +1,6 @@
 #/bin/bash
 
-### usage: sh S02-Rebuild-BED.sh [instance_folder]
+### usage: sh S00-Prepare-large_files.sh [instance_folder]
 
 if test -z "$1"; then
    echo "Provide a directory with build_config.json and prepare-files.R files" >&2
