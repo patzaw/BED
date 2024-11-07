@@ -16,6 +16,7 @@
 #'  - **symbol**: the BE symbol
 #'  - **canonical**: true if the symbol is canonical for the direct BE ID
 #'  - **direct**: false if the symbol is not directly associated to the BE ID
+#'  - **preferred**: true if the id is the preferred identifier for the BE
 #'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{

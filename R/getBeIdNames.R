@@ -14,7 +14,10 @@
 #'
 #'  - **id**: the BE ID
 #'  - **name**: the corresponding name
+#'  - **canonical**: true if the name is canonical for the direct BE ID
+#'  (often FALSE for backward compatibility)
 #'  - **direct**: true if the name is directly related to the BE ID
+#'  - **preferred**: true if the id is the preferred identifier for the BE
 #'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
@@ -79,6 +82,7 @@ getBeIdNames <- function(
         toRet <- data.frame(
             id=x,
             name=NA,
+            canonical=NA,
             direct=NA,
             preferred=NA,
             stringsAsFactors=F,

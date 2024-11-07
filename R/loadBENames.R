@@ -3,7 +3,8 @@
 #' Not exported to avoid unintended modifications of the DB.
 #'
 #' @param d a data.frame with information about the names
-#' to be loaded. It should contain the following fields: "id", "name".
+#' to be loaded. It should contain the following fields: "id", "name"
+#' and "canonical" (optional).
 #' @param be a character corresponding to the BE type (default: "Gene")
 #' @param dbname the DB of BEID
 #'
@@ -36,8 +37,22 @@ loadBENames <- function(d, be="Gene", dbname){
           beid, dbname, beid
        ),
        'MATCH (n:BEName {value:row.name})',
-       'MERGE (beid)-[:is_named]->(n)'
+       'MERGE (beid)-[r:is_named]->(n)'
     )
+    if("canonical" %in% colnames(d)){
+       cql <- c(
+          cql,
+          sprintf(
+             'SET r.canonical=%s',
+             '(case row.canonical when "TRUE" then true else false end)'
+          )
+       )
+    }else{
+       cql <- c(
+          cql,
+          'ON CREATE SET r.canonical=false'
+       )
+    }
     bedImport(cql, d)
 
 }

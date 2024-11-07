@@ -28,6 +28,7 @@
 #' following fields:
 #'
 #'  - **id**: the BE ID
+#'  - **preferred**: true if the id is the preferred identifier for the BE
 #'  - **BE**: IF entity is TRUE the technical ID of BE
 #'  - **db.version**: IF be is not "Probe" and source not "Symbol"
 #'  the version of the DB

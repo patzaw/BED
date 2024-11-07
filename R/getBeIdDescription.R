@@ -91,12 +91,16 @@ getBeIdDescription <- function(
       restricted=FALSE,
       ...
    )
+   cnames$canonical <- as.numeric(cnames$canonical)
+   cnames$canonical <- ifelse(is.na(cnames$canonical), 0, cnames$canonical)
    cnames$preferred <- as.numeric(cnames$preferred)
    cnames$preferred <- ifelse(is.na(cnames$preferred), 0, cnames$preferred)
    cnames <- cnames[
-      order(cnames$direct + cnames$preferred, decreasing=T),
+      order(
+         cnames$direct + cnames$preferred + 0.5*cnames$canonical, decreasing=T
+      ),
       c("id", "name")
-      ]
+   ]
    cnames <- cnames[!duplicated(cnames$id),]
    if(!all(ids %in% cnames$id)){
       stop("Could not find all IDs for names")
@@ -113,7 +117,7 @@ getBeIdDescription <- function(
    csymb <- csymb[
       order(csymb$direct + csymb$preferred + 0.5*csymb$canonical, decreasing=T),
       c("id", "symbol")
-      ]
+   ]
    csymb <- csymb[!duplicated(csymb$id),]
    if(!all(ids %in% csymb$id)){
       stop("Could not find all IDs for symbols")

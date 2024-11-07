@@ -19,6 +19,7 @@
 #'  - **id**: the from BE ID
 #'  - **name**: the BE name
 #'  - **direct**: false if the symbol is not directly associated to the BE ID
+#'  - **preferred**: true if the id is the preferred identifier for the BE
 #'  - **entity**: (optional) the technical ID of to BE
 #'
 #' @examples \dontrun{
@@ -125,7 +126,7 @@ getBeIdNameTable <- function(
         qs,
         paste(
             'RETURN DISTINCT id.value as id, bes.value as name',
-            ', id(id)=id(sid) as direct',
+            ', c.canonical as canonical, id(id)=id(sid) as direct',
             ', sid.preferred as preferred',
             ', id(be) as entity'
         )
@@ -160,6 +161,7 @@ getBeIdNameTable <- function(
     toRet <- unique(toRet)
     ##
     if(!is.null(toRet)){
+        toRet$canonical <- as.logical(toRet$canonical)
         toRet$direct <- as.logical(toRet$direct)
         # toRet <- toRet[order(toRet$direct, decreasing=T),]
         .data <- NULL

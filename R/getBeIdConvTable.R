@@ -37,6 +37,7 @@
 #'  - **from**: the from BE ID
 #'  - **to**: the to BE ID
 #'  - **entity**: (optional) the technical ID of to BE
+#'  - **preferred**: true if "to" is the preferred identifier for the entity
 #'
 #' @examples \dontrun{
 #' getBeIdConvTable(
