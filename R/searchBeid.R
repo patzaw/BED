@@ -170,10 +170,10 @@ searchBeid <- function(
       from=stringr::str_remove(.data$from, "BEID [|][|] "),
       be=stringr::str_remove(.data$be, "BEID [|][|] "),
       included=stringr::str_detect(
-         values$value, pattern=regex(x, ignore_case = T)
+         .data$value, pattern=regex(x, ignore_case = T)
       ),
       exact=stringr::str_detect(
-         value, pattern=regex(x, ignore_case = T)
+         .data$value, pattern=regex(x, ignore_case = T)
       ) & nchar(value) == nchar(x)
    )
    values <- dplyr::arrange(
