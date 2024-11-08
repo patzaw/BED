@@ -301,6 +301,7 @@ connectToBed(
    useCache=TRUE,
    importPath=config$BED_IMPORT
 )
+clearBedCache(force = TRUE, hard = TRUE)
 ```
 
 ## Check empty DB
@@ -1271,71 +1272,155 @@ for(org in listOrganisms()){
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
-# Loading homologs
+# Loading orthologs
 
-## Orthologs from biomaRt
+<!-- ## Orthologs from biomaRt -->
+
+<!-- **Start**: `r Sys.time()` -->
+
+<!-- ```{r homolog_biomart, message=FALSE} -->
+<!-- # library(biomaRt) -->
+<!-- # loadBmHomologs <- function(mart, org2){ -->
+<!-- #  -->
+<!-- #     #mattr <- listAttributes(mart) -->
+<!-- #      -->
+<!-- #     toImport <- getBM( -->
+<!-- #         mart=mart, -->
+<!-- #         attributes=c( -->
+<!-- #             "ensembl_gene_id", -->
+<!-- #             paste0( -->
+<!-- #               org2, -->
+<!-- #               c("_homolog_ensembl_gene", "_homolog_orthology_confidence") -->
+<!-- #             ) -->
+<!-- #         ) -->
+<!-- #     ) -->
+<!-- #     colnames(toImport) <- c("id1", "id2", "cs") -->
+<!-- #     toImport <- unique(toImport[ -->
+<!-- #         which(toImport$id1 != "" & toImport$id2 != "" & toImport$cs==1), -->
+<!-- #         c("id1", "id2") -->
+<!-- #     ]) -->
+<!-- #      -->
+<!-- #     BED:::loadIsHomologOf( -->
+<!-- #         d=toImport, -->
+<!-- #         db1="Ens_gene", db2="Ens_gene", -->
+<!-- #         be="Gene" -->
+<!-- #     ) -->
+<!-- #  -->
+<!-- # } -->
+<!-- #  -->
+<!-- # ######################################### -->
+<!-- # orgOfInt <- c("hsapiens", "mmusculus", "rnorvegicus", "sscrofa", "drerio") -->
+<!-- # marts <-listMarts() -->
+<!-- # bm <- "ENSEMBL_MART_ENSEMBL" -->
+<!-- # version <- ensembl_release -->
+<!-- # if( -->
+<!-- #   grep( -->
+<!-- #     sprintf(" %s$", version), -->
+<!-- #     marts[which(marts$biomart==bm), "version"] -->
+<!-- #   )==1 -->
+<!-- # ){ -->
+<!-- #     version <- NULL -->
+<!-- # } -->
+<!-- # for(i in 1:(length(orgOfInt)-1)){ -->
+<!-- #   ######################################### -->
+<!-- #   ## The mart -->
+<!-- #   org1 <- orgOfInt[i] -->
+<!-- #   mart <- useEnsembl( -->
+<!-- #       biomart=bm, -->
+<!-- #       dataset=paste0(org1, "_gene_ensembl"), -->
+<!-- #       version=version -->
+<!-- #   ) -->
+<!-- #   for(j in (i+1):length(orgOfInt)){ -->
+<!-- #     loadBmHomologs( -->
+<!-- #       mart=mart, -->
+<!-- #       org2=orgOfInt[j] -->
+<!-- #     ) -->
+<!-- #   } -->
+<!-- # } -->
+<!-- ``` -->
+
+<!-- **End**: `r Sys.time()` -->
+
+## Orthologs from Ensembl
 
 **Start**: `r Sys.time()`
 
-```{r homolog_biomart, message=FALSE}
-library(biomaRt)
-loadBmHomologs <- function(mart, org2){
-
-    #mattr <- listAttributes(mart)
-    
-    toImport <- getBM(
-        mart=mart,
-        attributes=c(
-            "ensembl_gene_id",
-            paste0(
-              org2,
-              c("_homolog_ensembl_gene", "_homolog_orthology_confidence")
-            )
-        )
-    )
-    colnames(toImport) <- c("id1", "id2", "cs")
-    toImport <- unique(toImport[
-        which(toImport$id1 != "" & toImport$id2 != "" & toImport$cs==1),
-        c("id1", "id2")
-    ])
-    
-    BED:::loadIsHomologOf(
-        d=toImport,
-        db1="Ens_gene", db2="Ens_gene",
-        be="Gene"
-    )
-
+```{r homolog_ensmbl, message=FALSE}
+## Dump data from ensembl
+orgOfInt <- c(
+   "homo_sapiens", "mus_musculus", "rattus_norvegicus", "sus_scrofa",
+   "danio_rerio"
+)
+data_dir <- file.path(wd, "ensembl_homologies")
+dir.create(data_dir, showWarnings = FALSE)
+ensembl_homologies <- c()
+for(org in orgOfInt){
+   ## Proteins
+   f_url <- sprintf(
+      "https://ftp.ensembl.org/pub/release-113/tsv/ensembl-compara/homologies/%s/Compara.%s.protein_default.homologies.tsv",
+      org, ensembl_release
+   )
+   f_name <- sprintf(
+      "%s.Compara.%s.protein_default.homologies.tsv",
+      org, ensembl_release
+   )
+   f_path <- file.path(data_dir, f_name)
+   if(!file.exists(f_path)){
+      download.file(url = f_url, destfile = f_path)
+   }
+   to_add <- readr::read_tsv(
+      f_path, col_types = "c"
+   )
+   to_add <- to_add |> 
+      filter(
+         is_high_confidence == "1",
+         species %in% orgOfInt,
+         homology_species %in% orgOfInt,
+         species != homology_species
+      ) |> 
+      select(gene_stable_id, homology_gene_stable_id, species, homology_species)
+   ensembl_homologies <- bind_rows(
+      ensembl_homologies,
+      to_add
+   )
+   ## ncRNA
+   f_url <- sprintf(
+      "https://ftp.ensembl.org/pub/release-113/tsv/ensembl-compara/homologies/%s/Compara.%s.ncrna_default.homologies.tsv",
+      org, ensembl_release
+   )
+   f_name <- sprintf(
+      "%s.Compara.%s.ncrna_default.homologies.tsv",
+      org, ensembl_release
+   )
+   f_path <- file.path(data_dir, f_name)
+   if(!file.exists(f_path)){
+      download.file(url = f_url, destfile = f_path)
+   }
+   to_add <- readr::read_tsv(
+      f_path, col_types = "c"
+   )
+   to_add <- to_add |> 
+      filter(
+         is_high_confidence == "1",
+         species %in% orgOfInt,
+         homology_species %in% orgOfInt,
+         species != homology_species
+      ) |> 
+      select(gene_stable_id, homology_gene_stable_id, species, homology_species)
+   ensembl_homologies <- bind_rows(
+      ensembl_homologies,
+      to_add
+   )
+   
 }
-
-#########################################
-orgOfInt <- c("hsapiens", "mmusculus", "rnorvegicus", "sscrofa", "drerio")
-marts <-listMarts()
-bm <- "ENSEMBL_MART_ENSEMBL"
-version <- ensembl_release
-if(
-  grep(
-    sprintf(" %s$", version),
-    marts[which(marts$biomart==bm), "version"]
-  )==1
-){
-    version <- NULL
-}
-for(i in 1:(length(orgOfInt)-1)){
-  #########################################
-  ## The mart
-  org1 <- orgOfInt[i]
-  mart <- useEnsembl(
-      biomart=bm,
-      dataset=paste0(org1, "_gene_ensembl"),
-      version=version
-  )
-  for(j in (i+1):length(orgOfInt)){
-    loadBmHomologs(
-      mart=mart,
-      org2=orgOfInt[j]
-    )
-  }
-}
+toImport <- ensembl_homologies |> 
+   dplyr::select(id1 = gene_stable_id, id2 = homology_gene_stable_id) |> 
+   as.data.frame()
+BED:::loadIsHomologOf(
+   d=toImport,
+   db1="Ens_gene", db2="Ens_gene",
+   be="Gene"
+)
 ```
 
 **End**: `r Sys.time()`
@@ -1982,5 +2067,6 @@ BED:::loadLuceneIndexes()
 # Session info
 
 ```{r sessionInfo, echo=FALSE}
+clearBedCache(force = TRUE, hard = TRUE)
 sessionInfo()
 ```
