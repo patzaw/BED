@@ -174,7 +174,7 @@ searchBeid <- function(
       ),
       exact=stringr::str_detect(
          .data$value, pattern=regex(x, ignore_case = T)
-      ) & nchar(value) == nchar(x)
+      ) & nchar(.data$value) == nchar(x)
    )
    values <- dplyr::arrange(
       values,
