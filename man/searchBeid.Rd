@@ -4,10 +4,12 @@
 \alias{searchBeid}
 \title{Search a BEID}
 \usage{
-searchBeid(x, clean_id_search = TRUE, clean_name_search = TRUE)
+searchBeid(x, maxHits = 75, clean_id_search = TRUE, clean_name_search = TRUE)
 }
 \arguments{
 \item{x}{a character value to search}
+
+\item{maxHits}{maximum number of raw hits to return}
 
 \item{clean_id_search}{clean x to avoid error during ID search.
 Default: TRUE. Set it to false if you're sure of your lucene query.}
@@ -19,22 +21,25 @@ Default: TRUE. Set it to false if you're sure of your lucene query.}
 NULL if there is not any match or
 a data.frame with the following columns:
 \itemize{
-\item \strong{Value}: the matching term
-\item \strong{From}: the type of the matched term (e.g. BESymbol, GeneID...)
-\item \strong{BE}: the matching biological entity (BE)
-\item \strong{BEID}: the BE identifier
-\item \strong{Database}: the BEID reference database
-\item \strong{Preferred}: TRUE if the BEID is considered as a preferred identifier
-\item \strong{Symbol}: BEID canonical symbol
-\item \strong{Name}: BEID name
-\item \strong{Entity}: technical BE identifier
+\item \strong{value}: the matching term
+\item \strong{from}: the type of the matched term (e.g. BESymbol, GeneID...)
+\item \strong{be}: the matching biological entity (BE)
+\item \strong{beid}: the BE identifier
+\item \strong{source}: the BEID reference database
+\item \strong{preferred}: TRUE if the BEID is considered as a preferred identifier
+\item \strong{symbol}: BEID canonical symbol
+\item \strong{name}: BEID name
+\item \strong{entity}: technical BE identifier
 \item \strong{GeneID}: Corresponding gene identifier
-\item \strong{Gene_DB}: Gene ID database
-\item \strong{Preferred_gene}: TRUE if the GeneID is considered as a preferred identifier
+\item \strong{Gene_source}: Gene ID database
+\item \strong{preferred_gene}: TRUE if the GeneID is considered as a preferred identifier
 \item \strong{Gene_symbol}: Gene symbol
 \item \strong{Gene_name}: Gene name
 \item \strong{Gene_entity}: technical gene identifier
-\item \strong{Organism}: gene organism (scientific name)
+\item \strong{organism}: gene organism (scientific name)
+\item \strong{score}: score of the fuzzy search
+\item \strong{included}: is the search term fully included in the value
+\item \strong{exact}: is the value an exact match of the term
 }
 }
 \description{

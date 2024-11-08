@@ -3,11 +3,22 @@
 
 - Slight and backward compatible change of the data model to support multiple
 and canonical names for one BEID.
-- Custom style of highlighted text in beidsServer 
+
 - Correct bug in `exploreBe()` and `exploreConvPath()`
 
+- Correct bug caused by new versions in `dumpEnsCore()`
+
+- Prevent beidsModule from crashing due to search issues in Neo4j
+
+- Customization of beidsServer:
+   - style of highlighted text
+   - exclude technical identifiers from hits
+   - show hits in one column
+   - remove identifiers from the display
+   - chose the maximum number of hits to get from neo4j
+   - compact display available
+
 TODO
-   - Other customization of beidsServer
 
 <!----------------------------------------------------------------------------->
 ## Version 1.5.2

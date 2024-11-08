@@ -8,13 +8,18 @@
 beidsServer(
   id,
   toGene = TRUE,
+  excludeTechID = FALSE,
   multiple = FALSE,
   beOfInt = NULL,
   selectBe = TRUE,
   orgOfInt = NULL,
   selectOrg = TRUE,
+  oneColumn = FALSE,
+  withId = FALSE,
+  maxHits = 75,
+  compact = FALSE,
   tableHeight = 150,
-  highlightStyle = "background-color:yellow; font-weight:bold;",
+  highlightStyle = "",
   highlightClass = "bed-search"
 )
 
@@ -26,6 +31,8 @@ beidsUI(id)
 \item{toGene}{focus on gene entities (default=TRUE): matches from other
 BE are converted to genes.}
 
+\item{excludeTechID}{do not display BED technical BEIDs}
+
 \item{multiple}{allow multiple selections (default=FALSE)}
 
 \item{beOfInt}{if toGene==FALSE, BE to consider (default=NULL ==> all)}
@@ -35,6 +42,14 @@ BE are converted to genes.}
 \item{orgOfInt}{organism to consider (default=NULL ==> all)}
 
 \item{selectOrg}{display an interface for selecting organisms}
+
+\item{oneColumn}{if TRUE the hits are displayed in only one column}
+
+\item{withId}{if FALSE and one column, the BEIDs are not shown}
+
+\item{maxHits}{maximum number of raw hits to return}
+
+\item{compact}{compact display (default: FALSE)}
 
 \item{tableHeight}{height of the result table (default: 150)}
 
