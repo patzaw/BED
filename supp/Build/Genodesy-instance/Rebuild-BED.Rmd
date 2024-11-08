@@ -40,6 +40,9 @@ library(knitr)
 library(BED)
 library(jsonlite)
 library(rvest)
+library(dplyr)
+library(readr)
+library(stringr)
 ##
 config <- jsonlite::read_json("build_config.json")
 config <- lapply(
@@ -78,7 +81,7 @@ bedVersion <- config$BED_VERSION
 ensembl_org_dir <- grep(
   "_core_",
   rvest::html_table(
-    rvest::read_html("https://ftp.ensembl.org/pub/current/mysql/")
+    rvest::read_html("https://ftp.ensembl.org/pub/current_mysql/")
   )[[1]]$Name,
   value=TRUE
 )
@@ -882,6 +885,216 @@ for(org in listOrganisms()){
 ```
 
 **End**: `r Sys.time()`
+
+
+<!----------------------------------------------------------------->
+<!----------------------------------------------------------------->
+
+# Loading data from HGNC
+
+## DB information
+
+```{r}
+dbname <- "HGNC"
+hgnc_date <- jsonlite::read_json(
+   "https://www.genenames.org/cgi-bin/statistics/db-last-updated"
+)$date
+BED:::registerBEDB(
+    name=dbname,
+    description="HUGO Gene Nomenclature Committee",
+    currentVersion=hgnc_date,
+    idURL='https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:%s'
+)
+```
+
+
+```{r}
+hgnc <- read_tsv(
+   file="https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt",
+   col_types = "ccccccccccccccDDDDcccccccccccccccccccccccccccccccccccc"
+)
+hgnc_genes <- hgnc |>
+  select(
+    hgnc_id, symbol, name, locus_group, locus_type, status,
+    location #, location_sortable
+  ) |>
+  mutate(id = str_remove(hgnc_id, "^HGNC:")) |>
+  relocate(id, .after = "hgnc_id") |>
+  distinct()
+
+get_hgnc_xref <- function(colname){
+  toRet <- hgnc |>
+    select(all_of(c("hgnc_id", colname)))
+  values <- toRet |> pull(colname) |> strsplit("[|]")
+  toRet <- tibble(
+    hgnc_id=rep(toRet$hgnc_id, lengths(values)),
+    value = unlist(values)
+  )
+  return(toRet)
+}
+
+hgnc_alias_symbols <- get_hgnc_xref("alias_symbol") |>
+  filter(!is.na(value)) |>
+  rename("symbol"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_alias_names <- get_hgnc_xref("alias_name") |>
+  filter(!is.na(value)) |>
+  rename("name"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_previous_symbols <- get_hgnc_xref("prev_symbol") |>
+  filter(!is.na(value)) |>
+  rename("symbol"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_previous_names <- get_hgnc_xref("prev_name") |>
+  filter(!is.na(value)) |>
+  rename("name"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_entrez <- get_hgnc_xref("entrez_id") |>
+  filter(!is.na(value)) |>
+  rename("entrez"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_ensembl <- get_hgnc_xref("ensembl_gene_id") |>
+  filter(!is.na(value)) |>
+  rename("ensembl"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_omim <- get_hgnc_xref("omim_id") |>
+  filter(!is.na(value)) |>
+  rename("omim"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+hgnc_orphanet <- get_hgnc_xref("orphanet") |>
+  filter(!is.na(value)) |>
+  rename("orphanet"="value") |> 
+  mutate(id = str_remove(hgnc_id, "^HGNC:"))
+# hgnc_mgd <- get_hgnc_xref("mgd_id") |>
+#   filter(!is.na(value)) |>
+#   rename("mgd_id"="value") |>
+#   mutate("mgd" = str_remove(mgd_id, "MGI:"))
+# hgnc_rgd <- get_hgnc_xref("rgd_id") |>
+#   filter(!is.na(value)) |>
+#   rename("rgd_id"="value") |>
+#   mutate("rgd" = str_remove(rgd_id, "RGD:"))
+```
+
+## Identifiers
+
+```{r}
+toLoad <- hgnc_genes |> select(id)
+BED:::loadBE(
+   toLoad, be = "Gene",
+   dbname = dbname, version = hgnc_date,
+   taxId = "9606"
+)
+```
+
+## Symbols
+
+```{r}
+toLoad <- dplyr::bind_rows(
+   hgnc_genes |> 
+      dplyr::select(id, symbol) |> 
+      dplyr::mutate(canonical = TRUE),
+   hgnc_alias_symbols |> 
+      dplyr::select(id, symbol) |> 
+      dplyr::mutate(canonical = FALSE),
+   hgnc_previous_symbols |> 
+      dplyr::select(id, symbol) |> 
+      dplyr::mutate(canonical = FALSE)
+)|>
+   dplyr::distinct(id, symbol, .keep_all = TRUE)
+BED:::loadBESymbols(toLoad, be = "Gene", dbname = dbname)
+```
+
+## Names
+
+```{r}
+toLoad <- dplyr::bind_rows(
+   hgnc_genes |> 
+      dplyr::select(id, name) |> 
+      dplyr::mutate(canonical = TRUE),
+   hgnc_alias_names |> 
+      dplyr::select(id, name) |> 
+      dplyr::mutate(canonical = FALSE),
+   hgnc_previous_names |> 
+      dplyr::select(id, name) |> 
+      dplyr::mutate(canonical = FALSE)
+)|>
+   dplyr::distinct(id, name, .keep_all = TRUE)
+BED:::loadBENames(toLoad, be = "Gene", dbname = dbname)
+```
+
+## Cross references
+
+### EntrezGene
+
+```{r}
+crdb <- "EntrezGene"
+toLoad <- hgnc_entrez |> 
+   dplyr::select(id = entrez) |> 
+   dplyr::distinct()
+BED:::loadBE(
+   d=toLoad, be="Gene",
+   dbname=crdb,
+   taxId=NA
+)
+## The cross references
+toLoad <- hgnc_entrez |> 
+   dplyr::select(id1 = entrez, id2 = id) |> 
+   dplyr::distinct()
+BED:::loadCorrespondsTo(
+   d=as.data.frame(toLoad),
+   db1=crdb,
+   db2=dbname,
+   be="Gene"
+)
+```
+
+### Ens_gene
+
+```{r}
+crdb <- "Ens_gene"
+toLoad <- hgnc_ensembl |> 
+   dplyr::select(id = ensembl) |> 
+   dplyr::distinct()
+BED:::loadBE(
+   d=toLoad, be="Gene",
+   dbname=crdb,
+   taxId=NA
+)
+## The cross references
+toLoad <- hgnc_ensembl |> 
+   dplyr::select(id1 = ensembl, id2 = id) |> 
+   dplyr::distinct()
+BED:::loadCorrespondsTo(
+   d=as.data.frame(toLoad),
+   db1=crdb,
+   db2=dbname,
+   be="Gene"
+)
+```
+
+### MIM_GENE
+
+```{r}
+crdb <- "MIM_GENE"
+toLoad <- hgnc_omim |> 
+   dplyr::select(id = omim) |> 
+   dplyr::distinct()
+BED:::loadBE(
+   d=toLoad, be="Gene",
+   dbname=crdb,
+   taxId=NA
+)
+## The cross references (associations)
+toLoad <- hgnc_omim |> 
+   dplyr::select(id1 = omim, id2 = id) |> 
+   dplyr::distinct()
+BED:::loadIsAssociatedTo(
+   d=as.data.frame(toLoad),
+   db1=crdb,
+   db2=dbname,
+   be="Gene"
+)
+```
 
 
 <!----------------------------------------------------------------->
@@ -1734,7 +1947,7 @@ for(org in orgOfInt){
 ```{r otherIdURL}
 otherIdURL <- list(
     # "HGNC"='http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=%s',
-    "HGNC"='https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:%s',
+    # "HGNC"='https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:%s',
     "miRBase"='http://www.mirbase.org/cgi-bin/mirna_entry.pl?acc=%s',
     "Vega_gene"='http://vega.sanger.ac.uk/id/%s',
     "UniGene"='https://www.ncbi.nlm.nih.gov/unigene?term=%s',

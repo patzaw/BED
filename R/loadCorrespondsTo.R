@@ -169,6 +169,9 @@ loadCorrespondsTo <- function(
         ##
         ## Filter uninformative nodes
         rem <- rem[which(rem$be1!=rem$be2),]
+        if(nrow(rem)==0){
+           break()
+        }
         rem <- rem[
             !duplicated(t(apply(
                 rem[,c("be1", "be2")],
