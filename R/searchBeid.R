@@ -137,9 +137,9 @@ searchBeid <- function(
          '-[:belongs_to]->(:TaxID)',
          '-[:is_named {nameClass:"scientific name"}]->(o:OrganismName)',
          'OPTIONAL MATCH (beid)-[:is_known_as {canonical:true}]->(bes:BESymbol)',
-         'OPTIONAL MATCH (beid)-[:is_named]->(ben:BEName)',
+         'OPTIONAL MATCH (beid)-[bnr:is_named]->(ben:BEName)',
          'OPTIONAL MATCH (gid)-[:is_known_as {canonical:true}]->(ges:BESymbol)',
-         'OPTIONAL MATCH (gid)-[:is_named]->(gen:BEName)',
+         'OPTIONAL MATCH (gid)-[gnr:is_named]->(gen:BEName)',
          'RETURN DISTINCT',
          'mn.value as value,',
          'labels(mn) as from,',
@@ -147,10 +147,12 @@ searchBeid <- function(
          'beid.value as beid, beid.database as source,',
          'beid.preferred as preferred,',
          'bes.value as symbol, ben.value as name,',
+         'bnr.canonical as canonical_name,',
          'id(be) as entity,',
          'gid.value as GeneID, gid.database as Gene_source,',
          'gid.preferred as preferred_gene,',
          'ges.value as Gene_symbol, gen.value as Gene_name,',
+         'gnr.canonical as canonical_Gene_name,',
          'id(g) as Gene_entity, o.value as organism,',
          'score'
       )
@@ -182,7 +184,34 @@ searchBeid <- function(
       desc(.data$included),
       desc(.data$score),
       desc(.data$Gene_symbol == .data$value),
-      desc(.data$symbol == .data$value)
+      desc(.data$symbol == .data$value),
+      desc(canonical_name),
+      desc(canonical_Gene_name)
+   )
+   values <- dplyr::distinct(
+      values,
+      .data$value,
+      .data$from,
+      .data$be,
+      .data$beid,
+      .data$source,
+      .data$preferred,
+      .data$symbol,
+      # .data$name,
+      # .data$canonical_name,
+      .data$entity,
+      .data$GeneID,
+      .data$Gene_source,
+      .data$preferred_gene,
+      .data$Gene_symbol,
+      # .data$Gene_name,
+      # .data$canonical_Gene_name,
+      .data$Gene_entity,
+      .data$organism,
+      .data$score,
+      .data$included,
+      .data$exact,
+      .keep_all = TRUE
    )
    return(values)
 }
