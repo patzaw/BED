@@ -18,8 +18,6 @@ and canonical names for one BEID.
    - chose the maximum number of hits to get from neo4j
    - compact display available
 
-TODO
-
 <!----------------------------------------------------------------------------->
 ## Version 1.5.2
 

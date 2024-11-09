@@ -128,7 +128,7 @@ It has been built from the following resources:
    - Ensembl
    - NCBI
    - Uniprot
-   - biomaRt
+   - HGNC
    - GEOquery
    
 ```{r, echo=FALSE}
