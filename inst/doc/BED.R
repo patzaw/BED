@@ -19,10 +19,10 @@ vn_as_png <- function(vn){
 }
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  devtools::install_github("patzaw/BED")
+# devtools::install_github("patzaw/BED")
 
 ## ----echo=TRUE, eval=FALSE----------------------------------------------------
-#  file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+# file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 
 ## ----message=FALSE, eval=TRUE-------------------------------------------------
 library(BED)
@@ -31,16 +31,16 @@ library(BED)
 connectToBed()
 
 ## ----message=FALSE, eval=FALSE------------------------------------------------
-#  connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
+# connectToBed(url="localhost:5454", remember=FALSE, useCache=FALSE)
 
 ## ----message=TRUE-------------------------------------------------------------
 checkBedConn(verbose=TRUE)
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  lsBedConnections()
+# lsBedConnections()
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  showBedDataModel()
+# showBedDataModel()
 
 ## -----------------------------------------------------------------------------
 results <- bedCall(
@@ -343,35 +343,35 @@ relIds <- geneIDsToAllScopes(
 )
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  relIds <- findBeids()
+# relIds <- findBeids()
 
 ## ----eval=FALSE---------------------------------------------------------------
-#  library(shiny)
-#  library(BED)
-#  library(DT)
-#  
-#  ui <- fluidPage(
-#     beidsUI("be"),
-#     fluidRow(
-#        column(
-#           12,
-#           tags$br(),
-#           h3("Selected gene entities"),
-#           DTOutput("result")
-#        )
-#     )
-#  )
-#  
-#  server <- function(input, output){
-#      found <- beidsServer("be", toGene=TRUE, multiple=TRUE, tableHeight=250)
-#      output$result <- renderDT({
-#         req(found())
-#         toRet <- found()
-#         datatable(toRet, rownames=FALSE)
-#      })
-#  }
-#  
-#  shinyApp(ui = ui, server = server)
+# library(shiny)
+# library(BED)
+# library(DT)
+# 
+# ui <- fluidPage(
+#    beidsUI("be"),
+#    fluidRow(
+#       column(
+#          12,
+#          tags$br(),
+#          h3("Selected gene entities"),
+#          DTOutput("result")
+#       )
+#    )
+# )
+# 
+# server <- function(input, output){
+#     found <- beidsServer("be", toGene=TRUE, multiple=TRUE, tableHeight=250)
+#     output$result <- renderDT({
+#        req(found())
+#        toRet <- found()
+#        datatable(toRet, rownames=FALSE)
+#     })
+# }
+# 
+# shinyApp(ui = ui, server = server)
 
 ## ----echo=FALSE, eval=TRUE----------------------------------------------------
 sessionInfo()

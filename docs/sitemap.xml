@@ -1,324 +1,110 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  <url>
-    <loc>https://patzaw.github.io/BED/404.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/BED.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/LICENSE-text.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/articles/BED.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/articles/index.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/authors.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/index.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/news/index.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/BED.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/BEIDList.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/BEIDs.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/beIDsToAllScopes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/bedCall.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/bedImport.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/beidsServer.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/cacheBedCall.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/cacheBedResult.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/checkBeIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/checkBedCache.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/checkBedConn.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/cleanDubiousXRef.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/clearBedCache.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/compareBedInstances.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/connectToBed.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/convBeIdLists.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/convBeIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/convDfBeIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/dumpEnsCore.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/dumpNcbiDb.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/dumpNcbiTax.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/dumpUniprotDb.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/exploreBe.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/exploreConvPath.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/filterByBEID.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/findBe.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/findBeids.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/firstCommonUpstreamBe.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/focusOnScope.BEIDList.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/focusOnScope.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/forgetBedConnection.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/genBePath.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/genProbePath.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/geneIDsToAllScopes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getAllBeIdSources.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdConvTable.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdDescription.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdNameTable.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdNames.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdSymbolTable.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdSymbols.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIdURL.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getBeIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getDirectOrigin.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getDirectProduct.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getEnsemblGeneIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getEnsemblPeptideIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getEnsemblTranscriptIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getGeneDescription.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getHomTable.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getNcbiGeneTransPep.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getOrgNames.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getRelevantIds.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getTargetedBe.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getTaxId.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/getUniprot.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/guessIdScope.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/identicalScopes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/index.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/is.BEIDList.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/largestBeSource.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/listBe.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/listBeIdSources.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/listDBAttributes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/listOrganisms.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/listPlatforms.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBE.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBENames.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBESymbols.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBEVersion.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBeAttribute.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBedModel.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBedOtherIndexes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadBedResult.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadCodesFor.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadCorrespondsTo.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadHistory.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadIsAssociatedTo.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadIsExpressedAs.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadIsHomologOf.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadIsTranslatedIn.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadLuceneIndexes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadNCBIEntrezGOFunctions.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadNcbiTax.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadOrganisms.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadPlf.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/loadProbes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/lsBedCache.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/lsBedConnections.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/metadata-set.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/metadata.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/registerBEDB.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/scope.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/scopes.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/searchBeid.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/searchId.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/setBedVersion.html</loc>
-  </url>
-  <url>
-    <loc>https://patzaw.github.io/BED/reference/showBedDataModel.html</loc>
-  </url>
+<urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
+<url><loc>https://patzaw.github.io/BED/404.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/BED.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/LICENSE-text.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/articles/BED.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/articles/index.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/authors.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/index.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/news/index.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/BED.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/BEIDList.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/BEIDs.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/beIDsToAllScopes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/bedCall.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/bedImport.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/beidsServer.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/cacheBedCall.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/cacheBedResult.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/checkBeIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/checkBedCache.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/checkBedConn.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/cleanDubiousXRef.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/clearBedCache.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/compareBedInstances.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/connectToBed.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/convBeIdLists.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/convBeIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/convDfBeIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/dumpEnsCore.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/dumpNcbiDb.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/dumpNcbiTax.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/dumpUniprotDb.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/exploreBe.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/exploreConvPath.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/filterByBEID.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/findBe.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/findBeids.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/firstCommonUpstreamBe.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/focusOnScope.BEIDList.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/focusOnScope.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/forgetBedConnection.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/genBePath.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/genProbePath.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/geneIDsToAllScopes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getAllBeIdSources.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdConvTable.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdDescription.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdNameTable.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdNames.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdSymbolTable.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdSymbols.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIdURL.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getBeIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getDirectOrigin.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getDirectProduct.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getEnsemblGeneIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getEnsemblPeptideIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getEnsemblTranscriptIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getGeneDescription.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getHomTable.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getNcbiGeneTransPep.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getOrgNames.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getRelevantIds.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getTargetedBe.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getTaxId.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/getUniprot.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/guessIdScope.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/identicalScopes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/index.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/is.BEIDList.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/largestBeSource.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/listBe.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/listBeIdSources.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/listDBAttributes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/listOrganisms.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/listPlatforms.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBE.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBENames.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBESymbols.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBEVersion.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBeAttribute.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBedModel.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBedOtherIndexes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadBedResult.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadCodesFor.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadCorrespondsTo.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadHistory.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadIsAssociatedTo.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadIsExpressedAs.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadIsHomologOf.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadIsTranslatedIn.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadLuceneIndexes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadNCBIEntrezGOFunctions.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadNcbiTax.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadOrganisms.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadPlf.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/loadProbes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/lsBedCache.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/lsBedConnections.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/metadata-set.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/metadata.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/registerBEDB.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/scope.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/scopes.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/searchBeid.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/searchId.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/setBedVersion.html</loc></url>
+<url><loc>https://patzaw.github.io/BED/reference/showBedDataModel.html</loc></url>
 </urlset>
+

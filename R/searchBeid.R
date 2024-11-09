@@ -185,8 +185,8 @@ searchBeid <- function(
       desc(.data$score),
       desc(.data$Gene_symbol == .data$value),
       desc(.data$symbol == .data$value),
-      desc(canonical_name),
-      desc(canonical_Gene_name)
+      desc(.data$canonical_name),
+      desc(.data$canonical_Gene_name)
    )
    values <- dplyr::distinct(
       values,
