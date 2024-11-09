@@ -149,7 +149,7 @@ from the following resources:
 - Ensembl
 - NCBI
 - Uniprot
-- biomaRt
+- HGNC
 - GEOquery
 
 The Neo4j graph database is available as a dump file shared in
@@ -222,7 +222,7 @@ Using the S01-NewBED-Container.sh script.
 Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd
 document.
 
-## Dump the graph DB content for sharing
+### Dump the graph DB content for sharing
 
 Using the S03-Dump-BED.sh script
 

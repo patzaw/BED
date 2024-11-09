@@ -184,7 +184,7 @@ Using the S01-NewBED-Container.sh script.
 
 Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd document.
 
-## Dump the graph DB content for sharing
+### Dump the graph DB content for sharing
 
 Using the S03-Dump-BED.sh script
 
