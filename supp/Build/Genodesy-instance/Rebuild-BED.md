@@ -1,7 +1,7 @@
 ---
 title: "Biological Entity Dictionary (BED): Feeding the DB"
 author: "Patrice Godard"
-date: "`r format(Sys.time(), '%B %d %Y')`"
+date: "November 09 2024"
 abstract: "Dump source identifiers related information and integrate content in BED"
 output:
   html_document:
@@ -34,7 +34,8 @@ The following chunk is used to configure source versions.
 The `reDumpThr` object is used to define time intervals during which some
 data sources should not be re-downloaded.
 
-```{r config, message=FALSE}
+
+``` r
 ##
 library(knitr)
 library(BED)
@@ -294,21 +295,59 @@ computer hosting the Neo4j relevant instance.
 The chunk below shows how to connect to BED. In this example,
 neo4j authentication is disabled.
 
-```{r bedConnect, message=FALSE}
+
+``` r
 connectToBed(
    url=sprintf("localhost:%s", config$NJ_HTTP_PORT),
    remember=FALSE,
    useCache=TRUE,
    importPath=config$BED_IMPORT
 )
+```
+
+```
+## Warning in checkBedConn(verbose = TRUE): BED DB is empty !
+```
+
+```
+## Warning in checkBedConn(): BED DB is empty !
+## Warning in checkBedConn(): BED DB is empty !
+```
+
+```
+## Warning in checkBedCache(newCon = TRUE): Clearing cache
+```
+
+```
+## Warning in checkBedConn(verbose = FALSE): BED DB is empty !
+```
+
+``` r
 clearBedCache(force = TRUE, hard = TRUE)
+```
+
+```
+## Warning in checkBedConn(verbose = FALSE): BED DB is empty !
+```
+
+```
+## Warning in checkBedConn(): BED DB is empty !
+```
+
+```
+## Warning in checkBedCache(): Clearing cache
+```
+
+```
+## Warning in checkBedConn(verbose = FALSE): BED DB is empty !
 ```
 
 ## Check empty DB
 
 Do not go further if your BED DB is not empty.
 
-```{r checkEmptyDB, message=FALSE}
+
+``` r
 dbSize <- bedCall(cypher, 'MATCH (n) RETURN count(n)')[,1]
 if(dbSize!=0){
     stop("BED DB is not empty ==> clean it before loading the content below")
@@ -317,33 +356,50 @@ if(dbSize!=0){
 
 ## Set BED instance and version
 
-```{r bedVersion, message=FALSE}
+
+``` r
 print(bedInstance)
+```
+
+```
+## [1] "Genodesy-Human"
+```
+
+``` r
 print(bedVersion)
+```
+
+```
+## [1] "2024.11.07"
+```
+
+``` r
 BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
 ```
 
 ## Load Data model
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:20:32.487991
 
-```{r dataModel, message=FALSE}
+
+``` r
 BED:::loadBedModel()
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 07:20:33.62005
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
 # Loading taxonomy from NCBI
 
-Information is downloaded if older than `r reDumpThr` days
+Information is downloaded if older than 4 days
 according to the `reDumpThr` object.
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:20:33.62045
 
-```{r ncbiTax, message=FALSE}
+
+``` r
 BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
     ddir=wd,
@@ -355,7 +411,7 @@ BED:::loadNcbiTax(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 07:20:43.204716
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -366,7 +422,8 @@ BED:::loadNcbiTax(
 
 ### Genes
 
-```{r Ens_gene_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="Ens_gene",
     description="Ensembl gene",
@@ -377,7 +434,8 @@ BED:::registerBEDB(
 
 ### Transcripts
 
-```{r Ens_transcript_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="Ens_transcript",
     description="Ensembl transcript",
@@ -388,7 +446,8 @@ BED:::registerBEDB(
 
 ### Peptides
 
-```{r Ens_translation_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="Ens_translation",
     description="Ensembl peptides",
@@ -399,16 +458,53 @@ BED:::registerBEDB(
 
 ## Danio rerio
 
-```{r ensDr_conf, message=FALSE}
+
+``` r
 ensembl <- ensembl_Drerio
 print(ensembl)
 ```
 
+```
+## $release
+## [1] "113"
+## 
+## $organism
+## [1] "Danio rerio"
+## 
+## $gv
+## [1] "11"
+## 
+## $gdbCref
+##   EntrezGene      ZFIN_ID    Vega_gene  Ens_Dr_gene 
+## "EntrezGene"  "ZFIN_gene"  "Vega_gene"   "Ens_gene" 
+## 
+## $gdbAss
+##   miRBase   UniGene 
+## "miRBase" "UniGene" 
+## 
+## $tdbCref
+##            RefSeq_mRNA           RefSeq_ncRNA  RefSeq_mRNA_predicted 
+##               "RefSeq"               "RefSeq"               "RefSeq" 
+## RefSeq_ncRNA_predicted        Vega_transcript      Ens_Dr_transcript 
+##               "RefSeq"      "Vega_transcript"       "Ens_transcript" 
+## 
+## $pdbCref
+##           RefSeq_peptide RefSeq_peptide_predicted         Uniprot/SPTREMBL 
+##         "RefSeq_peptide"         "RefSeq_peptide"                "Uniprot" 
+##        Uniprot/SWISSPROT         Vega_translation       Ens_Dr_translation 
+##                "Uniprot"       "Vega_translation"        "Ens_translation" 
+## 
+## $canChromosomes
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "MT"
+```
+
 ### Genes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:20:43.329983
 
-```{r ensDr_genes, message=FALSE}
+
+``` r
 BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -421,13 +517,20 @@ BED:::getEnsemblGeneIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb) max used  (Mb)
+## Ncells 1044136 55.8    5772776 308.3  7215970 385.4
+## Vcells 6008862 45.9   47253696 360.6 73833897 563.4
+```
+
+**End**: 2024-11-09 07:21:41.29466
 
 ### Transcripts
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:21:41.295046
 
-```{r ensDr_transcripts, message=FALSE}
+
+``` r
 BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -439,13 +542,20 @@ BED:::getEnsemblTranscriptIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb) max used  (Mb)
+## Ncells 1050253 56.1    4618221 246.7  7215970 385.4
+## Vcells 6022020 46.0   45427548 346.6 73833897 563.4
+```
+
+**End**: 2024-11-09 07:22:28.920897
 
 ### Peptides
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:22:28.921278
 
-```{r ensDr_peptides, message=FALSE}
+
+``` r
 BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -457,20 +567,63 @@ BED:::getEnsemblPeptideIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb) max used  (Mb)
+## Ncells 1055726 56.4    3706235 198.0  7215970 385.4
+## Vcells 6033759 46.1   43674446 333.3 73833897 563.4
+```
+
+**End**: 2024-11-09 07:23:18.319076
 
 ## Homo sapiens
 
-```{r ensHs_conf, message=FALSE}
+
+``` r
 ensembl <- ensembl_Hsapiens
 print(ensembl)
 ```
 
+```
+## $release
+## [1] "113"
+## 
+## $organism
+## [1] "Homo sapiens"
+## 
+## $gv
+## [1] "38"
+## 
+## $gdbCref
+##         HGNC   EntrezGene    Vega_gene  Ens_Hs_gene 
+##       "HGNC" "EntrezGene"  "Vega_gene"   "Ens_gene" 
+## 
+## $gdbAss
+##    miRBase   MIM_GENE    UniGene 
+##  "miRBase" "MIM_GENE"  "UniGene" 
+## 
+## $tdbCref
+##            RefSeq_mRNA           RefSeq_ncRNA  RefSeq_mRNA_predicted 
+##               "RefSeq"               "RefSeq"               "RefSeq" 
+## RefSeq_ncRNA_predicted        Vega_transcript      Ens_Hs_transcript 
+##               "RefSeq"      "Vega_transcript"       "Ens_transcript" 
+## 
+## $pdbCref
+##           RefSeq_peptide RefSeq_peptide_predicted         Uniprot/SPTREMBL 
+##         "RefSeq_peptide"         "RefSeq_peptide"                "Uniprot" 
+##        Uniprot/SWISSPROT         Vega_translation       Ens_Hs_translation 
+##                "Uniprot"       "Vega_translation"        "Ens_translation" 
+## 
+## $canChromosomes
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "20" "21" "22" "X"  "Y"  "MT"
+```
+
 ### Genes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:23:18.323556
 
-```{r ensHs_genes, message=FALSE}
+
+``` r
 BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -483,13 +636,20 @@ BED:::getEnsemblGeneIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055753 56.4    7511668 401.2   9389585  501.5
+## Vcells 6033991 46.1  118477942 904.0 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:25:04.133231
 
 ### Transcripts
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:25:04.133484
 
-```{r ensHs_transcripts, message=FALSE}
+
+``` r
 BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -501,13 +661,20 @@ BED:::getEnsemblTranscriptIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055934 56.4    8811124 470.6  11013905  588.3
+## Vcells 6034366 46.1  113802824 868.3 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:27:26.368069
 
 ### Peptides
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:27:26.368305
 
-```{r ensHs_peptides, message=FALSE}
+
+``` r
 BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -519,20 +686,63 @@ BED:::getEnsemblPeptideIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055990 56.4    8490679 453.5  11013905  588.3
+## Vcells 6034520 46.1  109314711 834.1 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:30:30.513424
 
 ## Mus musculus
 
-```{r ensMm_conf, message=FALSE}
+
+``` r
 ensembl <- ensembl_Mmusculus
 print(ensembl)
 ```
 
+```
+## $release
+## [1] "113"
+## 
+## $organism
+## [1] "Mus musculus"
+## 
+## $gv
+## [1] "39"
+## 
+## $gdbCref
+##          MGI   EntrezGene    Vega_gene  Ens_Mm_gene 
+##        "MGI" "EntrezGene"  "Vega_gene"   "Ens_gene" 
+## 
+## $gdbAss
+##   miRBase   UniGene 
+## "miRBase" "UniGene" 
+## 
+## $tdbCref
+##            RefSeq_mRNA           RefSeq_ncRNA  RefSeq_mRNA_predicted 
+##               "RefSeq"               "RefSeq"               "RefSeq" 
+## RefSeq_ncRNA_predicted        Vega_transcript      Ens_Mm_transcript 
+##               "RefSeq"      "Vega_transcript"       "Ens_transcript" 
+## 
+## $pdbCref
+##           RefSeq_peptide RefSeq_peptide_predicted         Uniprot/SPTREMBL 
+##         "RefSeq_peptide"         "RefSeq_peptide"                "Uniprot" 
+##        Uniprot/SWISSPROT         Vega_translation       Ens_Mm_translation 
+##                "Uniprot"       "Vega_translation"        "Ens_translation" 
+## 
+## $canChromosomes
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "X"  "Y"  "MT"
+```
+
 ### Genes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:30:30.518177
 
-```{r ensMm_genes, message=FALSE}
+
+``` r
 BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -545,13 +755,20 @@ BED:::getEnsemblGeneIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1056053 56.4    6792544 362.8  11013905  588.3
+## Vcells 6034816 46.1   87451769 667.3 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:31:44.115155
 
 ### Transcripts
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:31:44.115395
 
-```{r ensMm_transcripts, message=FALSE}
+
+``` r
 BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -563,13 +780,20 @@ BED:::getEnsemblTranscriptIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055976 56.4    6552842 350.0  11013905  588.3
+## Vcells 6034761 46.1   84017698 641.1 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:33:24.259706
 
 ### Peptides
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:33:24.260091
 
-```{r ensMm_peptides, message=FALSE}
+
+``` r
 BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -581,20 +805,63 @@ BED:::getEnsemblPeptideIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055882 56.4    6322728 337.7  11013905  588.3
+## Vcells 6034665 46.1   80720990 615.9 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:34:51.579899
 
 ## Rattus norvegicus
 
-```{r ensRn_conf, message=FALSE}
+
+``` r
 ensembl <- ensembl_Rnorvegicus
 print(ensembl)
 ```
 
+```
+## $release
+## [1] "113"
+## 
+## $organism
+## [1] "Rattus norvegicus"
+## 
+## $gv
+## [1] "72"
+## 
+## $gdbCref
+##          RGD   EntrezGene    Vega_gene  Ens_Rn_gene 
+##        "RGD" "EntrezGene"  "Vega_gene"   "Ens_gene" 
+## 
+## $gdbAss
+##   miRBase   UniGene 
+## "miRBase" "UniGene" 
+## 
+## $tdbCref
+##            RefSeq_mRNA           RefSeq_ncRNA  RefSeq_mRNA_predicted 
+##               "RefSeq"               "RefSeq"               "RefSeq" 
+## RefSeq_ncRNA_predicted        Vega_transcript      Ens_Rn_transcript 
+##               "RefSeq"      "Vega_transcript"       "Ens_transcript" 
+## 
+## $pdbCref
+##           RefSeq_peptide RefSeq_peptide_predicted         Uniprot/SPTREMBL 
+##         "RefSeq_peptide"         "RefSeq_peptide"                "Uniprot" 
+##        Uniprot/SWISSPROT         Vega_translation       Ens_Rn_translation 
+##                "Uniprot"       "Vega_translation"        "Ens_translation" 
+## 
+## $canChromosomes
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "19" "20" "X"  "Y"  "MT"
+```
+
 ### Genes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:34:51.5843
 
-```{r ensRn_genes, message=FALSE}
+
+``` r
 BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -607,13 +874,20 @@ BED:::getEnsemblGeneIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055927 56.4    5058183 270.2  11013905  588.3
+## Vcells 6034940 46.1   64576792 492.7 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:35:48.122379
 
 ### Transcripts
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:35:48.122618
 
-```{r ensRn_transcripts, message=FALSE}
+
+``` r
 BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -625,13 +899,20 @@ BED:::getEnsemblTranscriptIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055706 56.4    4046547 216.2  11013905  588.3
+## Vcells 6034645 46.1   51661434 394.2 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:36:25.642241
 
 ### Peptides
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:36:25.642488
 
-```{r ensRn_peptides, message=FALSE}
+
+``` r
 BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -643,20 +924,63 @@ BED:::getEnsemblPeptideIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055741 56.4    3237238 172.9  11013905  588.3
+## Vcells 6034764 46.1   41329148 315.4 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:37:20.125615
 
 ## Sus scrofa
 
-```{r ensSs_conf, message=FALSE}
+
+``` r
 ensembl <- ensembl_Sscrofa
 print(ensembl)
 ```
 
+```
+## $release
+## [1] "113"
+## 
+## $organism
+## [1] "Sus scrofa"
+## 
+## $gv
+## [1] "111"
+## 
+## $gdbCref
+##   EntrezGene    Vega_gene  Ens_Ss_gene 
+## "EntrezGene"  "Vega_gene"   "Ens_gene" 
+## 
+## $gdbAss
+##   miRBase   UniGene 
+## "miRBase" "UniGene" 
+## 
+## $tdbCref
+##            RefSeq_mRNA           RefSeq_ncRNA  RefSeq_mRNA_predicted 
+##               "RefSeq"               "RefSeq"               "RefSeq" 
+## RefSeq_ncRNA_predicted        Vega_transcript      Ens_Ss_transcript 
+##               "RefSeq"      "Vega_transcript"       "Ens_transcript" 
+## 
+## $pdbCref
+##           RefSeq_peptide RefSeq_peptide_predicted         Uniprot/SPTREMBL 
+##         "RefSeq_peptide"         "RefSeq_peptide"                "Uniprot" 
+##        Uniprot/SWISSPROT         Vega_translation       Ens_Ss_translation 
+##                "Uniprot"       "Vega_translation"        "Ens_translation" 
+## 
+## $canChromosomes
+##  [1] "1"  "2"  "3"  "4"  "5"  "6"  "7"  "8"  "9"  "10" "11" "12" "13" "14" "15"
+## [16] "16" "17" "18" "X"  "Y"  "MT"
+```
+
 ### Genes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:37:20.130068
 
-```{r ensSs_genes, message=FALSE}
+
+``` r
 BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -669,13 +993,20 @@ BED:::getEnsemblGeneIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055813 56.4    3562372 190.3  11013905  588.3
+## Vcells 6035071 46.1   39801444 303.7 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:37:41.10323
 
 ### Transcripts
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:37:41.103471
 
-```{r ensSs_transcripts, message=FALSE}
+
+``` r
 BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -687,13 +1018,20 @@ BED:::getEnsemblTranscriptIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055817 56.4    3211604 171.6  11013905  588.3
+## Vcells 6035151 46.1   31841156 243.0 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:38:08.605611
 
 ### Peptides
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:38:08.60585
 
-```{r ensSs_peptides, message=FALSE}
+
+``` r
 BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -705,19 +1043,26 @@ BED:::getEnsemblPeptideIds(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1055810 56.4    4114849 219.8  11013905  588.3
+## Vcells 6035200 46.1   36821812 281.0 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:39:02.947463
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 
 # Loading data from NCBI
 
-Information is downloaded if older than `r reDumpThr` days
+Information is downloaded if older than 4 days
 according to the `reDumpThr` object.
 
 ## Register NCBI DBs
 
-```{r dumpNcbi, message=FALSE}
+
+``` r
 BED:::dumpNcbiDb(
   taxOfInt = c(), reDumpThr=reDumpThr,
   ddir=wd,
@@ -727,7 +1072,8 @@ BED:::dumpNcbiDb(
 
 ### Genes
 
-```{r EntrezGene_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="EntrezGene",
     description="NCBI gene",
@@ -738,7 +1084,8 @@ BED:::registerBEDB(
 
 ### Transcripts
 
-```{r RefSeq_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="RefSeq",
     description="NCBI nucleotide",
@@ -749,7 +1096,8 @@ BED:::registerBEDB(
 
 ### Peptides
 
-```{r RefSeq_peptide_DB, message=FALSE}
+
+``` r
 BED:::registerBEDB(
     name="RefSeq_peptide",
     description="NCBI protein",
@@ -760,9 +1108,10 @@ BED:::registerBEDB(
 
 ## Danio rerio data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:39:03.04042
 
-```{r ncbiDrData, message=FALSE}
+
+``` r
 BED:::getNcbiGeneTransPep(
     organism="Danio rerio",
     ddir=wd,
@@ -771,13 +1120,20 @@ BED:::getNcbiGeneTransPep(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1069050 57.1    3291880 175.9  11013905  588.3
+## Vcells 6062800 46.3   29457450 224.8 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:40:14.753411
 
 ## Homo sapiens data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:40:14.753643
 
-```{r ncbiHsData, message=FALSE}
+
+``` r
 BED:::getNcbiGeneTransPep(
     organism="Homo sapiens",
     ddir=wd,
@@ -786,13 +1142,20 @@ BED:::getNcbiGeneTransPep(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1069088 57.1    9202920 491.5  11503650  614.4
+## Vcells 6062912 46.3   87866015 670.4 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:43:23.305892
 
 ## Mus musculus data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:43:23.306139
 
-```{r ncbiMmData, message=FALSE}
+
+``` r
 BED:::getNcbiGeneTransPep(
     organism="Mus musculus",
     ddir=wd,
@@ -801,13 +1164,20 @@ BED:::getNcbiGeneTransPep(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1069117 57.1    7362336 393.2  11503650  614.4
+## Vcells 6063009 46.3   56234250 429.1 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:45:20.813816
 
 ## Rattus norvegicus data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:45:20.814046
 
-```{r ncbiRnData, message=FALSE}
+
+``` r
 BED:::getNcbiGeneTransPep(
     organism="Rattus norvegicus",
     ddir=wd,
@@ -816,13 +1186,20 @@ BED:::getNcbiGeneTransPep(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1069104 57.1    5889869 314.6  11503650  614.4
+## Vcells 6063036 46.3   44987400 343.3 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:46:58.388826
 
 ## Sus scrofa data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:46:58.389063
 
-```{r ncbiSsData, message=FALSE}
+
+``` r
 BED:::getNcbiGeneTransPep(
     organism="Sus scrofa",
     ddir=wd,
@@ -831,13 +1208,20 @@ BED:::getNcbiGeneTransPep(
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##           used (Mb) gc trigger  (Mb)  max used   (Mb)
+## Ncells 1069121 57.1    4711896 251.7  11503650  614.4
+## Vcells 6063114 46.3   35989920 274.6 148021213 1129.4
+```
+
+**End**: 2024-11-09 07:47:47.002042
 
 ## Direct cross-references with Uniprot
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 07:47:47.00227
 
-```{r}
+
+``` r
 message("Direct cross-references with Uniprot")
 BED:::dumpNcbiDb(
   taxOfInt="",
@@ -885,7 +1269,7 @@ for(org in listOrganisms()){
 }
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:00:16.203065
 
 
 <!----------------------------------------------------------------->
@@ -895,7 +1279,8 @@ for(org in listOrganisms()){
 
 ## DB information
 
-```{r}
+
+``` r
 dbname <- "HGNC"
 hgnc_date <- jsonlite::read_json(
    "https://www.genenames.org/cgi-bin/statistics/db-last-updated"
@@ -909,7 +1294,8 @@ BED:::registerBEDB(
 ```
 
 
-```{r}
+
+``` r
 hgnc <- read_tsv(
    file="https://storage.googleapis.com/public-download-files/hgnc/tsv/tsv/hgnc_complete_set.txt",
    col_types = "ccccccccccccccDDDDcccccccccccccccccccccccccccccccccccc"
@@ -978,7 +1364,8 @@ hgnc_orphanet <- get_hgnc_xref("orphanet") |>
 
 ## Identifiers
 
-```{r}
+
+``` r
 toLoad <- hgnc_genes |> select(id)
 BED:::loadBE(
    toLoad, be = "Gene",
@@ -989,7 +1376,8 @@ BED:::loadBE(
 
 ## Symbols
 
-```{r}
+
+``` r
 toLoad <- dplyr::bind_rows(
    hgnc_genes |> 
       dplyr::select(id, symbol) |> 
@@ -1007,7 +1395,8 @@ BED:::loadBESymbols(toLoad, be = "Gene", dbname = dbname)
 
 ## Names
 
-```{r}
+
+``` r
 toLoad <- dplyr::bind_rows(
    hgnc_genes |> 
       dplyr::select(id, name) |> 
@@ -1027,7 +1416,8 @@ BED:::loadBENames(toLoad, be = "Gene", dbname = dbname)
 
 ### EntrezGene
 
-```{r}
+
+``` r
 crdb <- "EntrezGene"
 toLoad <- hgnc_entrez |> 
    dplyr::select(id = entrez) |> 
@@ -1051,7 +1441,8 @@ BED:::loadCorrespondsTo(
 
 ### Ens_gene
 
-```{r}
+
+``` r
 crdb <- "Ens_gene"
 toLoad <- hgnc_ensembl |> 
    dplyr::select(id = ensembl) |> 
@@ -1075,7 +1466,8 @@ BED:::loadCorrespondsTo(
 
 ### MIM_GENE
 
-```{r}
+
+``` r
 crdb <- "MIM_GENE"
 toLoad <- hgnc_omim |> 
    dplyr::select(id = omim) |> 
@@ -1106,7 +1498,8 @@ BED:::loadIsAssociatedTo(
 Release is defined according to the *reldate.txt* file on the Uniprot FTP
 and data is downloaded only if not already done for the current release.
 
-```{r Uniprot_DB, message=FALSE}
+
+``` r
 ftp <- "ftp://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/taxonomic_divisions"
 avRel <- readLines(file.path(ftp, "reldate.txt"), n=1)
 avRel <- sub(
@@ -1127,74 +1520,110 @@ BED:::registerBEDB(
 
 ## Danio rerio data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:00:49.391664
 
-```{r uniprotDrData, message=FALSE}
+
+``` r
 BED:::getUniprot(
     organism="Danio rerio", taxDiv="vertebrates", release=avRel, ddir=wd
 )
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218308720 11659  477453868 25498.8  477453868 25498.8
+## Vcells 1224334639  9341 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:02:30.097123
 
 ## Homo sapiens data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:02:30.097374
 
-```{r uniprotHsData, message=FALSE}
+
+``` r
 BED:::getUniprot(
     organism="Homo sapiens", taxDiv="human", release=avRel, ddir=wd
 )
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218308715 11659  477453868 25498.8  477453868 25498.8
+## Vcells 1224334683  9341 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:04:01.977464
 
 ## Mus musculus data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:04:01.977756
 
-```{r uniprotMmData, message=FALSE}
+
+``` r
 BED:::getUniprot(
     organism="Mus musculus", taxDiv="rodents", release=avRel, ddir=wd
 )
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218308682 11659  477453868 25498.8  477453868 25498.8
+## Vcells 1224334679  9341 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:04:54.155085
 
 ## Rattus norvegicus data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:04:54.15536
 
-```{r uniprotRnData, message=FALSE}
+
+``` r
 BED:::getUniprot(
     organism="Rattus norvegicus", taxDiv="rodents", release=avRel, ddir=wd
 )
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218308657 11659  477453868 25498.8  477453868 25498.8
+## Vcells 1224334689  9341 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:05:48.283799
 
 ## Sus scrofa data
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:05:48.28408
 
-```{r uniprotSsData, message=FALSE}
+
+``` r
 BED:::getUniprot(
     organism="Sus scrofa", taxDiv="mammals", release=avRel, ddir=wd
 )
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218308575 11659  477453868 25498.8  477453868 25498.8
+## Vcells 1224334605  9341 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:11:37.732918
 
 ## Indirect cross-references with EntrezGene
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:11:37.733175
 
-```{r}
+
+``` r
 message("Indirect cross-references with Uniprot")
 dumpDir <- file.path(wd, "NCBI-gene-DATA")
 f <- "gene2accession.gz"
@@ -1266,7 +1695,7 @@ for(org in listOrganisms()){
 }
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:19:47.739366
 
 
 <!----------------------------------------------------------------->
@@ -1276,7 +1705,7 @@ for(org in listOrganisms()){
 
 <!-- ## Orthologs from biomaRt -->
 
-<!-- **Start**: `r Sys.time()` -->
+<!-- **Start**: 2024-11-09 08:19:47.739627 -->
 
 <!-- ```{r homolog_biomart, message=FALSE} -->
 <!-- # library(biomaRt) -->
@@ -1339,13 +1768,14 @@ for(org in listOrganisms()){
 <!-- # } -->
 <!-- ``` -->
 
-<!-- **End**: `r Sys.time()` -->
+<!-- **End**: 2024-11-09 08:19:47.739774 -->
 
 ## Orthologs from Ensembl
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:19:47.739903
 
-```{r homolog_ensmbl, message=FALSE}
+
+``` r
 ## Dump data from ensembl
 orgOfInt <- c(
    "homo_sapiens", "mus_musculus", "rattus_norvegicus", "sus_scrofa",
@@ -1423,13 +1853,14 @@ BED:::loadIsHomologOf(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:21:31.314089
 
 ## Orthologs from NCBI
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:21:31.314314
 
-```{r homolog_ncbi, message=FALSE}
+
+``` r
 #####################################
 gdbname <- "EntrezGene"
 taxOfInt <- unlist(lapply(
@@ -1468,7 +1899,13 @@ for(i in 1:length(taxOfInt)){
 gc()
 ```
 
-**End**: `r Sys.time()`
+```
+##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  218450847 11666.6  477453868 25498.8  477453868 25498.8
+## Vcells 1229373986  9379.4 2154165832 16435.0 2154165832 16435.0
+```
+
+**End**: 2024-11-09 08:22:28.282039
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -1477,7 +1914,8 @@ gc()
 
 ## Probes from GEO
 
-```{r  geoQueries, message=FALSE, warning=FALSE}
+
+``` r
 library(GEOquery)
 geoPath <- file.path(wd, "geo")
 dir.create(geoPath, showWarnings=FALSE)
@@ -1485,9 +1923,10 @@ dir.create(geoPath, showWarnings=FALSE)
 
 ### GPL1708: 	Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:22:30.296874
 
-```{r GPL1708, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL1708"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1527,13 +1966,14 @@ BED:::loadProbes(
 # )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:22:37.735696
 
 ### GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:22:37.735957
 
-```{r GPL6480, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL6480"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1572,13 +2012,14 @@ BED:::loadProbes(
 # )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:22:44.138544
 
 ### GPL570: Affymetrix Human Genome U133 Plus 2.0 Array
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:22:44.138963
 
-```{r GPL570, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL570"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1607,13 +2048,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:22:55.258539
 
 ### GPL571: Affymetrix Human Genome U133A 2.0 Array
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:22:55.258961
 
-```{r GPL571, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL571"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1642,13 +2084,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:00.290457
 
 ### GPL13158: Affymetrix HT HG-U133+ PM Array Plate
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:00.290872
 
-```{r GPL13158, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL13158"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1677,13 +2120,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:07.312128
 
 ### GPL96: Affymetrix Human Genome U133A Array
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:07.312541
 
-```{r GPL96, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL96"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1712,13 +2156,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:12.447096
 
 ### GPL1261: Affymetrix Mouse Genome 430 2.0 Array
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:12.447513
 
-```{r GPL1261, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL1261"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1747,13 +2192,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:20.802423
 
 ### GPL1355: Affymetrix Rat Genome 230 2.0 Array
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:20.802839
 
-```{r GPL1355, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL1355"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1782,13 +2228,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:26.097543
 
 ### GPL10558: Illumina HumanHT-12 V4.0 expression beadchip
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:26.097963
 
-```{r GPL10558, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL10558"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1813,13 +2260,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:37.442623
 
 ### GPL6947: Illumina HumanHT-12 V3.0 expression beadchip
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:37.443039
 
-```{r GPL6947, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL6947"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1844,13 +2292,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:44.159549
 
 ### GPL6885: Illumina MouseRef-8 v2.0 expression beadchip
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:44.159966
 
-```{r GPL6885, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL6885"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1880,13 +2329,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:48.030981
 
 ### GPL6887: Illumina MouseWG-6 v2.0 expression beadchip
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:48.031406
 
-```{r GPL6887, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL6887"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1916,13 +2366,14 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:54.743899
 
 ### GPL6101: Illumina ratRef-12 v1.0 expression beadchip
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:54.744314
 
-```{r GPL6101, warning=FALSE, message=FALSE}
+
+``` r
 ## Import plateform
 platName <- "GPL6101"
 gds <- getGEO(platName, destdir=geoPath)
@@ -1947,12 +2398,12 @@ BED:::loadProbes(
 )
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:23:58.16895
 
 <!-- ## Probes from biomaRt -->
 
 
-<!-- **Start**: `r Sys.time()` -->
+<!-- **Start**: 2024-11-09 08:23:58.169365 -->
 
 <!-- ```{r} -->
 <!-- library(biomaRt) -->
@@ -2020,13 +2471,14 @@ BED:::loadProbes(
 <!-- } -->
 <!-- ``` -->
 
-<!-- **End**: `r Sys.time()` -->
+<!-- **End**: 2024-11-09 08:23:58.169621 -->
 
 ## Probes from Ensembl
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:23:58.169849
 
-```{r}
+
+``` r
 to_exclude <- c(
    "affy_huex_1_0_st_v2",
    "affy_moex_1_0_st_v1",
@@ -2215,10 +2667,9 @@ load_ensembl_probes(ensembl_Rnorvegicus)
 message("Ensembl probes for Sscrofa")
 dump_ensembl_func(ensembl_Sscrofa)
 load_ensembl_probes(ensembl_Sscrofa)
-
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:37:59.167324
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
@@ -2227,7 +2678,8 @@ load_ensembl_probes(ensembl_Sscrofa)
 
 ## Databases ID URL
 
-```{r otherIdURL}
+
+``` r
 otherIdURL <- list(
     # "HGNC"='http://www.genenames.org/cgi-bin/gene_symbol_report?hgnc_id=%s',
     # "HGNC"='https://www.genenames.org/data/gene-symbol-report/#!/hgnc_id/HGNC:%s',
@@ -2251,20 +2703,92 @@ for(db in names(otherIdURL)){
 
 # Load Lucene Indexes
 
-**Start**: `r Sys.time()`
+**Start**: 2024-11-09 08:37:59.286608
 
-```{r LuceneIndexes, message=FALSE}
+
+``` r
 BED:::loadLuceneIndexes()
 ```
 
-**End**: `r Sys.time()`
+**End**: 2024-11-09 08:37:59.347294
 
 
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 # Session info
 
-```{r sessionInfo, echo=FALSE}
-clearBedCache(force = TRUE, hard = TRUE)
-sessionInfo()
+
+```
+## R version 4.4.1 (2024-06-14)
+## Platform: x86_64-pc-linux-gnu
+## Running under: Ubuntu 22.04.5 LTS
+## 
+## Matrix products: default
+## BLAS:   /usr/lib/x86_64-linux-gnu/openblas-pthread/libblas.so.3 
+## LAPACK: /usr/lib/x86_64-linux-gnu/openblas-pthread/libopenblasp-r0.3.20.so;  LAPACK version 3.10.0
+## 
+## locale:
+##  [1] LC_CTYPE=en_US.UTF-8       LC_NUMERIC=C              
+##  [3] LC_TIME=en_GB.UTF-8        LC_COLLATE=en_US.UTF-8    
+##  [5] LC_MONETARY=en_GB.UTF-8    LC_MESSAGES=en_US.UTF-8   
+##  [7] LC_PAPER=en_GB.UTF-8       LC_NAME=C                 
+##  [9] LC_ADDRESS=C               LC_TELEPHONE=C            
+## [11] LC_MEASUREMENT=en_GB.UTF-8 LC_IDENTIFICATION=C       
+## 
+## time zone: Europe/Rome
+## tzcode source: system (glibc)
+## 
+## attached base packages:
+## [1] stats     graphics  grDevices utils     datasets  methods   base     
+## 
+## other attached packages:
+##  [1] GEOquery_2.74.0     Biobase_2.66.0      BiocGenerics_0.52.0
+##  [4] stringr_1.5.1       readr_2.1.5         dplyr_1.1.4        
+##  [7] rvest_1.0.4         jsonlite_1.8.9      BED_1.6.0          
+## [10] visNetwork_2.1.2    neo2R_2.4.2         knitr_1.49         
+## 
+## loaded via a namespace (and not attached):
+##  [1] tidyselect_1.2.1            R.utils_2.12.3             
+##  [3] fastmap_1.2.0               promises_1.3.0             
+##  [5] XML_3.99-0.17               digest_0.6.37              
+##  [7] mime_0.12                   lifecycle_1.0.4            
+##  [9] statmod_1.5.0               processx_3.8.4             
+## [11] magrittr_2.0.3              compiler_4.4.1             
+## [13] rlang_1.1.4                 sass_0.4.9                 
+## [15] tools_4.4.1                 utf8_1.2.4                 
+## [17] yaml_2.3.10                 data.table_1.16.2          
+## [19] S4Arrays_1.6.0              htmlwidgets_1.6.4          
+## [21] bit_4.5.0                   curl_6.0.0                 
+## [23] DelayedArray_0.32.0         xml2_1.3.6                 
+## [25] abind_1.4-8                 websocket_1.4.2            
+## [27] miniUI_0.1.1.1              purrr_1.0.2                
+## [29] withr_3.0.2                 R.oo_1.27.0                
+## [31] grid_4.4.1                  stats4_4.4.1               
+## [33] fansi_1.0.6                 xtable_1.8-4               
+## [35] SummarizedExperiment_1.36.0 cli_3.6.3                  
+## [37] rmarkdown_2.29              crayon_1.5.3               
+## [39] generics_0.1.3              rstudioapi_0.17.1          
+## [41] httr_1.4.7                  tzdb_0.4.0                 
+## [43] cachem_1.1.0                chromote_0.3.1             
+## [45] zlibbioc_1.52.0             parallel_4.4.1             
+## [47] XVector_0.46.0              matrixStats_1.4.1          
+## [49] base64enc_0.1-3             vctrs_0.6.5                
+## [51] Matrix_1.7-1                IRanges_2.40.0             
+## [53] hms_1.1.3                   S4Vectors_0.44.0           
+## [55] bit64_4.5.2                 limma_3.62.1               
+## [57] tidyr_1.3.1                 jquerylib_0.1.4            
+## [59] glue_1.8.0                  ps_1.8.1                   
+## [61] DT_0.33                     stringi_1.8.4              
+## [63] later_1.3.2                 GenomeInfoDb_1.42.0        
+## [65] GenomicRanges_1.58.0        UCSC.utils_1.2.0           
+## [67] tibble_3.2.1                pillar_1.9.0               
+## [69] rappdirs_0.3.3              htmltools_0.5.8.1          
+## [71] GenomeInfoDbData_1.2.13     httr2_1.0.6                
+## [73] R6_2.5.1                    vroom_1.6.5                
+## [75] evaluate_1.0.1              shiny_1.9.1                
+## [77] lattice_0.22-6              rentrez_1.2.3              
+## [79] R.methodsS3_1.8.2           httpuv_1.6.15              
+## [81] bslib_0.8.0                 Rcpp_1.0.13-1              
+## [83] SparseArray_1.6.0           xfun_0.49                  
+## [85] MatrixGenerics_1.18.0       pkgconfig_2.0.3
 ```
