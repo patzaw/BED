@@ -1,4 +1,9 @@
 <!----------------------------------------------------------------------------->
+## Version 1.6.1
+
+- Additional parameters to `beidServer()`
+
+<!----------------------------------------------------------------------------->
 ## Version 1.6.0
 
 - Slight and backward compatible change of the data model to support multiple

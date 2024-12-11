@@ -65,6 +65,8 @@ highlightText <- function(
 #' @param selectBe if toGene==FALSE, display an interface for selecting BE
 #' @param orgOfInt organism to consider (default=NULL ==> all)
 #' @param selectOrg display an interface for selecting organisms
+#' @param searchLabel display label for the search field or NULL for no label
+#' @param matchColname display name of the match column
 #' @param oneColumn if TRUE the hits are displayed in only one column
 #' @param withId if FALSE and one column, the BEIDs are not shown
 #' @param maxHits maximum number of raw hits to return
@@ -117,10 +119,13 @@ highlightText <- function(
 #'
 beidsServer <- function(
    id,
-   toGene=TRUE, excludeTechID=FALSE,
+   toGene=TRUE,
+   excludeTechID=FALSE,
    multiple=FALSE,
    beOfInt=NULL, selectBe=TRUE,
    orgOfInt=NULL, selectOrg=TRUE,
+   searchLabel = "Search a gene",
+   matchColname = "Match",
    oneColumn = FALSE,
    withId = FALSE,
    maxHits = 75,
@@ -158,7 +163,7 @@ beidsServer <- function(
                   cw,
                   shiny::textInput(
                      inputId=shiny::NS(id, "beSearchTerm"),
-                     label="Search a gene",
+                     label=searchLabel,
                      placeholder='e.g. snca, ENSG00000186868, "M-CSF receptor"',
                      width="100%"
                   )
@@ -587,7 +592,9 @@ beidsServer <- function(
             toShow <- dplyr::select(toShow, -"Organism")
          }
          toShow <- DT::datatable(
-            toShow,
+            dplyr::rename(
+               toShow, dplyr::all_of(setNames("Match", matchColname))
+            ),
             rownames=FALSE,
             escape=FALSE,
             class = ifelse(compact, "display compact", "display"),

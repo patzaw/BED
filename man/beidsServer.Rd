@@ -14,6 +14,8 @@ beidsServer(
   selectBe = TRUE,
   orgOfInt = NULL,
   selectOrg = TRUE,
+  searchLabel = "Search a gene",
+  matchColname = "Match",
   oneColumn = FALSE,
   withId = FALSE,
   maxHits = 75,
@@ -42,6 +44,10 @@ BE are converted to genes.}
 \item{orgOfInt}{organism to consider (default=NULL ==> all)}
 
 \item{selectOrg}{display an interface for selecting organisms}
+
+\item{searchLabel}{display label for the search field or NULL for no label}
+
+\item{matchColname}{display name of the match column}
 
 \item{oneColumn}{if TRUE the hits are displayed in only one column}
 

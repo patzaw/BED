@@ -1,7 +1,7 @@
 Package: BED
 Type: Package
 Title: Biological Entity Dictionary (BED)
-Version: 1.6.0
+Version: 1.6.1
 Authors@R: c(
     person(
         "Patrice", "Godard",
