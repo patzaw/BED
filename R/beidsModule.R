@@ -67,6 +67,7 @@ highlightText <- function(
 #' @param selectOrg display an interface for selecting organisms
 #' @param searchLabel display label for the search field or NULL for no label
 #' @param matchColname display name of the match column
+#' @param selectFirst if TRUE the first row is selected by default
 #' @param oneColumn if TRUE the hits are displayed in only one column
 #' @param withId if FALSE and one column, the BEIDs are not shown
 #' @param maxHits maximum number of raw hits to return
@@ -126,6 +127,7 @@ beidsServer <- function(
    orgOfInt=NULL, selectOrg=TRUE,
    searchLabel = "Search a gene",
    matchColname = "Match",
+   selectFirst = FALSE,
    oneColumn = FALSE,
    withId = FALSE,
    maxHits = 75,
@@ -600,6 +602,7 @@ beidsServer <- function(
             class = ifelse(compact, "display compact", "display"),
             selection=list(
                mode=ifelse(multiple, "multiple",  "single"),
+               selected = if(selectFirst) 1 else NULL,
                target="row"
             ),
             options=list(

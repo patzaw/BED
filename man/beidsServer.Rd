@@ -16,6 +16,7 @@ beidsServer(
   selectOrg = TRUE,
   searchLabel = "Search a gene",
   matchColname = "Match",
+  selectFirst = FALSE,
   oneColumn = FALSE,
   withId = FALSE,
   maxHits = 75,
@@ -48,6 +49,8 @@ BE are converted to genes.}
 \item{searchLabel}{display label for the search field or NULL for no label}
 
 \item{matchColname}{display name of the match column}
+
+\item{selectFirst}{if TRUE the first row is selected by default}
 
 \item{oneColumn}{if TRUE the hits are displayed in only one column}
 
