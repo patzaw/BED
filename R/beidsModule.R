@@ -61,10 +61,12 @@ highlightText <- function(
 #' BE are converted to genes.
 #' @param excludeTechID do not display BED technical BEIDs
 #' @param multiple allow multiple selections (default=FALSE)
-#' @param beOfInt if toGene==FALSE, BE to consider (default=NULL ==> all)
-#' @param selectBe if toGene==FALSE, display an interface for selecting BE
+#' @param beOfInt if toGene == FALSE, BE to consider (default=NULL ==> all)
+#' @param selectBe if toGene == FALSE, display an interface for selecting BE
 #' @param orgOfInt organism to consider (default=NULL ==> all)
 #' @param selectOrg display an interface for selecting organisms
+#' @param groupBySymbol if TRUE also use gene symbols to aggregate results with
+#' more granularity (taken into account only when toGene == TRUE)
 #' @param searchLabel display label for the search field or NULL for no label
 #' @param matchColname display name of the match column
 #' @param selectFirst if TRUE the first row is selected by default
@@ -125,6 +127,7 @@ beidsServer <- function(
    multiple=FALSE,
    beOfInt=NULL, selectBe=TRUE,
    orgOfInt=NULL, selectOrg=TRUE,
+   groupBySymbol = FALSE,
    searchLabel = "Search a gene",
    matchColname = "Match",
    selectFirst = FALSE,
@@ -289,7 +292,15 @@ beidsServer <- function(
                g <- dplyr::mutate(
                   g, url=getBeIdURL(.data$GeneID, .data$Gene_source)
                )
-               g <- dplyr::group_by(g, .data$Gene_entity, .data$organism)
+               if(groupBySymbol){
+                  g <- dplyr::group_by(
+                     g, .data$Gene_entity, .data$organism, .data$Gene_symbol
+                  )
+               }else{
+                  g <- dplyr::group_by(
+                     g, .data$Gene_entity, .data$organism
+                  )
+               }
                g <- dplyr::summarise(
                   g,
                   order=min(.data$order),
@@ -346,7 +357,8 @@ beidsServer <- function(
                   ),
                   Gene_name=paste(
                      setdiff(.data$Gene_name, NA), collapse=" / "
-                  )
+                  ),
+                  .groups = "drop"
                )
                g <- dplyr::arrange(g, .data$order)
                g <- dplyr::select(
@@ -646,40 +658,62 @@ beidsServer <- function(
             return(NULL)
          }else{
             if(toGene){
-               ge <- unique(g$Gene_entity[sel])
-               toRet <- unique(m[
-                  which(m$Gene_entity %in% ge),
-                  c(
-                     "GeneID", "preferred_gene", "Gene_source", "organism",
-                     "Gene_entity"
+               if(groupBySymbol){
+                  ge <- dplyr::distinct(
+                     g[sel, c("Gene_entity", "Gene_symbol")]
                   )
-               ])
+                  toRet <- dplyr::inner_join(
+                     m[,c(
+                        "GeneID", "preferred_gene", "Gene_source", "organism",
+                        "Gene_entity", "Gene_symbol"
+                     )],
+                     ge,
+                     by = c("Gene_entity", "Gene_symbol")
+                  )
+               }else{
+                  ge <- unique(g$Gene_entity[sel])
+                  toRet <- unique(m[
+                     which(m$Gene_entity %in% ge),
+                     c(
+                        "GeneID", "preferred_gene", "Gene_source", "organism",
+                        "Gene_entity", "Gene_symbol"
+                     )
+                  ])
+               }
                colnames(toRet) <- c(
-                  "beid", "preferred", "source", "organism", "entity"
+                  "beid", "preferred", "source", "organism", "entity", "symbol"
                )
                if(nrow(toRet)>0){
                   toRet$be <- "Gene"
-                  toRet <- dplyr::left_join(
-                     toRet,
-                     g[,c("Gene_entity", "match")],
-                     by=c("entity"="Gene_entity")
-                  )
-                  toRet <- toRet[
-                     ,
-                     c(
-                        "beid", "preferred", "be", "source", "organism",
-                        "entity", "match"
+                  if(groupBySymbol){
+                     toRet <- dplyr::left_join(
+                        toRet,
+                        g[,c("Gene_entity", "Gene_symbol", "match")],
+                        by=c(
+                           "entity" = "Gene_entity",
+                           "symbol" = "Gene_symbol"
+                        )
                      )
-                  ]
+                  }else{
+                     toRet <- dplyr::left_join(
+                        toRet,
+                        g[,c("Gene_entity", "match")],
+                        by=c("entity"="Gene_entity")
+                     )
+                  }
+                  toRet <-  dplyr::distinct(toRet[, c(
+                     "beid", "preferred", "be", "source", "organism",
+                     "entity", "symbol", "match"
+                  )])
                }
             }else{
-               toRet <- m[
+               toRet <-  dplyr::distinct(m[
                   sel,
                   c(
                      "beid",  "preferred", "be", "source", "organism",
                      "entity", "match"
                   )
-               ]
+               ])
             }
             return(toRet)
          }
