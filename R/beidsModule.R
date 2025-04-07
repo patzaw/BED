@@ -605,11 +605,13 @@ beidsServer <- function(
                selected = if(selectFirst) 1 else NULL,
                target="row"
             ),
+            extensions = 'Scroller',
             options=list(
                dom="t",
-               paging=FALSE,
+               paging=TRUE,
                scrollResize=TRUE,
                scrollY=tableHeight,
+               scroller = TRUE,
                scrollCollapse=TRUE
             )
          )
