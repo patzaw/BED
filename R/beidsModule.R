@@ -11,6 +11,11 @@ highlightText <- function(
    style = "background-color:yellow; font-weight:bold;",
    class = "bed-search"
 ){
+   style <- paste(c(style, ";"), collapse = "; ")
+   style <- gsub(";[[:blank:]]*;", ";", style)
+   if(!grepl("padding", style)){
+      style <- paste(style, "padding:0;")
+   }
    value <- sub('^"', '', sub('"$', '', value))
    value <- gsub("[[:punct:]]", ".?", value)
    return(unlist(lapply(
