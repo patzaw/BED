@@ -2,6 +2,7 @@
 ## Version 1.6.2
 
 - Take alternative names and symbols from Uniprot
+- Take alternative names from NCBI
 
 <!----------------------------------------------------------------------------->
 ## Version 1.6.1

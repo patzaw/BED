@@ -131,12 +131,53 @@ getNcbiGeneTransPep <- function(
    ################################################@
    ## Add gene names ----
    message(Sys.time(), " --> Importing gene names")
-   toImport <- gene_info[, c("GeneID", "Full_name_from_nomenclature_authority")]
-   colnames(toImport) <- c("id", "name")
-   toImport$name <- ifelse(
-      toImport$name=="-",
+   namesToImport <- gene_info[
+      ,
+      c("GeneID", "Full_name_from_nomenclature_authority")
+   ]
+   colnames(namesToImport) <- c("id", "name")
+   namesToImport$name <- ifelse(
+      namesToImport$name=="-",
       gene_info$description,
-      toImport$name
+      namesToImport$name
+   )
+   namesToImport$canonical <- TRUE
+
+   namesToAdd <- gene_info[
+      ,
+      c("GeneID", "Other_designations")
+   ]
+   namesToAdd <- strsplit(
+      gene_info$Other_designations,
+      split="[|]"
+   )
+   names(namesToAdd) <- gene_info$GeneID
+   namesToAdd <- utils::stack(namesToAdd)
+   namesToAdd$ind <- as.character(namesToAdd$ind)
+   namesToAdd <- namesToAdd[,c("ind", "values")]
+   namesToAdd$canonical <- rep(FALSE, nrow(namesToAdd))
+   colnames(namesToAdd) <- c("id", "name", "canonical")
+   namesToAdd <- namesToAdd[which(namesToAdd$name != "-"),]
+   namesToImport <- rbind(namesToImport, namesToAdd)
+
+   namesToAdd <- gene_info[
+      which(
+         gene_info$description != "-" &
+            gene_info$description !=
+               gene_info$Full_name_from_nomenclature_authority
+      ),
+      c("GeneID", "description")
+   ]
+   namesToAdd$canonical <- rep(FALSE, nrow(namesToAdd))
+   colnames(namesToAdd) <- c("id", "name", "canonical")
+   namesToImport <- rbind(namesToImport, namesToAdd)
+
+   toImport <- dplyr::select(
+      dplyr::distinct(
+         namesToImport, namesToImport$id, namesToImport$name,
+         .keep_all = TRUE
+      ),
+      "id", "name", "canonical"
    )
    loadBENames(d=toImport, be="Gene", dbname=gdbname)
 
