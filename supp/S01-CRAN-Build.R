@@ -40,6 +40,11 @@ pv <- desc::desc_get_version(here())
 system(paste(
    sprintf("cd %s", here("..")),
    "R CMD build BED",
-   sprintf("R CMD check --as-cran BED_%s.tar.gz", pv),
+   sprintf("cd ~/tmp"),
+   sprintf(
+      "R CMD check --as-cran --no-build-vignettes %s/BED_%s.tar.gz",
+      here(".."),
+      pv
+   ),
    sep=" ; "
 ))

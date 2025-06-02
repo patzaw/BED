@@ -124,6 +124,7 @@ highlightText <- function(
 #' @importFrom shiny reactive renderUI observe fluidRow column textInput NS selectizeInput reactiveValues withProgress req
 #' @importFrom DT datatable DTOutput renderDT formatStyle styleEqual
 #' @importFrom htmltools tagQuery
+#' @importFrom stats setNames
 #' @export
 #'
 beidsServer <- function(
@@ -616,7 +617,7 @@ beidsServer <- function(
          }
          toShow <- DT::datatable(
             dplyr::rename(
-               toShow, dplyr::all_of(setNames("Match", matchColname))
+               toShow, dplyr::all_of(stats::setNames("Match", matchColname))
             ),
             rownames=FALSE,
             escape=FALSE,
