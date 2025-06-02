@@ -123,6 +123,7 @@ highlightText <- function(
 #'
 #' @importFrom shiny reactive renderUI observe fluidRow column textInput NS selectizeInput reactiveValues withProgress req
 #' @importFrom DT datatable DTOutput renderDT formatStyle styleEqual
+#' @importFrom htmltools tagQuery
 #' @export
 #'
 beidsServer <- function(
@@ -171,12 +172,15 @@ beidsServer <- function(
             shiny::fluidRow(
                shiny::column(
                   cw,
-                  shiny::textInput(
-                     inputId=shiny::NS(id, "beSearchTerm"),
-                     label=searchLabel,
-                     placeholder='e.g. snca, ENSG00000186868, "M-CSF receptor"',
-                     width="100%"
-                  )
+                  htmltools::tagQuery(
+                     shiny::textInput(
+                        inputId=shiny::NS(id, "beSearchTerm"),
+                        label=searchLabel,
+                        placeholder=
+                           'e.g. snca, ENSG00000186868, "M-CSF receptor"',
+                        width="100%"
+                     )
+                  )$find("input")$addAttrs("autocomplete" = "off")$allTags()
                ),
                if(selectBe){
                   shiny::column(

@@ -47,6 +47,7 @@ Imports:
     stringr,
     utils,
     shiny (>= 0.13),
+    htmltools,
     DT,
     miniUI (>= 0.1.1),
     rstudioapi (>= 0.5)
@@ -56,7 +57,6 @@ Suggests:
     biomaRt,
     GEOquery,
     base64enc,
-    htmltools,
     webshot2,
     RCurl
 Encoding: UTF-8

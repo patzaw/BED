@@ -2,6 +2,8 @@
 ## Version 1.6.1
 
 - Additional parameters to `beidServer()`
+- Adding htmltools in dependencies to avoid autocomplete
+when searching identifiers
 
 <!----------------------------------------------------------------------------->
 ## Version 1.6.0
