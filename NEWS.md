@@ -1,4 +1,9 @@
 <!----------------------------------------------------------------------------->
+## Version 1.6.2
+
+- Take alternative names and symbols from Uniprot
+
+<!----------------------------------------------------------------------------->
 ## Version 1.6.1
 
 - Additional parameters to `beidServer()`

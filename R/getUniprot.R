@@ -35,6 +35,8 @@ getUniprot <- function(
     deprecated <- deprecated[which(deprecated$ID %in% uids$ID),]
     rsCref <- rsCref[which(rsCref$ID %in% uids$ID),]
     ensCref <- ensCref[which(ensCref$ID %in% uids$ID),]
+    names <- names[which(names$id %in% uids$ID),]
+    symbols <- symbols[which(symbols$id %in% uids$ID),]
 
     ################################################@
     ## DB information ----
@@ -63,24 +65,26 @@ getUniprot <- function(
     ################################################@
     ## Add symbols ----
     message(Sys.time(), " --> Importing Uniprot symbols")
-    toImport <- data.frame(
-        uids[,c("ID", "symbol")],
-        canonical=TRUE,
-        stringsAsFactors=F
-    )
-    colnames(toImport) <- c("id", "symbol", "canonical")
+    # toImport <- data.frame(
+    #     uids[,c("ID", "symbol")],
+    #     canonical=TRUE,
+    #     stringsAsFactors=F
+    # )
+    # colnames(toImport) <- c("id", "symbol", "canonical")
+    toImport <- symbols
     loadBESymbols(d=toImport, be="Peptide", dbname=pdbname)
 
     ################################################@
     ## Add names ----
     message(Sys.time(), " --> Importing Uniprot names")
-    toImport <- uids[,c("ID", "name")]
-    colnames(toImport) <- c("id", "name")
-    toImport$name <- ifelse(
-        toImport$name=="-",
-        gene_info$description,
-        toImport$name
-    )
+    # toImport <- uids[,c("ID", "name")]
+    # colnames(toImport) <- c("id", "name")
+    # toImport$name <- ifelse(
+    #     toImport$name=="-",
+    #     gene_info$description,
+    #     toImport$name
+    # )
+    toImport <- names
     loadBENames(d=toImport, be="Peptide", dbname=pdbname)
 
     ################################################@

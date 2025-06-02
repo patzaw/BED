@@ -82,7 +82,9 @@ dumpUniprotDb <- function(
         con <- file(f, "r")
         by <- 50000000
         fuf <- character()
-        tuids <- tdeprecated <- trsCref <- tensCref <- c()
+        tuids <- tdeprecated <- trsCref <- tensCref <-
+           tsymbols <- tnames <-
+           c()
         iteration <- 0
         while(TRUE){
             iteration <- iteration+1
@@ -111,7 +113,7 @@ dumpUniprotDb <- function(
                 uf
             )
             tokeep <- sort(which(
-                uf.field %in% c("ID", "AC", "DE", "OX", "DR") |
+                uf.field %in% c("ID", "AC", "DE", "GN", "OX", "DR") |
                     uf=="//"
             ))
             uf.val <- uf.val[tokeep]
@@ -145,6 +147,57 @@ dumpUniprotDb <- function(
             )
             status <-  sub("[;] +.*$", "", sub("^[[:alnum:]_]* +", "", symbols))
             symbols <- sub(" +.*$", "", symbols)
+            canSymbols <- sub("_.*", "", symbols)
+            symbols <- rbind(
+               data.frame(
+                  id = names(symbols),
+                  symbol = as.character(canSymbols),
+                  canonical = TRUE
+               ),
+               data.frame(
+                  id = names(symbols),
+                  symbol = as.character(symbols),
+                  canonical = FALSE
+               )
+            )
+            toAdd <- do.call(rbind, lapply(
+               names(spluf),
+               function(n){
+                  x <- spluf[[n]]
+                  toRet <- paste(
+                     x$val[which(x$field=="GN")],
+                     collapse = " "
+                  )
+                  if(is.na(toRet)){
+                     return(NULL)
+                  }
+                  toRet <- strsplit(toRet, "; *")[[1]]
+                  if(length(toRet)==0){
+                     return(NULL)
+                  }
+                  toRet <-  gsub(" *[{][^{]*[}]", "", toRet)
+                  toRet <- sub(".*=", "", toRet)
+                  toRet <- unlist(strsplit(toRet, "[, ]+"))
+                  toRet <- unlist(strsplit(toRet, "/"))
+                  toRet <-  sub(" *[{].*$", "", toRet)
+                  if(length(toRet)==0){
+                     return(NULL)
+                  }
+                  return(
+                     data.frame(
+                        id = n,
+                        symbol = toRet,
+                        canonical = FALSE
+                     )
+                  )
+               }
+            ))
+            symbols <- rbind(symbols, toAdd)
+            symbols <- dplyr::select(dplyr::distinct(
+               symbols,
+               symbols$id, symbols$symbol,
+               .keep_all = TRUE
+            ), "id", "symbol", "canonical")
             ##
             tax <- unlist(lapply(
                 spluf,
@@ -161,21 +214,39 @@ dumpUniprotDb <- function(
                 stop("Incoherence in NCBI tax")
             }
             ##
-            recNames <- unlist(lapply(
-                spluf,
-                function(x){
-                    toRet <- x$val[which(x$field=="DE")][1]
-                    toRet <- sub(";.*$", "", sub("^.*Full=", "", toRet))
-                    return(toRet)
-                }
+
+            recNames <- do.call(rbind, lapply(
+               names(spluf),
+               function(n){
+                  x <- spluf[[n]]
+                  toRet <- x$val[which(x$field=="DE")]
+                  toRet <- sub("^.*(Full|Short|)=", "", toRet)
+                  toRet <- sub(";.*$", "", toRet)
+                  contains <- which(toRet == "Contains:")
+                  if(length(contains) > 0){
+                     toRet <- toRet[-(contains[1]:length(toRet))]
+                  }
+                  if(length(toRet) == 0){
+                     return(NULL)
+                  }
+                  toRet <-  sub(" *[{].*$", "", toRet)
+                  toRet <- data.frame(
+                     id = n,
+                     name = toRet,
+                     canonical = c(TRUE, rep(FALSE, length(toRet) - 1))
+                  )
+                  return(toRet)
+               }
             ))
-            recNames <- sub(" *[{].*$", "", recNames)
             ##
+            canRecNames <- recNames[recNames$canonical==TRUE,]
             uids <- data.frame(
                 ID=ids,
-                symbol=symbols[ids],
+                symbol=canSymbols[ids],
                 status=status[ids],
-                name=recNames[ids],
+                name=canRecNames[
+                   match(ids, canRecNames$id), "name", drop = TRUE
+                ],
                 tax=tax[ids],
                 stringsAsFactors=FALSE
             )
@@ -228,19 +299,23 @@ dumpUniprotDb <- function(
             tdeprecated <- rbind(tdeprecated, deprecated)
             trsCref <- rbind(trsCref, rsCref)
             tensCref <- rbind(tensCref, ensCref)
+            tsymbols <- rbind(tsymbols, symbols)
+            tnames <- rbind(tnames, recNames)
         }
         return(list(
             uids=tuids,
             deprecated=tdeprecated,
             rsCref=trsCref,
-            ensCref=tensCref
+            ensCref=tensCref,
+            symbols = tsymbols,
+            names = tnames
         ))
     }
     pf <- sprintf("uniprotIds-%s.rda", divOfInt)
     lpf <- file.path(dumpDir, pf)
     if(!file.exists(lpf)){
         ## * Reading and original parsing ----
-        uids <- deprecated <- rsCref <- ensCref <- c()
+        uids <- deprecated <- rsCref <- ensCref <- symbols <- names <- c()
         for(f in toDl){
             message(f)
             toAdd <- parse_unigz(file.path(dumpDir, f))
@@ -248,6 +323,8 @@ dumpUniprotDb <- function(
             deprecated <- rbind(deprecated, toAdd$deprecated)
             rsCref <- rbind(rsCref, toAdd$rsCref)
             ensCref <- rbind(ensCref, toAdd$ensCref)
+            symbols <- rbind(symbols, toAdd$symbols)
+            names <- rbind(names, toAdd$names)
         }
         ## * Save parsed data ----
         save(
@@ -255,7 +332,9 @@ dumpUniprotDb <- function(
                 "uids",
                 "deprecated",
                 "rsCref",
-                "ensCref"
+                "ensCref",
+                "symbols",
+                "names"
             ),
             file=lpf
         )
