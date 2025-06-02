@@ -16,3 +16,5 @@ Meta
 /doc/
 /Meta/
 supp/Build/README.html
+src/*.o
+src/*.so

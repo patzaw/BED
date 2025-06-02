@@ -11,6 +11,8 @@
 #' @param ftp location of the ftp site
 #' @param env the R environment in which to load the tables when built
 #'
+#' @useDynLib BED, .registration = TRUE
+#'
 dumpUniprotDb <- function(
     taxOfInt,
     divOfInt,
@@ -160,38 +162,33 @@ dumpUniprotDb <- function(
                   canonical = FALSE
                )
             )
-            toAdd <- do.call(rbind, lapply(
-               names(spluf),
-               function(n){
-                  x <- spluf[[n]]
-                  toRet <- paste(
+
+            toAdd <- lapply(
+               spluf,
+               function(x){
+                  value <- paste(
                      x$val[which(x$field=="GN")],
                      collapse = " "
                   )
-                  if(is.na(toRet)){
-                     return(NULL)
+                  if(is.na(value) || value == ""){
+                     return(character())
                   }
-                  toRet <- strsplit(toRet, "; *")[[1]]
+                  toRet <- .extract_u_gn_r(value)
                   if(length(toRet)==0){
-                     return(NULL)
+                     return(character())
                   }
-                  toRet <-  gsub(" *[{][^{]*[}]", "", toRet)
-                  toRet <- sub(".*=", "", toRet)
-                  toRet <- unlist(strsplit(toRet, "[, ]+"))
-                  toRet <- unlist(strsplit(toRet, "/"))
-                  toRet <-  sub(" *[{].*$", "", toRet)
-                  if(length(toRet)==0){
-                     return(NULL)
-                  }
-                  return(
-                     data.frame(
-                        id = n,
-                        symbol = toRet,
-                        canonical = FALSE
-                     )
-                  )
+                  return(toRet)
                }
-            ))
+            )
+            toAdd <- dplyr::select(
+               dplyr::mutate_all(
+                  stack(toAdd),
+                  as.character
+               ),
+               "id" = "ind", "symbol" = "values"
+            )
+            toAdd$canonical <- FALSE
+
             symbols <- rbind(symbols, toAdd)
             symbols <- dplyr::select(dplyr::distinct(
                symbols,
@@ -214,32 +211,36 @@ dumpUniprotDb <- function(
                 stop("Incoherence in NCBI tax")
             }
             ##
-
-            recNames <- do.call(rbind, lapply(
-               names(spluf),
-               function(n){
-                  x <- spluf[[n]]
-                  toRet <- x$val[which(x$field=="DE")]
-                  toRet <- sub("^.*(Full|Short|)=", "", toRet)
-                  toRet <- sub(";.*$", "", toRet)
-                  contains <- which(toRet == "Contains:")
-                  if(length(contains) > 0){
-                     toRet <- toRet[-(contains[1]:length(toRet))]
-                  }
-                  if(length(toRet) == 0){
-                     return(NULL)
-                  }
-                  toRet <-  sub(" *[{].*$", "", toRet)
-                  toRet <- data.frame(
-                     id = n,
-                     name = toRet,
-                     canonical = c(TRUE, rep(FALSE, length(toRet) - 1))
-                  )
+            recNames <- lapply(
+               spluf,
+               function(x){
+                  values <- x$val[which(x$field=="DE")]
+                  toRet <- .extract_u_de_r(values)
                   return(toRet)
                }
-            ))
+            )
+            canRecNames <- dplyr::select(
+               dplyr::mutate_all(
+                  stack(
+                     lapply(recNames, function(x) x[1])
+                  ),
+                  as.character
+               ),
+               "id" = "ind", "name" = "values"
+            )
+            canRecNames$canonical = TRUE
+            otherRecNames <- dplyr::select(
+               dplyr::mutate_all(
+                  stack(
+                     lapply(recNames, function(x) x[-1])
+                  ),
+                  as.character
+               ),
+               "id" = "ind", "name" = "values"
+            )
+            otherRecNames$canonical = FALSE
+            recNames <- rbind(canRecNames, otherRecNames)
             ##
-            canRecNames <- recNames[recNames$canonical==TRUE,]
             uids <- data.frame(
                 ID=ids,
                 symbol=canSymbols[ids],
@@ -343,4 +344,15 @@ dumpUniprotDb <- function(
     load(lpf, envir=env)
     load(file.path(dumpDir, "dumpRelease.rda"), envir=env)
 
+}
+
+
+.extract_u_de_r <- function(values) {
+   if (!is.character(values)) stop("values must be a character vector")
+   .Call("extract_u_de", values)
+}
+
+.extract_u_gn_r <- function(value){
+   if (!is.character(value)) stop("value must be a character")
+   .Call("extract_u_gn", value)
 }

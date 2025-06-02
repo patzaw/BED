@@ -2,6 +2,7 @@
 ## Version 1.6.2
 
 - Take alternative names and symbols from Uniprot
+- Uniprot parser uses internal C functions
 - Take alternative names from NCBI
 
 <!----------------------------------------------------------------------------->
