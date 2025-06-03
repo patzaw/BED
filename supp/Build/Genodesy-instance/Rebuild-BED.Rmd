@@ -1357,11 +1357,11 @@ ensembl_homologies <- c()
 for(org in orgOfInt){
    ## Proteins
    f_url <- sprintf(
-      "https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.protein_default.homologies.tsv",
+      "https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.protein_default.homologies.tsv.gz",
       ensembl_release, org, ensembl_release
    )
    f_name <- sprintf(
-      "%s.Compara.%s.protein_default.homologies.tsv",
+      "%s.Compara.%s.protein_default.homologies.tsv.gz",
       org, ensembl_release
    )
    f_path <- file.path(data_dir, f_name)
@@ -1385,11 +1385,11 @@ for(org in orgOfInt){
    )
    ## ncRNA
    f_url <- sprintf(
-      "https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.ncrna_default.homologies.tsv",
+      "https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.ncrna_default.homologies.tsv.gz",
       ensembl_release, org, ensembl_release
    )
    f_name <- sprintf(
-      "%s.Compara.%s.ncrna_default.homologies.tsv",
+      "%s.Compara.%s.ncrna_default.homologies.tsv.gz",
       org, ensembl_release
    )
    f_path <- file.path(data_dir, f_name)
