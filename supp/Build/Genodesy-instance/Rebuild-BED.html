@@ -1508,7 +1508,7 @@ div.tocify {
 
 <h1 class="title toc-ignore">Biological Entity Dictionary (BED): Feeding the DB</h1>
 <h4 class="author">Patrice Godard</h4>
-<h4 class="date">November 09 2024</h4>
+<h4 class="date">June 03 2025</h4>
 <div class="abstract">
 <p class="abstract">Abstract</p>
 Dump source identifiers related information and integrate content in BED
@@ -1802,14 +1802,14 @@ if(dbSize!=0){
 <pre class="r"><code>print(bedInstance)</code></pre>
 <pre><code>## [1] &quot;Genodesy-Human&quot;</code></pre>
 <pre class="r"><code>print(bedVersion)</code></pre>
-<pre><code>## [1] &quot;2024.11.07&quot;</code></pre>
+<pre><code>## [1] &quot;2025.06.02&quot;</code></pre>
 <pre class="r"><code>BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)</code></pre>
 </div>
 <div id="load-data-model" class="section level2" number="2.3">
 <h2 number="2.3"><span class="header-section-number">2.3</span> Load Data model</h2>
-<p><strong>Start</strong>: 2024-11-09 07:20:32.487991</p>
+<p><strong>Start</strong>: 2025-06-03 06:15:03.17011</p>
 <pre class="r"><code>BED:::loadBedModel()</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:20:33.62005</p>
+<p><strong>End</strong>: 2025-06-03 06:15:04.511137</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -1817,7 +1817,7 @@ if(dbSize!=0){
 <div id="loading-taxonomy-from-ncbi" class="section level1" number="3">
 <h1 number="3"><span class="header-section-number">3</span> Loading taxonomy from NCBI</h1>
 <p>Information is downloaded if older than 4 days according to the <code>reDumpThr</code> object.</p>
-<p><strong>Start</strong>: 2024-11-09 07:20:33.62045</p>
+<p><strong>Start</strong>: 2025-06-03 06:15:04.511587</p>
 <pre class="r"><code>BED:::loadNcbiTax(
     reDumpThr=reDumpThr,
     ddir=wd,
@@ -1827,7 +1827,7 @@ if(dbSize!=0){
       ),
     curDate=curDate
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:20:43.204716</p>
+<p><strong>End</strong>: 2025-06-03 06:15:14.801793</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -1868,7 +1868,7 @@ if(dbSize!=0){
 <pre class="r"><code>ensembl &lt;- ensembl_Drerio
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;113&quot;
+## [1] &quot;114&quot;
 ## 
 ## $organism
 ## [1] &quot;Danio rerio&quot;
@@ -1901,7 +1901,7 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;23&quot; &quot;24&quot; &quot;25&quot; &quot;MT&quot;</code></pre>
 <div id="genes-1" class="section level3" number="4.2.1">
 <h3 number="4.2.1"><span class="header-section-number">4.2.1</span> Genes</h3>
-<p><strong>Start</strong>: 2024-11-09 07:20:43.329983</p>
+<p><strong>Start</strong>: 2025-06-03 06:15:14.989155</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -1913,13 +1913,13 @@ print(ensembl)</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 1044136 55.8    5772776 308.3  7215970 385.4
-## Vcells 6008862 45.9   47253696 360.6 73833897 563.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:21:41.29466</p>
+## Ncells 1046224 55.9    5718807 305.5  7148508 381.8
+## Vcells 6013488 45.9   49209687 375.5 76740118 585.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:16:11.442774</p>
 </div>
 <div id="transcripts-1" class="section level3" number="4.2.2">
 <h3 number="4.2.2"><span class="header-section-number">4.2.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2024-11-09 07:21:41.295046</p>
+<p><strong>Start</strong>: 2025-06-03 06:16:11.44301</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -1930,13 +1930,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 1050253 56.1    4618221 246.7  7215970 385.4
-## Vcells 6022020 46.0   45427548 346.6 73833897 563.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:22:28.920897</p>
+## Ncells 1052293 56.2    5626305 300.5  7148508 381.8
+## Vcells 6026566 46.0   47305300 361.0 76740118 585.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:17:02.120775</p>
 </div>
 <div id="peptides-1" class="section level3" number="4.2.3">
 <h3 number="4.2.3"><span class="header-section-number">4.2.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2024-11-09 07:22:28.921278</p>
+<p><strong>Start</strong>: 2025-06-03 06:17:02.121016</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -1947,9 +1947,9 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb) max used  (Mb)
-## Ncells 1055726 56.4    3706235 198.0  7215970 385.4
-## Vcells 6033759 46.1   43674446 333.3 73833897 563.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:23:18.319076</p>
+## Ncells 1057910 56.5    4501044 240.4  7148508 381.8
+## Vcells 6038545 46.1   45477088 347.0 76740118 585.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:17:57.345009</p>
 </div>
 </div>
 <div id="homo-sapiens" class="section level2" number="4.3">
@@ -1957,7 +1957,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Hsapiens
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;113&quot;
+## [1] &quot;114&quot;
 ## 
 ## $organism
 ## [1] &quot;Homo sapiens&quot;
@@ -1990,7 +1990,7 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;21&quot; &quot;22&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-2" class="section level3" number="4.3.1">
 <h3 number="4.3.1"><span class="header-section-number">4.3.1</span> Genes</h3>
-<p><strong>Start</strong>: 2024-11-09 07:23:18.323556</p>
+<p><strong>Start</strong>: 2025-06-03 06:17:57.349973</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2002,13 +2002,13 @@ print(ensembl)</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055753 56.4    7511668 401.2   9389585  501.5
-## Vcells 6033991 46.1  118477942 904.0 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:25:04.133231</p>
+## Ncells 1057958 56.6    7487572 399.9   9359465  499.9
+## Vcells 6038820 46.1  120631893 920.4 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:19:49.905393</p>
 </div>
 <div id="transcripts-2" class="section level3" number="4.3.2">
 <h3 number="4.3.2"><span class="header-section-number">4.3.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2024-11-09 07:25:04.133484</p>
+<p><strong>Start</strong>: 2025-06-03 06:19:49.905809</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2019,13 +2019,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055934 56.4    8811124 470.6  11013905  588.3
-## Vcells 6034366 46.1  113802824 868.3 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:27:26.368069</p>
+## Ncells 1058091 56.6   10587887 565.5  13234858  706.9
+## Vcells 6039115 46.1  115876192 884.1 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:22:13.41457</p>
 </div>
 <div id="peptides-2" class="section level3" number="4.3.3">
 <h3 number="4.3.3"><span class="header-section-number">4.3.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2024-11-09 07:27:26.368305</p>
+<p><strong>Start</strong>: 2025-06-03 06:22:13.414821</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2036,9 +2036,9 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055990 56.4    8490679 453.5  11013905  588.3
-## Vcells 6034520 46.1  109314711 834.1 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:30:30.513424</p>
+## Ncells 1058057 56.6    8470310 452.4  13234858  706.9
+## Vcells 6039119 46.1  111305144 849.2 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:25:14.902922</p>
 </div>
 </div>
 <div id="mus-musculus" class="section level2" number="4.4">
@@ -2046,7 +2046,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Mmusculus
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;113&quot;
+## [1] &quot;114&quot;
 ## 
 ## $organism
 ## [1] &quot;Mus musculus&quot;
@@ -2079,7 +2079,7 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-3" class="section level3" number="4.4.1">
 <h3 number="4.4.1"><span class="header-section-number">4.4.1</span> Genes</h3>
-<p><strong>Start</strong>: 2024-11-09 07:30:30.518177</p>
+<p><strong>Start</strong>: 2025-06-03 06:25:14.907768</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2091,13 +2091,13 @@ print(ensembl)</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1056053 56.4    6792544 362.8  11013905  588.3
-## Vcells 6034816 46.1   87451769 667.3 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:31:44.115155</p>
+## Ncells 1057778 56.5    6776248 361.9  13234858  706.9
+## Vcells 6038845 46.1   89044116 679.4 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:26:29.569049</p>
 </div>
 <div id="transcripts-3" class="section level3" number="4.4.2">
 <h3 number="4.4.2"><span class="header-section-number">4.4.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2024-11-09 07:31:44.115395</p>
+<p><strong>Start</strong>: 2025-06-03 06:26:29.569313</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2108,13 +2108,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055976 56.4    6552842 350.0  11013905  588.3
-## Vcells 6034761 46.1   84017698 641.1 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:33:24.259706</p>
+## Ncells 1057875 56.5    6030847 322.1  13234858  706.9
+## Vcells 6039080 46.1   85546352 652.7 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:28:15.56653</p>
 </div>
 <div id="peptides-3" class="section level3" number="4.4.3">
 <h3 number="4.4.3"><span class="header-section-number">4.4.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2024-11-09 07:33:24.260091</p>
+<p><strong>Start</strong>: 2025-06-03 06:28:15.566931</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2125,9 +2125,9 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055882 56.4    6322728 337.7  11013905  588.3
-## Vcells 6034665 46.1   80720990 615.9 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:34:51.579899</p>
+## Ncells 1057931 56.5    5821613 311.0  13234858  706.9
+## Vcells 6039234 46.1   82188498 627.1 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:29:44.280161</p>
 </div>
 </div>
 <div id="rattus-norvegicus" class="section level2" number="4.5">
@@ -2135,13 +2135,13 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Rnorvegicus
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;113&quot;
+## [1] &quot;114&quot;
 ## 
 ## $organism
 ## [1] &quot;Rattus norvegicus&quot;
 ## 
 ## $gv
-## [1] &quot;72&quot;
+## [1] &quot;1&quot;
 ## 
 ## $gdbCref
 ##          RGD   EntrezGene    Vega_gene  Ens_Rn_gene 
@@ -2168,7 +2168,7 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;19&quot; &quot;20&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-4" class="section level3" number="4.5.1">
 <h3 number="4.5.1"><span class="header-section-number">4.5.1</span> Genes</h3>
-<p><strong>Start</strong>: 2024-11-09 07:34:51.5843</p>
+<p><strong>Start</strong>: 2025-06-03 06:29:44.284978</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2180,13 +2180,13 @@ print(ensembl)</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055927 56.4    5058183 270.2  11013905  588.3
-## Vcells 6034940 46.1   64576792 492.7 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:35:48.122379</p>
+## Ncells 1057775 56.5    4657291 248.8  13234858  706.9
+## Vcells 6039166 46.1   65750799 501.7 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:30:27.295124</p>
 </div>
 <div id="transcripts-4" class="section level3" number="4.5.2">
 <h3 number="4.5.2"><span class="header-section-number">4.5.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2024-11-09 07:35:48.122618</p>
+<p><strong>Start</strong>: 2025-06-03 06:30:27.295388</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2197,13 +2197,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055706 56.4    4046547 216.2  11013905  588.3
-## Vcells 6034645 46.1   51661434 394.2 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:36:25.642241</p>
+## Ncells 1057743 56.5    4859315 259.6  13234858  706.9
+## Vcells 6039186 46.1   52600640 401.4 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:31:14.993579</p>
 </div>
 <div id="peptides-4" class="section level3" number="4.5.3">
 <h3 number="4.5.3"><span class="header-section-number">4.5.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2024-11-09 07:36:25.642488</p>
+<p><strong>Start</strong>: 2025-06-03 06:31:14.99384</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2214,9 +2214,9 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055741 56.4    3237238 172.9  11013905  588.3
-## Vcells 6034764 46.1   41329148 315.4 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:37:20.125615</p>
+## Ncells 1057925 56.5    3887452 207.7  13234858  706.9
+## Vcells 6039550 46.1   42080512 321.1 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:32:10.739567</p>
 </div>
 </div>
 <div id="sus-scrofa" class="section level2" number="4.6">
@@ -2224,7 +2224,7 @@ gc()</code></pre>
 <pre class="r"><code>ensembl &lt;- ensembl_Sscrofa
 print(ensembl)</code></pre>
 <pre><code>## $release
-## [1] &quot;113&quot;
+## [1] &quot;114&quot;
 ## 
 ## $organism
 ## [1] &quot;Sus scrofa&quot;
@@ -2257,7 +2257,7 @@ print(ensembl)</code></pre>
 ## [16] &quot;16&quot; &quot;17&quot; &quot;18&quot; &quot;X&quot;  &quot;Y&quot;  &quot;MT&quot;</code></pre>
 <div id="genes-5" class="section level3" number="4.6.1">
 <h3 number="4.6.1"><span class="header-section-number">4.6.1</span> Genes</h3>
-<p><strong>Start</strong>: 2024-11-09 07:37:20.130068</p>
+<p><strong>Start</strong>: 2025-06-03 06:32:10.744013</p>
 <pre class="r"><code>BED:::getEnsemblGeneIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2269,13 +2269,13 @@ print(ensembl)</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055813 56.4    3562372 190.3  11013905  588.3
-## Vcells 6035071 46.1   39801444 303.7 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:37:41.10323</p>
+## Ncells 1057847 56.5    3539172 189.1  13234858  706.9
+## Vcells 6039607 46.1   41499919 316.7 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:32:32.261073</p>
 </div>
 <div id="transcripts-5" class="section level3" number="4.6.2">
 <h3 number="4.6.2"><span class="header-section-number">4.6.2</span> Transcripts</h3>
-<p><strong>Start</strong>: 2024-11-09 07:37:41.103471</p>
+<p><strong>Start</strong>: 2025-06-03 06:32:32.261353</p>
 <pre class="r"><code>BED:::getEnsemblTranscriptIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2286,13 +2286,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055817 56.4    3211604 171.6  11013905  588.3
-## Vcells 6035151 46.1   31841156 243.0 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:38:08.605611</p>
+## Ncells 1057839 56.5    3429605 183.2  13234858  706.9
+## Vcells 6039667 46.1   33199936 253.3 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:33:01.639566</p>
 </div>
 <div id="peptides-5" class="section level3" number="4.6.3">
 <h3 number="4.6.3"><span class="header-section-number">4.6.3</span> Peptides</h3>
-<p><strong>Start</strong>: 2024-11-09 07:38:08.60585</p>
+<p><strong>Start</strong>: 2025-06-03 06:33:01.639878</p>
 <pre class="r"><code>BED:::getEnsemblPeptideIds(
     organism=ensembl$organism,
     release=ensembl$release,
@@ -2303,9 +2303,9 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1055810 56.4    4114849 219.8  11013905  588.3
-## Vcells 6035200 46.1   36821812 281.0 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:39:02.947463</p>
+## Ncells 1057865 56.5    3324421 177.6  13234858  706.9
+## Vcells 6039771 46.1   38387126 292.9 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:33:57.298412</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -2351,7 +2351,7 @@ gc()</code></pre>
 </div>
 <div id="danio-rerio-data" class="section level2" number="5.2">
 <h2 number="5.2"><span class="header-section-number">5.2</span> Danio rerio data</h2>
-<p><strong>Start</strong>: 2024-11-09 07:39:03.04042</p>
+<p><strong>Start</strong>: 2025-06-03 06:33:57.39896</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
     organism=&quot;Danio rerio&quot;,
     ddir=wd,
@@ -2359,13 +2359,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1069050 57.1    3291880 175.9  11013905  588.3
-## Vcells 6062800 46.3   29457450 224.8 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:40:14.753411</p>
+## Ncells 1072407 57.3    3223444 172.2  13234858  706.9
+## Vcells 6070183 46.4   30715191 234.4 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:35:21.317258</p>
 </div>
 <div id="homo-sapiens-data" class="section level2" number="5.3">
 <h2 number="5.3"><span class="header-section-number">5.3</span> Homo sapiens data</h2>
-<p><strong>Start</strong>: 2024-11-09 07:40:14.753643</p>
+<p><strong>Start</strong>: 2025-06-03 06:35:21.317497</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
     organism=&quot;Homo sapiens&quot;,
     ddir=wd,
@@ -2373,13 +2373,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1069088 57.1    9202920 491.5  11503650  614.4
-## Vcells 6062912 46.3   87866015 670.4 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:43:23.305892</p>
+## Ncells 1072502 57.3   13271524 708.8  16589405  886.0
+## Vcells 6070390 46.4  105455836 804.6 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:38:38.913671</p>
 </div>
 <div id="mus-musculus-data" class="section level2" number="5.4">
 <h2 number="5.4"><span class="header-section-number">5.4</span> Mus musculus data</h2>
-<p><strong>Start</strong>: 2024-11-09 07:43:23.306139</p>
+<p><strong>Start</strong>: 2025-06-03 06:38:38.913916</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
     organism=&quot;Mus musculus&quot;,
     ddir=wd,
@@ -2387,13 +2387,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1069117 57.1    7362336 393.2  11503650  614.4
-## Vcells 6063009 46.3   56234250 429.1 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:45:20.813816</p>
+## Ncells 1072483 57.3   10617220 567.1  16589405  886.0
+## Vcells 6070407 46.4   84364669 643.7 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:40:41.482351</p>
 </div>
 <div id="rattus-norvegicus-data" class="section level2" number="5.5">
 <h2 number="5.5"><span class="header-section-number">5.5</span> Rattus norvegicus data</h2>
-<p><strong>Start</strong>: 2024-11-09 07:45:20.814046</p>
+<p><strong>Start</strong>: 2025-06-03 06:40:41.482605</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
     organism=&quot;Rattus norvegicus&quot;,
     ddir=wd,
@@ -2401,13 +2401,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1069104 57.1    5889869 314.6  11503650  614.4
-## Vcells 6063036 46.3   44987400 343.3 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:46:58.388826</p>
+## Ncells 1072428 57.3    6795021 362.9  16589405  886.0
+## Vcells 6070364 46.4   53993389 412.0 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:42:51.637188</p>
 </div>
 <div id="sus-scrofa-data" class="section level2" number="5.6">
 <h2 number="5.6"><span class="header-section-number">5.6</span> Sus scrofa data</h2>
-<p><strong>Start</strong>: 2024-11-09 07:46:58.389063</p>
+<p><strong>Start</strong>: 2025-06-03 06:42:51.637436</p>
 <pre class="r"><code>BED:::getNcbiGeneTransPep(
     organism=&quot;Sus scrofa&quot;,
     ddir=wd,
@@ -2415,13 +2415,13 @@ gc()</code></pre>
 )
 gc()</code></pre>
 <pre><code>##           used (Mb) gc trigger  (Mb)  max used   (Mb)
-## Ncells 1069121 57.1    4711896 251.7  11503650  614.4
-## Vcells 6063114 46.3   35989920 274.6 148021213 1129.4</code></pre>
-<p><strong>End</strong>: 2024-11-09 07:47:47.002042</p>
+## Ncells 1072397 57.3    5436017 290.4  16589405  886.0
+## Vcells 6070371 46.4   43194712 329.6 150711570 1149.9</code></pre>
+<p><strong>End</strong>: 2025-06-03 06:43:57.113109</p>
 </div>
 <div id="direct-cross-references-with-uniprot" class="section level2" number="5.7">
 <h2 number="5.7"><span class="header-section-number">5.7</span> Direct cross-references with Uniprot</h2>
-<p><strong>Start</strong>: 2024-11-09 07:47:47.00227</p>
+<p><strong>Start</strong>: 2025-06-03 06:43:57.113347</p>
 <pre class="r"><code>message(&quot;Direct cross-references with Uniprot&quot;)
 BED:::dumpNcbiDb(
   taxOfInt=&quot;&quot;,
@@ -2467,7 +2467,7 @@ for(org in listOrganisms()){
       be=&quot;Peptide&quot;
   )
 }</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:00:16.203065</p>
+<p><strong>End</strong>: 2025-06-03 06:58:12.202137</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -2685,67 +2685,67 @@ BED:::registerBEDB(
 )</code></pre>
 <div id="danio-rerio-data-1" class="section level2" number="7.1">
 <h2 number="7.1"><span class="header-section-number">7.1</span> Danio rerio data</h2>
-<p><strong>Start</strong>: 2024-11-09 08:00:49.391664</p>
+<p><strong>Start</strong>: 2025-06-03 06:58:43.192702</p>
 <pre class="r"><code>BED:::getUniprot(
     organism=&quot;Danio rerio&quot;, taxDiv=&quot;vertebrates&quot;, release=avRel, ddir=wd
 )
 gc()</code></pre>
-<pre><code>##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218308720 11659  477453868 25498.8  477453868 25498.8
-## Vcells 1224334639  9341 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:02:30.097123</p>
+<pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  221399247 11824.0  515042642 27506.3  515042642 27506.3
+## Vcells 1238112756  9446.1 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:01:15.465212</p>
 </div>
 <div id="homo-sapiens-data-1" class="section level2" number="7.2">
 <h2 number="7.2"><span class="header-section-number">7.2</span> Homo sapiens data</h2>
-<p><strong>Start</strong>: 2024-11-09 08:02:30.097374</p>
+<p><strong>Start</strong>: 2025-06-03 07:01:15.465691</p>
 <pre class="r"><code>BED:::getUniprot(
     organism=&quot;Homo sapiens&quot;, taxDiv=&quot;human&quot;, release=avRel, ddir=wd
 )
 gc()</code></pre>
-<pre><code>##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218308715 11659  477453868 25498.8  477453868 25498.8
-## Vcells 1224334683  9341 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:04:01.977464</p>
+<pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  221399332 11824.0  515042642 27506.3  515042642 27506.3
+## Vcells 1238112950  9446.1 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:03:10.342115</p>
 </div>
 <div id="mus-musculus-data-1" class="section level2" number="7.3">
 <h2 number="7.3"><span class="header-section-number">7.3</span> Mus musculus data</h2>
-<p><strong>Start</strong>: 2024-11-09 08:04:01.977756</p>
+<p><strong>Start</strong>: 2025-06-03 07:03:10.342406</p>
 <pre class="r"><code>BED:::getUniprot(
     organism=&quot;Mus musculus&quot;, taxDiv=&quot;rodents&quot;, release=avRel, ddir=wd
 )
 gc()</code></pre>
-<pre><code>##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218308682 11659  477453868 25498.8  477453868 25498.8
-## Vcells 1224334679  9341 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:04:54.155085</p>
+<pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  221399308 11824.0  515042642 27506.3  515042642 27506.3
+## Vcells 1238112962  9446.1 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:04:15.332998</p>
 </div>
 <div id="rattus-norvegicus-data-1" class="section level2" number="7.4">
 <h2 number="7.4"><span class="header-section-number">7.4</span> Rattus norvegicus data</h2>
-<p><strong>Start</strong>: 2024-11-09 08:04:54.15536</p>
+<p><strong>Start</strong>: 2025-06-03 07:04:15.333377</p>
 <pre class="r"><code>BED:::getUniprot(
     organism=&quot;Rattus norvegicus&quot;, taxDiv=&quot;rodents&quot;, release=avRel, ddir=wd
 )
 gc()</code></pre>
-<pre><code>##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218308657 11659  477453868 25498.8  477453868 25498.8
-## Vcells 1224334689  9341 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:05:48.283799</p>
+<pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  221399283 11824.0  515042642 27506.3  515042642 27506.3
+## Vcells 1238112973  9446.1 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:05:24.503383</p>
 </div>
 <div id="sus-scrofa-data-1" class="section level2" number="7.5">
 <h2 number="7.5"><span class="header-section-number">7.5</span> Sus scrofa data</h2>
-<p><strong>Start</strong>: 2024-11-09 08:05:48.28408</p>
+<p><strong>Start</strong>: 2025-06-03 07:05:24.503682</p>
 <pre class="r"><code>BED:::getUniprot(
     organism=&quot;Sus scrofa&quot;, taxDiv=&quot;mammals&quot;, release=avRel, ddir=wd
 )
 gc()</code></pre>
-<pre><code>##              used  (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218308575 11659  477453868 25498.8  477453868 25498.8
-## Vcells 1224334605  9341 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:11:37.732918</p>
+<pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
+## Ncells  221399201 11824.0  515042642 27506.3  515042642 27506.3
+## Vcells 1238112890  9446.1 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:11:13.596937</p>
 </div>
 <div id="indirect-cross-references-with-entrezgene" class="section level2" number="7.6">
 <h2 number="7.6"><span class="header-section-number">7.6</span> Indirect cross-references with EntrezGene</h2>
-<p><strong>Start</strong>: 2024-11-09 08:11:37.733175</p>
+<p><strong>Start</strong>: 2025-06-03 07:11:13.597435</p>
 <pre class="r"><code>message(&quot;Indirect cross-references with Uniprot&quot;)
 dumpDir &lt;- file.path(wd, &quot;NCBI-gene-DATA&quot;)
 f &lt;- &quot;gene2accession.gz&quot;
@@ -2815,7 +2815,7 @@ for(org in listOrganisms()){
     be=&quot;Gene&quot;
   )
 }</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:19:47.739366</p>
+<p><strong>End</strong>: 2025-06-03 07:19:55.613417</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -2823,7 +2823,7 @@ for(org in listOrganisms()){
 <div id="loading-orthologs" class="section level1" number="8">
 <h1 number="8"><span class="header-section-number">8</span> Loading orthologs</h1>
 <!-- ## Orthologs from biomaRt -->
-<!-- **Start**: 2024-11-09 08:19:47.739627 -->
+<!-- **Start**: 2025-06-03 07:19:55.613697 -->
 <!-- ```{r homolog_biomart, message=FALSE} -->
 <!-- # library(biomaRt) -->
 <!-- # loadBmHomologs <- function(mart, org2){ -->
@@ -2884,10 +2884,10 @@ for(org in listOrganisms()){
 <!-- #   } -->
 <!-- # } -->
 <!-- ``` -->
-<!-- **End**: 2024-11-09 08:19:47.739774 -->
+<!-- **End**: 2025-06-03 07:19:55.613867 -->
 <div id="orthologs-from-ensembl" class="section level2" number="8.1">
 <h2 number="8.1"><span class="header-section-number">8.1</span> Orthologs from Ensembl</h2>
-<p><strong>Start</strong>: 2024-11-09 08:19:47.739903</p>
+<p><strong>Start</strong>: 2025-06-03 07:19:55.614025</p>
 <pre class="r"><code>## Dump data from ensembl
 orgOfInt &lt;- c(
    &quot;homo_sapiens&quot;, &quot;mus_musculus&quot;, &quot;rattus_norvegicus&quot;, &quot;sus_scrofa&quot;,
@@ -2899,11 +2899,11 @@ ensembl_homologies &lt;- c()
 for(org in orgOfInt){
    ## Proteins
    f_url &lt;- sprintf(
-      &quot;https://ftp.ensembl.org/pub/release-113/tsv/ensembl-compara/homologies/%s/Compara.%s.protein_default.homologies.tsv&quot;,
-      org, ensembl_release
+      &quot;https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.protein_default.homologies.tsv.gz&quot;,
+      ensembl_release, org, ensembl_release
    )
    f_name &lt;- sprintf(
-      &quot;%s.Compara.%s.protein_default.homologies.tsv&quot;,
+      &quot;%s.Compara.%s.protein_default.homologies.tsv.gz&quot;,
       org, ensembl_release
    )
    f_path &lt;- file.path(data_dir, f_name)
@@ -2927,11 +2927,11 @@ for(org in orgOfInt){
    )
    ## ncRNA
    f_url &lt;- sprintf(
-      &quot;https://ftp.ensembl.org/pub/release-113/tsv/ensembl-compara/homologies/%s/Compara.%s.ncrna_default.homologies.tsv&quot;,
-      org, ensembl_release
+      &quot;https://ftp.ensembl.org/pub/release-%s/tsv/ensembl-compara/homologies/%s/Compara.%s.ncrna_default.homologies.tsv.gz&quot;,
+      ensembl_release, org, ensembl_release
    )
    f_name &lt;- sprintf(
-      &quot;%s.Compara.%s.ncrna_default.homologies.tsv&quot;,
+      &quot;%s.Compara.%s.ncrna_default.homologies.tsv.gz&quot;,
       org, ensembl_release
    )
    f_path &lt;- file.path(data_dir, f_name)
@@ -2963,11 +2963,11 @@ BED:::loadIsHomologOf(
    db1=&quot;Ens_gene&quot;, db2=&quot;Ens_gene&quot;,
    be=&quot;Gene&quot;
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:21:31.314089</p>
+<p><strong>End</strong>: 2025-06-03 07:22:34.17942</p>
 </div>
 <div id="orthologs-from-ncbi" class="section level2" number="8.2">
 <h2 number="8.2"><span class="header-section-number">8.2</span> Orthologs from NCBI</h2>
-<p><strong>Start</strong>: 2024-11-09 08:21:31.314314</p>
+<p><strong>Start</strong>: 2025-06-03 07:22:34.179694</p>
 <pre class="r"><code>#####################################
 gdbname &lt;- &quot;EntrezGene&quot;
 taxOfInt &lt;- unlist(lapply(
@@ -3005,9 +3005,9 @@ for(i in 1:length(taxOfInt)){
 }
 gc()</code></pre>
 <pre><code>##              used    (Mb) gc trigger    (Mb)   max used    (Mb)
-## Ncells  218450847 11666.6  477453868 25498.8  477453868 25498.8
-## Vcells 1229373986  9379.4 2154165832 16435.0 2154165832 16435.0</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:22:28.282039</p>
+## Ncells  221551717 11832.2  515042642 27506.3  515042642 27506.3
+## Vcells 1243555208  9487.6 2373116543 18105.5 2373116541 18105.5</code></pre>
+<p><strong>End</strong>: 2025-06-03 07:23:31.101193</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -3021,7 +3021,7 @@ geoPath &lt;- file.path(wd, &quot;geo&quot;)
 dir.create(geoPath, showWarnings=FALSE)</code></pre>
 <div id="gpl1708-agilent-012391-whole-human-genome-oligo-microarray-g4112a-feature-number-version" class="section level3" number="9.1.1">
 <h3 number="9.1.1"><span class="header-section-number">9.1.1</span> GPL1708: Agilent-012391 Whole Human Genome Oligo Microarray G4112A (Feature Number version)</h3>
-<p><strong>Start</strong>: 2024-11-09 08:22:30.296874</p>
+<p><strong>Start</strong>: 2025-06-03 07:23:33.122338</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1708&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3059,11 +3059,11 @@ BED:::loadProbes(
 #     platform=platName,
 #     dbname=dbname
 # )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:22:37.735696</p>
+<p><strong>End</strong>: 2025-06-03 07:23:40.045549</p>
 </div>
 <div id="gpl6480-agilent-014850-whole-human-genome-microarray-4x44k-g4112f-probe-name-version" class="section level3" number="9.1.2">
 <h3 number="9.1.2"><span class="header-section-number">9.1.2</span> GPL6480: Agilent-014850 Whole Human Genome Microarray 4x44K G4112F (Probe Name version)</h3>
-<p><strong>Start</strong>: 2024-11-09 08:22:37.735957</p>
+<p><strong>Start</strong>: 2025-06-03 07:23:40.045842</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6480&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3100,11 +3100,11 @@ BED:::loadProbes(
 #     platform=platName,
 #     dbname=dbname
 # )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:22:44.138544</p>
+<p><strong>End</strong>: 2025-06-03 07:23:47.607983</p>
 </div>
 <div id="gpl570-affymetrix-human-genome-u133-plus-2.0-array" class="section level3" number="9.1.3">
 <h3 number="9.1.3"><span class="header-section-number">9.1.3</span> GPL570: Affymetrix Human Genome U133 Plus 2.0 Array</h3>
-<p><strong>Start</strong>: 2024-11-09 08:22:44.138963</p>
+<p><strong>Start</strong>: 2025-06-03 07:23:47.60847</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL570&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3131,11 +3131,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:22:55.258539</p>
+<p><strong>End</strong>: 2025-06-03 07:23:59.281</p>
 </div>
 <div id="gpl571-affymetrix-human-genome-u133a-2.0-array" class="section level3" number="9.1.4">
 <h3 number="9.1.4"><span class="header-section-number">9.1.4</span> GPL571: Affymetrix Human Genome U133A 2.0 Array</h3>
-<p><strong>Start</strong>: 2024-11-09 08:22:55.258961</p>
+<p><strong>Start</strong>: 2025-06-03 07:23:59.281466</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL571&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3162,11 +3162,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:00.290457</p>
+<p><strong>End</strong>: 2025-06-03 07:24:04.277946</p>
 </div>
 <div id="gpl13158-affymetrix-ht-hg-u133-pm-array-plate" class="section level3" number="9.1.5">
 <h3 number="9.1.5"><span class="header-section-number">9.1.5</span> GPL13158: Affymetrix HT HG-U133+ PM Array Plate</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:00.290872</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:04.278209</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL13158&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3193,11 +3193,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:07.312128</p>
+<p><strong>End</strong>: 2025-06-03 07:24:13.946238</p>
 </div>
 <div id="gpl96-affymetrix-human-genome-u133a-array" class="section level3" number="9.1.6">
 <h3 number="9.1.6"><span class="header-section-number">9.1.6</span> GPL96: Affymetrix Human Genome U133A Array</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:07.312541</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:13.946577</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL96&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3224,11 +3224,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:12.447096</p>
+<p><strong>End</strong>: 2025-06-03 07:24:20.444892</p>
 </div>
 <div id="gpl1261-affymetrix-mouse-genome-430-2.0-array" class="section level3" number="9.1.7">
 <h3 number="9.1.7"><span class="header-section-number">9.1.7</span> GPL1261: Affymetrix Mouse Genome 430 2.0 Array</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:12.447513</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:20.445155</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1261&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3255,11 +3255,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:20.802423</p>
+<p><strong>End</strong>: 2025-06-03 07:24:27.436871</p>
 </div>
 <div id="gpl1355-affymetrix-rat-genome-230-2.0-array" class="section level3" number="9.1.8">
 <h3 number="9.1.8"><span class="header-section-number">9.1.8</span> GPL1355: Affymetrix Rat Genome 230 2.0 Array</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:20.802839</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:27.437208</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL1355&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3286,11 +3286,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:26.097543</p>
+<p><strong>End</strong>: 2025-06-03 07:24:32.837781</p>
 </div>
 <div id="gpl10558-illumina-humanht-12-v4.0-expression-beadchip" class="section level3" number="9.1.9">
 <h3 number="9.1.9"><span class="header-section-number">9.1.9</span> GPL10558: Illumina HumanHT-12 V4.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:26.097963</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:32.838045</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL10558&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3313,11 +3313,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:37.442623</p>
+<p><strong>End</strong>: 2025-06-03 07:24:42.424459</p>
 </div>
 <div id="gpl6947-illumina-humanht-12-v3.0-expression-beadchip" class="section level3" number="9.1.10">
 <h3 number="9.1.10"><span class="header-section-number">9.1.10</span> GPL6947: Illumina HumanHT-12 V3.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:37.443039</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:42.424939</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6947&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3340,11 +3340,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:44.159549</p>
+<p><strong>End</strong>: 2025-06-03 07:24:47.93486</p>
 </div>
 <div id="gpl6885-illumina-mouseref-8-v2.0-expression-beadchip" class="section level3" number="9.1.11">
 <h3 number="9.1.11"><span class="header-section-number">9.1.11</span> GPL6885: Illumina MouseRef-8 v2.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:44.159966</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:47.935316</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6885&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3372,11 +3372,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:48.030981</p>
+<p><strong>End</strong>: 2025-06-03 07:24:54.045054</p>
 </div>
 <div id="gpl6887-illumina-mousewg-6-v2.0-expression-beadchip" class="section level3" number="9.1.12">
 <h3 number="9.1.12"><span class="header-section-number">9.1.12</span> GPL6887: Illumina MouseWG-6 v2.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:48.031406</p>
+<p><strong>Start</strong>: 2025-06-03 07:24:54.045515</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6887&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3404,11 +3404,11 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:54.743899</p>
+<p><strong>End</strong>: 2025-06-03 07:25:02.872944</p>
 </div>
 <div id="gpl6101-illumina-ratref-12-v1.0-expression-beadchip" class="section level3" number="9.1.13">
 <h3 number="9.1.13"><span class="header-section-number">9.1.13</span> GPL6101: Illumina ratRef-12 v1.0 expression beadchip</h3>
-<p><strong>Start</strong>: 2024-11-09 08:23:54.744314</p>
+<p><strong>Start</strong>: 2025-06-03 07:25:02.873363</p>
 <pre class="r"><code>## Import plateform
 platName &lt;- &quot;GPL6101&quot;
 gds &lt;- getGEO(platName, destdir=geoPath)
@@ -3431,9 +3431,9 @@ BED:::loadProbes(
     platform=platName,
     dbname=dbname
 )</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:23:58.16895</p>
+<p><strong>End</strong>: 2025-06-03 07:25:06.75622</p>
 <!-- ## Probes from biomaRt -->
-<!-- **Start**: 2024-11-09 08:23:58.169365 -->
+<!-- **Start**: 2025-06-03 07:25:06.756648 -->
 <!-- ```{r} -->
 <!-- library(biomaRt) -->
 <!-- bm <- "ENSEMBL_MART_ENSEMBL" -->
@@ -3499,12 +3499,12 @@ BED:::loadProbes(
 <!--    } -->
 <!-- } -->
 <!-- ``` -->
-<!-- **End**: 2024-11-09 08:23:58.169621 -->
+<!-- **End**: 2025-06-03 07:25:06.756907 -->
 </div>
 </div>
 <div id="probes-from-ensembl" class="section level2" number="9.2">
 <h2 number="9.2"><span class="header-section-number">9.2</span> Probes from Ensembl</h2>
-<p><strong>Start</strong>: 2024-11-09 08:23:58.169849</p>
+<p><strong>Start</strong>: 2025-06-03 07:25:06.75713</p>
 <pre class="r"><code>to_exclude &lt;- c(
    &quot;affy_huex_1_0_st_v2&quot;,
    &quot;affy_moex_1_0_st_v1&quot;,
@@ -3693,7 +3693,7 @@ load_ensembl_probes(ensembl_Rnorvegicus)
 message(&quot;Ensembl probes for Sscrofa&quot;)
 dump_ensembl_func(ensembl_Sscrofa)
 load_ensembl_probes(ensembl_Sscrofa)</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:37:59.167324</p>
+<p><strong>End</strong>: 2025-06-03 07:40:32.190511</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -3725,9 +3725,9 @@ for(db in names(otherIdURL)){
 </div>
 <div id="load-lucene-indexes" class="section level1" number="11">
 <h1 number="11"><span class="header-section-number">11</span> Load Lucene Indexes</h1>
-<p><strong>Start</strong>: 2024-11-09 08:37:59.286608</p>
+<p><strong>Start</strong>: 2025-06-03 07:40:32.316579</p>
 <pre class="r"><code>BED:::loadLuceneIndexes()</code></pre>
-<p><strong>End</strong>: 2024-11-09 08:37:59.347294</p>
+<p><strong>End</strong>: 2025-06-03 07:40:32.383522</p>
 <!----------------------------------------------------------------->
 <!----------------------------------------------------------------->
 </div>
@@ -3758,53 +3758,52 @@ for(db in names(otherIdURL)){
 ## other attached packages:
 ##  [1] GEOquery_2.74.0     Biobase_2.66.0      BiocGenerics_0.52.0
 ##  [4] stringr_1.5.1       readr_2.1.5         dplyr_1.1.4        
-##  [7] rvest_1.0.4         jsonlite_1.8.9      BED_1.6.0          
-## [10] visNetwork_2.1.2    neo2R_2.4.2         knitr_1.49         
+##  [7] rvest_1.0.4         jsonlite_2.0.0      BED_1.6.2          
+## [10] visNetwork_2.1.2    neo2R_2.4.2         knitr_1.50         
 ## 
 ## loaded via a namespace (and not attached):
-##  [1] tidyselect_1.2.1            R.utils_2.12.3             
-##  [3] fastmap_1.2.0               promises_1.3.0             
-##  [5] XML_3.99-0.17               digest_0.6.37              
-##  [7] mime_0.12                   lifecycle_1.0.4            
-##  [9] statmod_1.5.0               processx_3.8.4             
+##  [1] tidyselect_1.2.1            R.utils_2.13.0             
+##  [3] fastmap_1.2.0               promises_1.3.3             
+##  [5] XML_3.99-0.18               digest_0.6.37              
+##  [7] mime_0.13                   lifecycle_1.0.4            
+##  [9] statmod_1.5.0               processx_3.8.6             
 ## [11] magrittr_2.0.3              compiler_4.4.1             
-## [13] rlang_1.1.4                 sass_0.4.9                 
-## [15] tools_4.4.1                 utf8_1.2.4                 
-## [17] yaml_2.3.10                 data.table_1.16.2          
-## [19] S4Arrays_1.6.0              htmlwidgets_1.6.4          
-## [21] bit_4.5.0                   curl_6.0.0                 
-## [23] DelayedArray_0.32.0         xml2_1.3.6                 
-## [25] abind_1.4-8                 websocket_1.4.2            
-## [27] miniUI_0.1.1.1              purrr_1.0.2                
-## [29] withr_3.0.2                 R.oo_1.27.0                
-## [31] grid_4.4.1                  stats4_4.4.1               
-## [33] fansi_1.0.6                 xtable_1.8-4               
-## [35] SummarizedExperiment_1.36.0 cli_3.6.3                  
-## [37] rmarkdown_2.29              crayon_1.5.3               
-## [39] generics_0.1.3              rstudioapi_0.17.1          
-## [41] httr_1.4.7                  tzdb_0.4.0                 
-## [43] cachem_1.1.0                chromote_0.3.1             
-## [45] zlibbioc_1.52.0             parallel_4.4.1             
-## [47] XVector_0.46.0              matrixStats_1.4.1          
-## [49] base64enc_0.1-3             vctrs_0.6.5                
-## [51] Matrix_1.7-1                IRanges_2.40.0             
-## [53] hms_1.1.3                   S4Vectors_0.44.0           
-## [55] bit64_4.5.2                 limma_3.62.1               
-## [57] tidyr_1.3.1                 jquerylib_0.1.4            
-## [59] glue_1.8.0                  ps_1.8.1                   
-## [61] DT_0.33                     stringi_1.8.4              
-## [63] later_1.3.2                 GenomeInfoDb_1.42.0        
-## [65] GenomicRanges_1.58.0        UCSC.utils_1.2.0           
-## [67] tibble_3.2.1                pillar_1.9.0               
-## [69] rappdirs_0.3.3              htmltools_0.5.8.1          
-## [71] GenomeInfoDbData_1.2.13     httr2_1.0.6                
-## [73] R6_2.5.1                    vroom_1.6.5                
-## [75] evaluate_1.0.1              shiny_1.9.1                
-## [77] lattice_0.22-6              rentrez_1.2.3              
-## [79] R.methodsS3_1.8.2           httpuv_1.6.15              
-## [81] bslib_0.8.0                 Rcpp_1.0.13-1              
-## [83] SparseArray_1.6.0           xfun_0.49                  
-## [85] MatrixGenerics_1.18.0       pkgconfig_2.0.3</code></pre>
+## [13] rlang_1.1.6                 sass_0.4.10                
+## [15] tools_4.4.1                 yaml_2.3.10                
+## [17] data.table_1.17.4           S4Arrays_1.6.0             
+## [19] htmlwidgets_1.6.4           bit_4.6.0                  
+## [21] curl_6.2.3                  DelayedArray_0.32.0        
+## [23] xml2_1.3.8                  abind_1.4-8                
+## [25] websocket_1.4.4             miniUI_0.1.2               
+## [27] withr_3.0.2                 purrr_1.0.4                
+## [29] R.oo_1.27.1                 grid_4.4.1                 
+## [31] stats4_4.4.1                xtable_1.8-4               
+## [33] SummarizedExperiment_1.36.0 cli_3.6.5                  
+## [35] rmarkdown_2.29              crayon_1.5.3               
+## [37] generics_0.1.4              rstudioapi_0.17.1          
+## [39] httr_1.4.7                  tzdb_0.5.0                 
+## [41] cachem_1.1.0                chromote_0.5.1             
+## [43] zlibbioc_1.52.0             parallel_4.4.1             
+## [45] XVector_0.46.0              matrixStats_1.5.0          
+## [47] base64enc_0.1-3             vctrs_0.6.5                
+## [49] Matrix_1.7-3                IRanges_2.40.1             
+## [51] hms_1.1.3                   S4Vectors_0.44.0           
+## [53] bit64_4.6.0-1               limma_3.62.2               
+## [55] jquerylib_0.1.4             tidyr_1.3.1                
+## [57] glue_1.8.0                  ps_1.9.1                   
+## [59] DT_0.33                     stringi_1.8.7              
+## [61] later_1.4.2                 GenomeInfoDb_1.42.3        
+## [63] GenomicRanges_1.58.0        UCSC.utils_1.2.0           
+## [65] tibble_3.2.1                pillar_1.10.2              
+## [67] rappdirs_0.3.3              htmltools_0.5.8.1          
+## [69] GenomeInfoDbData_1.2.13     httr2_1.1.2                
+## [71] R6_2.6.1                    vroom_1.6.5                
+## [73] evaluate_1.0.3              shiny_1.10.0               
+## [75] lattice_0.22-7              rentrez_1.2.3              
+## [77] R.methodsS3_1.8.2           httpuv_1.6.16              
+## [79] bslib_0.9.0                 Rcpp_1.0.14                
+## [81] SparseArray_1.6.2           xfun_0.52                  
+## [83] MatrixGenerics_1.18.1       pkgconfig_2.0.3</code></pre>
 </div>
 
 

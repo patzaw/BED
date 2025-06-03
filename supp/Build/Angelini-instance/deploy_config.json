@@ -4,10 +4,10 @@
    "BED_DATA": "___ROOT___/.cache/BED/neo4jData",
    "BED_IMPORT": "___ROOT___/tmp/BED/working/neo4jImport",
 
-   "ZENODO_RECORD": "14048653",
+   "ZENODO_RECORD": "15582254",
 
    "CONTAINER": "bed",
-   "NJ_VERSION": "5.25.1",
+   "NJ_VERSION": "5.26.7",
 
    "NJ_HTTP_PORT": "5454",
    "NJ_BOLT_PORT": "5687",
@@ -17,7 +17,7 @@
    "NJ_PAGE_CACHE": "4G",
 
    "BED_INSTANCE": "Genodesy-Human",
-   "BED_VERSION": "2024.11.07",
+   "BED_VERSION": "2025.06.02",
 
    "BED_NEW_INSTANCE": "Angelini-Human"
 }
