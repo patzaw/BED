@@ -51,5 +51,5 @@ fi
 
 export H_DIR=$(dirname $0)/helpers
 
-$H_DIR/zenodo_upload.sh $ZENODO_RECORD $DUMP_FILE -v
+/bin/bash $H_DIR/zenodo_upload.sh $ZENODO_RECORD $DUMP_FILE -v
 
