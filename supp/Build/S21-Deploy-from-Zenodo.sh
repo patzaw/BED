@@ -103,7 +103,6 @@ if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
    R -e '
       library(BED)
       library(jsonlite)
-      ## Config ----
       config <- jsonlite::read_json("deploy_config.json")
       connectToBed(
          url=sprintf("localhost:%s", config$NJ_HTTP_PORT),

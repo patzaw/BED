@@ -6,16 +6,15 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>Biological Entity Dictionary (BED) • BED</title>
-<!-- favicons --><link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
-<link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
-<link rel="apple-touch-icon" type="image/png" sizes="180x180" href="apple-touch-icon.png">
-<link rel="apple-touch-icon" type="image/png" sizes="120x120" href="apple-touch-icon-120x120.png">
-<link rel="apple-touch-icon" type="image/png" sizes="76x76" href="apple-touch-icon-76x76.png">
-<link rel="apple-touch-icon" type="image/png" sizes="60x60" href="apple-touch-icon-60x60.png">
+<!-- favicons --><link rel="icon" type="image/png" sizes="96x96" href="favicon-96x96.png">
+<link rel="icon" type="”image/svg+xml”" href="favicon.svg">
+<link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+<link rel="icon" sizes="any" href="favicon.ico">
+<link rel="manifest" href="site.webmanifest">
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.4.2/css/all.min.css" rel="stylesheet">
-<link href="deps/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet">
+<script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="deps/headroom-0.11.0/headroom.min.js"></script><script src="deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="deps/search-1.0.0/fuse.min.js"></script><script src="deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="pkgdown.js"></script><meta property="og:title" content="Biological Entity Dictionary (BED)">
 <meta name="description" content="An interface for the Neo4j database providing mapping between different identifiers of biological entities. This Biological Entity Dictionary (BED) has been developed to address three main challenges. The first one is related to the completeness of identifier mappings. Indeed, direct mapping information provided by the different systems are not always complete and can be enriched by mappings provided by other resources. More interestingly, direct mappings not identified by any of these resources can be indirectly inferred by using mappings to a third reference. For example, many human Ensembl gene ID are not directly mapped to any Entrez gene ID but such mappings can be inferred using respective mappings to HGNC ID. The second challenge is related to the mapping of deprecated identifiers. Indeed, entity identifiers can change from one resource release to another. The identifier history is provided by some resources, such as Ensembl or the NCBI, but it is generally not used by mapping tools. The third challenge is related to the automation of the mapping process according to the relationships between the biological entities of interest. Indeed, mapping between gene and protein ID scopes should not be done the same way than between two scopes regarding gene ID. Also, converting identifiers from different organisms should be possible using gene orthologs information. The method has been published by Godard and van Eyll (2018) &lt;doi:10.12688/f1000research.13925.3&gt;.">
 <meta property="og:description" content="An interface for the Neo4j database providing mapping between different identifiers of biological entities. This Biological Entity Dictionary (BED) has been developed to address three main challenges. The first one is related to the completeness of identifier mappings. Indeed, direct mapping information provided by the different systems are not always complete and can be enriched by mappings provided by other resources. More interestingly, direct mappings not identified by any of these resources can be indirectly inferred by using mappings to a third reference. For example, many human Ensembl gene ID are not directly mapped to any Entrez gene ID but such mappings can be inferred using respective mappings to HGNC ID. The second challenge is related to the mapping of deprecated identifiers. Indeed, entity identifiers can change from one resource release to another. The identifier history is provided by some resources, such as Ensembl or the NCBI, but it is generally not used by mapping tools. The third challenge is related to the automation of the mapping process according to the relationships between the biological entities of interest. Indeed, mapping between gene and protein ID scopes should not be done the same way than between two scopes regarding gene ID. Also, converting identifiers from different organisms should be possible using gene orthologs information. The method has been published by Godard and van Eyll (2018) &lt;doi:10.12688/f1000research.13925.3&gt;.">
@@ -35,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="index.html">BED</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.0</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.2</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,6 +99,8 @@
 <li>
 <a href="https://CRAN.R-project.org/package=shiny" class="external-link">shiny</a>: Web Application Framework for R</li>
 <li>
+<a href="https://CRAN.R-project.org/package=htmltools" class="external-link">htmltools</a>: Tools for HTML</li>
+<li>
 <a href="https://CRAN.R-project.org/package=DT" class="external-link">DT</a>: A Wrapper of the JavaScript Library ‘DataTables’</li>
 <li>
 <a href="https://CRAN.R-project.org/package=miniUI" class="external-link">miniUI</a>: Shiny UI Widgets for Small Screens</li>
@@ -118,8 +119,6 @@
 <a href="https://CRAN.R-project.org/package=GEOquery" class="external-link">GEOquery</a>: Get data from NCBI Gene Expression Omnibus (GEO)</li>
 <li>
 <a href="https://CRAN.R-project.org/package=base64enc" class="external-link">base64enc</a>: Tools for base64 encoding</li>
-<li>
-<a href="https://CRAN.R-project.org/package=htmltools" class="external-link">htmltools</a>: Tools for HTML</li>
 <li>
 <a href="https://CRAN.R-project.org/package=webshot2" class="external-link">webshot2</a>: Take Screenshots of Web Pages</li>
 <li>
@@ -179,7 +178,7 @@
 <li>HGNC</li>
 <li>GEOquery</li>
 </ul>
-<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/14048653" class="external-link">Zenodo</a>.</p>
+<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/15582254" class="external-link">Zenodo</a>.</p>
 <p>The following shell commands can be adapted according to user needs and called to get a running Neo4j container with a BED database instance.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
@@ -191,7 +190,7 @@
 <span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="cf">fi</span></span>
 <span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="fu">mkdir</span> <span class="at">-p</span> ~/.cache/BED/neo4jData</span>
 <span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a></span>
-<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="at">-e</span> ~/.cache/BED/neo4jDump<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="st">"</span><span class="va">$2</span><span class="st">"</span> != <span class="st">"--use-existing-dump"</span> <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="at">-e</span> ~/.cache/BED/neo4jDump<span class="kw">;</span> <span class="cf">then</span></span>
 <span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a>   <span class="bu">echo</span> <span class="st">"~/.cache/BED/neo4jDump directory exists ==&gt; abort - Remove it before proceeding"</span> <span class="op">&gt;&amp;</span><span class="dv">2</span></span>
 <span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a>   <span class="bu">exit</span></span>
 <span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="cf">fi</span></span>
@@ -199,32 +198,88 @@
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
 <span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">## Download data ----</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/14048653/files/</span>
-<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2024.11.07.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
-<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="co">####################################################@</span></span>
-<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">## Import data ----</span></span>
-<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--interactive</span> <span class="at">--tty</span> <span class="at">--rm</span> <span class="dt">\</span></span>
-<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
-<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jDump:/backups <span class="dt">\</span></span>
-<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>    neo4j:5.25.1 <span class="dt">\</span></span>
-<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>neo4j-admin database load neo4j <span class="at">--from-path</span><span class="op">=</span>/backups</span>
-<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a></span>
-<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">####################################################@</span></span>
-<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">## Start neo4j ----</span></span>
-<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a>   <span class="at">--name</span> bed_2024.11.07 <span class="dt">\</span></span>
-<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
-<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
-<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
-<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_max__size=4G <span class="dt">\</span></span>
-<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_pagecache_size=4G <span class="dt">\</span></span>
-<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_read__only=true <span class="dt">\</span></span>
-<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_AUTH=none <span class="dt">\</span></span>
-<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
-<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs <span class="dt">\</span></span>
-<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
-<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a>   neo4j:5.25.1</span></code></pre></div>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/15582254/files/</span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="bu">test</span> <span class="at">-e</span> ~/.cache/BED/neo4jDump/neo4j.dump<span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>   <span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2025.06.02.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">## Import data ----</span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--interactive</span> <span class="at">--tty</span> <span class="at">--rm</span> <span class="dt">\</span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jDump:/backups <span class="dt">\</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    neo4j:5.26.7 <span class="dt">\</span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>neo4j-admin database load neo4j <span class="at">--from-path</span><span class="op">=</span>/backups</span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">## Additional data ----</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="st">"</span><span class="va">$BED_NEW_INSTANCE</span><span class="st">"</span> != <span class="st">"null"</span> <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="st">"</span><span class="va">$BED_IMPORT</span><span class="st">"</span> != <span class="st">"null"</span><span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>   <span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>      <span class="at">--name</span> bed_2025.06.02 <span class="dt">\</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>      <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>      <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_max__size=4G <span class="dt">\</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_pagecache_size=4G <span class="dt">\</span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_read__only=false <span class="dt">\</span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_AUTH=none <span class="dt">\</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a>       <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_directories_import=import <span class="dt">\</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>       <span class="at">--volume</span> <span class="va">$BED_IMPORT</span>:/var/lib/neo4j/import <span class="dt">\</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>      <span class="at">--volume</span> ~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>      <span class="at">--volume</span> ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs <span class="dt">\</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>      neo4j:5.26.7</span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>   <span class="fu">sleep</span> 20</span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a>   <span class="va">uid</span><span class="op">=</span><span class="kw">`</span><span class="fu">id</span> <span class="at">-u</span><span class="kw">`</span></span>
+<span id="cb6-53"><a href="#cb6-53" tabindex="-1"></a>   <span class="va">gid</span><span class="op">=</span><span class="kw">`</span><span class="fu">id</span> <span class="at">-g</span><span class="kw">`</span></span>
+<span id="cb6-54"><a href="#cb6-54" tabindex="-1"></a>   <span class="fu">sudo</span> chown <span class="va">$uid</span>:<span class="va">$gid</span> <span class="va">$BED_IMPORT</span></span>
+<span id="cb6-55"><a href="#cb6-55" tabindex="-1"></a>   <span class="fu">chmod</span> a+rx <span class="va">$BED_IMPORT</span></span>
+<span id="cb6-56"><a href="#cb6-56" tabindex="-1"></a></span>
+<span id="cb6-57"><a href="#cb6-57" tabindex="-1"></a>   <span class="bu">cd</span> <span class="va">$1</span></span>
+<span id="cb6-58"><a href="#cb6-58" tabindex="-1"></a></span>
+<span id="cb6-59"><a href="#cb6-59" tabindex="-1"></a>   <span class="ex">R</span> <span class="at">-e</span> <span class="st">'</span></span>
+<span id="cb6-60"><a href="#cb6-60" tabindex="-1"></a><span class="st">      library(BED)</span></span>
+<span id="cb6-61"><a href="#cb6-61" tabindex="-1"></a><span class="st">      library(jsonlite)</span></span>
+<span id="cb6-62"><a href="#cb6-62" tabindex="-1"></a><span class="st">      config &lt;- jsonlite::read_json("deploy_config.json")</span></span>
+<span id="cb6-63"><a href="#cb6-63" tabindex="-1"></a><span class="st">      connectToBed(</span></span>
+<span id="cb6-64"><a href="#cb6-64" tabindex="-1"></a><span class="st">         url=sprintf("localhost:%s", config5454),</span></span>
+<span id="cb6-65"><a href="#cb6-65" tabindex="-1"></a><span class="st">         remember=FALSE,</span></span>
+<span id="cb6-66"><a href="#cb6-66" tabindex="-1"></a><span class="st">         useCache=TRUE,</span></span>
+<span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a><span class="st">         importPath=config$BED_IMPORT</span></span>
+<span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a><span class="st">      )</span></span>
+<span id="cb6-69"><a href="#cb6-69" tabindex="-1"></a><span class="st">      bedInstance &lt;- config$BED_NEW_INSTANCE</span></span>
+<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a><span class="st">      bedVersion &lt;- config2025.06.02</span></span>
+<span id="cb6-71"><a href="#cb6-71" tabindex="-1"></a><span class="st">      BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)</span></span>
+<span id="cb6-72"><a href="#cb6-72" tabindex="-1"></a><span class="st">   '</span></span>
+<span id="cb6-73"><a href="#cb6-73" tabindex="-1"></a></span>
+<span id="cb6-74"><a href="#cb6-74" tabindex="-1"></a>   <span class="cf">if</span> <span class="bu">test</span> <span class="at">-e</span> additional-data.R <span class="kw">;</span> <span class="cf">then</span></span>
+<span id="cb6-75"><a href="#cb6-75" tabindex="-1"></a>      <span class="ex">Rscript</span> additional-data.R</span>
+<span id="cb6-76"><a href="#cb6-76" tabindex="-1"></a>   <span class="cf">fi</span></span>
+<span id="cb6-77"><a href="#cb6-77" tabindex="-1"></a></span>
+<span id="cb6-78"><a href="#cb6-78" tabindex="-1"></a>   <span class="bu">cd</span> <span class="at">-</span></span>
+<span id="cb6-79"><a href="#cb6-79" tabindex="-1"></a></span>
+<span id="cb6-80"><a href="#cb6-80" tabindex="-1"></a>   <span class="ex">docker</span> stop bed_2025.06.02</span>
+<span id="cb6-81"><a href="#cb6-81" tabindex="-1"></a>   <span class="ex">docker</span> rm bed_2025.06.02</span>
+<span id="cb6-82"><a href="#cb6-82" tabindex="-1"></a></span>
+<span id="cb6-83"><a href="#cb6-83" tabindex="-1"></a><span class="cf">fi</span></span>
+<span id="cb6-84"><a href="#cb6-84" tabindex="-1"></a></span>
+<span id="cb6-85"><a href="#cb6-85" tabindex="-1"></a></span>
+<span id="cb6-86"><a href="#cb6-86" tabindex="-1"></a><span class="co">####################################################@</span></span>
+<span id="cb6-87"><a href="#cb6-87" tabindex="-1"></a><span class="co">## Start neo4j ----</span></span>
+<span id="cb6-88"><a href="#cb6-88" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
+<span id="cb6-89"><a href="#cb6-89" tabindex="-1"></a>   <span class="at">--name</span> bed_2025.06.02 <span class="dt">\</span></span>
+<span id="cb6-90"><a href="#cb6-90" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
+<span id="cb6-91"><a href="#cb6-91" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
+<span id="cb6-92"><a href="#cb6-92" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
+<span id="cb6-93"><a href="#cb6-93" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_max__size=4G <span class="dt">\</span></span>
+<span id="cb6-94"><a href="#cb6-94" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_pagecache_size=4G <span class="dt">\</span></span>
+<span id="cb6-95"><a href="#cb6-95" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_read__only=true <span class="dt">\</span></span>
+<span id="cb6-96"><a href="#cb6-96" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_AUTH=none <span class="dt">\</span></span>
+<span id="cb6-97"><a href="#cb6-97" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
+<span id="cb6-98"><a href="#cb6-98" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs <span class="dt">\</span></span>
+<span id="cb6-99"><a href="#cb6-99" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
+<span id="cb6-100"><a href="#cb6-100" tabindex="-1"></a>   neo4j:5.26.7</span></code></pre></div>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
@@ -285,7 +340,7 @@
 <h2 data-toc-skip>Developers</h2>
 <ul class="list-unstyled">
 <li>
-<a href="https://patzaw.github.io" class="external-link">Patrice Godard</a> <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0001-6257-9730" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a> </li>
+<a href="https://patzaw.github.io" class="external-link">Patrice Godard</a> <br><small class="roles"> Author, maintainer, copyright holder </small> <a href="https://orcid.org/0000-0001-6257-9730" target="orcid.widget" aria-label="ORCID" class="external-link"><span class="fab fa-orcid orcid" aria-hidden="true"></span></a>  </li>
 </ul>
 </div>
 
@@ -300,7 +355,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
 </div>
 
     </footer>

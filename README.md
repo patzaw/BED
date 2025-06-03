@@ -30,6 +30,7 @@ method has been published by Godard and van Eyll (2018)
 <doi:10.12688/f1000research.13925.3>.
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Installation
@@ -56,6 +57,8 @@ The following R packages available on CRAN are required:
 - [utils](https://CRAN.R-project.org/package=utils): The R Utils Package
 - [shiny](https://CRAN.R-project.org/package=shiny): Web Application
   Framework for R
+- [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
+  HTML
 - [DT](https://CRAN.R-project.org/package=DT): A Wrapper of the
   JavaScript Library ‘DataTables’
 - [miniUI](https://CRAN.R-project.org/package=miniUI): Shiny UI Widgets
@@ -75,8 +78,6 @@ And those are suggested:
   NCBI Gene Expression Omnibus (GEO)
 - [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
   base64 encoding
-- [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
-  HTML
 - [webshot2](https://CRAN.R-project.org/package=webshot2): Take
   Screenshots of Web Pages
 - [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
@@ -104,6 +105,7 @@ file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
 ```
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Documentation
@@ -122,6 +124,7 @@ findBeids()
 ```
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Citing BED
@@ -135,6 +138,7 @@ Dictionary based on a graph data model (version 3; peer review: 2
 approved). F1000Research, 7:195. </a>
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Available BED database instance
@@ -153,7 +157,7 @@ from the following resources:
 - GEOquery
 
 The Neo4j graph database is available as a dump file shared in
-[Zenodo](https://zenodo.org/records/14048653).
+[Zenodo](https://zenodo.org/records/15582254).
 
 The following shell commands can be adapted according to user needs and
 called to get a running Neo4j container with a BED database instance.
@@ -169,7 +173,7 @@ if test -e ~/.cache/BED/neo4jData; then
 fi
 mkdir -p ~/.cache/BED/neo4jData
 
-if test -e ~/.cache/BED/neo4jDump; then
+if test "$2" != "--use-existing-dump" && test -e ~/.cache/BED/neo4jDump; then
    echo "~/.cache/BED/neo4jDump directory exists ==> abort - Remove it before proceeding" >&2
    exit
 fi
@@ -177,21 +181,77 @@ mkdir -p ~/.cache/BED/neo4jDump
 
 ####################################################@
 ## Download data ----
-export BED_REP_URL=https://zenodo.org/records/14048653/files/
-wget $BED_REP_URL/dump_bed_Genodesy-Human_2024.11.07.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
+export BED_REP_URL=https://zenodo.org/records/15582254/files/
+if ! test -e ~/.cache/BED/neo4jDump/neo4j.dump; then
+   wget $BED_REP_URL/dump_bed_Genodesy-Human_2025.06.02.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
+fi
 
 ####################################################@
 ## Import data ----
 docker run --interactive --tty --rm \
    --volume=~/.cache/BED/neo4jData/data:/data \
    --volume=~/.cache/BED/neo4jDump:/backups \
-    neo4j:5.25.1 \
+    neo4j:5.26.7 \
 neo4j-admin database load neo4j --from-path=/backups
+
+####################################################@
+## Additional data ----
+if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
+
+   docker run -d \
+      --name bed_2025.06.02 \
+      --publish=5454:7474 \
+      --publish=5687:7687 \
+      --env=NEO4J_dbms_memory_heap_initial__size=4G \
+      --env=NEO4J_dbms_memory_heap_max__size=4G \
+      --env=NEO4J_dbms_memory_pagecache_size=4G \
+      --env=NEO4J_dbms_read__only=false \
+      --env=NEO4J_AUTH=none \
+       --env=NEO4J_dbms_directories_import=import \
+       --volume $BED_IMPORT:/var/lib/neo4j/import \
+      --volume ~/.cache/BED/neo4jData/data:/data \
+      --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
+      neo4j:5.26.7
+
+   sleep 20
+   uid=`id -u`
+   gid=`id -g`
+   sudo chown $uid:$gid $BED_IMPORT
+   chmod a+rx $BED_IMPORT
+
+   cd $1
+
+   R -e '
+      library(BED)
+      library(jsonlite)
+      config <- jsonlite::read_json("deploy_config.json")
+      connectToBed(
+         url=sprintf("localhost:%s", config5454),
+         remember=FALSE,
+         useCache=TRUE,
+         importPath=config$BED_IMPORT
+      )
+      bedInstance <- config$BED_NEW_INSTANCE
+      bedVersion <- config2025.06.02
+      BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
+   '
+
+   if test -e additional-data.R ; then
+      Rscript additional-data.R
+   fi
+
+   cd -
+
+   docker stop bed_2025.06.02
+   docker rm bed_2025.06.02
+
+fi
+
 
 ####################################################@
 ## Start neo4j ----
 docker run -d \
-   --name bed_2024.11.07 \
+   --name bed_2025.06.02 \
    --publish=5454:7474 \
    --publish=5687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=4G \
@@ -202,10 +262,11 @@ docker run -d \
    --volume ~/.cache/BED/neo4jData/data:/data \
    --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
    --restart=always \
-   neo4j:5.25.1
+   neo4j:5.26.7
 ```
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Build a BED database instance
@@ -227,6 +288,7 @@ document.
 Using the S03-Dump-BED.sh script
 
 <!----------------------------------------------------------------------------->
+
 <!----------------------------------------------------------------------------->
 
 ## Docker notes
