@@ -82,6 +82,11 @@ highlightText <- function(
 #' @param tableHeight height of the result table (default: 150)
 #' @param highlightStyle style to apply to the text to highlight
 #' @param highlightClass class to apply to the text to highlight
+#' @param inputUpdateOn A character vector specifying when the input should be
+#' updated. Options are "change" (default) and "blur".
+#' Use "change" to update the input immediately whenever the value changes.
+#' Use "blur"to delay the input update until the input loses focus
+#' (the user moves away from the input), or when Enter is pressed.
 #'
 #' @return A reactive data.frame with the following columns:
 #' - **beid**: the BE identifier
@@ -144,7 +149,8 @@ beidsServer <- function(
    compact = FALSE,
    tableHeight=150,
    highlightStyle = "", # "background-color:yellow; font-weight:bold;",
-   highlightClass = "bed-search"
+   highlightClass = "bed-search",
+   inputUpdateOn = c("change", "blur")
 ){
    symbolStyle <- paste(
       "text-decoration: underline;",
@@ -179,7 +185,8 @@ beidsServer <- function(
                         label=searchLabel,
                         placeholder=
                            'e.g. snca, ENSG00000186868, "M-CSF receptor"',
-                        width="100%"
+                        width="100%",
+                        updateOn = inputUpdateOn
                      )
                   )$find("input")$addAttrs("autocomplete" = "off")$allTags()
                ),

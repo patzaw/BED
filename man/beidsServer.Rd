@@ -24,7 +24,8 @@ beidsServer(
   compact = FALSE,
   tableHeight = 150,
   highlightStyle = "",
-  highlightClass = "bed-search"
+  highlightClass = "bed-search",
+  inputUpdateOn = c("change", "blur")
 )
 
 beidsUI(id)
@@ -69,6 +70,12 @@ more granularity (taken into account only when toGene == TRUE)}
 \item{highlightStyle}{style to apply to the text to highlight}
 
 \item{highlightClass}{class to apply to the text to highlight}
+
+\item{inputUpdateOn}{A character vector specifying when the input should be
+updated. Options are "change" (default) and "blur".
+Use "change" to update the input immediately whenever the value changes.
+Use "blur"to delay the input update until the input loses focus
+(the user moves away from the input), or when Enter is pressed.}
 }
 \value{
 A reactive data.frame with the following columns:

@@ -1,4 +1,9 @@
 <!----------------------------------------------------------------------------->
+## Version 1.6.3
+
+- Available option in beidsModule: Update input when the user press Enter
+
+<!----------------------------------------------------------------------------->
 ## Version 1.6.2
 
 - Take alternative names and symbols from Uniprot
