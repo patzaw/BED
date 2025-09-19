@@ -43,6 +43,7 @@ library(rvest)
 library(dplyr)
 library(readr)
 library(stringr)
+options(timeout = 36000)
 ##
 config <- jsonlite::read_json("build_config.json")
 config <- lapply(
