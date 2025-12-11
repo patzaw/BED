@@ -21,6 +21,7 @@ beidsServer(
   oneColumn = FALSE,
   withId = FALSE,
   maxHits = 75,
+  fuzzy = TRUE,
   compact = FALSE,
   tableHeight = 150,
   highlightStyle = "",
@@ -62,6 +63,9 @@ more granularity (taken into account only when toGene == TRUE)}
 \item{withId}{if FALSE and one column, the BEIDs are not shown}
 
 \item{maxHits}{maximum number of raw hits to return}
+
+\item{fuzzy}{if TRUE (default) a fuzzy search is applied on names and
+symbols.}
 
 \item{compact}{compact display (default: FALSE)}
 

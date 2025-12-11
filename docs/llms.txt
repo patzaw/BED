@@ -1,0 +1,501 @@
+# README
+
+# Biological Entity Dictionary ![](reference/figures/BED.png)
+
+[![CRAN_Status_Badge](https://www.r-pkg.org/badges/version/BED)](https://cran.r-project.org/package=BED)
+[![](https://cranlogs.r-pkg.org/badges/BED)](https://cran.r-project.org/package=BED)
+
+An interface for the ‘Neo4j’ database providing mapping between
+different identifiers of biological entities. This Biological Entity
+Dictionary (BED) has been developed to address three main challenges.
+The first one is related to the completeness of identifier mappings.
+Indeed, direct mapping information provided by the different systems are
+not always complete and can be enriched by mappings provided by other
+resources. More interestingly, direct mappings not identified by any of
+these resources can be indirectly inferred by using mappings to a third
+reference. For example, many human Ensembl gene ID are not directly
+mapped to any Entrez gene ID but such mappings can be inferred using
+respective mappings to HGNC ID. The second challenge is related to the
+mapping of deprecated identifiers. Indeed, entity identifiers can change
+from one resource release to another. The identifier history is provided
+by some resources, such as Ensembl or the NCBI, but it is generally not
+used by mapping tools. The third challenge is related to the automation
+of the mapping process according to the relationships between the
+biological entities of interest. Indeed, mapping between gene and
+protein ID scopes should not be done the same way than between two
+scopes regarding gene ID. Also, converting identifiers from different
+organisms should be possible using gene orthologs information. The
+method has been published by Godard and van Eyll (2018)
+<doi:10.12688/f1000research.13925.3>.
+
+## Installation
+
+### From CRAN
+
+``` r
+install.packages("BED")
+```
+
+### Dependencies
+
+The following R packages available on CRAN are required:
+
+- [neo2R](https://CRAN.R-project.org/package=neo2R): Neo4j to R
+- [visNetwork](https://CRAN.R-project.org/package=visNetwork): Network
+  Visualization using ‘vis.js’ Library
+- [dplyr](https://CRAN.R-project.org/package=dplyr): A Grammar of Data
+  Manipulation
+- [readr](https://CRAN.R-project.org/package=readr): Read Rectangular
+  Text Data
+- [stringr](https://CRAN.R-project.org/package=stringr): Simple,
+  Consistent Wrappers for Common String Operations
+- [utils](https://CRAN.R-project.org/package=utils): The R Utils Package
+- [shiny](https://CRAN.R-project.org/package=shiny): Web Application
+  Framework for R
+- [htmltools](https://CRAN.R-project.org/package=htmltools): Tools for
+  HTML
+- [DT](https://CRAN.R-project.org/package=DT): A Wrapper of the
+  JavaScript Library ‘DataTables’
+- [miniUI](https://CRAN.R-project.org/package=miniUI): Shiny UI Widgets
+  for Small Screens
+- [rstudioapi](https://CRAN.R-project.org/package=rstudioapi): Safely
+  Access the RStudio API
+
+And those are suggested:
+
+- [knitr](https://CRAN.R-project.org/package=knitr): A General-Purpose
+  Package for Dynamic Report Generation in R
+- [rmarkdown](https://CRAN.R-project.org/package=rmarkdown): Dynamic
+  Documents for R
+- [biomaRt](https://CRAN.R-project.org/package=biomaRt): Interface to
+  BioMart databases (i.e. Ensembl)
+- [GEOquery](https://CRAN.R-project.org/package=GEOquery): Get data from
+  NCBI Gene Expression Omnibus (GEO)
+- [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
+  base64 encoding
+- [webshot2](https://CRAN.R-project.org/package=webshot2): Take
+  Screenshots of Web Pages
+- [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
+  (HTTP/FTP/…) Client Interface for R
+
+### Installation from github
+
+``` r
+devtools::install_github("patzaw/BED")
+```
+
+### Possible issue when updating from releases \<= 1.3.0
+
+If you get an error like the following…
+
+``` R
+Error: package or namespace load failed for ‘BED’:
+ .onLoad failed in loadNamespace() for 'BED', details:
+  call: connections[[connection]][["cache"]]
+  error: subscript out of bounds
+```
+
+… remove the BED folder located here:
+
+``` r
+file.exists(file.path(Sys.getenv("HOME"), "R", "BED"))
+```
+
+## Documentation
+
+Documentation is provided in the
+[BED](https://patzaw.github.io/BED/articles/BED.html) vignette.
+
+A public instance of the [BED Neo4j
+database](#available-bed-database-instance) is provided for convenience
+and can be reached as follows:
+
+``` r
+library(BED)
+connectToBed("https://genodesy.org/BED/", remember=TRUE, useCache=TRUE)
+findBeids()
+```
+
+## Citing BED
+
+This package and the underlying research has been published in this peer
+reviewed article:
+
+[Patrice Godard and Jonathan van Eyll (2018). BED: a Biological Entity
+Dictionary based on a graph data model (version 3; peer review: 2
+approved). F1000Research,
+7:195.](https://doi.org/10.12688/f1000research.13925.3)
+
+## Available BED database instance
+
+An instance of the BED database (UCB-Human) has been built using the
+script provided in the BED R package.
+
+This instance is focused on *Homo sapiens*, *Mus musculus*, *Rattus
+norvegicus*, *Sus scrofa* and *Danio rerio* organisms. It has been built
+from the following resources:
+
+- Ensembl
+- NCBI
+- Uniprot
+- HGNC
+- GEOquery
+
+The Neo4j graph database is available as a dump file shared in
+[Zenodo](https://zenodo.org/records/17153135).
+
+The following shell commands can be adapted according to user needs and
+called to get a running Neo4j container with a BED database instance.
+
+``` sh
+#!/bin/sh
+
+####################################################@
+## Check folders ----
+if test -e ~/.cache/BED/neo4jData; then
+   echo "~/.cache/BED/neo4jData directory exists ==> abort - Remove it before proceeding" >&2
+   exit
+fi
+mkdir -p ~/.cache/BED/neo4jData
+
+if test "$2" != "--use-existing-dump" && test -e ~/.cache/BED/neo4jDump; then
+   echo "~/.cache/BED/neo4jDump directory exists ==> abort - Remove it before proceeding" >&2
+   exit
+fi
+mkdir -p ~/.cache/BED/neo4jDump
+
+####################################################@
+## Download data ----
+export BED_REP_URL=https://zenodo.org/records/17153135/files/
+if ! test -e ~/.cache/BED/neo4jDump/neo4j.dump; then
+   wget $BED_REP_URL/dump_bed_Genodesy-Human_2025.09.18.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
+fi
+
+####################################################@
+## Import data ----
+docker run --interactive --tty --rm \
+   --volume=~/.cache/BED/neo4jData/data:/data \
+   --volume=~/.cache/BED/neo4jDump:/backups \
+    neo4j:5.26.12 \
+neo4j-admin database load neo4j --from-path=/backups
+
+####################################################@
+## Additional data ----
+if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
+
+   docker run -d \
+      --name bed_2025.09.18 \
+      --publish=5454:7474 \
+      --publish=5687:7687 \
+      --env=NEO4J_dbms_memory_heap_initial__size=4G \
+      --env=NEO4J_dbms_memory_heap_max__size=4G \
+      --env=NEO4J_dbms_memory_pagecache_size=4G \
+      --env=NEO4J_dbms_read__only=false \
+      --env=NEO4J_AUTH=none \
+       --env=NEO4J_dbms_directories_import=import \
+       --volume $BED_IMPORT:/var/lib/neo4j/import \
+      --volume ~/.cache/BED/neo4jData/data:/data \
+      --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
+      neo4j:5.26.12
+
+   sleep 20
+   uid=`id -u`
+   gid=`id -g`
+   sudo chown $uid:$gid $BED_IMPORT
+   chmod a+rx $BED_IMPORT
+
+   cd $1
+
+   R -e '
+      library(BED)
+      library(jsonlite)
+      config <- jsonlite::read_json("deploy_config.json")
+      connectToBed(
+         url=sprintf("localhost:%s", config5454),
+         remember=FALSE,
+         useCache=TRUE,
+         importPath=config$BED_IMPORT
+      )
+      bedInstance <- config$BED_NEW_INSTANCE
+      bedVersion <- config2025.09.18
+      BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
+   '
+
+   if test -e additional-data.R ; then
+      Rscript additional-data.R
+   fi
+
+   cd -
+
+   docker stop bed_2025.09.18
+   docker rm bed_2025.09.18
+
+fi
+
+
+####################################################@
+## Start neo4j ----
+docker run -d \
+   --name bed_2025.09.18 \
+   --publish=5454:7474 \
+   --publish=5687:7687 \
+   --env=NEO4J_dbms_memory_heap_initial__size=4G \
+   --env=NEO4J_dbms_memory_heap_max__size=4G \
+   --env=NEO4J_dbms_memory_pagecache_size=4G \
+   --env=NEO4J_dbms_read__only=true \
+   --env=NEO4J_AUTH=none \
+   --volume ~/.cache/BED/neo4jData/data:/data \
+   --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
+   --restart=always \
+   neo4j:5.26.12
+```
+
+## Build a BED database instance
+
+Building and feeding a BED database instance is achieved using scripts
+available in the “supp/Build” folder.
+
+### Run a neo4j docker images
+
+Using the S01-NewBED-Container.sh script.
+
+### Build and feed BED
+
+Using the S02-Rebuild-BED.sh script which compile the Rebuild-BED.Rmd
+document.
+
+### Dump the graph DB content for sharing
+
+Using the S03-Dump-BED.sh script
+
+## Docker notes
+
+[Sergio Espeso-Gil](https://github.com/sespesogil) has reported
+stability issues with Docker images in Windows. It’s mainly solved by
+checking the “Use the WSL2 based engine” options in docker settings.
+More information is provided here:
+<https://docs.docker.com/docker-for-windows/wsl/>
+
+# Package index
+
+## All functions
+
+- [`BED`](https://patzaw.github.io/BED/reference/BED.md) : Biological
+  Entity Dictionary (BED)
+- [`BEIDList()`](https://patzaw.github.io/BED/reference/BEIDList.md) :
+  Create a BEIDList
+- [`BEIDs()`](https://patzaw.github.io/BED/reference/BEIDs.md) : Get the
+  BEIDs from an object
+- [`beIDsToAllScopes()`](https://patzaw.github.io/BED/reference/beIDsToAllScopes.md)
+  : Find all BEID and ProbeID corresponding to a BE
+- [`bedCall()`](https://patzaw.github.io/BED/reference/bedCall.md) :
+  Call a function on the BED graph
+- [`bedImport()`](https://patzaw.github.io/BED/reference/bedImport.md) :
+  Feeding BED: Imports a data.frame in the BED graph database
+- [`beidsServer()`](https://patzaw.github.io/BED/reference/beidsServer.md)
+  [`beidsUI()`](https://patzaw.github.io/BED/reference/beidsServer.md) :
+  Shiny module for searching BEIDs
+- [`cacheBedCall()`](https://patzaw.github.io/BED/reference/cacheBedCall.md)
+  : Cached neo4j call
+- [`cacheBedResult()`](https://patzaw.github.io/BED/reference/cacheBedResult.md)
+  : Put a BED query result in cache
+- [`checkBeIds()`](https://patzaw.github.io/BED/reference/checkBeIds.md)
+  : Check biological entities (BE) identifiers
+- [`checkBedCache()`](https://patzaw.github.io/BED/reference/checkBedCache.md)
+  : Check BED cache
+- [`checkBedConn()`](https://patzaw.github.io/BED/reference/checkBedConn.md)
+  : Check if there is a connection to a BED database
+- [`cleanDubiousXRef()`](https://patzaw.github.io/BED/reference/cleanDubiousXRef.md)
+  : Identify and remove dubious cross-references
+- [`clearBedCache()`](https://patzaw.github.io/BED/reference/clearBedCache.md)
+  : Clear the BED cache SQLite database
+- [`compareBedInstances()`](https://patzaw.github.io/BED/reference/compareBedInstances.md)
+  : Compare 2 BED database instances
+- [`connectToBed()`](https://patzaw.github.io/BED/reference/connectToBed.md)
+  : Connect to a neo4j BED database
+- [`convBeIdLists()`](https://patzaw.github.io/BED/reference/convBeIdLists.md)
+  : Converts lists of BE IDs
+- [`convBeIds()`](https://patzaw.github.io/BED/reference/convBeIds.md) :
+  Converts BE IDs
+- [`convDfBeIds()`](https://patzaw.github.io/BED/reference/convDfBeIds.md)
+  : Add BE ID conversion to a data frame
+- [`dumpEnsCore()`](https://patzaw.github.io/BED/reference/dumpEnsCore.md)
+  : Feeding BED: Dump table from the Ensembl core database
+- [`dumpNcbiDb()`](https://patzaw.github.io/BED/reference/dumpNcbiDb.md)
+  : Feeding BED: Dump tables from the NCBI gene DATA
+- [`dumpNcbiTax()`](https://patzaw.github.io/BED/reference/dumpNcbiTax.md)
+  : Feeding BED: Dump tables with taxonomic information from NCBI
+- [`dumpUniprotDb()`](https://patzaw.github.io/BED/reference/dumpUniprotDb.md)
+  : Feeding BED: Dump and preprocess flat data files from Uniprot
+- [`exploreBe()`](https://patzaw.github.io/BED/reference/exploreBe.md) :
+  Explore BE identifiers
+- [`exploreConvPath()`](https://patzaw.github.io/BED/reference/exploreConvPath.md)
+  : Explore the shortest convertion path between two identifiers
+- [`filterByBEID()`](https://patzaw.github.io/BED/reference/filterByBEID.md)
+  : Filter an object to keep only a set of BEIDs
+- [`findBe()`](https://patzaw.github.io/BED/reference/findBe.md) : Find
+  Biological Entity
+- [`findBeids()`](https://patzaw.github.io/BED/reference/findBeids.md) :
+  Find Biological Entity identifiers
+- [`firstCommonUpstreamBe()`](https://patzaw.github.io/BED/reference/firstCommonUpstreamBe.md)
+  : First common upstream BE
+- [`focusOnScope(`*`<BEIDList>`*`)`](https://patzaw.github.io/BED/reference/focusOnScope.BEIDList.md)
+  : Convert a BEIDList object in a specific identifier (BEID) scope
+- [`focusOnScope()`](https://patzaw.github.io/BED/reference/focusOnScope.md)
+  : Focus a BE related object on a specific identifier (BEID) scope
+- [`forgetBedConnection()`](https://patzaw.github.io/BED/reference/forgetBedConnection.md)
+  : Forget a BED connection
+- [`genBePath()`](https://patzaw.github.io/BED/reference/genBePath.md) :
+  Construct CQL sub-query to map 2 biological entity
+- [`genProbePath()`](https://patzaw.github.io/BED/reference/genProbePath.md)
+  : Identify the biological entity (BE) targeted by probes and construct
+  the CQL sub-query to map probes to the BE
+- [`geneIDsToAllScopes()`](https://patzaw.github.io/BED/reference/geneIDsToAllScopes.md)
+  : Find all GeneID, ObjectID, TranscriptID, PeptideID and ProbeID
+  corresponding to a Gene in any organism
+- [`getAllBeIdSources()`](https://patzaw.github.io/BED/reference/getAllBeIdSources.md)
+  : List all the source databases of BE identifiers whatever the BE type
+- [`getBeIdConvTable()`](https://patzaw.github.io/BED/reference/getBeIdConvTable.md)
+  : Get a conversion table between biological entity (BE) identifiers
+- [`getBeIdDescription()`](https://patzaw.github.io/BED/reference/getBeIdDescription.md)
+  : Get description of Biological Entity identifiers
+- [`getBeIdNameTable()`](https://patzaw.github.io/BED/reference/getBeIdNameTable.md)
+  : Get a table of biological entity (BE) identifiers and names
+- [`getBeIdNames()`](https://patzaw.github.io/BED/reference/getBeIdNames.md)
+  : Get names of Biological Entity identifiers
+- [`getBeIdSymbolTable()`](https://patzaw.github.io/BED/reference/getBeIdSymbolTable.md)
+  : Get a table of biological entity (BE) identifiers and symbols
+- [`getBeIdSymbols()`](https://patzaw.github.io/BED/reference/getBeIdSymbols.md)
+  : Get symbols of Biological Entity identifiers
+- [`getBeIdURL()`](https://patzaw.github.io/BED/reference/getBeIdURL.md)
+  : Get reference URLs for BE IDs
+- [`getBeIds()`](https://patzaw.github.io/BED/reference/getBeIds.md) :
+  Get biological entities identifiers
+- [`getDirectOrigin()`](https://patzaw.github.io/BED/reference/getDirectOrigin.md)
+  : Get the direct origin of BE identifiers
+- [`getDirectProduct()`](https://patzaw.github.io/BED/reference/getDirectProduct.md)
+  : Get the direct product of BE identifiers
+- [`getEnsemblGeneIds()`](https://patzaw.github.io/BED/reference/getEnsemblGeneIds.md)
+  : Feeding BED: Download Ensembl DB and load gene information in BED
+- [`getEnsemblPeptideIds()`](https://patzaw.github.io/BED/reference/getEnsemblPeptideIds.md)
+  : Feeding BED: Download Ensembl DB and load peptide information in BED
+- [`getEnsemblTranscriptIds()`](https://patzaw.github.io/BED/reference/getEnsemblTranscriptIds.md)
+  : Feeding BED: Download Ensembl DB and load transcript information in
+  BED
+- [`getGeneDescription()`](https://patzaw.github.io/BED/reference/getGeneDescription.md)
+  : Get description of genes corresponding to Biological Entity
+  identifiers
+- [`getHomTable()`](https://patzaw.github.io/BED/reference/getHomTable.md)
+  : Get gene homologs between 2 organisms
+- [`getNcbiGeneTransPep()`](https://patzaw.github.io/BED/reference/getNcbiGeneTransPep.md)
+  : Feeding BED: Download NCBI gene DATA and load gene, transcript and
+  peptide information in BED
+- [`getOrgNames()`](https://patzaw.github.io/BED/reference/getOrgNames.md)
+  : Get organism names from taxonomy IDs
+- [`getRelevantIds()`](https://patzaw.github.io/BED/reference/getRelevantIds.md)
+  : Get relevant IDs for a formerly identified BE in a context of
+  interest
+- [`getTargetedBe()`](https://patzaw.github.io/BED/reference/getTargetedBe.md)
+  : Identify the biological entity (BE) targeted by probes
+- [`getTaxId()`](https://patzaw.github.io/BED/reference/getTaxId.md) :
+  Get taxonomy ID of an organism name
+- [`getUniprot()`](https://patzaw.github.io/BED/reference/getUniprot.md)
+  : Feeding BED: Download Uniprot information in BED
+- [`guessIdScope()`](https://patzaw.github.io/BED/reference/guessIdScope.md)
+  [`guessIdOrigin()`](https://patzaw.github.io/BED/reference/guessIdScope.md)
+  : Guess biological entity (BE), database source and organism of a
+  vector of identifiers.
+- [`identicalScopes()`](https://patzaw.github.io/BED/reference/identicalScopes.md)
+  : Check if two objects have the same BEID scope
+- [`is.BEIDList()`](https://patzaw.github.io/BED/reference/is.BEIDList.md)
+  : Check if the provided object is a BEIDList
+- [`largestBeSource()`](https://patzaw.github.io/BED/reference/largestBeSource.md)
+  : Autoselect source of biological entity identifiers
+- [`listBe()`](https://patzaw.github.io/BED/reference/listBe.md) : Lists
+  all the biological entities (BE) available in the BED database
+- [`listBeIdSources()`](https://patzaw.github.io/BED/reference/listBeIdSources.md)
+  : Lists all the databases taken into account in the BED database for a
+  biological entity (BE)
+- [`listDBAttributes()`](https://patzaw.github.io/BED/reference/listDBAttributes.md)
+  : List all attributes provided by a BEDB
+- [`listOrganisms()`](https://patzaw.github.io/BED/reference/listOrganisms.md)
+  : Lists all the organisms available in the BED database
+- [`listPlatforms()`](https://patzaw.github.io/BED/reference/listPlatforms.md)
+  : Lists all the probe platforms available in the BED database
+- [`loadBE()`](https://patzaw.github.io/BED/reference/loadBE.md) :
+  Feeding BED: Load biological entities in BED
+- [`loadBENames()`](https://patzaw.github.io/BED/reference/loadBENames.md)
+  : Feeding BED: Load names associated to BEIDs
+- [`loadBESymbols()`](https://patzaw.github.io/BED/reference/loadBESymbols.md)
+  : Feeding BED: Load symbols associated to BEIDs
+- [`loadBEVersion()`](https://patzaw.github.io/BED/reference/loadBEVersion.md)
+  : Feeding BED: Load biological entities in BED with information about
+  DB version
+- [`loadBeAttribute()`](https://patzaw.github.io/BED/reference/loadBeAttribute.md)
+  : Feeding BED: Load attributes for biological entities in BED
+- [`loadBedModel()`](https://patzaw.github.io/BED/reference/loadBedModel.md)
+  : Feeding BED: Load BED data model in neo4j
+- [`loadBedOtherIndexes()`](https://patzaw.github.io/BED/reference/loadBedOtherIndexes.md)
+  : Feeding BED: Load additional indexes in neo4j
+- [`loadBedResult()`](https://patzaw.github.io/BED/reference/loadBedResult.md)
+  : Get a BED query result from cache
+- [`loadCodesFor()`](https://patzaw.github.io/BED/reference/loadCodesFor.md)
+  : Feeding BED: Load correspondance between genes and objects as coding
+  events
+- [`loadCorrespondsTo()`](https://patzaw.github.io/BED/reference/loadCorrespondsTo.md)
+  : Feeding BED: Load correspondances between BE IDs
+- [`loadHistory()`](https://patzaw.github.io/BED/reference/loadHistory.md)
+  : Feeding BED: Load history of BEIDs
+- [`loadIsAssociatedTo()`](https://patzaw.github.io/BED/reference/loadIsAssociatedTo.md)
+  : Feeding BED: Load BE ID associations
+- [`loadIsExpressedAs()`](https://patzaw.github.io/BED/reference/loadIsExpressedAs.md)
+  : Feeding BED: Load correspondance between genes and transcripts as
+  expression events
+- [`loadIsHomologOf()`](https://patzaw.github.io/BED/reference/loadIsHomologOf.md)
+  : Feeding BED: Load homology between BE IDs
+- [`loadIsTranslatedIn()`](https://patzaw.github.io/BED/reference/loadIsTranslatedIn.md)
+  : Feeding BED: Load correspondance between transcripts and peptides as
+  translation events
+- [`loadLuceneIndexes()`](https://patzaw.github.io/BED/reference/loadLuceneIndexes.md)
+  : Feeding BED: Create Lucene indexes in neo4j
+- [`loadNCBIEntrezGOFunctions()`](https://patzaw.github.io/BED/reference/loadNCBIEntrezGOFunctions.md)
+  : Feeding BED: Load in BED GO functions associated to Entrez gene IDs
+  from NCBI
+- [`loadNcbiTax()`](https://patzaw.github.io/BED/reference/loadNcbiTax.md)
+  : Feeding BED: Load taxonomic information from NCBI
+- [`loadOrganisms()`](https://patzaw.github.io/BED/reference/loadOrganisms.md)
+  : Feeding BED: Load organisms in BED
+- [`loadPlf()`](https://patzaw.github.io/BED/reference/loadPlf.md) :
+  Feeding BED: Load a probes platform
+- [`loadProbes()`](https://patzaw.github.io/BED/reference/loadProbes.md)
+  : Feeding BED: Load probes targeting BE IDs
+- [`lsBedCache()`](https://patzaw.github.io/BED/reference/lsBedCache.md)
+  : List all the BED queries in cache and the total size of the cache
+- [`lsBedConnections()`](https://patzaw.github.io/BED/reference/lsBedConnections.md)
+  : List all registered BED connection
+- [`` `metadata<-`() ``](https://patzaw.github.io/BED/reference/metadata-set.md)
+  : Set object metadata
+- [`metadata()`](https://patzaw.github.io/BED/reference/metadata.md) :
+  Get object metadata
+- [`registerBEDB()`](https://patzaw.github.io/BED/reference/registerBEDB.md)
+  : Feeding BED: Register a database of biological entities in BED DB
+- [`scope()`](https://patzaw.github.io/BED/reference/scope.md) : Get the
+  BEID scope of an object
+- [`scopes()`](https://patzaw.github.io/BED/reference/scopes.md) : Get
+  the BEID scopes of an object
+- [`searchBeid()`](https://patzaw.github.io/BED/reference/searchBeid.md)
+  : Search a BEID
+- [`searchId()`](https://patzaw.github.io/BED/reference/searchId.md) :
+  Search identifier, symbol or name information
+- [`setBedVersion()`](https://patzaw.github.io/BED/reference/setBedVersion.md)
+  : Feeding BED: Set the BED version
+- [`showBedDataModel()`](https://patzaw.github.io/BED/reference/showBedDataModel.md)
+  : Show the data model of BED
+
+# Articles
+
+### All vignettes
+
+- [Biological Entity Dictionary (BED): exploring and converting
+  identifiers of biological entities such as genes, transcripts or
+  peptides](https://patzaw.github.io/BED/articles/BED.md):

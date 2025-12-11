@@ -1,6 +1,7 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.6.3
 
+- Allow non-fuzzy search in `searchBeid()` and `beidsServer()`
 - Available option in beidsModule: Update input when the user press Enter
 
 <!----------------------------------------------------------------------------->
@@ -13,7 +14,7 @@
 <!----------------------------------------------------------------------------->
 ## Version 1.6.1
 
-- Additional parameters to `beidServer()`
+- Additional parameters to `beidsServer()`
 - Adding htmltools in dependencies to avoid autocomplete
 when searching identifiers
 

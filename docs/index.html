@@ -34,7 +34,7 @@
 
     <a class="navbar-brand me-2" href="index.html">BED</a>
 
-    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.2</small>
+    <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">1.6.3</small>
 
 
     <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
@@ -178,7 +178,7 @@
 <li>HGNC</li>
 <li>GEOquery</li>
 </ul>
-<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/15582254" class="external-link">Zenodo</a>.</p>
+<p>The Neo4j graph database is available as a dump file shared in <a href="https://zenodo.org/records/17153135" class="external-link">Zenodo</a>.</p>
 <p>The following shell commands can be adapted according to user needs and called to get a running Neo4j container with a BED database instance.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode sh"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co">#!/bin/sh</span></span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a></span>
@@ -198,9 +198,9 @@
 <span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a></span>
 <span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">## Download data ----</span></span>
-<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/15582254/files/</span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="bu">export</span> <span class="va">BED_REP_URL</span><span class="op">=</span>https://zenodo.org/records/17153135/files/</span>
 <span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="cf">if</span> <span class="ot">! </span><span class="bu">test</span> <span class="at">-e</span> ~/.cache/BED/neo4jDump/neo4j.dump<span class="kw">;</span> <span class="cf">then</span></span>
-<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>   <span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2025.06.02.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a>   <span class="fu">wget</span> <span class="va">$BED_REP_URL</span>/dump_bed_Genodesy-Human_2025.09.18.dump <span class="at">-O</span> ~/.cache/BED/neo4jDump/neo4j.dump</span>
 <span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="cf">fi</span></span>
 <span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a></span>
 <span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">####################################################@</span></span>
@@ -208,7 +208,7 @@
 <span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">--interactive</span> <span class="at">--tty</span> <span class="at">--rm</span> <span class="dt">\</span></span>
 <span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
 <span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a>   <span class="at">--volume</span><span class="op">=</span>~/.cache/BED/neo4jDump:/backups <span class="dt">\</span></span>
-<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    neo4j:5.26.7 <span class="dt">\</span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a>    neo4j:5.26.12 <span class="dt">\</span></span>
 <span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a>neo4j-admin database load neo4j <span class="at">--from-path</span><span class="op">=</span>/backups</span>
 <span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a></span>
 <span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">####################################################@</span></span>
@@ -216,7 +216,7 @@
 <span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="cf">if</span> <span class="bu">test</span> <span class="st">"</span><span class="va">$BED_NEW_INSTANCE</span><span class="st">"</span> != <span class="st">"null"</span> <span class="kw">&amp;&amp;</span> <span class="bu">test</span> <span class="st">"</span><span class="va">$BED_IMPORT</span><span class="st">"</span> != <span class="st">"null"</span><span class="kw">;</span> <span class="cf">then</span></span>
 <span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a></span>
 <span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a>   <span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>      <span class="at">--name</span> bed_2025.06.02 <span class="dt">\</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a>      <span class="at">--name</span> bed_2025.09.18 <span class="dt">\</span></span>
 <span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a>      <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
 <span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a>      <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
 <span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a>      <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
@@ -228,7 +228,7 @@
 <span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a>       <span class="at">--volume</span> <span class="va">$BED_IMPORT</span>:/var/lib/neo4j/import <span class="dt">\</span></span>
 <span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a>      <span class="at">--volume</span> ~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
 <span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a>      <span class="at">--volume</span> ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs <span class="dt">\</span></span>
-<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>      neo4j:5.26.7</span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a>      neo4j:5.26.12</span>
 <span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a></span>
 <span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a>   <span class="fu">sleep</span> 20</span>
 <span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a>   <span class="va">uid</span><span class="op">=</span><span class="kw">`</span><span class="fu">id</span> <span class="at">-u</span><span class="kw">`</span></span>
@@ -249,7 +249,7 @@
 <span id="cb6-67"><a href="#cb6-67" tabindex="-1"></a><span class="st">         importPath=config$BED_IMPORT</span></span>
 <span id="cb6-68"><a href="#cb6-68" tabindex="-1"></a><span class="st">      )</span></span>
 <span id="cb6-69"><a href="#cb6-69" tabindex="-1"></a><span class="st">      bedInstance &lt;- config$BED_NEW_INSTANCE</span></span>
-<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a><span class="st">      bedVersion &lt;- config2025.06.02</span></span>
+<span id="cb6-70"><a href="#cb6-70" tabindex="-1"></a><span class="st">      bedVersion &lt;- config2025.09.18</span></span>
 <span id="cb6-71"><a href="#cb6-71" tabindex="-1"></a><span class="st">      BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)</span></span>
 <span id="cb6-72"><a href="#cb6-72" tabindex="-1"></a><span class="st">   '</span></span>
 <span id="cb6-73"><a href="#cb6-73" tabindex="-1"></a></span>
@@ -259,8 +259,8 @@
 <span id="cb6-77"><a href="#cb6-77" tabindex="-1"></a></span>
 <span id="cb6-78"><a href="#cb6-78" tabindex="-1"></a>   <span class="bu">cd</span> <span class="at">-</span></span>
 <span id="cb6-79"><a href="#cb6-79" tabindex="-1"></a></span>
-<span id="cb6-80"><a href="#cb6-80" tabindex="-1"></a>   <span class="ex">docker</span> stop bed_2025.06.02</span>
-<span id="cb6-81"><a href="#cb6-81" tabindex="-1"></a>   <span class="ex">docker</span> rm bed_2025.06.02</span>
+<span id="cb6-80"><a href="#cb6-80" tabindex="-1"></a>   <span class="ex">docker</span> stop bed_2025.09.18</span>
+<span id="cb6-81"><a href="#cb6-81" tabindex="-1"></a>   <span class="ex">docker</span> rm bed_2025.09.18</span>
 <span id="cb6-82"><a href="#cb6-82" tabindex="-1"></a></span>
 <span id="cb6-83"><a href="#cb6-83" tabindex="-1"></a><span class="cf">fi</span></span>
 <span id="cb6-84"><a href="#cb6-84" tabindex="-1"></a></span>
@@ -268,7 +268,7 @@
 <span id="cb6-86"><a href="#cb6-86" tabindex="-1"></a><span class="co">####################################################@</span></span>
 <span id="cb6-87"><a href="#cb6-87" tabindex="-1"></a><span class="co">## Start neo4j ----</span></span>
 <span id="cb6-88"><a href="#cb6-88" tabindex="-1"></a><span class="ex">docker</span> run <span class="at">-d</span> <span class="dt">\</span></span>
-<span id="cb6-89"><a href="#cb6-89" tabindex="-1"></a>   <span class="at">--name</span> bed_2025.06.02 <span class="dt">\</span></span>
+<span id="cb6-89"><a href="#cb6-89" tabindex="-1"></a>   <span class="at">--name</span> bed_2025.09.18 <span class="dt">\</span></span>
 <span id="cb6-90"><a href="#cb6-90" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5454:7474 <span class="dt">\</span></span>
 <span id="cb6-91"><a href="#cb6-91" tabindex="-1"></a>   <span class="at">--publish</span><span class="op">=</span>5687:7687 <span class="dt">\</span></span>
 <span id="cb6-92"><a href="#cb6-92" tabindex="-1"></a>   <span class="at">--env</span><span class="op">=</span>NEO4J_dbms_memory_heap_initial__size=4G <span class="dt">\</span></span>
@@ -279,7 +279,7 @@
 <span id="cb6-97"><a href="#cb6-97" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/data:/data <span class="dt">\</span></span>
 <span id="cb6-98"><a href="#cb6-98" tabindex="-1"></a>   <span class="at">--volume</span> ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs <span class="dt">\</span></span>
 <span id="cb6-99"><a href="#cb6-99" tabindex="-1"></a>   <span class="at">--restart</span><span class="op">=</span>always <span class="dt">\</span></span>
-<span id="cb6-100"><a href="#cb6-100" tabindex="-1"></a>   neo4j:5.26.7</span></code></pre></div>
+<span id="cb6-100"><a href="#cb6-100" tabindex="-1"></a>   neo4j:5.26.12</span></code></pre></div>
 <!----------------------------------------------------------------------------->
 <!----------------------------------------------------------------------------->
 </div>
@@ -355,7 +355,7 @@
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.1.3.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/" class="external-link">pkgdown</a> 2.2.0.</p>
 </div>
 
     </footer>

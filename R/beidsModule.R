@@ -78,6 +78,8 @@ highlightText <- function(
 #' @param oneColumn if TRUE the hits are displayed in only one column
 #' @param withId if FALSE and one column, the BEIDs are not shown
 #' @param maxHits maximum number of raw hits to return
+#' @param fuzzy if TRUE (default) a fuzzy search is applied on names and
+#' symbols.
 #' @param compact compact display (default: FALSE)
 #' @param tableHeight height of the result table (default: 150)
 #' @param highlightStyle style to apply to the text to highlight
@@ -146,6 +148,7 @@ beidsServer <- function(
    oneColumn = FALSE,
    withId = FALSE,
    maxHits = 75,
+   fuzzy = TRUE,
    compact = FALSE,
    tableHeight=150,
    highlightStyle = "", # "background-color:yellow; font-weight:bold;",
@@ -283,7 +286,7 @@ beidsServer <- function(
                expr={
                   suppressMessages({
                      m <- tryCatch(
-                        searchBeid(v, maxHits=maxHits),
+                        searchBeid(v, maxHits=maxHits, fuzzy = fuzzy),
                         error = function(e) NULL
                      )
                   })

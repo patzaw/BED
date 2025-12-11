@@ -4,7 +4,13 @@
 \alias{searchBeid}
 \title{Search a BEID}
 \usage{
-searchBeid(x, maxHits = 75, clean_id_search = TRUE, clean_name_search = TRUE)
+searchBeid(
+  x,
+  maxHits = 75,
+  clean_id_search = TRUE,
+  clean_name_search = TRUE,
+  fuzzy = TRUE
+)
 }
 \arguments{
 \item{x}{a character value to search}
@@ -16,6 +22,9 @@ Default: TRUE. Set it to false if you're sure of your lucene query.}
 
 \item{clean_name_search}{clean x to avoid error during ID search.
 Default: TRUE. Set it to false if you're sure of your lucene query.}
+
+\item{fuzzy}{if TRUE (default) a fuzzy search is applied on names and
+symbols.}
 }
 \value{
 NULL if there is not any match or
