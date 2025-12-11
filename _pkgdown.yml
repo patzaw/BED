@@ -20,3 +20,5 @@ authors:
 
 deploy:
   install_metadata: true
+
+llm-docs: false

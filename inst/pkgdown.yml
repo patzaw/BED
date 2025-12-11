@@ -3,7 +3,7 @@ pkgdown: 2.2.0
 pkgdown_sha: ~
 articles:
   BED: BED.html
-last_built: 2025-12-11T08:41Z
+last_built: 2025-12-11T09:28Z
 urls:
   reference: https://patzaw.github.io/BED/reference
   article: https://patzaw.github.io/BED/articles
