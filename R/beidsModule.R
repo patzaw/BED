@@ -78,6 +78,10 @@ highlightText <- function(
 #' @param oneColumn if TRUE the hits are displayed in only one column
 #' @param withId if FALSE and one column, the BEIDs are not shown
 #' @param maxHits maximum number of raw hits to return
+#' @param clean_id_search clean x to avoid error during ID search.
+#' Default: TRUE. Set it to false if you're sure of your lucene query.
+#' @param clean_name_search clean x to avoid error during ID search.
+#' Default: TRUE. Set it to false if you're sure of your lucene query.
 #' @param fuzzy if TRUE (default) a fuzzy search is applied on names and
 #' symbols.
 #' @param compact compact display (default: FALSE)
@@ -148,6 +152,8 @@ beidsServer <- function(
    oneColumn = FALSE,
    withId = FALSE,
    maxHits = 75,
+   clean_id_search=TRUE,
+   clean_name_search=TRUE,
    fuzzy = TRUE,
    compact = FALSE,
    tableHeight=150,
@@ -286,7 +292,13 @@ beidsServer <- function(
                expr={
                   suppressMessages({
                      m <- tryCatch(
-                        searchBeid(v, maxHits=maxHits, fuzzy = fuzzy),
+                        searchBeid(
+                           v,
+                           maxHits=maxHits,
+                           clean_id_search=clean_id_search,
+                           clean_name_search=clean_name_search,
+                           fuzzy = fuzzy
+                        ),
                         error = function(e) NULL
                      )
                   })

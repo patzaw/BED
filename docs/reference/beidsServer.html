@@ -62,6 +62,8 @@
 <span>  oneColumn <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  withId <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  maxHits <span class="op">=</span> <span class="fl">75</span>,</span>
+<span>  clean_id_search <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  clean_name_search <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  fuzzy <span class="op">=</span> <span class="cn">TRUE</span>,</span>
 <span>  compact <span class="op">=</span> <span class="cn">FALSE</span>,</span>
 <span>  tableHeight <span class="op">=</span> <span class="fl">150</span>,</span>
@@ -137,6 +139,16 @@ more granularity (taken into account only when toGene == TRUE)</p></dd>
 
 <dt id="arg-maxhits">maxHits<a class="anchor" aria-label="anchor" href="#arg-maxhits"></a></dt>
 <dd><p>maximum number of raw hits to return</p></dd>
+
+
+<dt id="arg-clean-id-search">clean_id_search<a class="anchor" aria-label="anchor" href="#arg-clean-id-search"></a></dt>
+<dd><p>clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.</p></dd>
+
+
+<dt id="arg-clean-name-search">clean_name_search<a class="anchor" aria-label="anchor" href="#arg-clean-name-search"></a></dt>
+<dd><p>clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.</p></dd>
 
 
 <dt id="arg-fuzzy">fuzzy<a class="anchor" aria-label="anchor" href="#arg-fuzzy"></a></dt>

@@ -51,11 +51,11 @@ searchBeid <- function(
       x <- stringr::str_replace_all(x, stringr::fixed('^'), '\\\\^')
       x <- stringr::str_remove_all(x, '~')
       x <- stringr::str_remove(x, ' *$')
-      x <- stringr::str_replace_all(x, ' +', '~ ')
       while(
          substr(x, nchar(x), nchar(x)) %in%
          c(
-            "+", "-",  "&", "|",  "!", "(" , ")",
+            "+", "-",
+            "&", "|",  "!", "(" , ")",
             "{", "}", "[", "]", "?", ":", "/",
             "~", " "
          )
@@ -85,9 +85,12 @@ searchBeid <- function(
       x <- clean_brack(x, "\\[", "\\]")
       if(nchar(x)>0){
          if(fuzzy){
-         x <- paste0(x, "~")
+            x <- stringr::str_replace_all(x, ' +', '~ ')
+            x <- paste0(x, "~")
          }else{
-            x <- paste0("*", x, "*")
+            if(!stringr::str_detect(x, "[[:blank:]-]")){
+               x <- paste0("*", x, "*")
+            }
          }
       }
       return(x)
@@ -103,6 +106,7 @@ searchBeid <- function(
       }
       return(x)
    }
+   vn <- vi <- x
    if(clean_id_search) vi <- clean_search_id(x)
    if(clean_name_search) vn <- clean_search_name(x, fuzzy = fuzzy)
    if(nchar(vi)==0 || nchar(vn)==0){
@@ -179,10 +183,10 @@ searchBeid <- function(
       from=stringr::str_remove(.data$from, "BEID [|][|] "),
       be=stringr::str_remove(.data$be, "BEID [|][|] "),
       included=stringr::str_detect(
-         .data$value, pattern=regex(x, ignore_case = T)
+         .data$value, pattern=fixed(x, ignore_case = T)
       ),
       exact=stringr::str_detect(
-         .data$value, pattern=regex(x, ignore_case = T)
+         .data$value, pattern=fixed(x, ignore_case = T)
       ) & nchar(.data$value) == nchar(x)
    )
    values <- dplyr::arrange(

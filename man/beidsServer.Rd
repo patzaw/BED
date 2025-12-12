@@ -21,6 +21,8 @@ beidsServer(
   oneColumn = FALSE,
   withId = FALSE,
   maxHits = 75,
+  clean_id_search = TRUE,
+  clean_name_search = TRUE,
   fuzzy = TRUE,
   compact = FALSE,
   tableHeight = 150,
@@ -63,6 +65,12 @@ more granularity (taken into account only when toGene == TRUE)}
 \item{withId}{if FALSE and one column, the BEIDs are not shown}
 
 \item{maxHits}{maximum number of raw hits to return}
+
+\item{clean_id_search}{clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.}
+
+\item{clean_name_search}{clean x to avoid error during ID search.
+Default: TRUE. Set it to false if you're sure of your lucene query.}
 
 \item{fuzzy}{if TRUE (default) a fuzzy search is applied on names and
 symbols.}
