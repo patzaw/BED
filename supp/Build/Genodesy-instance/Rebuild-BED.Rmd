@@ -82,7 +82,7 @@ bedVersion <- config$BED_VERSION
 ensembl_org_dir <- grep(
   "_core_",
   rvest::html_table(
-    rvest::read_html("https://ftp.ensembl.org/pub/current_mysql/")
+    rvest::read_html("https://ftp.ensembl.org/pub/current/mysql/")
   )[[1]]$Name,
   value=TRUE
 )
@@ -2035,7 +2035,7 @@ to_exclude <- c(
 )
 dump_ensembl_func <- function(ens_def){
    base_url <- sprintf(
-      "https://ftp.ensembl.org/pub/current_mysql/%s_funcgen_%s_%s",
+      "https://ftp.ensembl.org/pub/current/mysql/%s_funcgen_%s_%s",
       stringr::str_replace(tolower(ens_def$organism), " ", "_"),
       ens_def$release, ens_def$gv
    )
