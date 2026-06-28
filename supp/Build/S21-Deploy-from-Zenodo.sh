@@ -116,6 +116,7 @@ if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
    '
 
    if test -e additional-data.R ; then
+      sleep 20
       Rscript additional-data.R
    fi
 
