@@ -77,7 +77,7 @@ And those are suggested:
 - [GEOquery](https://CRAN.R-project.org/package=GEOquery): Get data from
   NCBI Gene Expression Omnibus (GEO)
 - [base64enc](https://CRAN.R-project.org/package=base64enc): Tools for
-  base64 encoding
+  ‘base64’ Encoding
 - [webshot2](https://CRAN.R-project.org/package=webshot2): Take
   Screenshots of Web Pages
 - [RCurl](https://CRAN.R-project.org/package=RCurl): General Network
@@ -157,7 +157,7 @@ from the following resources:
 - GEOquery
 
 The Neo4j graph database is available as a dump file shared in
-[Zenodo](https://zenodo.org/records/17153135).
+[Zenodo](https://zenodo.org/records/20951276).
 
 The following shell commands can be adapted according to user needs and
 called to get a running Neo4j container with a BED database instance.
@@ -181,9 +181,9 @@ mkdir -p ~/.cache/BED/neo4jDump
 
 ####################################################@
 ## Download data ----
-export BED_REP_URL=https://zenodo.org/records/17153135/files/
+export BED_REP_URL=https://zenodo.org/records/20951276/files/
 if ! test -e ~/.cache/BED/neo4jDump/neo4j.dump; then
-   wget $BED_REP_URL/dump_bed_Genodesy-Human_2025.09.18.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
+   wget $BED_REP_URL/dump_bed_Genodesy-Human_2026.06.27.dump -O ~/.cache/BED/neo4jDump/neo4j.dump
 fi
 
 ####################################################@
@@ -191,7 +191,7 @@ fi
 docker run --interactive --tty --rm \
    --volume=~/.cache/BED/neo4jData/data:/data \
    --volume=~/.cache/BED/neo4jDump:/backups \
-    neo4j:5.26.12 \
+    neo4j:5.26.27 \
 neo4j-admin database load neo4j --from-path=/backups
 
 ####################################################@
@@ -199,7 +199,7 @@ neo4j-admin database load neo4j --from-path=/backups
 if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
 
    docker run -d \
-      --name bed_2025.09.18 \
+      --name bed_2026.06.27 \
       --publish=5454:7474 \
       --publish=5687:7687 \
       --env=NEO4J_dbms_memory_heap_initial__size=4G \
@@ -211,7 +211,7 @@ if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
        --volume $BED_IMPORT:/var/lib/neo4j/import \
       --volume ~/.cache/BED/neo4jData/data:/data \
       --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
-      neo4j:5.26.12
+      neo4j:5.26.27
 
    sleep 20
    uid=`id -u`
@@ -232,18 +232,19 @@ if test "$BED_NEW_INSTANCE" != "null" && test "$BED_IMPORT" != "null"; then
          importPath=config$BED_IMPORT
       )
       bedInstance <- config$BED_NEW_INSTANCE
-      bedVersion <- config2025.09.18
+      bedVersion <- config2026.06.27
       BED:::setBedVersion(bedInstance=bedInstance, bedVersion=bedVersion)
    '
 
    if test -e additional-data.R ; then
+      sleep 20
       Rscript additional-data.R
    fi
 
    cd -
 
-   docker stop bed_2025.09.18
-   docker rm bed_2025.09.18
+   docker stop bed_2026.06.27
+   docker rm bed_2026.06.27
 
 fi
 
@@ -251,7 +252,7 @@ fi
 ####################################################@
 ## Start neo4j ----
 docker run -d \
-   --name bed_2025.09.18 \
+   --name bed_2026.06.27 \
    --publish=5454:7474 \
    --publish=5687:7687 \
    --env=NEO4J_dbms_memory_heap_initial__size=4G \
@@ -262,7 +263,7 @@ docker run -d \
    --volume ~/.cache/BED/neo4jData/data:/data \
    --volume ~/.cache/BED/neo4jData/logs:/var/lib/neo4j/logs \
    --restart=always \
-   neo4j:5.26.12
+   neo4j:5.26.27
 ```
 
 <!----------------------------------------------------------------------------->

@@ -2,37 +2,36 @@ library(here)
 
 ##############################@
 ## Build documentation ----
-devtools::document(pkg=here::here(), roclets = c('rd', 'collate', 'namespace'))
-# install.packages(here::here(), repos=NULL)
+devtools::document(
+  pkg = here::here(),
+  roclets = c('rd', 'collate', 'namespace')
+)
+install.packages(here::here(), repos = NULL)
 
 ##############################@
 ## Build and copy vignettes ----
 rmarkdown::render(here("README.Rmd"))
-devtools::build_vignettes()
-dir.create(here("inst/doc"), showWarnings=FALSE)
-for(f in list.files(here("doc"))){
-   file.copy(
-      file.path(here("doc"), f), file.path(here("vignettes"), f),
-      overwrite=TRUE
-   )
-   file.copy(
-      file.path(here("doc"), f), file.path(here("inst/doc"), f),
-      overwrite=TRUE
-   )
-   if(sub("^.*[.]", "", f)=="html"){
-      file.copy(
-         file.path(here("doc"), f), file.path(here("pkgdown/assets"), f),
-         overwrite=TRUE
-      )
-   }
-   file.remove(file.path(here("doc"), f))
+tools::buildVignettes(dir = here(), clean = FALSE, quiet = TRUE)
+dir.create(here("inst/doc"), showWarnings = FALSE)
+for (f in list.files(here("vignettes"), pattern = "\\.(html|pdf|R)$")) {
+  file.copy(
+    file.path(here("vignettes"), f),
+    file.path(here("inst/doc"), f),
+    overwrite = TRUE
+  )
+  if (sub("^.*[.]", "", f) == "html") {
+    file.copy(
+      file.path(here("vignettes"), f),
+      file.path(here("pkgdown/assets"), f),
+      overwrite = TRUE
+    )
+  }
 }
-file.remove("doc")
 
 ##############################@
 ## Build website ----
-unlink("docs", recursive=TRUE, force=TRUE)
-pkgdown::build_site(preview = FALSE)
+unlink(here::here("docs"), recursive = TRUE, force = TRUE)
+pkgdown::build_site(pkg = here::here(), preview = FALSE)
 
 ##############################@
 ## Build and check package ----
@@ -48,3 +47,6 @@ system(paste(
    ),
    sep=" ; "
 ))
+install.packages(here(sprintf("../BED_%s.tar.gz", pv)), repos = NULL)
+
+

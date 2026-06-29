@@ -754,7 +754,7 @@ beidsServer <- function(
 }
 
 ###############################################################################@
-#' @describeIn beidsServer
+#' @describeIn beidsServer UI part of the BED identifiers shiny module
 #'
 #' @importFrom shiny uiOutput NS
 #' @export

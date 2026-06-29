@@ -106,7 +106,7 @@ Shiny module for searching BEIDs
 }
 \section{Functions}{
 \itemize{
-\item \code{beidsUI()}: 
+\item \code{beidsUI()}: UI part of the BED identifiers shiny module
 
 }}
 \examples{
