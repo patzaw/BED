@@ -1,9 +1,9 @@
-pandoc: 3.8.3
-pkgdown: 2.2.0
+pandoc: '3.10'
+pkgdown: 2.2.1
 pkgdown_sha: ~
 articles:
   BED: BED.html
-last_built: 2026-06-29T04:08Z
+last_built: 2026-10-10T05:50Z
 urls:
   reference: https://patzaw.github.io/BED/reference
   article: https://patzaw.github.io/BED/articles

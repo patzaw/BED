@@ -1,5 +1,3 @@
-README
-================
 
 # Biological Entity Dictionary <img src="man/figures/BED.png" align="right" alt="" width="120" />
 
